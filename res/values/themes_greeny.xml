@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Greeny" parent="Theme.Sherlock">
+
+        <item name="android:editTextStyle">@style/EditTextGreeny</item>
+
+        <item name="android:textColorHighlight">#99a6a6a6</item>
+
+        <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewGreeny</item>
+
+        <item name="android:checkboxStyle">@style/CheckBoxGreeny</item>
+
+        <item name="android:radioButtonStyle">@style/RadioButtonGreeny</item>
+
+        <item name="android:buttonStyle">@style/ButtonGreeny</item>
+
+        <item name="android:imageButtonStyle">@style/ImageButtonGreeny</item>
+
+        <item name="android:spinnerStyle">@style/SpinnerGreeny</item>
+
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemGreeny</item>
+
+        <item name="android:progressBarStyleHorizontal">@style/ProgressBarGreeny</item>
+
+        <item name="android:seekBarStyle">@style/SeekBarGreeny</item>
+
+        <item name="android:buttonStyleToggle">@style/ToggleGreeny</item>
+
+        <item name="android:listViewStyle">@style/ListViewGreeny</item>
+
+        <item name="android:listViewWhiteStyle">@style/ListViewGreeny.White</item>
+
+        <item name="android:spinnerItemStyle">@style/SpinnerItemGreeny</item>
+
+    </style>
+
+    <style name="ActionBar.Transparent.Greenysherlock" parent="@style/Widget.Sherlock.ActionBar">
+        <item name="background">@drawable/ab_transparent_greenysherlock</item>
+        <item name="android:background">@drawable/ab_transparent_greenysherlock</item>
+    </style>
+
+</resources>

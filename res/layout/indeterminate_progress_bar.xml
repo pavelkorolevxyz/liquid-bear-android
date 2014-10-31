@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProgressBar
+        xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar" android:layout_gravity="center"
+        android:layout_alignRight="@+id/handset_fragment" android:layout_alignBottom="@+id/handset_fragment"
+        android:visibility="gone" android:indeterminate="true" android:layout_alignParentLeft="true"
+        style="?android:attr/progressBarStyleHorizontal"
+    />

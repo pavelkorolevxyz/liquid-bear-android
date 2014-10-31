@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="com.pillowapps.liqear.bricks.SeekBarPreference">
+        <attr name="min" format="integer"/>
+        <attr name="unitsLeft" format="string"/>
+        <attr name="unitsRight" format="string"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="mode_item_attrs">
+        <attr name="textMode" format="string" localization="suggested"/>
+        <attr name="iconMode" format="integer"/>
+    </declare-styleable>
+
+</resources>

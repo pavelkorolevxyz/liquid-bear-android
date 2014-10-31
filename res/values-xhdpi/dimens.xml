@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="mode_in_grid_width">130dp</dimen>
+</resources>

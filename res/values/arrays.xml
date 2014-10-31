@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="playlist_item_menu">
+        <item>Add to playlist</item>
+        <item>Find lyrics</item>
+        <item>Add to queue</item>
+        <item>Show artist</item>
+        <item>Remove from list</item>
+        <item>Add to...</item>
+    </array>
+    <array name="playlists_item_menu">
+        <item>Remove</item>
+        <item>Rename</item>
+    </array>
+    <array name="add_targets">
+        <item>Add to Last.fm loved</item>
+        <item>Add to VK</item>
+    </array>
+    <array name="add_targets_local">
+        <item>Add to Last.fm loved</item>
+    </array>
+    <array name="playlist_tracklist_item_menu">
+        <item>Remove</item>
+    </array>
+    <array name="artist_item_context_menu">
+        <item>Show similar artists</item>
+    </array>
+    <array name="tag_presets">
+        <item>rock</item>
+        <item>alternative</item>
+        <item>indie</item>
+        <item>electronic</item>
+        <item>pop</item>
+        <item>metal</item>
+        <item>female vocalists</item>
+        <item>classic rock</item>
+        <item>alternative rock</item>
+        <item>jazz</item>
+        <item>punk</item>
+        <item>indie rock</item>
+        <item>folk</item>
+        <item>ambient</item>
+        <item>experimental</item>
+        <item>hard rock</item>
+        <item>hip-hop</item>
+        <item>80s</item>
+        <item>hardcore</item>
+        <item>british</item>
+        <item>reggae</item>
+    </array>
+
+    <string-array name="actions_for_timers">
+        <item>Pause player</item>
+        <item>Exit</item>
+    </string-array>
+    <string-array name="actions_for_timers_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="time_lastfm">
+        <item>overall</item>
+        <item>7 days</item>
+        <item>1 month</item>
+        <item>3 months</item>
+        <item>6 months</item>
+        <item>12 months</item>
+    </string-array>
+    <string-array name="time_lastfm_without_1month">
+        <item>overall</item>
+        <item>7 days</item>
+        <item>3 months</item>
+        <item>6 months</item>
+        <item>12 months</item>
+    </string-array>
+</resources>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="18dp" android:paddingBottom="18dp"
+                android:paddingLeft="8dip" android:paddingRight="8dip">
+
+    <ImageView
+            android:id="@+id/cover_image_view_album_list_item"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center_vertical" android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="8dp"
+        android:background="@color/dark_grey"
+        android:padding="4dp" />
+    <TextView android:id="@+id/genre_list_item" android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textSize="12dip" android:layout_gravity="left"
+              android:layout_toRightOf="@+id/cover_image_view_album_list_item"
+              android:layout_below="@+id/text_list_item"/>
+    <TextView
+            android:id="@+id/text_list_item"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="16dip"
+            android:layout_toRightOf="@+id/cover_image_view_album_list_item"
+            android:layout_alignTop="@+id/cover_image_view_album_list_item"/>
+
+</RelativeLayout>

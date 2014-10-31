@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dip">
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+        android:id="@+id/image_list_item"
+            android:orientation="horizontal">
+
+        <TextView
+                android:id="@+id/text_list_item"
+                android:paddingLeft="10dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16dip" android:layout_gravity="center_vertical"
+            android:layout_alignParentTop="false"
+            android:layout_toRightOf="@+id/relativeLayout"
+            android:layout_centerVertical="true" />
+
+        <RelativeLayout
+            android:layout_width="@dimen/avatar_with_border_size"
+            android:layout_height="@dimen/avatar_with_border_size"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center_vertical"
+            android:background="@color/dark_grey"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:id="@+id/relativeLayout">
+
+            <ImageView
+                    android:id="@+id/image_view_list_item"
+                    android:layout_width="@dimen/avatar_size"
+                    android:layout_height="@dimen/avatar_size"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:scaleType="centerCrop"
+                    android:layout_gravity="center_vertical"
+                android:padding="4dp"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

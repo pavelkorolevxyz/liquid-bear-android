@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Тема без отображения заголовка окна и без тени под Status Bar -->
+    <style name="Theme.NoShadowTitle" parent="android:style/Theme.NoTitleBar">
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!--<style name="StyledIndicators" parent="@ android:style/Theme.Light">-->
+        <!--<item name="vpiLinePageIndicatorStyle">@style/CustomLinePageIndicator</item>-->
+    <!--</style>-->
+
+    <!--<style name="CustomLinePageIndicator">-->
+        <!--<item name="strokeWidth">4dp</item>-->
+        <!--<item name="lineWidth">30dp</item>-->
+        <!--<item name="unselectedColor">#FF888888</item>-->
+        <!--<item name="selectedColor">#FF880000</item>-->
+    <!--</style>-->
+
+    <!--<style name="LiquidTheme" parent="Theme.Sherlock.Light.DarkActionBar">-->
+        <!--<item name="searchViewSearchIcon">@drawable/ic_simple_search_mode</item>-->
+        <!--<item name="android:windowBackground">@android:color/black</item>-->
+    <!--</style>-->
+
+    <style name="DarkTheme" parent="android:Theme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+</resources>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" android:gravity="center" android:padding="@dimen/normal_padding"
+              android:id="@+id/main_layout" android:background="@android:color/black">
+
+    <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+                    android:id="@+id/auth_panel" android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="left|center_vertical"
+                    android:visibility="invisible" android:layout_below="@+id/relativeLayout">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:id="@+id/name_text_view" android:layout_toRightOf="@+id/avatar"
+                  android:layout_alignBottom="@+id/avatar" android:textSize="18sp"
+                  android:textColor="@android:color/white"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/authorized_as"
+                  android:id="@+id/textView1" android:textSize="14sp" android:layout_alignLeft="@+id/name_text_view"
+                  android:layout_above="@+id/name_text_view" android:textColor="@android:color/white"/>
+        <ImageView android:layout_width="@dimen/avatar_size" android:layout_height="@dimen/avatar_size"
+                   android:id="@+id/avatar" android:layout_alignParentBottom="true" android:paddingRight="4dp"/>
+    </RelativeLayout>
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true" android:id="@+id/relativeLayout">
+        <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" android:src="@drawable/lastfm_logo"
+                android:cropToPadding="false"
+                android:id="@+id/imageView"
+                />
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/authorize"
+                android:id="@+id/authorize_lastfm_button" android:layout_gravity="center"
+                android:layout_centerHorizontal="true" android:layout_below="@+id/password_edit_text"/>
+        <EditText android:layout_width="fill_parent" android:layout_height="wrap_content"
+                  android:id="@+id/password_edit_text" android:hint="@string/password" android:password="true"
+                  android:visibility="visible" android:layout_alignLeft="@+id/imageView"
+                  android:layout_below="@+id/login_edit_text" android:layout_alignParentRight="true"/>
+        <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/login_edit_text" android:layout_gravity="center" android:hint="@string/login"
+                android:visibility="visible"
+                android:layout_below="@+id/imageView" android:layout_alignParentRight="true"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:text="@string/auth_error_happened" android:id="@+id/auth_error_text_view"
+                  android:background="@color/error_red" android:padding="4dp"
+                  android:layout_below="@+id/authorize_lastfm_button" android:visibility="gone"
+                  android:layout_alignParentLeft="true" android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog>
+    <release
+        version="2.1"
+        versioncode="49">
+        <change>Color scheme changed</change>
+        <change>Bass boost in equalizer</change>
+        <change>Expandable notification</change>
+        <change>Album cover in notification</change>
+        <change>Shaking for track change preference</change>
+        <change>Images on tablets main screen</change>
+        <change>Long tap on track in list will be added to main playlist</change>
+        <change>Fast add to VK preference</change>
+        <change>Fix of recommendations with many artists</change>
+    </release>
+</changelog>

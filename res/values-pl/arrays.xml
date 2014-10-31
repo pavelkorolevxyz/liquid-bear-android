@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="playlist_item_menu">
+        <item>Dodaj do playlisty</item>
+        <item>Szukaj tekst</item>
+        <item>Dodaj do kolejki</item>
+        <item>Przeglądnij wykonawcę</item>
+        <item>Usuń z listy</item>
+        <item>Dodać do...</item>
+    </array>
+    <array name="add_targets">
+        <item>Do ulubionych w Last.fm</item>
+        <item>Do muzyki VK</item>
+    </array>
+    <array name="add_targets_local">
+        <item>Do ulubionych w Last.fm</item>
+    </array>
+    <array name="playlists_item_menu">
+        <item>Usuń</item>
+        <item>Zmień nazwę</item>
+    </array>
+    <array name="playlist_tracklist_item_menu">
+        <item>Usuń</item>
+    </array>
+    <array name="artist_item_context_menu">
+        <item>Pokaż podobnych wykonawców</item>
+    </array>
+
+    <string-array name="actions_for_timers">
+        <item>Pauza</item>
+        <item>Wyjdź</item>
+    </string-array>
+    <string-array name="time_lastfm">
+        <item>wszystkie</item>
+        <item>7 dni</item>
+        <item>1 miesiąc</item>
+        <item>3 miesiące</item>
+        <item>6 miesięcy</item>
+        <item>12 miesięcy</item>
+    </string-array>
+    <string-array name="time_lastfm_without_1month">
+        <item>wszystkie</item>
+        <item>7 dni</item>
+        <item>3 miesiące</item>
+        <item>6 miesięcy</item>
+        <item>12 miesięcy</item>
+    </string-array>
+</resources>

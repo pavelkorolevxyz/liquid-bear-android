@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Greeny" parent="android:Theme.Holo">
+
+        <item name="android:editTextBackground">@drawable/greeny_edit_text_holo_dark</item>
+
+        <item name="android:textColorHighlight">#99a6a6a6</item>
+        <item name="android:textSelectHandleLeft">@drawable/greeny_text_select_handle_left</item>
+        <item name="android:textSelectHandleRight">@drawable/greeny_text_select_handle_right</item>
+        <item name="android:textSelectHandle">@drawable/greeny_text_select_handle_middle</item>
+
+        <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewGreeny</item>
+
+        <item name="android:listChoiceIndicatorMultiple">@drawable/greeny_btn_check_holo_dark</item>
+
+        <item name="android:listChoiceIndicatorSingle">@drawable/greeny_btn_radio_holo_dark</item>
+
+        <item name="android:buttonStyle">@style/ButtonGreeny</item>
+
+        <item name="android:imageButtonStyle">@style/ImageButtonGreeny</item>
+
+        <item name="android:dropDownSpinnerStyle">@style/SpinnerGreeny</item>
+
+        <item name="android:progressBarStyleHorizontal">@style/ProgressBarGreeny</item>
+
+        <item name="android:seekBarStyle">@style/SeekBarGreeny</item>
+
+        <item name="android:buttonStyleToggle">@style/ToggleGreeny</item>
+
+        <item name="android:listChoiceBackgroundIndicator">
+            @drawable/greeny_list_selector_holo_dark
+        </item>
+
+        <item name="android:activatedBackgroundIndicator">
+            @drawable/greeny_activated_background_holo_dark
+        </item>
+
+        <item name="android:fastScrollThumbDrawable">@drawable/greeny_fastscroll_thumb_holo</item>
+
+        <item name="android:actionBarStyle">@style/ActionBar.Transparent.Greenysherlock</item>
+    </style>
+
+</resources>

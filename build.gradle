@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.1"
+
+    defaultConfig {
+        minSdkVersion 10
+        targetSdkVersion 19
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+dependencies {
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'de.cketti.library.changelog:ckchangelog:1.2.0'
+    compile project(':libraries:SlidingMenu')
+    compile project(':libraries:PullToRefreshLibrary')
+    compile project(':libraries:DragSortListLibrary')
+    compile project(':libraries:StickyGridHeaders')
+    compile project(':libraries:AppRater')
+    compile project(':libraries:AndroidBillingLibrary')
+    compile project(':libraries:NumberPicker')
+    compile project(':libraries:PanningViewLibrary')
+    compile project(':libraries:PhotoView')
+    compile project(':libraries:ViewPagerIndicatorLibrary')
+    compile files('libs/crashlytics.jar')
+    compile files('libs/gson-2.2.4.jar')
+    compile files('libs/httpcore-4.3.jar')
+    compile files('libs/httpmime-4.3.jar')
+    compile files('libs/jsoup-1.7.2.jar')
+    compile files('libs/libGoogleAnalyticsServices.jar')
+    compile files('libs/universal-image-loader-1.7.1 2.jar')
+}

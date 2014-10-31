@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/google"
+            android:showAsAction="ifRoom"
+            android:icon="@drawable/ic_simple_search_mode"
+            android:title="@string/search_google"/>
+    <item
+            android:id="@+id/share"
+            android:showAsAction="always"
+            android:icon="@drawable/share"
+            android:title="@string/share_track"/>
+    <item
+            android:id="@+id/next_result"
+            android:showAsAction="always"
+            android:icon="@drawable/refresh_normal"
+            android:title="@string/refresh"/>
+    <!--<item-->
+    <!--android:id="@+id/save_to_file"-->
+    <!--android:showAsAction="ifRoom"-->
+    <!--android:title="@string/save_file"/>-->
+    <!--<item-->
+    <!--android:id="@+id/load_from_file"-->
+    <!--android:showAsAction="ifRoom"-->
+    <!--android:title="@string/load_from_file"-->
+    <!--/>-->
+
+</menu>

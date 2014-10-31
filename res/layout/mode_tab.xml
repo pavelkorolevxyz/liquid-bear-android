@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="@dimen/normal_padding"
+    android:layout_height="match_parent">
+
+    <com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:horizontalSpacing="@dimen/normal_padding"
+        android:verticalSpacing="@dimen/normal_padding"
+        android:stretchMode="columnWidth"
+        android:id="@+id/mode_gridview"
+        android:columnWidth="@dimen/mode_in_grid_width"
+        android:scrollbarStyle="outsideInset"
+        android:numColumns="auto_fit" />
+</RelativeLayout>

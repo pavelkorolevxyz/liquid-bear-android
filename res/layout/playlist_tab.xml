@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dslv="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <com.mobeta.android.dslv.DragSortListView
+        android:id="@+id/playlist_list_view_playlist_tab"
+        dslv:drag_handle_id="@+id/grabber_list_item"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        dslv:remove_enabled="true"
+        android:focusable="true"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:fastScrollEnabled="true"
+        android:longClickable="true"
+        android:scrollbars="none"
+        android:visibility="visible"
+        android:layout_below="@+id/search_layout" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/search_layout">
+
+        <EditText
+            android:id="@+id/search_edit_text_playlist_tab"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:drawableLeft="@drawable/ic_simple_search_mode"
+            android:ems="10"
+            android:maxLength="50"
+            android:singleLine="true"
+            android:layout_alignRight="@+id/clear_edit_text_button_playlist_tab"
+            android:paddingRight="50dp"
+            android:inputType="none"></EditText>
+
+        <ImageButton
+            android:id="@+id/clear_edit_text_button_playlist_tab"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/search_edit_text_playlist_tab"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@null"
+            android:padding="2dp"
+            android:src="@drawable/clear_button"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</RelativeLayout>

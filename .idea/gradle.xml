@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="$APPLICATION_HOME_DIR$/plugins/gradle/lib" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/LiquidBear_Android" />
+            <option value="$PROJECT_DIR$/libraries" />
+            <option value="$PROJECT_DIR$/libraries/AndroidBillingLibrary" />
+            <option value="$PROJECT_DIR$/libraries/AppRater" />
+            <option value="$PROJECT_DIR$/libraries/DragSortListLibrary" />
+            <option value="$PROJECT_DIR$/libraries/NumberPicker" />
+            <option value="$PROJECT_DIR$/libraries/PanningViewLibrary" />
+            <option value="$PROJECT_DIR$/libraries/PhotoView" />
+            <option value="$PROJECT_DIR$/libraries/PullToRefreshLibrary" />
+            <option value="$PROJECT_DIR$/libraries/SlidingMenu" />
+            <option value="$PROJECT_DIR$/libraries/StickyGridHeaders" />
+            <option value="$PROJECT_DIR$/libraries/ViewPagerIndicatorLibrary" />
+            <option value="$PROJECT_DIR$/libraries/actionbarsherlock" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
+

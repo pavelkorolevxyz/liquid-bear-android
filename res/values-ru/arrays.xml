@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="playlist_item_menu">
+        <item>Добавить в плейлист</item>
+        <item>Поиск текста</item>
+        <item>Добавить в очередь</item>
+        <item>Просмотреть исполнителя</item>
+        <item>Удалить из списка</item>
+        <item>Добавить в...</item>
+    </array>
+    <array name="add_targets">
+        <item>В любимые Last.fm</item>
+        <item>В аудиозаписи ВКонтакте</item>
+    </array>
+    <array name="add_targets_local">
+        <item>В любимые Last.fm</item>
+    </array>
+    <array name="playlists_item_menu">
+        <item>Удалить</item>
+        <item>Переименовать</item>
+    </array>
+    <array name="playlist_tracklist_item_menu">
+        <item>Удалить</item>
+    </array>
+    <array name="artist_item_context_menu">
+        <item>Показать похожих исполнителей</item>
+    </array>
+
+    <string-array name="actions_for_timers">
+        <item>Пауза</item>
+        <item>Выход</item>
+    </string-array>
+    <string-array name="time_lastfm">
+        <item>все</item>
+        <item>7 дней</item>
+        <item>1 месяц</item>
+        <item>3 месяца</item>
+        <item>6 месяцев</item>
+        <item>12 месяцев</item>
+    </string-array>
+    <string-array name="time_lastfm_without_1month">
+        <item>все</item>
+        <item>7 дней</item>
+        <item>3 месяца</item>
+        <item>6 месяцев</item>
+        <item>12 месяцев</item>
+    </string-array>
+</resources>

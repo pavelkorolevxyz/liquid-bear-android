@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="artist_image" translatable="false">artist image</string>
+    <string name="repeat_button" translatable="false">repeat button</string>
+    <string name="prev_button" translatable="false">prev button</string>
+    <string name="play_pause" translatable="false">play/pause</string>
+    <string name="next_button" translatable="false">next button</string>
+    <string name="album_image" translatable="false">album image</string>
+    <string name="shuffle_button" translatable="false">shuffle button</string>
+</resources>

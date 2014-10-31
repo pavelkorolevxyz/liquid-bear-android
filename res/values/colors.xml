@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <color name="success_green">#196d1d</color>
+    <color name="error_red">#821c1c</color>
+    <color name="darkening_bg">#ccB0BF5A</color>
+    <!--<color name="darkening_bg">#cc157DAF</color>-->
+    <color name="clear_blue">#B0BF5A</color>
+    <!--<color name="clear_blue">#1BA1E2</color>-->
+    <color name="blue_darken">#ff272727</color>
+    <!--<color name="blue_darken">#0C4662</color>-->
+    <color name="darkest_blue">#272727</color>
+    <!--<color name="darkest_blue">#1B3440</color>-->
+    <color name="none">#00000000</color>
+    <!--<color name="almost_black">#ff101b23</color>-->
+    <color name="almost_black">#ff121212</color>
+    <!--<color name="almost_black_darker">#ff070a0f</color>-->
+    <color name="almost_black_darker">#ff000606</color>
+    <color name="widget_background_color">#ff222222</color>
+    <!--<color name="widget_background_color">#ff222222</color>-->
+
+    <!--<color name="dark_grey">#ff17242f</color>-->
+    <color name="dark_grey">#272727</color>
+    <color name="white">#fff</color>
+</resources>

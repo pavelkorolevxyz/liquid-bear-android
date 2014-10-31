@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/relativeLayout">
+
+        <ImageButton
+            android:id="@+id/repeat_button_playback_tab"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="12dp"
+            android:src="@drawable/repeat_normal"
+            android:layout_width="wrap_content"
+            android:layout_gravity="left"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="8dp"
+            android:layout_alignParentTop="false"
+            android:layout_marginTop="0dp"
+            android:layout_margin="0dp"
+            android:layout_centerVertical="true" />
+
+        <ImageButton
+            android:id="@+id/play_pause_button_playback_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="14dp"
+            android:background="@null"
+            android:src="@drawable/play_button_states"
+            android:layout_toRightOf="@+id/prev_button_playback_tab"
+            android:layout_alignTop="@+id/repeat_button_playback_tab"
+            android:layout_centerVertical="true" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="15dp"
+            android:id="@+id/view"
+            android:layout_toRightOf="@+id/shuffle_button_playback_tab"
+            android:layout_centerVertical="true"
+            android:background="@color/almost_black" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="15dp"
+            android:layout_alignRight="@+id/time_inverted_text_view_playback_tab"
+            android:layout_alignTop="@+id/view"
+            android:layout_centerVertical="true"
+            android:background="@color/almost_black" />
+
+        <ImageButton
+            android:id="@+id/next_button_playback_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="14dp"
+            android:src="@drawable/next_button_states"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@+id/play_pause_button_playback_tab"
+            android:layout_alignTop="@+id/repeat_button_playback_tab"
+            android:layout_centerVertical="true" />
+
+        <ImageButton
+            android:id="@+id/shuffle_button_playback_tab"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="12dp"
+            android:src="@drawable/shuffle_normal"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@+id/repeat_button_playback_tab"
+            android:layout_alignTop="@+id/repeat_button_playback_tab"
+            android:layout_centerVertical="true" />
+
+        <ImageButton
+            android:id="@+id/prev_button_playback_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="14dp"
+            android:src="@drawable/prev_button_states"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@+id/view"
+            android:layout_alignTop="@+id/repeat_button_playback_tab"
+            android:layout_centerVertical="true" />
+
+        <SeekBar
+            android:id="@+id/seek_bar_playback_tab"
+            android:layout_width="wrap_content"
+            android:thumb="@color/none"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:paddingLeft="22dp"
+            android:paddingRight="22dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/time_inverted_text_view_playback_tab"
+            android:layout_toRightOf="@+id/time_text_view_playback_tab" />
+
+        <TextView
+            android:id="@+id/time_text_view_playback_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0:00"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_gravity="center_horizontal|top"
+            android:paddingLeft="22dp"
+            android:layout_toRightOf="@+id/next_button_playback_tab"
+            android:layout_alignTop="@+id/view"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:id="@+id/time_inverted_text_view_playback_tab"
+            android:paddingRight="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0:00"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_alignTop="@+id/view"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name" translatable="false">Liquid Bear</string>
+    <string name="vk_url">https://api.vk.com/</string>
+    <string name="lastfm_url">http://ws.audioscrobbler.com/2.0/</string>
+    <string name="playlist_tab">Playlists</string>
+    <string name="play_tab">Playback</string>
+    <string name="mode_tab">Modes</string>
+    <string name="services">Services and authorizations</string>
+    <string name="scrobble">Scrobble</string>
+    <string name="scrobble_summary">Enable/Disable scrobbling to Last.fm</string>
+    <string name="nowplaying_last_summary">Enable/Disable nowplaying on Last.fm</string>
+    <string name="nowplaying_last">Last.fm nowplaying</string>
+    <string name="nowplaying_vk_summary">Enable/Disable status updates on VK</string>
+    <string name="nowplaying_vk">VK status updates</string>
+    <string name="authorizations">Authorizations</string>
+    <string name="re_sign_in">Exit and Sign In</string>
+    <string name="authorizations_summary">Last.fm and VK auth settings</string>
+    <string name="download_images">Download images</string>
+    <string name="download_images_summary">Enable/Disable images downloading</string>
+    <string name="preferences">Preferences</string>
+    <string name="zero_time">0:00</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_in_via_browser">Sign in via browser</string>
+    <string name="lyrics">Show lyrics</string>
+    <string name="artist_info">Info</string>
+    <string name="video">Find music video</string>
+    <string name="last_fm">Last.fm</string>
+    <string name="last_fm_not_authorized">Last.fm authorization needed</string>
+    <string name="vk">VK</string>
+    <string name="other">Other</string>
+    <string name="folders">folders</string>
+    <string name="loved">loved</string>
+    <string name="charts">charts</string>
+    <string name="library">library</string>
+    <string name="artist_radio">artist</string>
+    <string name="tag_radio">tag</string>
+    <string name="user">user</string>
+    <string name="recomended">recommended</string>
+    <string name="recommendations">recommendations</string>
+    <string name="radiomix">radiomix</string>
+    <string name="neighbours">neighbours</string>
+    <string name="friends">users</string>
+    <string name="album">album</string>
+    <string name="vk_friends">friends</string>
+    <string name="user_audio">user audio</string>
+    <string name="group">group</string>
+    <string name="vk_simple_search">simple search</string>
+    <string name="newcomers">newcomers</string>
+    <string name="similar_artists">similar artists</string>
+    <string name="error">Error occured</string>
+    <string name="internet_connection_need">Internet connection is not necessary for application since this version. But
+        without connection you can not use online features.
+    </string>
+    <string name="top_tracks">Top Tracks</string>
+    <string name="loved_tracks">Loved Tracks</string>
+    <string name="top_artists">Top Artists</string>
+    <string name="hyped_artists">Hyped Artists</string>
+    <string name="hyped_tracks">Hyped Tracks</string>
+    <string name="authorize_please">Authorize at least on VK to use online features.</string>
+    <string name="exit">Exit</string>
+    <string name="search_google">Search in google</string>
+    <string name="behaviour">Player behaviour</string>
+    <string name="continue_from_position_summary">Save and restore current position on close and start</string>
+    <string name="continue_from_position">Continue from saved position</string>
+    <string name="about">About application</string>
+    <string name="donate">Donate</string>
+    <string name="donate_summary">Support developer</string>
+    <string name="disclaimer_summary">Important information</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="disclaimer_text">Application was created exceptionally for users acquaintance with music materials.
+        All music files stored on VK servers and they are can not be saved on device with application explicitly.
+    </string>
+    <string name="lucky_search_summary">Search lyrics in Google will automatically open first result</string>
+    <string name="lucky_search">Lucky search</string>
+    <string name="sign_up">Register</string>
+    <string name="login">login</string>
+    <string name="password">password</string>
+    <string name="authorized_as">Authorized as</string>
+    <string name="donate1">Donate $1 to developer</string>
+    <string name="donate3">Donate $3 to developer</string>
+    <string name="donate5">Donate $5 to developer</string>
+    <string name="donate10">Donate $10 to developer</string>
+    <string name="donate20">Donate $20 to developer</string>
+    <string name="billing_not_supported">Billing is not supported</string>
+    <string name="sorry">Sorry</string>
+    <string name="sincere_thanks">Thanks for support!</string>
+    <string name="thanks_message">You can send your suggestions or critisim to us, your message will be considered in
+        the first place. Thanks!
+    </string>
+    <string name="enjoy">If you enjoy using %s, please take a moment to rate it. Thanks for your support!</string>
+    <string name="remind">Remind me later</string>
+    <string name="no_thanks">No, thanks</string>
+    <string name="rate">Rate</string>
+    <string name="exit_anyway">Close player anyway</string>
+    <string name="exit_anyway_summary">Close player even if there is track playing now</string>
+    <string name="compilation">Randomize</string>
+    <string name="similar_artists_drop_down">Show similar artists</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="presets">Presets</string>
+    <string name="version">Version</string>
+    <string name="playlist">Playlist</string>
+    <string name="save_current_playlist">Save current playlist</string>
+    <string name="fixate_search_result">Fixate search result</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="save">Save</string>
+    <string name="enter_title_here">Enter title here</string>
+    <string name="new_playlist">New playlist</string>
+    <string name="save_current">Save current</string>
+    <string name="webmoney">WebMoney (click to copy)</string>
+    <string name="yandexmoney">Yandex.Money (click to copy)</string>
+    <string name="copied">Number copied to clipboard</string>
+    <string name="artist_name">Artist</string>
+    <string name="city">City</string>
+    <string name="venue">Venue</string>
+    <string name="search">Search</string>
+    <string name="setlist">setlists</string>
+    <string name="share_track">Share track</string>
+    <string name="share_friends">Share with friends</string>
+    <string name="listening_now" formatted="false">Listening to %a% - %t% now via #LiquidBear</string>
+    <string name="vk_group_liqear_summary">Liquid Bear VK official page</string>
+    <string name="vk_group_liqear">Our VK page</string>
+    <string name="save_file">Save to file</string>
+    <string name="load_from_file">Load from file</string>
+    <string name="thanks_to">Thanks to</string>
+    <string name="thanks_to_summary">Those who helped to create this app</string>
+    <string name="thanks_text" translatable="false">Adam Whitcroft\n[http://adamwhitcroft.com/batch/]\n\nkreed / vanilla
+        \n[https://github.com/kreed/vanilla]\n\nFunkySouls\n[http://funkysouls.com/]\n
+        \njfeinstein10 / SlidingMenu\n[https://github.com/jfeinstein10/SlidingMenu]\n
+        \nJakeWharton / ActionBarSherlock\n[https://github.com/JakeWharton/ActionBarSherlock]\n
+        \nbauerca / drag-sort-listview\n[https://github.com/bauerca/drag-sort-listview]\n
+        \nJakeWharton / Android-ViewPagerIndicator\n[https://github.com/JakeWharton/Android-ViewPagerIndicator]\n
+        \nStanislaw Dac\n[http://vk.com/stsdc]
+    </string>
+    <string name="scrobbling_after">Scrobbling after</string>
+    <string name="scrobbling_after_summary">How many percents of track should be over to scrobble</string>
+    <string name="pick_good_result">pick good result</string>
+    <string name="refresh">next result</string>
+    <string name="vk_albums">albums</string>
+    <string name="search_live">Search live</string>
+    <string name="search_live_summary">Try to find live versions of tracks in setlist search</string>
+    <string name="find_current">Find current</string>
+    <string name="appearance">Appearance</string>
+    <string name="show_images_grid">Show images grid</string>
+    <string name="show_images_grid_summary">Show grid with images instead of lists</string>
+    <string name="funkysouls" translatable="false">funkysouls</string>
+    <string name="no_url">VKontakte has no these tracks</string>
+    <string name="local">Local</string>
+    <string name="tracks">tracks</string>
+    <string name="about_internet">Internet</string>
+    <string name="vk_not_authorized">VK authorization needed</string>
+    <string name="no_internet">No Internet connection</string>
+    <string name="share_liqear">#LiquidBear - free online/offline audio player. Last.fm+VK.
+        https://play.google.com/store/apps/details?id=com.pillowapps.liqear
+    </string>
+    <string name="vk_wall">wall</string>
+    <string name="vk_favorites">favorites</string>
+    <string name="enable_equalizer">Enable equalizer</string>
+    <string name="pk_twitter_summary">Developer\'s twitter</string>
+    <string name="pk_twitter" translatable="false">\@P_King64</string>
+    <string name="scroll_to_current">Scroll to current track</string>
+    <string name="scroll_to_current_summary">Scroll playlist to current track on track change</string>
+    <string name="alterportal" translatable="false">alterportal</string>
+    <string name="choose_target">Target</string>
+    <string name="sort_by_artist">Sort by artist</string>
+    <string name="folder_mode" translatable="false">folders</string>
+    <string name="top">Top</string>
+    <string name="albums">Albums</string>
+    <string name="similar">Similar</string>
+    <string name="switch_edit_mode">Switch edit mode</string>
+    <string name="post_hardcore_ru" translatable="false">post-hardcore.ru</string>
+    <string name="menu">Menu</string>
+    <string name="timer">Timer</string>
+    <string name="min">min.</string>
+    <string name="action_for_timer">Action for timer</string>
+    <string name="action_for_timer_summary">Action to perform on timer expiration</string>
+    <string name="audio">audio</string>
+    <string name="add_to_vk">Add to VK audio</string>
+    <string name="add_to_loved_lastfm">Add to Loved</string>
+    <string name="photo_artist">Artist photos</string>
+    <string name="show_artist">Show artist</string>
+    <string name="authorize">Sign in</string>
+    <string name="skip">Skip</string>
+    <string name="sign_out">Sign out</string>
+    <string name="next_url">Next track version</string>
+    <string name="lastfm_error_title">Last.fm error %1$s</string>
+    <string name="vk_error_title">VK error %1$s in method %2$s</string>
+    <string name="all">All</string>
+    <string name="to_playlist">Add to Playlist</string>
+    <string name="wait">Loading. Please wait.</string>
+    <string name="download">Download</string>
+    <string name="saved">Saved</string>
+    <string name="save_failed">Save failed</string>
+    <string name="recent">Recent</string>
+    <string name="album_info">Album info</string>
+    <string name="listeners">Listeners</string>
+    <string name="playcount">Playcount</string>
+    <string name="remove_from_loved">Unlove track</string>
+    <string name="edit_share_format">Edit share pattern</string>
+    <string name="edit_share_format_summary">Change pattern of message to share</string>
+    <string name="show_track_change_toast">Show track change toast</string>
+    <string name="show_track_change_toast_summary">Enable toast showing on track change</string>
+    <string name="empty">List is empty</string>
+    <string name="enable_swipe_remove">Swipe remove in playlist</string>
+    <string name="enable_swipe_remove_summary">Check to enable swipe remove for main playlist</string>
+    <string name="artist">Artist</string>
+    <string name="title">Title</string>
+    <string name="rename_track">Rename track</string>
+    <string name="added">Track added</string>
+    <string name="clean_titles">Clean playlist titles</string>
+    <string name="no_tracks">Playback not started</string>
+    <string name="save_as_playlist">Save as playlist</string>
+    <string name="shared">You shared this track to VK</string>
+    <string name="not_found">Not found</string>
+    <string name="unexpected_error">Unexpected error. Check internet connection.</string>
+    <string name="page_size">Page size</string>
+    <string name="page_size_summary">How many items to load in list modes in one iteration</string>
+    <string name="track_local">Track is local</string>
+    <string name="widget_label">Liquid Bear widget</string>
+    <string name="captcha_needed">Please enter captcha</string>
+    <string name="track">Track</string>
+    <string name="couldnt_be_empty">Artist or title field could not be empty</string>
+    <string name="service_not_connected">Connecting to service. Try later.</string>
+    <string name="vk_feed">feed</string>
+    <string name="widget_label_4x1">Widget 4x1</string>
+    <string name="widget_label_4x3">Widget 4x3</string>
+    <string name="widget_label_4x3alt">Widget 4x3 alt</string>
+    <string name="auth_error_happened">Unexpected authorization error happened. Please sign in again.</string>
+    <string name="play_discography">Play discography</string>
+    <string name="shake_to_next">Shake for next track</string>
+    <string name="shake_to_next_summary">Change track by shaking device</string>
+    <string name="show_track_choice_dialog_on_add_to_vk">Advanced add to vk</string>
+    <string name="show_track_choice_dialog_on_add_to_vk_summary">Show track search screen before adding to vk</string>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog>
+    <release
+        version="2.1"
+        versioncode="49">
+        <change>Изменена цветовая схема</change>
+        <change>Bass boost в эквалайзере</change>
+        <change>Расширенное уведомление</change>
+        <change>Обложка альбома в уведомлении</change>
+        <change>Возможность переключить трек тряской устройства</change>
+        <change>Изображения на главном экране в планшетной версии</change>
+        <change>Добавление треков в главный плейлист по долгому нажатию</change>
+        <change>Настройка быстрого добавления трека в аудио ВКонтакте</change>
+        <change>Исправлена работа рекомендаций с большим количество артистов</change>
+    </release>
+</changelog>

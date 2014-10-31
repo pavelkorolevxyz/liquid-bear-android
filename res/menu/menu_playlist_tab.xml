@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:id="@+id/menu_search"
+            android:icon="@drawable/ic_simple_search_mode"
+            android:showAsAction="ifRoom|collapseActionView"
+            android:title="@string/search"/>
+
+    <item
+            android:id="@+id/root_menu"
+            android:icon="@drawable/playlists"
+            android:title="@string/playlist"
+            android:showAsAction="always"
+            >
+        <menu>
+            <item android:id="@+id/playlists_button"
+                  android:icon="@drawable/playlists"
+                  android:title="@string/playlist_tab"
+                  android:showAsAction="always|withText"/>
+            <item android:id="@+id/playlist_edit_mode_button"
+                  android:icon="@drawable/editmode"
+                  android:title="@string/switch_edit_mode"
+                  android:showAsAction="always|withText"/>
+            <item android:id="@+id/fixate_search_result_button"
+                  android:icon="@drawable/fixate"
+                  android:title="@string/fixate_search_result"
+                  android:showAsAction="always|withText"/>
+            <item android:id="@+id/clean_titles"
+                  android:icon="@drawable/clean_names"
+                  android:title="@string/clean_titles"
+                  android:showAsAction="always|withText"/>
+            <item android:id="@+id/shuffle_button"
+                  android:icon="@drawable/shuffle_normal"
+                  android:title="@string/shuffle"
+                  android:showAsAction="always|withText"/>
+            <item android:id="@+id/find_current_button"
+                  android:icon="@drawable/play_white_normal"
+                  android:title="@string/find_current"
+                  android:showAsAction="always|withText"/>
+            <item android:id="@+id/sort_by_artist_button"
+                  android:icon="@drawable/ic_artists_mode"
+                  android:title="@string/sort_by_artist"
+                  android:showAsAction="always|withText"/>
+        </menu>
+    </item>
+
+</menu>

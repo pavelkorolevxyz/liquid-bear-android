@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/all_button"
+          android:title="@string/all"
+          android:showAsAction="always|collapseActionView"/>
+    <item android:id="@+id/more"
+          android:icon="@drawable/menu"
+          android:showAsAction="always|collapseActionView">
+        <menu>
+            <item android:id="@+id/to_playlist"
+                  android:title="@string/to_playlist"
+                  android:icon="@drawable/ic_mode_playlist"
+                  android:showAsAction="always|collapseActionView"/>
+            <item android:id="@+id/save_as_playlist"
+                  android:title="@string/save_as_playlist"
+                  android:icon="@drawable/ic_mode_playlist"
+                  android:showAsAction="always|collapseActionView"/>
+        </menu>
+    </item>
+</menu>
