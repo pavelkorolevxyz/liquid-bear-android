@@ -1,7 +1,6 @@
 package com.pillowapps.liqear.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -10,31 +9,39 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.ListArrayAdapter;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
-import com.pillowapps.liqear.connection.GetResponseCallback;
-import com.pillowapps.liqear.connection.Params;
-import com.pillowapps.liqear.connection.QueryManager;
-import com.pillowapps.liqear.connection.ReadyResult;
+import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.global.Config;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.Album;
+import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
+import com.pillowapps.liqear.models.lastfm.LastfmImage;
+import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.Track;
+import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 @SuppressWarnings("unchecked")
 public class AlbumViewerActivity extends ResultSherlockActivity {
@@ -42,20 +49,10 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
     public static final String ARTIST = "artist";
     public static final int ALBUM_INFO_INDEX = 1;
     public static final int TRACKS_INDEX = 0;
-    @SuppressWarnings("rawtypes")
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .displayer(new FadeInBitmapDisplayer(500))
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .build();
-    private ImageLoader imageLoader = ImageLoader.getInstance();
     private ViewPager pager;
-    private TitlePageIndicator indicator;
     private ListArrayAdapter<Track> tracksAdapter;
     private ListView tracksListView;
     private ProgressBar tracksProgressBar;
-    private Album album;
     private View infoTab;
     private View tracksTab;
     private ImageView albumCoverImageView;
@@ -70,12 +67,15 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewer_layout);
         Bundle extras = getIntent().getExtras();
-        album = new Album(extras.getString((ARTIST)), extras.getString(ALBUM));
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        Album album = new Album(extras.getString((ARTIST)), extras.getString(ALBUM));
         actionBar.setTitle(album.getNotation());
+
         initUi();
-        getAlbum(album);
+
+        getAlbumInfo(album);
     }
 
     private void initUi() {
@@ -112,7 +112,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
         final ArtistViewerAdapter adapter = new ArtistViewerAdapter(views);
         pager = (ViewPager) findViewById(R.id.viewpager);
         pager.setAdapter(adapter);
-        indicator = (TitlePageIndicator) findViewById(R.id.indicator);
+        TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         indicator.setOnClickListener(null);
         indicator.setViewPager(pager);
         indicator.setFooterColor(getResources().getColor(R.color.darkest_blue));
@@ -205,44 +205,41 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
         }
     }
 
-    private void getAlbum(Album album) {
+    private void getAlbumInfo(Album album) {
         tracksProgressBar.setVisibility(View.VISIBLE);
-        QueryManager.getInstance().getAlbumInfo(album, new GetResponseCallback() {
+        LastfmRequestManager.getInstance().getAlbumInfo(album, new Callback<LastfmAlbum>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    tracksProgressBar.setVisibility(View.GONE);
-                    return;
+            public void success(LastfmAlbum album, Response response) {
+                List<LastfmTrack> tracks = album.getTracks().getTracks();
+                List<Track> list = Converter.convertTrackList(tracks);
+                fillWithTracklist(list);
+                List<LastfmImage> images = album.getImages();
+                String imageUrl = null;
+                if (images != null) {
+                    imageUrl = images.get(images.size() - 1).getUrl();
                 }
-                List<Object> list = (List<Object>) result.getObject();
-                fillWithTracklist((List<Track>) list.get(1));
-                Album album1 = (Album) list.get(0);
-                imageLoader.displayImage(album1.getImageUrl(), albumCoverImageView,
-                        options, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted() {
+                Picasso.with(AlbumViewerActivity.this).load(imageUrl).into(albumCoverImageView,
+                        new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                                progressBar.setVisibility(View.GONE);
+                            }
 
-                    }
-
-                    @Override
-                    public void onLoadingFailed(FailReason failReason) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadingComplete(Bitmap bitmap) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadingCancelled() {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
-                artistTextView.setText(album1.getArtist());
-                titleTextView.setText(album1.getTitle());
-                otherTextView.setText(album1.getPublishDate());
+                            @Override
+                            public void onError() {
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+                artistTextView.setText(album.getArtist());
+                titleTextView.setText(album.getName());
+                otherTextView.setText(album.getReleaseDate());
                 tracksProgressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tracksProgressBar.setVisibility(View.GONE);
+                ErrorNotifier.showLastfmError(error);
             }
         });
     }

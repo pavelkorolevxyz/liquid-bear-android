@@ -19,17 +19,20 @@ import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.PagerResultSherlockActivity;
 import com.pillowapps.liqear.components.ViewerPage;
-import com.pillowapps.liqear.connection.GetResponseCallback;
-import com.pillowapps.liqear.connection.Params;
-import com.pillowapps.liqear.connection.QueryManager;
-import com.pillowapps.liqear.connection.ReadyResult;
-import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.connection.LastfmRequestManager;
+import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.models.Artist;
+import com.pillowapps.liqear.models.lastfm.LastfmArtist;
+import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.Track;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 @SuppressWarnings("unchecked")
 public class ChartsActivity extends PagerResultSherlockActivity {
@@ -105,75 +108,82 @@ public class ChartsActivity extends PagerResultSherlockActivity {
     }
 
     private void getMostLoved() {
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.LASTFM)) {
-                    fillTracks(result, getViewer(MOST_LOVED));
-                }
-            }
-        };
-        QueryManager.getInstance().getLovedTracksChart(TRACKS_IN_TOP_COUNT,
-                getViewer(MOST_LOVED).getPage("getMostLoved"), callback);
+        LastfmRequestManager.getInstance().getLovedTracksChart(TRACKS_IN_TOP_COUNT,
+                getViewer(MOST_LOVED).getPage("getMostLoved"), new Callback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks, Response response) {
+                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                                getViewer(MOST_LOVED));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        //todo progress
+                    }
+                });
     }
 
     private void getTopArtists() {
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.LASTFM)) {
-                    fillArtists(result, getViewer(TOP_ARTISTS));
-                }
-            }
-        };
-        QueryManager.getInstance().getTopArtists(TRACKS_IN_TOP_COUNT,
-                getViewer(TOP_ARTISTS).getPage("getTopArtists"), callback);
+        LastfmRequestManager.getInstance().getTopArtists(TRACKS_IN_TOP_COUNT,
+                getViewer(TOP_ARTISTS).getPage("getTopArtists"), new Callback<List<LastfmArtist>>() {
+                    @Override
+                    public void success(List<LastfmArtist> lastfmArtists, Response response) {
+                        fillArtists(Converter.convertArtistList(lastfmArtists),
+                                getViewer(TOP_ARTISTS));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
     }
 
     private void getTopTracks() {
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.LASTFM)) {
-                    fillTracks(result, getViewer(TOP_TRACKS));
-                }
-            }
-        };
-        QueryManager.getInstance().getTopTracksChart(TRACKS_IN_TOP_COUNT,
-                getViewer(TOP_TRACKS).getPage("getTopTracks"), callback);
+        LastfmRequestManager.getInstance().getTopTracksChart(TRACKS_IN_TOP_COUNT,
+                getViewer(TOP_TRACKS).getPage("getTracks"), new Callback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks, Response response) {
+                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                                getViewer(TOP_TRACKS));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                    }
+                });
     }
 
     private void getHypedTracks() {
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.LASTFM)) {
-                    fillTracks(result, getViewer(HYPED_TRACKS));
-                }
-            }
-        };
-        QueryManager.getInstance().getHypedTracks(TRACKS_IN_TOP_COUNT,
-                getViewer(HYPED_TRACKS).getPage("getHypedTracks"), callback);
+        LastfmRequestManager.getInstance().getHypedTracks(TRACKS_IN_TOP_COUNT,
+                getViewer(HYPED_TRACKS).getPage("getHypedTracks"), new Callback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks, Response response) {
+                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                                getViewer(HYPED_TRACKS));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
     }
 
     private void getHypedArtists() {
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.LASTFM)) {
-                    fillArtists(result, getViewer(HYPED_ARTISTS));
-                }
-            }
-        };
-        QueryManager.getInstance().getHypedArtists(TRACKS_IN_TOP_COUNT,
-                getViewer(HYPED_ARTISTS).getPage("getHypedArtists"), callback);
-    }
+        LastfmRequestManager.getInstance().getHypedArtists(TRACKS_IN_TOP_COUNT,
+                getViewer(HYPED_ARTISTS).getPage("getHypedArtists"), new Callback<List<LastfmArtist>>() {
+                    @Override
+                    public void success(List<LastfmArtist> lastfmArtists, Response response) {
+                        fillArtists(Converter.convertArtistList(lastfmArtists),
+                                getViewer(HYPED_ARTISTS));
+                    }
 
-    private boolean checkError(ReadyResult result, Params.ApiSource apiSource) {
-        if (!result.isOk()) {
-            Utils.showErrorDialog(result, ChartsActivity.this, apiSource);
-        }
-        return !result.isOk();
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
     }
 
     private void initViewPager() {

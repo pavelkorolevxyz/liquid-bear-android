@@ -220,7 +220,7 @@ public class MainActivity extends SlidingFragmentActivity {
         SharedPreferences preferences = PreferencesManager.getPreferences();
         try {
             preferences.edit().putInt("version", getPackageManager()
-                    .getPackageInfo(getPackageName(), 0).versionCode).apply();
+                    .getPackageInfo(getPackageName(), 0).versionCode).commit();
         } catch (PackageManager.NameNotFoundException ignored) {
         }
         PlaylistManager.getInstance().updateDatabase();
@@ -472,23 +472,23 @@ public class MainActivity extends SlidingFragmentActivity {
                 builder.setTitle(R.string.timer);
                 builder.setNegativeButton(android.R.string.cancel,
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        musicPlaybackService.setTimer(0);
-                        dialog.dismiss();
-                    }
-                });
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                musicPlaybackService.setTimer(0);
+                                dialog.dismiss();
+                            }
+                        });
                 builder.setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        musicPlaybackService.setTimer(sb.getCurrent() * 60);
-                        SharedPreferences.Editor editor =
-                                PreferencesManager.getPreferences().edit();
-                        editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
-                        editor.commit();
-                    }
-                });
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                musicPlaybackService.setTimer(sb.getCurrent() * 60);
+                                SharedPreferences.Editor editor =
+                                        PreferencesManager.getPreferences().edit();
+                                editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
+                                editor.commit();
+                            }
+                        });
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
             }
@@ -1111,17 +1111,17 @@ public class MainActivity extends SlidingFragmentActivity {
         if (isTablet()) showContent();
         QueryManager.getInstance().getRadiomix(AuthorizationInfoManager.getLastfmName(),
                 new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                int positionToPlay = 0;
-                List<Track> tracklist = (List<Track>) result.getObject();
-                if (!isTablet()) handsetFragment.changeViewPagerItem(0);
-                AudioTimeline.setPlaylist(tracklist);
-                updateAdapter();
-                changePlaylist(positionToPlay, true);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+                    @Override
+                    public void onDataReceived(ReadyResult result) {
+                        int positionToPlay = 0;
+                        List<Track> tracklist = (List<Track>) result.getObject();
+                        if (!isTablet()) handsetFragment.changeViewPagerItem(0);
+                        AudioTimeline.setPlaylist(tracklist);
+                        updateAdapter();
+                        changePlaylist(positionToPlay, true);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
     public void openLibrary() {
@@ -1129,17 +1129,17 @@ public class MainActivity extends SlidingFragmentActivity {
         if (isTablet()) showContent();
         QueryManager.getInstance().getLibraryTracks(AuthorizationInfoManager.getLastfmName(),
                 new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                int positionToPlay = 0;
-                List<Track> tracklist = (List<Track>) result.getObject();
-                if (!isTablet()) handsetFragment.changeViewPagerItem(0);
-                AudioTimeline.setPlaylist(tracklist);
-                updateAdapter();
-                changePlaylist(positionToPlay, true);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+                    @Override
+                    public void onDataReceived(ReadyResult result) {
+                        int positionToPlay = 0;
+                        List<Track> tracklist = (List<Track>) result.getObject();
+                        if (!isTablet()) handsetFragment.changeViewPagerItem(0);
+                        AudioTimeline.setPlaylist(tracklist);
+                        updateAdapter();
+                        changePlaylist(positionToPlay, true);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
     public PlaylistItemsAdapter getPlaylistItemsAdapter() {

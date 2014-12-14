@@ -12,11 +12,24 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.costum.android.widget.LoadMoreListView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -27,13 +40,30 @@ import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
-import com.pillowapps.liqear.connection.*;
+import com.pillowapps.liqear.connection.GetResponseCallback;
+import com.pillowapps.liqear.connection.LastfmRequestManager;
+import com.pillowapps.liqear.connection.Params;
+import com.pillowapps.liqear.connection.PostCallback;
+import com.pillowapps.liqear.connection.QueryManager;
+import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.models.*;
+import com.pillowapps.liqear.models.Album;
+import com.pillowapps.liqear.models.Artist;
+import com.pillowapps.liqear.models.Group;
+import com.pillowapps.liqear.models.Setlist;
+import com.pillowapps.liqear.models.Tag;
+import com.pillowapps.liqear.models.Track;
+import com.pillowapps.liqear.models.User;
+import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
+import com.pillowapps.liqear.models.lastfm.LastfmArtist;
+import com.pillowapps.liqear.models.lastfm.LastfmTag;
+import com.pillowapps.liqear.models.lastfm.LastfmUser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,10 +71,14 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 @SuppressWarnings("unchecked")
 public class SearchSherlockListActivity extends ResultSherlockActivity implements OnItemClickListener {
     public static final String SEARCH_MODE = "search_destiny";
-    private final QueryManager queryManager = QueryManager.getInstance();
+    public static final int USERS_COUNT = 20;
     @SuppressWarnings("rawtypes")
     private QuickSearchArrayAdapter adapter;
     private ProgressBar progressBar;
@@ -109,7 +143,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             case NEIGHBOURS:
                 actionBar.setTitle(getResources().getString(R.string.neighbours));
                 ll.setVisibility(View.GONE);
-                getNeighbours(AuthorizationInfoManager.getLastfmName(), 20);
+                getNeighbours(AuthorizationInfoManager.getLastfmName(), 50);
                 break;
             case LASTFM_FRIENDS:
                 actionBar.setTitle(getResources().getString(R.string.friends));
@@ -126,7 +160,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                     }
                 });
                 if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-                    getLastfmFriends();
+                    getLastfmFriends(AuthorizationInfoManager.getLastfmName(), USERS_COUNT, 0);
                 } else {
                     progressBar.setVisibility(View.GONE);
                 }
@@ -285,21 +319,21 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                             loadArtistPresets();
                             return;
                         }
-                        searchArtist(searchQuery);
+                        searchArtist(searchQuery, TRACKS_IN_TOP_COUNT, 0);
                         break;
                     case TAG:
                         if (searchQuery.length() == 0) {
                             loadTagPresets();
                             return;
                         }
-                        searchTag(searchQuery);
+                        searchTag(searchQuery, TRACKS_IN_TOP_COUNT, 0);
                         break;
                     case ALBUM:
                         if (searchQuery.length() == 0) {
                             loadAlbumPresets();
                             return;
                         }
-                        searchAlbum(searchQuery);
+                        searchAlbum(searchQuery, TRACKS_IN_TOP_COUNT, 0);
                         break;
                     case VK_SIMPLE_SEARCH:
                         if (searchQuery.length() == 0) return;
@@ -330,43 +364,62 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
         });
     }
 
-    private void searchArtist(String searchQuery) {
-        queryManager.searchArtist(searchQuery, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                fillWithArtists(result);
-            }
-        });
+    private void searchArtist(String searchQuery, int limit, int page) {
+        LastfmRequestManager.getInstance().searchArtist(searchQuery,
+                limit,
+                page,
+                new Callback<List<LastfmArtist>>() {
+                    @Override
+                    public void success(List<LastfmArtist> lastfmArtists, Response response) {
+                        progressBar.setVisibility(View.GONE);
+                        fillWithArtists(Converter.convertArtistList(lastfmArtists));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
-    private void searchTag(String searchQuery) {
-        queryManager.searchTag(searchQuery, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                fillWithTags(result);
-            }
-        });
+    private void showError(RetrofitError error) {
+        ErrorNotifier.showLastfmError(SearchSherlockListActivity.this, error);
     }
 
-    private void searchAlbum(String searchQuery) {
-        queryManager.searchAlbum(searchQuery, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                fillWithAlbums(result);
-            }
-        });
+    private void searchTag(String searchQuery, int limit, int page) {
+        LastfmRequestManager.getInstance().searchTag(searchQuery, limit, page,
+                new Callback<List<LastfmTag>>() {
+                    @Override
+                    public void success(List<LastfmTag> tags,
+                                        Response response) {
+                        fillWithTags(Converter.convertTags(tags));
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    private void searchAlbum(String searchQuery, int limit, int page) {
+        LastfmRequestManager.getInstance().searchAlbum(searchQuery, limit, page,
+                new Callback<List<LastfmAlbum>>() {
+                    @Override
+                    public void success(List<LastfmAlbum> lastfmAlbums, Response response) {
+                        progressBar.setVisibility(View.GONE);
+                        fillWithAlbums(Converter.convertAlbums(lastfmAlbums));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
     private void searchVK(String searchQuery, int count) {
@@ -374,6 +427,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             if (adapter != null) adapter.clear();
         }
         this.searchQuery = searchQuery;
+        QueryManager queryManager = QueryManager.getInstance();
         queryManager.searchVK(searchQuery, count, new GetResponseCallback() {
             @Override
             public void onDataReceived(ReadyResult result) {
@@ -389,6 +443,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void getVkUserAudioFromAlbum(long uid, long album_id, long gid) {
+        QueryManager queryManager = QueryManager.getInstance();
         queryManager.getVkUserAudioFromAlbum(uid, album_id, gid, new GetResponseCallback() {
             @Override
             public void onDataReceived(ReadyResult result) {
@@ -426,7 +481,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 ));
             }
         }
-        fillWithAlbums(new ReadyResult("album", new ArrayList<Album>(albums)));
+        fillWithAlbums(new ArrayList<Album>(albums));
     }
 
     private void loadTagPresets() {
@@ -448,7 +503,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
         while (tags.size() < Config.PRESET_WANTED_COUNT) {
             tags.add(new Tag(presets[i++]));
         }
-        fillWithTags(new ReadyResult("tag", new ArrayList<Tag>(tags)));
+        fillWithTags(new ArrayList<Tag>(tags));
     }
 
     private void loadArtistPresets() {
@@ -471,7 +526,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 artists.add(artist);
             }
         }
-        fillWithArtists(new ReadyResult("artist", new ArrayList<Artist>(artists)));
+        fillWithArtists(new ArrayList<Artist>(artists));
     }
 
     /**
@@ -680,12 +735,12 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                     Track track = (Track) adapter.get(position);
                     QueryManager.getInstance().addToVkUserAudio(
                             new Track(track.getAid(), track.getOwnerId()), new PostCallback() {
-                        @Override
-                        public void onPostSuccess() {
-                            Toast.makeText(LiqearApplication.getAppContext(),
-                                    R.string.added, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                                @Override
+                                public void onPostSuccess() {
+                                    Toast.makeText(LiqearApplication.getAppContext(),
+                                            R.string.added, Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
                 finish();
                 break;
@@ -756,22 +811,19 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
         setAdapter();
     }
 
-    private void fillWithUsers(ReadyResult result) {
-        List<User> users = (List<User>) result.getObject();
+    private void fillWithUsers(List<User> users) {
         emptyTextView.setVisibility(users.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new QuickSearchArrayAdapter<User>(this, users, User.class);
         setAdapter();
     }
 
-    private void fillWithArtists(ReadyResult result) {
-        List<Artist> artists = (List<Artist>) result.getObject();
+    private void fillWithArtists(List<Artist> artists) {
         emptyTextView.setVisibility(artists.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new QuickSearchArrayAdapter<Artist>(this, artists, Artist.class);
         setAdapter();
     }
 
-    private void fillWithAlbums(ReadyResult result) {
-        List<Album> albums = (List<Album>) result.getObject();
+    private void fillWithAlbums(List<Album> albums) {
         emptyTextView.setVisibility(albums.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new QuickSearchArrayAdapter<Album>(this, albums, Album.class);
         setAdapter();
@@ -784,8 +836,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
         setAdapter();
     }
 
-    private void fillWithTags(ReadyResult result) {
-        List<Tag> tags = (List<Tag>) result.getObject();
+    private void fillWithTags(List<Tag> tags) {
         emptyTextView.setVisibility(tags.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new QuickSearchArrayAdapter<Tag>(this, tags, Tag.class);
         setAdapter();
@@ -798,33 +849,42 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
         setAdapter();
     }
 
-    private void getLastfmFriends() {
-        queryManager.getLastfmFriends(new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
+    private void getLastfmFriends(String username, int limit, int page) {
+        LastfmRequestManager.getInstance().getLastfmFriends(username, limit, page, new Callback<List<LastfmUser>>() {
+                    @Override
+                    public void success(List<LastfmUser> lastfmUsers, Response response) {
+                        fillWithUsers(Converter.convertUsers(lastfmUsers));
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error);
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
-                fillWithUsers(result);
-            }
-        });
+        );
     }
 
-    private void getNeighbours(String username, int count) {
-        queryManager.getNeighbours(username, count, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                fillWithUsers(result);
-            }
-        });
+    private void getNeighbours(String username, int limit) {
+        LastfmRequestManager.getInstance().getNeighbours(username, limit,
+                new Callback<List<LastfmUser>>() {
+                    @Override
+                    public void success(List<LastfmUser> lastfmUsers, Response response) {
+                        fillWithUsers(Converter.convertUsers(lastfmUsers));
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
     private void getVkGroups() {
+        QueryManager queryManager = QueryManager.getInstance();
         queryManager.getVkGroups(new GetResponseCallback() {
             @Override
             public void onDataReceived(ReadyResult result) {
@@ -841,6 +901,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void getVkFriends() {
+        QueryManager queryManager = QueryManager.getInstance();
         queryManager.getVkFriends(new GetResponseCallback() {
             @Override
             public void onDataReceived(ReadyResult result) {
@@ -848,12 +909,13 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
-                fillWithUsers(result);
+                fillWithUsers((List<User>) result.getObject());
             }
         });
     }
 
     private void searchVkRecommendations(int limit, int page) {
+        QueryManager queryManager = QueryManager.getInstance();
         queryManager.getVkRecommendations(limit, page, new GetResponseCallback() {
             @Override
             public void onDataReceived(ReadyResult result) {
@@ -867,6 +929,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void searchSetlists(String artist, String venue, final String city) {
+        QueryManager queryManager = QueryManager.getInstance();
         queryManager.getSetlists(artist, venue, city, new GetResponseCallback() {
             @Override
             public void onDataReceived(ReadyResult result) {
@@ -950,7 +1013,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             @Override
             public void handleMessage(Message msg) {
                 List<Artist> result = (List<Artist>) msg.obj;
-                fillWithArtists(new ReadyResult("local_artists", result));
+                fillWithArtists(result);
             }
         };
         Thread thread = new Thread(new Runnable() {
@@ -983,7 +1046,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             @Override
             public void handleMessage(Message msg) {
                 List<Album> result = (List<Album>) msg.obj;
-                fillWithAlbums(new ReadyResult("local_albums", result));
+                fillWithAlbums(result);
             }
         };
         Thread thread = new Thread(new Runnable() {
@@ -1278,8 +1341,8 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 if (aim == SearchMode.AUDIO_SEARCH_RESULT_ADD_VK
                         || aim == SearchMode.AUDIO_SEARCH_RESULT)
                     holder.mainLayout.setBackgroundResource(highlighted == position ?
-                            R.drawable.list_item_background_blue :
-                            R.drawable.list_item_background
+                                    R.drawable.list_item_background_blue :
+                                    R.drawable.list_item_background
                     );
             } else if (clazz == Album.class) {
                 Album album = (Album) currentItem;

@@ -63,6 +63,8 @@ import java.util.TreeMap;
 @SuppressWarnings({"UnusedDeclaration", "unchecked"})
 public class QueryManager {
 
+    public static final String key = "03q8HwJ2xIgJlzxLgxv0";
+    public static final String appId = "4613451";
     public static final String EXECUTE_LYRICS = "execute.getLyrics";
     public static final String EXECUTE_URL = "execute.u";
     public static final String EXECUTE_SEARCH_AND_POST_STATUS = "execute.saps";
@@ -92,15 +94,15 @@ public class QueryManager {
     public static final String CHART_GET_LOVED_TRACKS = "chart.getLovedTracks";
     public static final String CHART_GET_TOP_ARTISTS = "chart.getTopArtists";
     public static final String CHART_GET_TOP_TAGS = "chart.getTopTags";
-    public static final String USER_GET_TOP_TRACKS = "user.getTopTracks";
-    public static final String CHART_GET_TOP_TRACKS = "chart.getTopTracks";
+    public static final String USER_GET_TOP_TRACKS = "user.getTracks";
+    public static final String CHART_GET_TOP_TRACKS = "chart.getTracks";
     public static final String LIBRARY_GET_TRACKS = "library.getTracks";
     public static final String PHOTOS_GET_WALL_UPLOAD_SERVER = "photos.getWallUploadServer";
     public static final String TRACK_GET_INFO = "track.getInfo";
     public static final String ALBUM_GET_INFO = "album.getInfo";
     public static final String USER_GET_INFO = "user.getInfo";
-    public static final String ARTIST_GET_TOP_TRACKS = "artist.getTopTracks";
-    public static final String TAG_GET_TOP_TRACKS = "tag.getTopTracks";
+    public static final String ARTIST_GET_TOP_TRACKS = "artist.getTracks";
+    public static final String TAG_GET_TOP_TRACKS = "tag.getTracks";
     public static final String USER_GET_PLAYLISTS = "user.getPlaylists";
     public static final String USER_GET_FRIENDS = "user.getFriends";
     public static final String USER_GET_RECOMMENDED_ARTISTS = "user.getRecommendedArtists";
@@ -112,8 +114,6 @@ public class QueryManager {
     public static final String IMAGE_DOWNLOAD = "image_download";
     public static final String FUNKY = "funky";
     public static final String POST_HARDCORE_RU = "post_hardcore_ru";
-    public static final String key = "03q8HwJ2xIgJlzxLgxv0";
-    public static final String appId = "4613451";
     private static final String EXECUTE_LIVE_URL = "execute.getAudioLiveUrl";
     private static final String RADIOMIX = "radiomix";
     private static final String RECOMMENDATIONS = "recommended";
@@ -1076,7 +1076,6 @@ public class QueryManager {
         params.putParameter("hash", hash);
         params.setApiSource(Params.ApiSource.VK);
         doQuery(callback, params);
-
     }
 
     public void getPhotosWallUploadServer(GetResponseCallback callback) {

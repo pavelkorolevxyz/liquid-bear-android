@@ -162,11 +162,7 @@ public class ImagePagerActivity extends TrackedActivity {
                     FileUtils.copyStream(sourceStream, targetStream);
                     Toast.makeText(ImagePagerActivity.this, getString(R.string.saved) + " "
                             + fileForImage.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (URISyntaxException e) {
+                } catch (IOException | URISyntaxException e) {
                     e.printStackTrace();
                 } finally {
                     if (targetStream != null) {

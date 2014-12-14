@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -22,22 +21,27 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.connection.GetResponseCallback;
+import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.connection.Params;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.helpers.AuthActivityAdapter;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.ErrorResponseLastfm;
 import com.pillowapps.liqear.models.ErrorResponseVk;
-import com.pillowapps.liqear.models.Session;
-import com.pillowapps.liqear.models.User;
+import com.pillowapps.liqear.models.lastfm.LastfmSession;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class AuthActivity extends TrackedActivity {
     private static final int VK_INDEX = 0;
@@ -161,27 +165,27 @@ public class AuthActivity extends TrackedActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == Constants.AUTH_VK_REQUEST) {
-            QueryManager.getInstance().getUsersInfoVk(AuthorizationInfoManager.getVkUserId(),
-                    new GetResponseCallback() {
-                @Override
-                public void onDataReceived(ReadyResult result) {
-                    if (checkForError(result, Params.ApiSource.VK)) {
-                        return;
-                    }
-                    authVkPanel.setVisibility(View.VISIBLE);
-                    List<User> users = (List<User>) result.getObject();
-                    User user = users.get(0);
-                    AuthorizationInfoManager.setVkAvatar(user.getImageUrl());
-                    imageLoader.displayImage(user.getImageUrl(), avatarVkImageView, options);
-                    vkNameTextView.setText(user.getName());
-                    AuthorizationInfoManager.setVkName(user.getName());
-                    invalidateOptionsMenu();
-                    if (firstStart && AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-                        Utils.startMainActivity(AuthActivity.this);
-                        finish();
-                    }
-                }
-            });
+//            VkRequestManager.getInstance().getUsersInfoVk(AuthorizationInfoManager.getVkUserId(),
+//                    new GetResponseCallback() {
+//                        @Override
+//                        public void onDataReceived(ReadyResult result) {
+//                            if (checkForError(result, Params.ApiSource.VK)) {
+//                                return;
+//                            }
+//                            authVkPanel.setVisibility(View.VISIBLE);
+//                            List<User> users = (List<User>) result.getObject();
+//                            User user = users.get(0);
+//                            AuthorizationInfoManager.setVkAvatar(user.getImageUrl());
+//                            imageLoader.displayImage(user.getImageUrl(), avatarVkImageView, options);
+//                            vkNameTextView.setText(user.getName());
+//                            AuthorizationInfoManager.setVkName(user.getName());
+//                            invalidateOptionsMenu();
+//                            if (firstStart && AuthorizationInfoManager.isAuthorizedOnLastfm()) {
+//                                Utils.startMainActivity(AuthActivity.this);
+//                                finish();
+//                            }
+//                        }
+//                    });todo
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -205,46 +209,45 @@ public class AuthActivity extends TrackedActivity {
                 authLastfmPanel.setVisibility(View.INVISIBLE);
                 loginLastfmEditText.setVisibility(View.VISIBLE);
                 passwordLastfmEditText.setVisibility(View.VISIBLE);
-                QueryManager.getInstance().getMobileSession(loginLastfmEditText.getText().toString(),
-                        passwordLastfmEditText.getText().toString(),
-                        new GetResponseCallback() {
+                String username = loginLastfmEditText.getText().toString();
+                String password = passwordLastfmEditText.getText().toString();
+                LastfmRequestManager.getInstance().getMobileSession(
+                        username,
+                        password,
+                        new Callback<LastfmSession>() {
                             @Override
-                            public void onDataReceived(ReadyResult result) {
-                                if (result.isOk()) {
-                                    Session session = (Session) result.getObject();
-                                    String name = session.getName();
-                                    SharedPreferences.Editor editor = PreferencesManager
-                                            .getLastfmPreferences(AuthActivity.this).edit();
-                                    editor.putString(Constants.LASTFM_NAME, name);
-                                    editor.putString(Constants.LASTFM_KEY, session.getKey());
-                                    editor.commit();
-                                    lastfmNameTextView.setText(name);
-                                    authLastfmPanel.setVisibility(View.VISIBLE);
-                                    QueryManager.getInstance().getUserInfo(name, new GetResponseCallback() {
-                                        @Override
-                                        public void onDataReceived(ReadyResult result) {
-                                            if (result.isOk()) {
-                                                String url = (String) result.getObject();
-                                                AuthorizationInfoManager.setLastfmAvatar(url);
-                                                imageLoader.displayImage(url,
-                                                        avatarLastfmImageView, options);
-                                            }
+                            public void success(LastfmSession session, Response response) {
+                                String name = session.getName();
+                                SharedPreferences.Editor editor = PreferencesManager
+                                        .getLastfmPreferences(AuthActivity.this).edit();
+                                editor.putString(Constants.LASTFM_NAME, name);
+                                editor.putString(Constants.LASTFM_KEY, session.getKey());
+                                editor.commit();
+                                lastfmNameTextView.setText(name);
+                                authLastfmPanel.setVisibility(View.VISIBLE);
+                                QueryManager.getInstance().getUserInfo(name, new GetResponseCallback() {
+                                    @Override
+                                    public void onDataReceived(ReadyResult result) {
+                                        if (result.isOk()) {
+                                            String url = (String) result.getObject();
+                                            AuthorizationInfoManager.setLastfmAvatar(url);
+                                            imageLoader.displayImage(url,
+                                                    avatarLastfmImageView, options);
                                         }
-                                    });
-                                    invalidateOptionsMenu();
-                                    if (firstStart && AuthorizationInfoManager.isAuthorizedOnVk()) {
-                                        finish();
-                                        Utils.startMainActivity(AuthActivity.this);
                                     }
-                                } else {
-                                    ErrorResponseLastfm errorResponse =
-                                            (ErrorResponseLastfm) result.getObject();
-                                    Toast.makeText(AuthActivity.this, errorResponse.getMessage(),
-                                            Toast.LENGTH_SHORT).show();
+                                });
+                                invalidateOptionsMenu();
+                                if (firstStart && AuthorizationInfoManager.isAuthorizedOnVk()) {
+                                    finish();
+                                    Utils.startMainActivity(AuthActivity.this);
                                 }
                             }
-                        }
-                );
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                                ErrorNotifier.showLastfmError(AuthActivity.this, error);
+                            }
+                        });
             }
         });
     }

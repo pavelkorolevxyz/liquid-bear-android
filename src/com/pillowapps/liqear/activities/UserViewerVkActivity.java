@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -237,7 +238,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             @Override
             public void onDataReceived(ReadyResult result) {
                 if (!checkError(result, Params.ApiSource.VK)) {
-                    fillTracks(result, getViewer(FAVORITES));
+//                    fillTracks(result, getViewer(FAVORITES));
                 }
             }
         };
@@ -252,7 +253,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             @Override
             public void onDataReceived(ReadyResult result) {
                 if (!checkError(result, Params.ApiSource.VK)) {
-                    fillTracks(result, getViewer(NEWS_FEED));
+//                    fillTracks(result, getViewer(NEWS_FEED));
                     return;
                 }
                 if (getViewer(NEWS_FEED).getValues().size() < 20) {
@@ -270,7 +271,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             @Override
             public void onDataReceived(ReadyResult result) {
                 if (!checkError(result, Params.ApiSource.VK)) {
-                    fillAlbums(result, getViewer(ALBUM_INDEX));
+//                    fillAlbums(result, getViewer(ALBUM_INDEX));
                 }
             }
         };
@@ -288,7 +289,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             @Override
             public void onDataReceived(ReadyResult result) {
                 if (!checkError(result, Params.ApiSource.VK)) {
-                    fillTracks(result, getViewer(USER_AUDIO_INDEX));
+//                    fillTracks(result, getViewer(USER_AUDIO_INDEX));
                 }
             }
         };
@@ -304,7 +305,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             @Override
             public void onDataReceived(ReadyResult result) {
                 if (!checkError(result, Params.ApiSource.VK)) {
-                    fillTracks(result, getViewer(WALL_INDEX));
+//                    fillTracks(result, getViewer(WALL_INDEX));
                 }
             }
         };

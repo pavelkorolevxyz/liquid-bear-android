@@ -42,7 +42,6 @@ public class RecommendationsSherlockActivity extends ResultSherlockActivity {
     private static final int RECOMMENDATIONS_AMOUNT = 100;
     private RecommendationsArrayAdapter<Artist> adapter;
     private ProgressBar progressBar;
-    private AlertDialog exceptionDialog;
     private GridView gridView;
     private int loadedArtists = 0;
     private int loadedPages = 0;

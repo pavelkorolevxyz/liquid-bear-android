@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.costum.android.widget.LoadMoreListView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -21,17 +22,20 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.PagerResultSherlockActivity;
 import com.pillowapps.liqear.components.ViewerPage;
-import com.pillowapps.liqear.connection.GetResponseCallback;
-import com.pillowapps.liqear.connection.Params;
-import com.pillowapps.liqear.connection.QueryManager;
-import com.pillowapps.liqear.connection.ReadyResult;
+import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.global.Config;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.Tag;
 import com.pillowapps.liqear.models.Track;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 @SuppressWarnings("unchecked")
 public class TagViewerActivity extends PagerResultSherlockActivity {
@@ -142,17 +146,20 @@ public class TagViewerActivity extends PagerResultSherlockActivity {
     }
 
     private void getTagTopTracks(Tag tag, int limit, int page) {
-        QueryManager.getInstance().getTagTopTracks(tag, limit, page, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    getViewer(TRACKS_INDEX).getProgressBar().setVisibility(View.GONE);
-                    return;
-                }
-                fillTracks(result, getViewer(TRACKS_INDEX));
+        LastfmRequestManager.getInstance().getTagTopTracks(tag.getName(),
+                limit, page, new Callback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks, Response response) {
+                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                                getViewer(TRACKS_INDEX));
+                        getViewer(TRACKS_INDEX).getProgressBar().setVisibility(View.GONE);
+                    }
 
-            }
-        });
+                    @Override
+                    public void failure(RetrofitError error) {
+                        getViewer(TRACKS_INDEX).getProgressBar().setVisibility(View.GONE);
+                    }
+                });
     }
 
     private class TagsAdapter extends PagerAdapter {

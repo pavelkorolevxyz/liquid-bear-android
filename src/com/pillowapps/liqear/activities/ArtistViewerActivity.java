@@ -26,19 +26,28 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.PagerResultSherlockActivity;
 import com.pillowapps.liqear.components.ViewerPage;
 import com.pillowapps.liqear.connection.GetResponseCallback;
-import com.pillowapps.liqear.connection.Params;
+import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Artist;
+import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
+import com.pillowapps.liqear.models.lastfm.LastfmArtist;
+import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.Track;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 @SuppressWarnings("unchecked")
 public class ArtistViewerActivity extends PagerResultSherlockActivity {
@@ -52,9 +61,10 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
     private ViewPager pager;
     private TitlePageIndicator indicator;
     private int topTracksPage = 1;
+    private int personalPage = 1;
+    private int similarPage = 1;
     private Artist artist;
     private boolean infoLoaded = false;
-    private int personalPage = 1;
     private TextView artistInfoTextView;
     private View infoTab;
     private ProgressBar artistInfoProgressBar;
@@ -196,7 +206,7 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
                         getPersonalTop(artist.getName(), AuthorizationInfoManager.getLastfmName(),
                                 0, personalPage++);
                     } else if (index == SIMILAR_INDEX) {
-                        getSimilarArtists(artist.getName());
+                        getSimilarArtists(artist.getName(), TRACKS_IN_TOP_COUNT, similarPage++);
                     }
                 } else if (index == ARTIST_INFO_INDEX) {
                     if (!infoLoaded) {
@@ -287,11 +297,11 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
                 getViewer(ALBUMS_INDEX).getProgressBar().setVisibility(View.VISIBLE);
                 QueryManager.getInstance().getAlbumsInfo(getViewer(ALBUMS_INDEX).getValues(),
                         new GetResponseCallback() {
-                    @Override
-                    public void onDataReceived(ReadyResult result) {
-                        openMainPlaylist((List<Track>) result.getObject(), 0);
-                    }
-                });
+                            @Override
+                            public void onDataReceived(ReadyResult result) {
+                                openMainPlaylist((List<Track>) result.getObject(), 0);
+                            }
+                        });
             }
             return true;
         }
@@ -299,77 +309,102 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
     }
 
     private void getArtistTopTracks(Artist artist, int limit, int page) {
-        QueryManager.getInstance().getArtistTopTracks(artist, limit, page, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    getViewer(TOP_TRACKS_INDEX).getProgressBar().setVisibility(View.GONE);
-                    return;
-                }
-                fillTracks(result, getViewer(TOP_TRACKS_INDEX));
-            }
-        });
+        final ProgressBar progressBar = getViewer(TOP_TRACKS_INDEX).getProgressBar();
+        LastfmRequestManager.getInstance().getArtistTopTracks(artist,
+                limit, page, new Callback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks, Response response) {
+                        progressBar.setVisibility(View.GONE);
+                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                                getViewer(TOP_TRACKS_INDEX));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error, progressBar);
+                    }
+                });
     }
 
     private void getArtistAlbums(String artistName) {
-        QueryManager.getInstance().getArtistAlbums(artistName, new GetResponseCallback() {
+        final ProgressBar progressBar = getViewer(ALBUMS_INDEX).getProgressBar();
+        LastfmRequestManager.getInstance().getArtistAlbums(artistName, new Callback<List<LastfmAlbum>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    getViewer(ALBUMS_INDEX).getProgressBar().setVisibility(View.GONE);
-                    return;
-                }
-                fillAlbums(result, getViewer(ALBUMS_INDEX));
+            public void success(List<LastfmAlbum> albums, Response response) {
+                progressBar.setVisibility(View.GONE);
+                fillAlbums(albums, getViewer(ALBUMS_INDEX));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                showError(error, progressBar);
             }
         });
     }
 
     private void getPersonalTop(String artist, String username, int limit, int page) {
-        QueryManager.getInstance().getPersonalArtistTop(artist, username, limit, page,
-                new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    getViewer(PERSONAL_TOP_INDEX).getProgressBar().setVisibility(View.GONE);
-                    return;
-                }
-                fillTracks(result, getViewer(PERSONAL_TOP_INDEX));
-            }
-        });
+        final ProgressBar progressBar = getViewer(PERSONAL_TOP_INDEX).getProgressBar();
+        LastfmRequestManager.getInstance().getPersonalArtistTop(artist, username, limit, page,
+                new Callback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks, Response response) {
+                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                                getViewer(PERSONAL_TOP_INDEX));
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error, progressBar);
+                    }
+                });
     }
 
-    private void getSimilarArtists(String artistName) {
-        QueryManager.getInstance().getSimilarArtists(artistName, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    getViewer(SIMILAR_INDEX).getProgressBar().setVisibility(View.GONE);
-                    return;
-                }
-                fillArtists(result, getViewer(SIMILAR_INDEX));
-            }
-        });
+    private void showError(RetrofitError error, ProgressBar progressBar) {
+        progressBar.setVisibility(View.GONE);
+        ErrorNotifier.showLastfmError(ArtistViewerActivity.this, error);
+    }
+
+    private void getSimilarArtists(String artistName, int limit, int page) {
+        final ProgressBar progressBar = getViewer(SIMILAR_INDEX).getProgressBar();
+        LastfmRequestManager.getInstance().getSimilarArtists(artistName, limit, page,
+                new Callback<List<LastfmArtist>>() {
+                    @Override
+                    public void success(List<LastfmArtist> lastfmArtists, Response response) {
+                        progressBar.setVisibility(View.GONE);
+                        fillArtists(Converter.convertArtistList(lastfmArtists),
+                                getViewer(SIMILAR_INDEX));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error, progressBar);
+                    }
+                });
     }
 
     private void getArtistInfo(String artist, String username) {
-        QueryManager.getInstance().getArtistInfo(artist, username, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    artistInfoProgressBar.setVisibility(View.GONE);
-                    return;
-                }
-                String info = ((String) (((List<Object>) result.getObject()).get(1))).trim();
-                Spanned text = Html.fromHtml(info.replace("\n", "<br />"));
-                if (text.length() == 0) {
-                    artistInfoTextView.setText(getString(R.string.not_found));
-                } else {
-                    artistInfoTextView.setText(text);
-                }
-                artistInfoProgressBar.setVisibility(View.GONE);
-                infoLoaded = true;
-            }
-        });
+        LastfmRequestManager.getInstance().getArtistInfo(artist, username,
+                new Callback<LastfmArtist>() {
+                    @Override
+                    public void success(LastfmArtist lastfmArtist, Response response) {
+                        artistInfoProgressBar.setVisibility(View.GONE);
+                        String info = lastfmArtist.getBio().getContent().trim();
+                        Spanned text = Html.fromHtml(info.replace("\n", "<br />"));
+                        if (text.length() == 0) {
+                            artistInfoTextView.setText(getString(R.string.not_found));
+                        } else {
+                            artistInfoTextView.setText(text);
+                        }
+                        artistInfoProgressBar.setVisibility(View.GONE);
+                        infoLoaded = true;
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error, artistInfoProgressBar);
+                    }
+                });
     }
 
     private class ArtistViewerAdapter extends PagerAdapter {

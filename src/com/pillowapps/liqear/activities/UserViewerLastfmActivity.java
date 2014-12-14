@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -20,20 +21,27 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.PagerResultSherlockActivity;
 import com.pillowapps.liqear.components.SpinnerViewerPage;
 import com.pillowapps.liqear.components.ViewerPage;
-import com.pillowapps.liqear.connection.GetResponseCallback;
+import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.connection.Params;
-import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.Artist;
+import com.pillowapps.liqear.models.lastfm.LastfmArtist;
+import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.User;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 @SuppressWarnings("unchecked")
 public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
@@ -255,16 +263,18 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
         } else {
             viewer.getProgressBar().setVisibility(View.VISIBLE);
         }
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.LASTFM)) {
-                    fillArtists(result, viewer);
-                }
-            }
-        };
-        QueryManager.getInstance().getUserTopArtists(user.getName(), topArtistsPeriod,
-                TRACKS_IN_TOP_COUNT, viewer.getPage("getTopArtists"), callback);
+        LastfmRequestManager.getInstance().getUserTopArtists(user.getName(), topArtistsPeriod,
+                TRACKS_IN_TOP_COUNT, viewer.getPage("getTopArtists"), new Callback<List<LastfmArtist>>() {
+                    @Override
+                    public void success(List<LastfmArtist> lastfmArtists, Response response) {
+                        fillArtists(Converter.convertArtistList(lastfmArtists), viewer);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error);
+                    }
+                });
     }
 
     private void getRecent(boolean loadIfFull) {
@@ -276,16 +286,18 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
         } else {
             viewer.getProgressBar().setVisibility(View.VISIBLE);
         }
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.LASTFM)) {
-                    fillTracks(result, viewer);
-                }
-            }
-        };
-        QueryManager.getInstance().getUserRecentTracks(user.getName(), TRACKS_IN_TOP_COUNT,
-                viewer.getPage("getRecent"), callback);
+        LastfmRequestManager.getInstance().getUserRecentTracks(user.getName(), TRACKS_IN_TOP_COUNT,
+                viewer.getPage("getRecent"), new Callback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks, Response response) {
+                        fillTracks(Converter.convertTrackList(lastfmTracks), viewer);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error);
+                    }
+                });
     }
 
     private void getTopTracks(boolean loadIfFull, boolean loadAnyway) {
@@ -297,16 +309,22 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
         } else if (loadAnyway) {
             viewer.getProgressBar().setVisibility(View.VISIBLE);
         }
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.LASTFM)) {
-                    fillTracks(result, viewer);
-                }
-            }
-        };
-        QueryManager.getInstance().getUserTopTracks(user.getName(), topTracksPeriod,
-                TRACKS_IN_TOP_COUNT, viewer.getPage("getTopTracks"), false, callback);
+        LastfmRequestManager.getInstance().getUserTopTracks(user.getName(), topTracksPeriod,
+                TRACKS_IN_TOP_COUNT, viewer.getPage("getTracks"), new Callback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks, Response response) {
+                        fillTracks(Converter.convertTrackList(lastfmTracks), viewer);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        showError(error);
+                    }
+                });
+    }
+
+    private void showError(RetrofitError error) {
+        ErrorNotifier.showLastfmError(UserViewerLastfmActivity.this, error);
     }
 
     private void getLoved(int limit, boolean loadIfFull) {
@@ -318,19 +336,20 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
         } else {
             viewer.getProgressBar().setVisibility(View.VISIBLE);
         }
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.LASTFM)) {
-                    fillTracks(result, viewer);
-                    viewer.setTotalPages(result.getTotalPages());
-                }
-            }
-        };
-
         int page = viewer.getPage("getLoved");
         if (page > 0) {
-            QueryManager.getInstance().getLovedTracks(user.getName(), limit, page, callback);
+            LastfmRequestManager.getInstance().getLovedTracks(user.getName(), limit, page,
+                    new Callback<List<LastfmTrack>>() {
+                        @Override
+                        public void success(List<LastfmTrack> lastfmTracks, Response response) {
+                            fillTracks(Converter.convertTrackList(lastfmTracks), viewer);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            showError(error);
+                        }
+                    });
         }
     }
 

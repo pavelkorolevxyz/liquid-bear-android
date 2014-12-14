@@ -2,9 +2,9 @@ package com.pillowapps.liqear.components;
 
 import android.view.View;
 
-import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Artist;
+import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.models.Track;
 
 import java.util.ArrayList;
@@ -46,9 +46,8 @@ public class PagerResultSherlockActivity extends ResultSherlockActivity {
         viewer.getProgressBar().setVisibility(View.GONE);
     }
 
-    protected void fillTracks(ReadyResult result, ViewerPage viewer) {
+    protected void fillTracks(List<Track> trackList, ViewerPage viewer) {
         Class<Track> clazz = Track.class;
-        List<Track> trackList = (List<Track>) result.getObject();
         ListArrayAdapter adapter = viewer.getAdapter();
         int adapterSize = adapter == null ? 0 : adapter.getCount();
         if (adapterSize + trackList.size() == 0) {
@@ -60,9 +59,8 @@ public class PagerResultSherlockActivity extends ResultSherlockActivity {
         }
     }
 
-    protected void fillArtists(ReadyResult result, ViewerPage viewer) {
+    protected void fillArtists(List<Artist> artists, ViewerPage viewer) {
         Class<Artist> clazz = Artist.class;
-        List<Artist> artists = (List<Artist>) result.getObject();
         ListArrayAdapter adapter = viewer.getAdapter();
         int adapterSize = adapter == null ? 0 : adapter.getCount();
         if (adapterSize + artists.size() == 0) {
@@ -74,9 +72,8 @@ public class PagerResultSherlockActivity extends ResultSherlockActivity {
         }
     }
 
-    protected void fillAlbums(ReadyResult result, ViewerPage viewer) {
+    protected void fillAlbums(List<LastfmAlbum> albums, ViewerPage viewer) {
         Class<Album> clazz = Album.class;
-        List<Album> albums = (List<Album>) result.getObject();
         ListArrayAdapter adapter = viewer.getAdapter();
         int adapterSize = adapter == null ? 0 : adapter.getCount();
         if (adapterSize + albums.size() == 0) {
