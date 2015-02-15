@@ -43,6 +43,7 @@ import com.pillowapps.liqear.components.FourWidthThreeHeightWidget;
 import com.pillowapps.liqear.connection.ApiException;
 import com.pillowapps.liqear.connection.CompletionListener;
 import com.pillowapps.liqear.connection.GetResponseCallback;
+import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.connection.PostCallback;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
@@ -57,11 +58,17 @@ import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.TrackUrlQuery;
+import com.pillowapps.liqear.models.lastfm.LastfmArtist;
+import com.pillowapps.liqear.models.lastfm.LastfmImage;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 @SuppressWarnings("unchecked")
 public class MusicPlaybackService extends Service implements
@@ -119,33 +126,33 @@ public class MusicPlaybackService extends Service implements
     private Handler toastHandler = new Handler();
     private AudioManager.OnAudioFocusChangeListener focusChangeListener =
             new AudioManager.OnAudioFocusChangeListener() {
-        public void onAudioFocusChange(int focusChange) {
-            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT
-                    || focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-                if (AudioTimeline.isStateActive()) {
-                    pause(true);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                        CompatIcs.unregisterRemote(MusicPlaybackService.this, manager);
-                    } else {
-                        MediaButtonReceiver.unregisterMediaButton(MusicPlaybackService.this);
+                public void onAudioFocusChange(int focusChange) {
+                    if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT
+                            || focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                        if (AudioTimeline.isStateActive()) {
+                            pause(true);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                                CompatIcs.unregisterRemote(MusicPlaybackService.this, manager);
+                            } else {
+                                MediaButtonReceiver.unregisterMediaButton(MusicPlaybackService.this);
+                            }
+                        }
+                    } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                        if (AudioTimeline.wasPlayingBeforeCall()) {
+                            play();
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                            CompatIcs.registerRemote(MusicPlaybackService.this, manager);
+                            if (AudioTimeline.getCurrentTrack() != null) {
+                                CompatIcs.updateRemote(MusicPlaybackService.this,
+                                        AudioTimeline.getCurrentTrack());
+                            }
+                        } else {
+                            MediaButtonReceiver.registerMediaButton(MusicPlaybackService.this);
+                        }
                     }
                 }
-            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-                if (AudioTimeline.wasPlayingBeforeCall()) {
-                    play();
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                    CompatIcs.registerRemote(MusicPlaybackService.this, manager);
-                    if (AudioTimeline.getCurrentTrack() != null) {
-                        CompatIcs.updateRemote(MusicPlaybackService.this,
-                                AudioTimeline.getCurrentTrack());
-                    }
-                } else {
-                    MediaButtonReceiver.registerMediaButton(MusicPlaybackService.this);
-                }
-            }
-        }
-    };
+            };
     private Handler playHandler = new Handler();
     private Thread thread;
     private int currentBuffer = 0;
@@ -1280,20 +1287,26 @@ public class MusicPlaybackService extends Service implements
         }
     }
 
-    private void getArtistInfo(final String artist, final String lastfmName) {
-        artistQueryManager.getArtistInfo(artist, lastfmName, new GetResponseCallback() {
+    private void getArtistInfo(final String artist, final String username) {
+        LastfmRequestManager.getInstance().getArtistInfo(artist, username, new Callback<LastfmArtist>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (result.isOk()) {
-                    AudioTimeline.setPreviousArtist(artist);
-                    List<Object> list = (List<Object>) result.getObject();
-                    String imageUrl = (String) list.get(0);
-                    Intent intent = new Intent();
-                    intent.setAction(Config.ACTION_SERVICE);
-                    intent.putExtra(Constants.CALLBACK_TYPE, ARTIST_INFO_CALLBACK);
-                    intent.putExtra(Constants.IMAGE_URL, imageUrl);
-                    sendBroadcast(intent);
+            public void success(LastfmArtist lastfmArtist, Response response) {
+                AudioTimeline.setPreviousArtist(artist);
+                List<LastfmImage> list = lastfmArtist.getImages();
+                String imageUrl = null;
+                if (list.size() != 0) {
+                    LastfmImage lastfmImage = list.get(list.size() - 1);
+                    imageUrl = lastfmImage != null ? lastfmImage.getUrl() : null;
                 }
+                Intent intent = new Intent();
+                intent.setAction(Config.ACTION_SERVICE);
+                intent.putExtra(Constants.CALLBACK_TYPE, ARTIST_INFO_CALLBACK);
+                intent.putExtra(Constants.IMAGE_URL, imageUrl);
+                sendBroadcast(intent);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
             }
         });
     }
@@ -1366,39 +1379,39 @@ public class MusicPlaybackService extends Service implements
                         if (currentTrack.getUrl() == null || currentTrack.getUrl().isEmpty()) {
                             urlQueryManager.getTrackUrl(currentTrack, current, trackUrlNumber,
                                     new GetResponseCallback() {
-                                @Override
-                                public void onDataReceived(ReadyResult result) {
-                                    final boolean error = !result.isOk();
-                                    if (error) {
-                                        AudioTimeline.incrementWithoutUrl();
-                                        next();
-                                        return;
-                                    }
-                                    final Object object = result.getObject();
-                                    if (object != null) {
-                                        List<Object> objects = (List<Object>) object;
-                                        if (objects.size() > 0
-                                                && AudioTimeline.getCurrentTrack() != null) {
-                                            AudioTimeline.getCurrentTrack()
-                                                    .setUrl((String) objects.get(0));
-                                            AudioTimeline.getCurrentTrack()
-                                                    .setAid((Long) objects.get(1));
-                                            AudioTimeline.getCurrentTrack()
-                                                    .setOwnerId((Long) objects.get(2));
-                                            if (!current) {
-                                                playOnPrepared = false;
+                                        @Override
+                                        public void onDataReceived(ReadyResult result) {
+                                            final boolean error = !result.isOk();
+                                            if (error) {
+                                                AudioTimeline.incrementWithoutUrl();
+                                                next();
+                                                return;
                                             }
-                                            play(true);
-                                        } else {
-                                            AudioTimeline.incrementWithoutUrl();
-                                            next();
+                                            final Object object = result.getObject();
+                                            if (object != null) {
+                                                List<Object> objects = (List<Object>) object;
+                                                if (objects.size() > 0
+                                                        && AudioTimeline.getCurrentTrack() != null) {
+                                                    AudioTimeline.getCurrentTrack()
+                                                            .setUrl((String) objects.get(0));
+                                                    AudioTimeline.getCurrentTrack()
+                                                            .setAid((Long) objects.get(1));
+                                                    AudioTimeline.getCurrentTrack()
+                                                            .setOwnerId((Long) objects.get(2));
+                                                    if (!current) {
+                                                        playOnPrepared = false;
+                                                    }
+                                                    play(true);
+                                                } else {
+                                                    AudioTimeline.incrementWithoutUrl();
+                                                    next();
+                                                }
+                                            } else {
+                                                AudioTimeline.incrementWithoutUrl();
+                                                next();
+                                            }
                                         }
-                                    } else {
-                                        AudioTimeline.incrementWithoutUrl();
-                                        next();
-                                    }
-                                }
-                            });
+                                    });
                         }
                     }
                     QueryManager.getInstance().scrobbleOffline();

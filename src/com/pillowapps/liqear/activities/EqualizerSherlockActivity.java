@@ -5,11 +5,12 @@ import android.content.SharedPreferences.Editor;
 import android.media.AudioManager;
 import android.media.audiofx.BassBoost;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.actionbarsherlock.app.ActionBar;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.EqualizerManager;
 import com.pillowapps.liqear.helpers.CompatEq;
@@ -57,7 +58,7 @@ public class EqualizerSherlockActivity extends TrackedActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home:

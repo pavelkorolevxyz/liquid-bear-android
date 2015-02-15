@@ -5,12 +5,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.text.Html;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.components.CancellableThread;
@@ -60,7 +57,7 @@ import java.util.TreeMap;
 /**
  * Entry point into the API.
  */
-@SuppressWarnings({"UnusedDeclaration", "unchecked"})
+@SuppressWarnings({"unchecked"})
 public class QueryManager {
 
     public static final String key = "03q8HwJ2xIgJlzxLgxv0";
@@ -134,12 +131,6 @@ public class QueryManager {
     private DefaultHttpClient mHttpClient;
     private GetTask task;
     private CancellableThread scrobbleThread;
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .displayer(new FadeInBitmapDisplayer(500))
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .build();
     private ImageLoader imageLoader = ImageLoader.getInstance();
     private CancellableThread coverDownloadThread;
     private final Object lockObject = new Object();
@@ -225,20 +216,6 @@ public class QueryManager {
         }
     }
 
-    public void getMobileSession(String username, String password,
-                                 final GetResponseCallback callback) {
-        password = StringUtils.md5(password);
-        String authToken = StringUtils.md5(username + password);
-        final Map<String, String> params = StringUtils.map("api_key", apiKey,
-                "username", username, "authToken", authToken);
-        String method = AUTH_GET_MOBILE_SESSION;
-        String sig = createSignature(method, params, secret);
-        params.put("api_sig", sig);
-        final Params methodParams = new Params(method, ApiMethod.AUTH_GET_MOBILE_SESSION, params);
-        methodParams.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, methodParams);
-    }
-
     public void getNewcomersFunky(final List<Integer> pages,
                                   final GetResponseCallback callback) {
         new Thread(new Runnable() {
@@ -279,15 +256,6 @@ public class QueryManager {
         doQuery(callback, params);
     }
 
-    public void getNeighbours(String user, int limit, final GetResponseCallback callback) {
-        final Params params = new Params(USER_GET_NEIGHBOURS, ApiMethod.USER_GET_NEIGHBOURS);
-        params.putParameter("user", user);
-        params.putParameter("limit", Integer.toString(limit));
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
     public void getRecommendedArtists(int limit, int page, final GetResponseCallback callback) {
         final Map<String, String> params = StringUtils.map("api_key", apiKey, "sk", sk);
         String method = USER_GET_RECOMMENDED_ARTISTS;
@@ -301,48 +269,9 @@ public class QueryManager {
         doQuery(callback, methodParams);
     }
 
-    public void getFriends(String user, final GetResponseCallback callback) {
-        final Params params = new Params(USER_GET_FRIENDS, ApiMethod.USER_GET_FRIENDS);
-        params.putParameter("user", user);
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void getTagTopTracks(Tag tag, int limit, int page, final GetResponseCallback callback) {
-        final Params params = new Params(TAG_GET_TOP_TRACKS, ApiMethod.TAG_GET_TOP_TRACKS);
-        params.putParameter("tag", Html.fromHtml(tag.getName()).toString());
-        params.putParameter("api_key", apiKey);
-        params.putParameter("limit", Integer.toString(limit));
-        params.putParameter("page", Integer.toString(page));
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void getArtistTopTracks(Artist artist, int limit, int page,
-                                   final GetResponseCallback callback) {
-        getArtistTopTracks(artist, limit, page, false, callback);
-    }
-
     public void getArtistTopTracksSync(Artist artist, int limit, int page,
                                        final GetResponseCallback callback) {
         getArtistTopTracksSync(artist, limit, page, false, callback);
-    }
-
-    public void getArtistTopTracks(Artist artist, int limit, int page,
-                                   boolean append, final GetResponseCallback callback) {
-        final Params params = new Params(ARTIST_GET_TOP_TRACKS,
-                ApiMethod.ARTIST_GET_TOP_TRACKS);
-        params.putParameter("artist", Html.fromHtml(artist.getName())
-                .toString());
-        params.putParameter("api_key", apiKey);
-        params.putParameter("limit", Integer.toString(limit));
-        params.putParameter("page", Integer.toString(page));
-        params.setApiSource(Params.ApiSource.LASTFM);
-        if (append) {
-            params.setAdditionalParameter("append");
-        }
-        doQuery(callback, params);
     }
 
     public void getArtistTopTracksSync(Artist artist, int limit, int page,
@@ -390,37 +319,6 @@ public class QueryManager {
         doQuery(callback, params);
     }
 
-    public void getUserLibrary(String user, int limit, int page,
-                               final GetResponseCallback callback) {
-        final Params params = new Params(LIBRARY_GET_TRACKS, ApiMethod.LIBRARY_GET_TRACKS);
-        params.putParameter("user", user);
-        params.putParameter("api_key", apiKey);
-        params.putParameter("limit", Integer.toString(limit));
-        params.putParameter("page", Integer.toString(page));
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void getUserRecentTracks(String user, int limit, int page,
-                                    final GetResponseCallback callback) {
-        final Params params = new Params(USER_GET_RECENT_TRACKS, ApiMethod.USER_GET_RECENT_TRACKS);
-        params.putParameter("user", user);
-        params.putParameter("api_key", apiKey);
-        params.putParameter("limit", Integer.toString(limit));
-        params.putParameter("page", Integer.toString(page));
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void getTopTracksChart(int limit, int page, final GetResponseCallback callback) {
-        final Params params = new Params(CHART_GET_TOP_TRACKS, ApiMethod.CHART_GET_TOP_TRACKS);
-        params.putParameter("api_key", apiKey);
-        params.putParameter("limit", String.valueOf(limit));
-        params.putParameter("page", String.valueOf(page));
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
     public void getUserTopTracks(String name, String period, int limit,
                                  int page, boolean append, final GetResponseCallback callback) {
         final Params params = new Params(USER_GET_TOP_TRACKS, ApiMethod.USER_GET_TOP_TRACKS);
@@ -441,14 +339,6 @@ public class QueryManager {
         params.setApiSource(Params.ApiSource.STRAIGHT);
         params.setUrl(String.format("http://www.lastfm.ru/music/%s/+images?page=%d",
                 StringUtils.encode(artist), page));
-        doQuery(callback, params);
-    }
-
-    public void getTopTags(final GetResponseCallback callback) {
-        final Params params = new Params(CHART_GET_TOP_TAGS, ApiMethod.CHART_GET_TOP_TAGS);
-        params.putParameter("api_key", apiKey);
-        params.putParameter("limit", "50");
-        params.setApiSource(Params.ApiSource.LASTFM);
         doQuery(callback, params);
     }
 
@@ -563,17 +453,17 @@ public class QueryManager {
                         PreferencesManager.getModePreferences()
                                 .getInt(Constants.TOP_TRACKS_IN_LIBRARY, 200), 0, true,
                         new GetResponseCallback() {
-                    @Override
-                    public void onDataReceived(ReadyResult result) {
-                        if (result.isOk()) {
-                            final ArrayList<Track> topTracks = (ArrayList<Track>) result.getObject();
-                            libraryTracks.addAll(topTracks);
-                        }
-                        List<Track> trackList = new ArrayList<Track>(libraryTracks);
-                        Collections.shuffle(trackList);
-                        callback.onDataReceived(new ReadyResult(LIBRARY, trackList));
-                    }
-                });
+                            @Override
+                            public void onDataReceived(ReadyResult result) {
+                                if (result.isOk()) {
+                                    final ArrayList<Track> topTracks = (ArrayList<Track>) result.getObject();
+                                    libraryTracks.addAll(topTracks);
+                                }
+                                List<Track> trackList = new ArrayList<Track>(libraryTracks);
+                                Collections.shuffle(trackList);
+                                callback.onDataReceived(new ReadyResult(LIBRARY, trackList));
+                            }
+                        });
             }
         });
     }
@@ -586,41 +476,41 @@ public class QueryManager {
         QueryManager.getInstance().getLovedTracks(user,
                 PreferencesManager.getModePreferences()
                         .getInt(Constants.LOVED_IN_RADIOMIX, 100), 0, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (result.isOk()) {
-                    final ArrayList<Track> lovedTracks = (ArrayList<Track>) result.getObject();
-                    libraryTracks.addAll(lovedTracks);
-                }
-                QueryManager.getInstance().getUserTopTracks(user, Constants.PERIODS_ARRAY[0],
-                        PreferencesManager.getModePreferences()
-                                .getInt(Constants.TOP_IN_RADIOMIX, 100), 0, true, new GetResponseCallback() {
                     @Override
                     public void onDataReceived(ReadyResult result) {
                         if (result.isOk()) {
-                            final ArrayList<Track> topTracks = (ArrayList<Track>) result.getObject();
-                            libraryTracks.addAll(topTracks);
+                            final ArrayList<Track> lovedTracks = (ArrayList<Track>) result.getObject();
+                            libraryTracks.addAll(lovedTracks);
                         }
-                        QueryManager.getInstance().getWeeklyTrackChart(user,
+                        QueryManager.getInstance().getUserTopTracks(user, Constants.PERIODS_ARRAY[0],
                                 PreferencesManager.getModePreferences()
-                                        .getInt(Constants.WEEKLY_IN_RADIOMIX, 200), true,
-                                new GetResponseCallback() {
-                            @Override
-                            public void onDataReceived(ReadyResult result) {
-                                if (result.isOk()) {
-                                    final ArrayList<Track> weeklyTracks =
-                                            (ArrayList<Track>) result.getObject();
-                                    libraryTracks.addAll(weeklyTracks);
-                                }
-                                List<Track> trackList = new ArrayList<Track>(libraryTracks);
-                                Collections.shuffle(trackList);
-                                callback.onDataReceived(new ReadyResult(LIBRARY, trackList));
-                            }
-                        });
+                                        .getInt(Constants.TOP_IN_RADIOMIX, 100), 0, true, new GetResponseCallback() {
+                                    @Override
+                                    public void onDataReceived(ReadyResult result) {
+                                        if (result.isOk()) {
+                                            final ArrayList<Track> topTracks = (ArrayList<Track>) result.getObject();
+                                            libraryTracks.addAll(topTracks);
+                                        }
+                                        QueryManager.getInstance().getWeeklyTrackChart(user,
+                                                PreferencesManager.getModePreferences()
+                                                        .getInt(Constants.WEEKLY_IN_RADIOMIX, 200), true,
+                                                new GetResponseCallback() {
+                                                    @Override
+                                                    public void onDataReceived(ReadyResult result) {
+                                                        if (result.isOk()) {
+                                                            final ArrayList<Track> weeklyTracks =
+                                                                    (ArrayList<Track>) result.getObject();
+                                                            libraryTracks.addAll(weeklyTracks);
+                                                        }
+                                                        List<Track> trackList = new ArrayList<Track>(libraryTracks);
+                                                        Collections.shuffle(trackList);
+                                                        callback.onDataReceived(new ReadyResult(LIBRARY, trackList));
+                                                    }
+                                                });
+                                    }
+                                });
                     }
                 });
-            }
-        });
     }
 
     public void getWeeklyTrackChart(String user, int count, boolean append,
@@ -1104,27 +994,27 @@ public class QueryManager {
         if (album == null) return;
         imageLoader.loadImage(LiqearApplication.getAppContext(),
                 album.getImageUrl(), new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted() {
+                    @Override
+                    public void onLoadingStarted() {
 
-            }
+                    }
 
-            @Override
-            public void onLoadingFailed(FailReason failReason) {
+                    @Override
+                    public void onLoadingFailed(FailReason failReason) {
 
-            }
+                    }
 
-            @Override
-            public void onLoadingComplete(Bitmap bitmap) {
-                AudioTimeline.setCurrentAlbumBitmap(bitmap);
-                listener.onCompleted();
-            }
+                    @Override
+                    public void onLoadingComplete(Bitmap bitmap) {
+                        AudioTimeline.setCurrentAlbumBitmap(bitmap);
+                        listener.onCompleted();
+                    }
 
-            @Override
-            public void onLoadingCancelled() {
+                    @Override
+                    public void onLoadingCancelled() {
 
-            }
-        });
+                    }
+                });
     }
 
     private class PhotoUploadResponseHandler implements ResponseHandler<Object> {

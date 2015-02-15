@@ -1,9 +1,18 @@
 package com.pillowapps.liqear.connection;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.helpers.LastfmTrackListGsonAdapter;
+import com.pillowapps.liqear.models.lastfm.LastfmTrack;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.converter.GsonConverter;
 
 public class ServiceHelper {
 
@@ -53,8 +62,16 @@ public class ServiceHelper {
 
     public static LastfmApiService getLastfmService() {
         if (lastfmApiService == null) {
+            Type myOtherClassListType = new TypeToken<List<LastfmTrack>>() {
+            }.getType();
+
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(myOtherClassListType, new LastfmTrackListGsonAdapter())
+                    .create();
+
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .setConverter(new GsonConverter(gson))
                     .setRequestInterceptor(lastfmInterceptor)
                     .setEndpoint(LASTFM_API)
                     .build();

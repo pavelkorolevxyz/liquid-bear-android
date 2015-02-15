@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/more_button"
           android:title="@string/preferences"
           android:icon="@drawable/settings_normal"
-          android:showAsAction="always|collapseActionView">
+          app:showAsAction="always|collapseActionView">
         <menu>
             <item android:id="@+id/settings"
                   android:title="@string/preferences"
                   android:icon="@drawable/settings_normal"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/equalizer"
                   android:title="@string/equalizer"
                   android:icon="@drawable/equalizer"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/donate_button"
                   android:title="@string/donate"
                   android:icon="@drawable/donate"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/timer_button"
                   android:title="@string/timer"
                   android:icon="@drawable/timer"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/exit_button"
                   android:icon="@drawable/exit"
                   android:title="@string/exit"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
         </menu>
     </item>
 </menu>

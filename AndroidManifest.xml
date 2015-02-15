@@ -18,7 +18,7 @@
     <application
         android:name=".LiqearApplication"
         android:icon="@drawable/nigga_circle_stroked"
-        android:theme="@style/Greeny"
+        android:theme="@style/LiquidBearAppTheme"
         android:allowBackup="true"
         android:label="@string/app_name">
         <activity

@@ -2,11 +2,12 @@ package com.pillowapps.liqear.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import com.actionbarsherlock.app.ActionBar;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.helpers.Constants;
@@ -52,7 +53,7 @@ public class SetlistSearchSherlockActivity extends ResultSherlockActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home:

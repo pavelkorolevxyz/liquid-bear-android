@@ -12,10 +12,11 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.connection.ApiException;
-import com.pillowapps.liqear.connection.QueryManager;
+import com.pillowapps.liqear.connection.ServiceHelper;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 
 /**
@@ -51,17 +52,10 @@ public class LoginActivity extends TrackedActivity {
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
 
-        String url = String.format(OAUTH_REQUEST_FORMAT, QueryManager.appId,
+        String url = String.format(OAUTH_REQUEST_FORMAT, ServiceHelper.VK_APP_ID,
                 allPermission, OAUT_BLANK_URL, DISPLAY, RESPONSE);
         webview.loadUrl(url);
     }
-
-	/*
-     * 06-05 08:00:14.005: D/Access_token(351): http://oauth.vk.com/blank.html
-	 * #access_token
-	 * =ec563076ecbc0aa7ecbc0aa729ec912958fecbdeca3b239c5e5475adc0e3e53
-	 * &expires_in=0 &user_id=15350481 &secret=d377128abcc69a486d
-	 */
 
     private void parseUrl(String url) {
         try {

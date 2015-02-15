@@ -5,7 +5,7 @@ import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
 
 public class LastfmAlbumRoot {
 
-    @SerializedName("albums")
+    @SerializedName("album")
     LastfmAlbum album;
 
     public LastfmAlbumRoot() {

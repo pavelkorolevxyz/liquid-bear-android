@@ -50,14 +50,15 @@ android {
 }
 
 dependencies {
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'de.cketti.library.changelog:ckchangelog:1.2.0'
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:palette-v7:21.0.0'
     compile 'com.squareup.retrofit:retrofit:1.8.0'
     compile 'com.jakewharton:butterknife:6.0.0'
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.jakewharton.timber:timber:2.5.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'io.reactivex:rxjava:1.0.3'
     compile project(':libraries:SlidingMenu')
     compile project(':libraries:PullToRefreshLibrary')
     compile project(':libraries:DragSortListLibrary')

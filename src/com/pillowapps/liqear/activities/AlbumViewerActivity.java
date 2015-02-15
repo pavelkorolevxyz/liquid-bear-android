@@ -5,9 +5,13 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -18,9 +22,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.ListArrayAdapter;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
@@ -29,10 +30,10 @@ import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.Album;
+import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.models.lastfm.LastfmImage;
 import com.pillowapps.liqear.models.lastfm.LastfmTrack;
-import com.pillowapps.liqear.models.Track;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -42,6 +43,7 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 @SuppressWarnings("unchecked")
 public class AlbumViewerActivity extends ResultSherlockActivity {
@@ -152,7 +154,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         final int index = pager.getCurrentItem();
         if (index == 0) {
             inflater.inflate(R.menu.to_playlist_menu, menu);
@@ -163,7 +165,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home: {
@@ -239,7 +241,8 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
             @Override
             public void failure(RetrofitError error) {
                 tracksProgressBar.setVisibility(View.GONE);
-                ErrorNotifier.showLastfmError(error);
+                error.printStackTrace();
+//                ErrorNotifier.showLastfmError(error);
             }
         });
     }

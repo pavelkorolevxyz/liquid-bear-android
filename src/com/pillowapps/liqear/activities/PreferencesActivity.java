@@ -6,8 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
@@ -16,14 +17,14 @@ import com.pillowapps.liqear.audio.MusicPlaybackService;
 /**
  * Preferences list activity
  */
-public class PreferencesActivity extends SherlockPreferenceActivity {
+public class PreferencesActivity extends PreferenceActivity {
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.preferences);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setTitle(R.string.preferences);
         Preference authorizationsPref = findPreference("authorizations_preference_preferences");
         authorizationsPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -114,7 +115,7 @@ public class PreferencesActivity extends SherlockPreferenceActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home:

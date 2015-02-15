@@ -1,76 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/artist_button"
           android:icon="@drawable/ic_artists_mode"
           android:title="@string/artist"
-          android:showAsAction="always|collapseActionView">
+          app:showAsAction="always|collapseActionView">
         <menu>
             <item android:id="@+id/show_artist_button"
                   android:title="@string/show_artist"
                   android:icon="@drawable/ic_artists_mode"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/photo_artist_button"
                   android:title="@string/photo_artist"
                   android:icon="@drawable/photo"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
         </menu>
     </item>
     <item android:id="@+id/track_button"
           android:title="@string/track"
           android:icon="@drawable/drop_normal"
-          android:showAsAction="always|collapseActionView">
+          app:showAsAction="always|collapseActionView">
         <menu>
             <item android:id="@+id/share_track_button"
                   android:title="@string/share_track"
                   android:icon="@drawable/share"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/next_url_button"
                   android:title="@string/next_url"
                   android:icon="@drawable/next_url"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/lyrics_button"
                   android:title="@string/lyrics"
                   android:icon="@drawable/lyrics_normal"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/youtube_video_button"
                   android:title="@string/video"
                   android:icon="@drawable/video"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/add_to_vk_button"
                   android:title="@string/add_to_vk"
                   android:icon="@drawable/add_normal"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/love_button"
                   android:icon="@drawable/love_not_active"
                   android:title="@string/add_to_loved_lastfm"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
         </menu>
     </item>
     <item android:id="@+id/more_button"
           android:title="@string/preferences"
           android:icon="@drawable/settings_normal"
-          android:showAsAction="always|collapseActionView">
+          app:showAsAction="always|collapseActionView">
         <menu>
             <item android:id="@+id/settings"
                   android:title="@string/preferences"
                   android:icon="@drawable/settings_normal"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/equalizer"
                   android:title="@string/equalizer"
                   android:icon="@drawable/equalizer"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/donate_button"
                   android:title="@string/donate"
                   android:icon="@drawable/donate"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/timer_button"
                   android:title="@string/timer"
                   android:icon="@drawable/timer"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
             <item android:id="@+id/exit_button"
                   android:icon="@drawable/exit"
                   android:title="@string/exit"
-                  android:showAsAction="always|withText"/>
+                  app:showAsAction="always|withText"/>
         </menu>
     </item>
 </menu>

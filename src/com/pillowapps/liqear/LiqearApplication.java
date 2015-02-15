@@ -10,6 +10,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.BuildModeHelper;
 
+import timber.log.Timber;
+
 public class LiqearApplication extends Application {
     private static Context context;
 
@@ -30,6 +32,7 @@ public class LiqearApplication extends Application {
                         .memoryCache(new LRULimitedMemoryCache(16 * 1024 * 1024))
                         .build();
         ImageLoader.getInstance().init(config);
+        Timber.plant(new Timber.DebugTree());
         initConfig();
     }
 

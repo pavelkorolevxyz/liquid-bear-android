@@ -10,13 +10,21 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.view.MenuCompat;
+import android.support.v7.app.ActionBar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,9 +33,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
@@ -38,9 +43,9 @@ import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.components.ActivityResult;
 import com.pillowapps.liqear.components.ArtistTrackComparator;
-import com.pillowapps.liqear.components.DarkThemeChangeLog;
 import com.pillowapps.liqear.components.ModeListAdapter;
 import com.pillowapps.liqear.connection.GetResponseCallback;
+import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.connection.PostCallback;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
@@ -71,9 +76,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
-import de.cketti.library.changelog.ChangeLog;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends SlidingFragmentActivity {
     public Menu mainMenu;
@@ -95,6 +101,7 @@ public class MainActivity extends SlidingFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         configureInitialSettings();
+        supportRequestWindowFeature(Window.FEATURE_ACTION_BAR);
         if ((!AuthorizationInfoManager.isAuthorizedOnVk()
                 || !AuthorizationInfoManager.isAuthorizedOnLastfm())
                 && !AuthorizationInfoManager.isAuthSkipped()) {
@@ -110,15 +117,6 @@ public class MainActivity extends SlidingFragmentActivity {
         actionBar.setDisplayShowTitleEnabled(true);
 
         AppRater.app_launched(this);
-
-        ChangeLog cl = new DarkThemeChangeLog(this);
-        String language = Locale.getDefault().getLanguage();
-        LLog.log(language);
-        if (!language.equals("pl") && !language.equals("uk")) {
-            if (cl.isFirstRun()) {
-                cl.getFullLogDialog().show();
-            }
-        }
 
         if (findViewById(R.id.tablet_layout) != null) {
             playlistItemsAdapter = new PlaylistItemsAdapter(MainActivity.this);
@@ -173,6 +171,14 @@ public class MainActivity extends SlidingFragmentActivity {
             getSlidingMenu().setSlidingEnabled(false);
             getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int navBarHeight = getNavigationBarHeight();
+            findViewById(R.id.main_layout).setPadding(0, 0, 0, navBarHeight);
+            View menuFrame = findViewById(R.id.menu_frame);
+            if (menuFrame != null) {
+                menuFrame.setPadding(0, 0, 0, navBarHeight);
+            }
+        }
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -199,6 +205,15 @@ public class MainActivity extends SlidingFragmentActivity {
     protected void onSaveInstanceState(Bundle outState) {
         if (isTablet()) showContent();
         super.onSaveInstanceState(outState);
+    }
+
+    private int getNavigationBarHeight() {
+        Resources resources = getResources();
+        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return resources.getDimensionPixelSize(resourceId);
+        }
+        return 0;
     }
 
     public void init() {
@@ -303,7 +318,7 @@ public class MainActivity extends SlidingFragmentActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         Track currentTrack = AudioTimeline.getCurrentTrack();
         int itemId = item.getItemId();
         switch (itemId) {
@@ -417,25 +432,34 @@ public class MainActivity extends SlidingFragmentActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 final Track track = AudioTimeline.getCurrentTrack();
                 if (!track.isLoved()) {
-                    QueryManager.getInstance().love(track, new PostCallback() {
+                    LastfmRequestManager.getInstance().love(track, new Callback<Object>() {
                         @Override
-                        public void onPostSuccess() {
+                        public void success(Object o, Response response) {
                             progressBar.setVisibility(View.GONE);
                             track.setLoved(true);
                             MainActivity.this.invalidateMenu();
                         }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            progressBar.setVisibility(View.GONE);
+                        }
                     });
                 } else {
-                    QueryManager.getInstance().unlove(track, new PostCallback() {
+                    LastfmRequestManager.getInstance().unlove(track, new Callback<Object>() {
                         @Override
-                        public void onPostSuccess() {
+                        public void success(Object o, Response response) {
                             progressBar.setVisibility(View.GONE);
                             track.setLoved(false);
                             MainActivity.this.invalidateMenu();
                         }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            progressBar.setVisibility(View.GONE);
+                        }
                     });
                 }
-
             }
             return true;
             case R.id.settings: {
@@ -802,7 +826,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         mainMenu = menu;
         if (isTablet()) {
             int menuLayout = R.menu.tablet_menu_no_track;
@@ -891,7 +915,7 @@ public class MainActivity extends SlidingFragmentActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(android.view.MenuItem item) {
+    public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
                 .getMenuInfo();
         ListView listView = null;

@@ -1,11 +1,12 @@
 package com.pillowapps.liqear.activities;
 
 import android.os.Bundle;
-import com.actionbarsherlock.app.SherlockActivity;
+import android.support.v7.app.ActionBarActivity;
+
 import com.google.analytics.tracking.android.EasyTracker;
 import com.pillowapps.liqear.R;
 
-public class TrackedActivity extends SherlockActivity {
+public class TrackedActivity extends ActionBarActivity {
 
     protected void onCreate(Bundle savedInstanceState, String tag) {
         super.onCreate(savedInstanceState);

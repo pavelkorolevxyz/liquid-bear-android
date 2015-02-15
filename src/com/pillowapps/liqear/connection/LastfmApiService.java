@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.connection;
 
-import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.models.lastfm.LastfmArtist;
 import com.pillowapps.liqear.models.lastfm.LastfmTag;
 import com.pillowapps.liqear.models.lastfm.LastfmTrack;
@@ -107,7 +106,7 @@ public interface LastfmApiService {
                                  @Query("page") int page,
                                  Callback<List<LastfmTrack>> callback);
 
-    @GET("/?method=library.getTopTracks")
+    @GET("/?method=library.getTracks")
     public void getPersonalArtistTopTracks(@Query("artist") String artist,
                                            @Query("user") String user,
                                            @Query("limit") int limit,

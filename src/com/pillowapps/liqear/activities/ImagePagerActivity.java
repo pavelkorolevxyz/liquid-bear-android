@@ -22,13 +22,16 @@ import android.os.Environment;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -45,7 +48,12 @@ import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.helpers.Utils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -57,7 +65,7 @@ public class ImagePagerActivity extends TrackedActivity {
     private static final String STATE_POSITION = "STATE_POSITION";
     private static final String IMAGE_POSITION = "image_position";
     ViewPager pager;
-    private com.actionbarsherlock.app.ActionBar actionBar;
+    private ActionBar actionBar;
     private DisplayImageOptions options = new DisplayImageOptions.Builder()
             .cacheOnDisc()
             .bitmapConfig(Bitmap.Config.RGB_565)
@@ -117,7 +125,7 @@ public class ImagePagerActivity extends TrackedActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home:
@@ -188,7 +196,7 @@ public class ImagePagerActivity extends TrackedActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.image_pager_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -247,42 +255,42 @@ public class ImagePagerActivity extends TrackedActivity {
 
             imageLoader.displayImage(images.get(position), imageView, options,
                     new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted() {
-                    spinner.setVisibility(View.VISIBLE);
-                }
+                        @Override
+                        public void onLoadingStarted() {
+                            spinner.setVisibility(View.VISIBLE);
+                        }
 
-                @Override
-                public void onLoadingFailed(FailReason failReason) {
-                    String message = null;
-                    switch (failReason) {
-                        case IO_ERROR:
-                            message = "Input/Output error";
-                            break;
-                        case OUT_OF_MEMORY:
-                            message = "Out Of Memory error";
-                            break;
-                        case UNKNOWN:
-                            message = "Unknown error";
-                            break;
-                        default:
-                            break;
-                    }
-                    Toast.makeText(ImagePagerActivity.this, message, Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onLoadingFailed(FailReason failReason) {
+                            String message = null;
+                            switch (failReason) {
+                                case IO_ERROR:
+                                    message = "Input/Output error";
+                                    break;
+                                case OUT_OF_MEMORY:
+                                    message = "Out Of Memory error";
+                                    break;
+                                case UNKNOWN:
+                                    message = "Unknown error";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            Toast.makeText(ImagePagerActivity.this, message, Toast.LENGTH_SHORT).show();
 
-                    spinner.setVisibility(View.GONE);
-                }
+                            spinner.setVisibility(View.GONE);
+                        }
 
-                @Override
-                public void onLoadingComplete(Bitmap bitmap) {
-                    spinner.setVisibility(View.GONE);
-                }
+                        @Override
+                        public void onLoadingComplete(Bitmap bitmap) {
+                            spinner.setVisibility(View.GONE);
+                        }
 
-                @Override
-                public void onLoadingCancelled() {
-                    spinner.setVisibility(View.GONE);
-                }
-            });
+                        @Override
+                        public void onLoadingCancelled() {
+                            spinner.setVisibility(View.GONE);
+                        }
+                    });
 
             view.addView(imageLayout, 0);
             return imageLayout;

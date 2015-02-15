@@ -1,31 +1,43 @@
 package com.pillowapps.liqear.activities;
 
 import android.app.AlertDialog;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.connection.GetResponseCallback;
+import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.connection.Params;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.models.Track;
+import com.pillowapps.liqear.models.lastfm.LastfmArtist;
 
-import java.util.List;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class TextSherlockActivity extends ResultSherlockActivity {
     public static final String ARTIST_NAME = "artist_name";
@@ -92,7 +104,7 @@ public class TextSherlockActivity extends ResultSherlockActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (Aim.LYRICS == aim) {
             switch (itemId) {
@@ -165,16 +177,16 @@ public class TextSherlockActivity extends ResultSherlockActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         switch (aim) {
             case LYRICS:
-                MenuInflater inflater = getSupportMenuInflater();
+                MenuInflater inflater = getMenuInflater();
                 inflater.inflate(R.menu.lyrics_menu, menu);
                 break;
             case ARTIST_INFO:
                 MenuItem item = menu.add(getResources().getString(R.string.search_google));
                 item.setIcon(getResources().getDrawable(android.R.drawable.ic_menu_search));
-                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 break;
             default:
                 break;
@@ -194,19 +206,21 @@ public class TextSherlockActivity extends ResultSherlockActivity {
     }
 
     private void getArtistInfo(String artist, String username) {
-        QueryManager.getInstance().getArtistInfo(artist, username, new GetResponseCallback() {
+        LastfmRequestManager.getInstance().getArtistInfo(artist, username, new Callback<LastfmArtist>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                String info = (String) (((List<Object>) result.getObject()).get(1));
+            public void success(LastfmArtist lastfmArtist, Response response) {
+                progressBar.setVisibility(View.GONE);
+                String info = lastfmArtist.getBio().getContent();
                 if (info.length() == 0) {
                     info = getString(R.string.not_found);
                 }
                 textView.setText(Html.fromHtml(info.replace("\n", "<br />").trim()));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
                 progressBar.setVisibility(View.GONE);
+                ErrorNotifier.showLastfmError(error);
             }
         });
     }
