@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" android:baselineAligned="false"
-                android:id="@+id/playlist_tab_item_main_layout">
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:baselineAligned="false"
+    android:id="@+id/playlist_tab_item_main_layout">
 
     <!--<ImageView-->
     <!--android:id="@+id/play_image_view_list_item"-->
@@ -17,98 +18,112 @@
     <!--android:visibility="invisible" />-->
 
     <View
-            android:id="@+id/play_image_view_list_item"
-            android:layout_width="20dp"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true" android:layout_marginLeft="0dp" android:layout_alignParentTop="false"
-            android:layout_marginTop="0dp" android:visibility="visible"
-            android:layout_alignBottom="@+id/relativeLayout"/>
-    <ImageView android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:src="@drawable/menu_little"
-               android:focusable="false"
-               android:focusableInTouchMode="false"
-               android:id="@+id/grabber_list_item"
-               android:visibility="gone" android:adjustViewBounds="false"
-               android:layout_toRightOf="@+id/play_image_view_list_item"
-               android:layout_alignTop="@+id/play_image_view_list_item"
-               android:layout_alignBottom="@+id/play_image_view_list_item"/>
+        android:id="@+id/play_image_view_list_item"
+        android:layout_width="20dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="0dp"
+        android:layout_alignParentTop="false"
+        android:layout_marginTop="0dp"
+        android:visibility="visible"
+        android:layout_alignBottom="@+id/relativeLayout" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/menu_little"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:id="@+id/grabber_list_item"
+        android:visibility="gone"
+        android:adjustViewBounds="false"
+        android:layout_toRightOf="@+id/play_image_view_list_item"
+        android:layout_alignTop="@+id/play_image_view_list_item"
+        android:layout_alignBottom="@+id/play_image_view_list_item" />
+
     <RelativeLayout
-            android:id="@+id/addition_info_linear_layout"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_width="50dp"
+        android:id="@+id/addition_info_linear_layout"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/play_image_view_list_item"
+        android:layout_alignParentBottom="false">
+
+        <TextView
+            android:id="@+id/position_text_view_list_item"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:orientation="vertical"
-            android:paddingLeft="10dp" android:layout_alignParentLeft="false" android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignBottom="@+id/play_image_view_list_item" android:layout_alignParentBottom="false">
+            android:textColor="@color/secondary_text"
+            android:textSize="14dip"
+            android:gravity="center"
+            android:layout_alignLeft="@+id/queue_number_text_view_list_item"
+            android:layout_alignParentTop="true" />
 
         <TextView
-                android:id="@+id/position_text_view_list_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:textColor="@android:color/white"
-                android:textSize="14dip" android:gravity="center"
-                android:layout_alignLeft="@+id/queue_number_text_view_list_item" android:layout_alignParentTop="true"/>
-
-        <TextView
-                android:id="@+id/queue_number_text_view_list_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|bottom"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:gravity="center"
-                android:textColor="@android:color/white"
-                android:textSize="14dip"
-                android:layout_alignParentLeft="true" android:layout_alignParentBottom="true"/>
+            android:id="@+id/queue_number_text_view_list_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            android:textColor="@color/secondary_text"
+            android:textSize="14dip"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true" />
     </RelativeLayout>
+
     <RelativeLayout
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_width="480dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:id="@+id/relativeLayout"
+        android:layout_toRightOf="@+id/grabber_list_item"
+        android:layout_toLeftOf="@+id/addition_info_linear_layout"
+        android:paddingLeft="8dp"
+        android:layout_alignParentBottom="false">
+
+        <TextView
+            android:id="@+id/title_list_item"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:orientation="vertical"
-            android:layout_alignParentTop="true"
-            android:id="@+id/relativeLayout"
-            android:layout_toRightOf="@+id/grabber_list_item"
-            android:layout_toLeftOf="@+id/addition_info_linear_layout" android:paddingLeft="8dp">
+            android:textColor="@color/primary_text"
+            android:textSize="18dip"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true" />
 
         <TextView
-                android:id="@+id/artist_list_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:text="Linkin Park"
-                android:textColor="@android:color/white"
-                android:textSize="14dip"
-                android:layout_alignParentRight="true" android:layout_alignParentLeft="true"/>
-
-        <TextView
-                android:id="@+id/title_list_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:text="In The End"
-                android:textColor="@android:color/white"
-                android:textSize="18dip"
-                android:textStyle="bold"
-                android:typeface="sans"
-                android:layout_alignWithParentIfMissing="false"
-                android:layout_alignLeft="@+id/artist_list_item" android:layout_below="@+id/artist_list_item"
-                android:layout_alignRight="@+id/artist_list_item"/>
+            android:id="@+id/artist_list_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textColor="@color/secondary_text"
+            android:textSize="12dip"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_alignLeft="@+id/title_list_item"
+            android:layout_below="@+id/title_list_item"
+            android:layout_alignRight="@+id/title_list_item" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -40,6 +40,15 @@
         android:textSize="24sp"
         android:visibility="gone" />
 
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignTop="@+id/artist_text_view_playback_tab"
+        android:background="@color/accent_dark"
+        android:id="@+id/back_layout"
+        android:layout_above="@+id/linearLayout"
+        android:layout_marginTop="-8dp"></RelativeLayout>
+
     <SeekBar
         android:id="@+id/seek_bar_playback_tab"
         android:layout_width="match_parent"
@@ -52,25 +61,17 @@
         android:thumb="@color/none"
         android:background="@color/accent" />
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignTop="@+id/artist_text_view_playback_tab"
-        android:background="@color/accent_dark"
-        android:id="@+id/back_layout"
-        android:layout_above="@+id/linearLayout"></RelativeLayout>
-
     <TextView
         android:id="@+id/artist_text_view_playback_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/title_text_view_playback_tab"
-        android:layout_centerHorizontal="true"
         android:clickable="true"
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="22sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginLeft="8dp" />
 
     <TextView
         android:id="@+id/time_text_view_playback_tab"
@@ -88,15 +89,13 @@
         android:id="@+id/title_text_view_playback_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:layout_alignRight="@+id/artist_image_view_headset"
         android:layout_above="@+id/time_text_view_playback_tab"
         android:layout_alignLeft="@+id/artist_image_view_headset"
         android:layout_toRightOf="@+id/time_text_view_playback_tab"
-        android:layout_toLeftOf="@+id/time_inverted_text_view_playback_tab"
-        android:layout_marginBottom="@dimen/main_screen_padding" />
+        android:layout_marginBottom="@dimen/main_screen_padding"
+        android:layout_marginLeft="8dp" />
 
     <RelativeLayout
         android:orientation="horizontal"

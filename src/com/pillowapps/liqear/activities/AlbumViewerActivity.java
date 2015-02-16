@@ -117,7 +117,8 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
         TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         indicator.setOnClickListener(null);
         indicator.setViewPager(pager);
-        indicator.setFooterColor(getResources().getColor(R.color.darkest_blue));
+        indicator.setTextColor(getResources().getColor(R.color.secondary_text)); indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
+        indicator.setFooterColor(getResources().getColor(R.color.accent));
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {

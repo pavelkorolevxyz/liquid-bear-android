@@ -18,7 +18,7 @@
         android:longClickable="false"
         android:focusable="false"
         android:paddingTop="20dp"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/secondary_text"
         android:textSize="@dimen/mode_button_text_size"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"

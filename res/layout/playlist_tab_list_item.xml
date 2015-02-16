@@ -22,7 +22,7 @@
         android:layout_width="20dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
-        android:background="@color/clear_blue"
+        android:background="@color/accent"
         android:layout_alignBottom="@+id/relativeLayout"
         android:layout_alignTop="@+id/relativeLayout"
         android:visibility="invisible" />
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:textColor="@android:color/white"
+            android:textColor="@color/secondary_text"
             android:textSize="14dip"
             android:layout_alignParentTop="true"
             android:text="134"
@@ -75,12 +75,11 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:textColor="@android:color/white"
+            android:textColor="@color/secondary_text"
             android:textSize="14dip"
             android:text="(318)"
             android:layout_below="@+id/position_text_view_list_item"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="false"
             android:gravity="right"
             android:singleLine="true"
             android:layout_alignParentRight="true"
@@ -103,29 +102,27 @@
         android:layout_alignParentBottom="false">
 
         <TextView
-            android:id="@+id/artist_list_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:textColor="@android:color/white"
-            android:textSize="14dip"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentLeft="true" />
-
-        <TextView
             android:id="@+id/title_list_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:textColor="@android:color/white"
+            android:textColor="@color/primary_text"
             android:textSize="18dip"
-            android:textStyle="bold"
-            android:typeface="sans"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true" />
+
+        <TextView
+            android:id="@+id/artist_list_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textColor="@color/secondary_text"
+            android:textSize="12dip"
             android:layout_alignWithParentIfMissing="false"
-            android:layout_alignLeft="@+id/artist_list_item"
-            android:layout_below="@+id/artist_list_item"
-            android:layout_alignRight="@+id/artist_list_item" />
+            android:layout_alignLeft="@+id/title_list_item"
+            android:layout_below="@+id/title_list_item"
+            android:layout_alignRight="@+id/title_list_item" />
     </RelativeLayout>
 </RelativeLayout>

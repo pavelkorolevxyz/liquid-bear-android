@@ -10,10 +10,10 @@
         android:right="-2dp"
         android:top="-2dp">
         <shape>
-            <solid android:color="@color/darkest_blue" />
+            <solid android:color="@color/icons_shaded" />
             <stroke
                 android:width="1dp"
-                android:color="@color/clear_blue" />
+                android:color="@color/accent" />
         </shape>
     </item>
 </layer-list>
