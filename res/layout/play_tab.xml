@@ -23,7 +23,7 @@
         android:background="@drawable/fade_to_black_gradient"
         android:id="@+id/view"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/seek_bar_playback_tab" />
+        android:layout_above="@+id/back_layout" />
 
     <TextView
         android:id="@+id/time_plate_text_view_playback_tab"
@@ -40,14 +40,54 @@
         android:textSize="24sp"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/time_text_view_playback_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal|top"
+        android:paddingLeft="@dimen/main_screen_padding"
+        android:visibility="gone" />
+
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignTop="@+id/artist_text_view_playback_tab"
+        android:layout_height="80dp"
         android:background="@color/accent_dark"
         android:id="@+id/back_layout"
-        android:layout_above="@+id/linearLayout"
-        android:layout_marginTop="-8dp"></RelativeLayout>
+        android:layout_above="@+id/seek_bar_playback_tab"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:gravity="center_vertical">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:id="@+id/artist_text_view_playback_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:gravity="center|center_vertical"
+                android:textColor="@android:color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/title_text_view_playback_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:layout_below="@+id/artist_text_view_playback_tab"
+                android:gravity="center_vertical" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
     <SeekBar
         android:id="@+id/seek_bar_playback_tab"
@@ -61,42 +101,6 @@
         android:thumb="@color/none"
         android:background="@color/accent" />
 
-    <TextView
-        android:id="@+id/artist_text_view_playback_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/title_text_view_playback_tab"
-        android:clickable="true"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginLeft="8dp" />
-
-    <TextView
-        android:id="@+id/time_text_view_playback_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_alignLeft="@+id/artist_image_view_headset"
-        android:layout_alignBottom="@+id/view"
-        android:paddingLeft="@dimen/main_screen_padding" />
-
-    <TextView
-        android:id="@+id/title_text_view_playback_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:layout_above="@+id/time_text_view_playback_tab"
-        android:layout_alignLeft="@+id/artist_image_view_headset"
-        android:layout_toRightOf="@+id/time_text_view_playback_tab"
-        android:layout_marginBottom="@dimen/main_screen_padding"
-        android:layout_marginLeft="8dp" />
-
     <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -109,10 +113,10 @@
 
         <ImageButton
             android:id="@+id/repeat_button_playback_tab"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:background="@null"
             android:src="@drawable/repeat_normal"
-            android:layout_width="wrap_content"
+            android:layout_width="48dp"
             android:layout_gravity="left"
             android:layout_alignParentLeft="false"
             android:layout_marginLeft="8dp"
@@ -121,29 +125,26 @@
             android:layout_margin="0dp"
             android:contentDescription="@string/repeat_button"
             android:layout_alignParentBottom="false"
-            android:paddingLeft="@dimen/main_screen_padding"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
-            android:paddingRight="14dp" />
+            android:scaleType="fitXY"
+            android:padding="10dp" />
 
         <ImageButton
             android:id="@+id/prev_button_playback_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@null"
-            android:padding="14dp"
             android:src="@drawable/prev_button_states"
             android:layout_gravity="center"
             android:layout_toLeftOf="@+id/play_pause_button_playback_tab"
             android:layout_alignTop="@+id/repeat_button_playback_tab"
-            android:contentDescription="@string/prev_button" />
+            android:contentDescription="@string/prev_button"
+            android:scaleType="fitXY" />
 
         <ImageButton
             android:id="@+id/play_pause_button_playback_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentBottom="false"
-            android:padding="14dp"
             android:background="@null"
             android:src="@drawable/play_button_states"
             android:layout_alignParentLeft="false"
@@ -152,37 +153,36 @@
             android:layout_marginTop="0dp"
             android:layout_margin="0dp"
             android:layout_centerHorizontal="true"
-            android:contentDescription="@string/play_pause" />
+            android:contentDescription="@string/play_pause"
+            android:scaleType="fitXY" />
 
         <ImageButton
             android:id="@+id/next_button_playback_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@null"
-            android:padding="14dp"
             android:src="@drawable/next_button_states"
             android:layout_gravity="center"
             android:layout_toRightOf="@+id/play_pause_button_playback_tab"
             android:layout_alignTop="@+id/repeat_button_playback_tab"
-            android:contentDescription="@string/next_button" />
+            android:contentDescription="@string/next_button"
+            android:scaleType="fitXY" />
 
         <ImageButton
             android:id="@+id/shuffle_button_playback_tab"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="false"
             android:background="@null"
             android:src="@drawable/shuffle_normal"
-            android:layout_width="wrap_content"
+            android:layout_width="48dp"
             android:contentDescription="@string/shuffle_button"
             android:layout_alignParentLeft="false"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="0dp"
             android:layout_margin="0dp"
-            android:paddingLeft="14dp"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
-            android:paddingRight="@dimen/main_screen_padding" />
+            android:scaleType="fitXY"
+            android:padding="10dp" />
     </RelativeLayout>
 
     <TextView
@@ -195,7 +195,8 @@
         android:layout_gravity="center_horizontal|top"
         android:layout_alignRight="@+id/artist_image_view_headset"
         android:layout_alignBottom="@+id/view"
-        android:paddingRight="@dimen/main_screen_padding" />
+        android:paddingRight="@dimen/main_screen_padding"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -228,7 +229,6 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/artist_text_view_playback_tab"
         android:gravity="clip_vertical"
         android:visibility="gone"
         android:id="@+id/tutorial_layout">

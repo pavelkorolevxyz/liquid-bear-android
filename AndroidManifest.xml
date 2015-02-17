@@ -17,7 +17,7 @@
 
     <application
         android:name=".LiqearApplication"
-        android:icon="@drawable/ic_launcher_3"
+        android:icon="@drawable/lb_icon_white"
         android:theme="@style/LiquidBearAppTheme"
         android:allowBackup="true"
         android:label="@string/app_name">
