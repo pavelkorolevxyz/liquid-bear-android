@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.models.Album;
@@ -119,6 +121,11 @@ public class ListArrayAdapter<T> extends ArrayAdapter<T> {
             holder.textView.setText(Html.fromHtml(((Tag) currentItem).getName()));
             holder.imageView.setVisibility(View.GONE);
         }
+
+        convertView.setBackgroundDrawable(position % 2 == 0 ?
+                Config.resources.getDrawable(R.drawable.list_item_background) :
+                Config.resources.getDrawable(R.drawable.list_item_background_blue));
+
         return convertView;
     }
 

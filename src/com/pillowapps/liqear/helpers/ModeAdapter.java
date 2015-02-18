@@ -2,7 +2,10 @@ package com.pillowapps.liqear.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.DataSetObserver;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,7 +130,13 @@ public class ModeAdapter implements StickyGridHeadersBaseAdapter {
 
         final Mode mode = modes.get(i);
         int icon = mode.getIcon();
-        holder.modeButton.setCompoundDrawablesWithIntrinsicBounds(0, icon, 0, 0);
+
+        Resources res = context.getResources();
+
+        Drawable drawable = res.getDrawable(icon);
+        drawable.setColorFilter(R.color.primary, PorterDuff.Mode.MULTIPLY);
+
+        holder.modeButton.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         String label = context.getString(mode.getTitle()).toLowerCase();
         holder.modeButton.setText(label);
         holder.modeButton.setContentDescription(label);

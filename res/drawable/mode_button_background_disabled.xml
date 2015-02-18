@@ -11,9 +11,6 @@
         android:top="-2dp">
         <shape>
             <solid android:color="@color/almost_black_darker" />
-            <stroke
-                android:width="1dp"
-                android:color="@color/almost_black" />
         </shape>
     </item>
 </layer-list>

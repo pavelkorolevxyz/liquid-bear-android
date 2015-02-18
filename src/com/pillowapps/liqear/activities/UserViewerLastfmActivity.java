@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.costum.android.widget.LoadMoreListView;
@@ -31,10 +32,10 @@ import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.Artist;
-import com.pillowapps.liqear.models.lastfm.LastfmArtist;
-import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.User;
+import com.pillowapps.liqear.models.lastfm.LastfmArtist;
+import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
@@ -141,6 +142,10 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view,
                                        int itemPosition, long l) {
+                TextView selectedText = (TextView) adapterView.getChildAt(0);
+                if (selectedText != null) {
+                    selectedText.setTextColor(getResources().getColor(R.color.primary_text));
+                }
                 topTracksPeriod = Constants.PERIODS_WITHOUT_ONEMONTH_ARRAY[itemPosition];
                 SharedPreferences savePreferences = PreferencesManager.getSavePreferences();
                 SharedPreferences.Editor editor = savePreferences.edit();
@@ -175,6 +180,10 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView,
                                        View view, int itemPosition, long l) {
+                TextView selectedText = (TextView) adapterView.getChildAt(0);
+                if (selectedText != null) {
+                    selectedText.setTextColor(getResources().getColor(R.color.primary_text));
+                }
                 topArtistsPeriod = Constants.PERIODS_ARRAY[itemPosition];
                 SharedPreferences.Editor editor = PreferencesManager.getSavePreferences().edit();
                 editor.putInt(Constants.TIME_TOP_ARTISTS, itemPosition).commit();
@@ -228,7 +237,8 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
         indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         indicator.setOnClickListener(null);
         indicator.setViewPager(pager);
-        indicator.setTextColor(getResources().getColor(R.color.secondary_text)); indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
+        indicator.setTextColor(getResources().getColor(R.color.secondary_text));
+        indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
         indicator.setFooterColor(getResources().getColor(R.color.accent));
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

@@ -1,44 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@drawable/square_button_states"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/mode_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/square_button_states"
-        android:drawablePadding="15sp"
-        android:paddingBottom="8dp"
-        android:clickable="false"
-        android:maxLines="1"
-        android:longClickable="false"
-        android:focusable="false"
-        android:paddingTop="20dp"
-        android:textColor="@color/secondary_text"
-        android:textSize="@dimen/mode_button_text_size"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true" />
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:elevation="3dp">
 
-    <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/edit_mode_button"
-        android:src="@drawable/minus"
-        android:padding="4dp"
-        android:textOn=""
-        android:textOff=""
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:checked="false"
-        android:enabled="true"
-        android:layout_alignRight="@+id/mode_button"
-        android:layout_alignTop="@+id/mode_button"
-        android:visibility="visible"
-        android:background="@null" />
+        <Button
+            android:id="@+id/mode_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_view_background_color"
+            android:drawablePadding="15sp"
+            android:paddingBottom="8dp"
+            android:clickable="false"
+            android:maxLines="1"
+            android:longClickable="false"
+            android:focusable="false"
+            android:paddingTop="20dp"
+            android:textColor="@color/secondary_text"
+            android:textSize="@dimen/mode_button_text_size"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true" />
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/edit_mode_button"
+            android:src="@drawable/minus"
+            android:padding="4dp"
+            android:textOn=""
+            android:textOff=""
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:checked="false"
+            android:enabled="true"
+            android:layout_alignRight="@+id/mode_button"
+            android:layout_alignTop="@+id/mode_button"
+            android:visibility="visible"
+            android:background="@null" />
+    </RelativeLayout>
 </RelativeLayout>

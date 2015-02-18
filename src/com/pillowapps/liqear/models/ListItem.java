@@ -56,7 +56,9 @@ public class ListItem implements Item {
                         : R.drawable.plus
         );
         boolean enabled = ModeItemsHelper.isModeEnabled(mode);
-        holder.mainView.setBackgroundResource(!enabled ? R.drawable.square_simple_button_states_disabled : R.drawable.square_simple_button_states);
+        holder.mainView.setBackgroundResource(!enabled
+                ? R.drawable.card_view_background_disabled
+                : R.drawable.card_view_background_color);
         holder.switchVisibilityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
