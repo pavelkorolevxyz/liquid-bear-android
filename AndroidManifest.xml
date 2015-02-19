@@ -67,6 +67,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.PreferencesActivity"
+            android:theme="@style/PreferencesTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.RecommendationsSherlockActivity"

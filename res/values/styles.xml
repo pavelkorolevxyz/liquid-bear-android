@@ -12,4 +12,15 @@
     </style>
 
     <style name="NavigationTextStyle" parent="@style/TextAppearance.AppCompat.Medium" />
+
+    <style name="PreferencesTheme" parent="AppTheme.Base">
+        <item name="android:colorBackground">@color/icons</item>
+        <item name="android:colorForeground">@color/secondary_text</item>
+
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <item name="android:textColorSecondary">@color/secondary_text</item>
+        <item name="android:textColorTertiary">@color/accent</item>
+        <item name="android:textColorPrimaryDisableOnly">@color/accent</item>
+        <item name="android:textColorHint">@color/primary</item>
+    </style>
 </resources>

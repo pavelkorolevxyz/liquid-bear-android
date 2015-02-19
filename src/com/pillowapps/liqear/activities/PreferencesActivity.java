@@ -7,7 +7,11 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.analytics.tracking.android.EasyTracker;
 import com.pillowapps.liqear.LiqearApplication;
@@ -25,6 +29,17 @@ public class PreferencesActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
 //        getActionBar().setTitle(R.string.preferences);
+
+        LinearLayout root = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
+        Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
+        root.addView(bar, 0);
+        bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         Preference authorizationsPref = findPreference("authorizations_preference_preferences");
         authorizationsPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
