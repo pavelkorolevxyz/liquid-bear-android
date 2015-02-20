@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="fill_parent"
              android:layout_height="fill_parent"
-             android:padding="1dip" android:background="@android:color/black">
+             android:padding="1dip">
 
     <com.pillowapps.liqear.components.TouchImageView
             android:id="@+id/image"

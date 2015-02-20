@@ -6,7 +6,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:background="@color/black">
+        android:background="@color/icons"
+    android:id="@+id/main_layout">
 
     <fragment
             android:id="@+id/handset_fragment"

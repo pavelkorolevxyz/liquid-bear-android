@@ -10,13 +10,13 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.view.MenuCompat;
 import android.support.v7.app.ActionBar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -170,18 +170,26 @@ public class MainActivity extends SlidingFragmentActivity {
             setBehindContentView(v);
             getSlidingMenu().setSlidingEnabled(false);
             getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int navBarHeight = getNavigationBarHeight();
-            findViewById(R.id.main_layout).setPadding(0, 0, 0, navBarHeight);
-            View menuFrame = findViewById(R.id.menu_frame);
-            if (menuFrame != null) {
-                menuFrame.setPadding(0, 0, 0, navBarHeight);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                    && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                int navBarHeight = getNavigationBarHeight();
+                findViewById(R.id.main_layout).setPadding(0, 0, 0, navBarHeight);
+                View menuFrame = findViewById(R.id.menu_frame);
+                if (menuFrame != null) {
+                    menuFrame.setPadding(0, 0, 0, navBarHeight);
+                }
+            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                int navBarWidth = getNavigationBarHeight();
+                findViewById(R.id.main_layout).setPadding(0, 0, navBarWidth, 0);
+                View menuFrame = findViewById(R.id.menu_frame);
+                if (menuFrame != null) {
+                    menuFrame.setPadding(0, 0, navBarWidth, 0);
+                }
             }
         }
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
         startMusicService();
 
 //        ViewServer.get(this).addWindow(this);
@@ -209,7 +217,11 @@ public class MainActivity extends SlidingFragmentActivity {
 
     private int getNavigationBarHeight() {
         Resources resources = getResources();
-        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+
+        int resourceId = resources.getIdentifier(
+                getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
+                        "navigation_bar_height" : "navigation_bar_width",
+                "dimen", "android");
         if (resourceId > 0) {
             return resources.getDimensionPixelSize(resourceId);
         }

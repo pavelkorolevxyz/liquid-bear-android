@@ -10,7 +10,15 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.EqualizerManager;
 import com.pillowapps.liqear.helpers.CompatEq;
@@ -32,9 +40,9 @@ public class EqualizerSherlockActivity extends TrackedActivity {
 
     @Override
     public void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
         setTitle(R.string.equalizer);
         setContentView(R.layout.equalizer_layout);
-        super.onCreate(icicle);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -49,6 +57,22 @@ public class EqualizerSherlockActivity extends TrackedActivity {
         setupEqualizerFxAndUI(numberOfPresets == 0);
 
         checkEnabled();
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view,
+                                       int position, long l) {
+                TextView selectedText = (TextView) adapterView.getChildAt(0);
+                if (selectedText != null) {
+                    selectedText.setTextColor(getResources().getColor(R.color.primary_text));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void checkEnabled() {
@@ -141,6 +165,7 @@ public class EqualizerSherlockActivity extends TrackedActivity {
         checkBox.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
+        checkBox.setTextColor(getResources().getColor(R.color.primary_text));
         checkBox.setText(R.string.enable_equalizer);
         checkBox.setChecked(preferences.getBoolean("enabled", true));
         equalizer.setEnabled(checkBox.isChecked());
@@ -164,7 +189,7 @@ public class EqualizerSherlockActivity extends TrackedActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT));
             freqTextView.setGravity(Gravity.CENTER_HORIZONTAL);
             freqTextView.setTextSize(TEXT_SIZE);
-            freqTextView.setTextColor(getResources().getColor(android.R.color.white));
+            freqTextView.setTextColor(getResources().getColor(R.color.primary_text));
             freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + " Hz");
             mainLinearLayout.addView(freqTextView);
 
@@ -176,7 +201,7 @@ public class EqualizerSherlockActivity extends TrackedActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
             minDbTextView.setTextSize(TEXT_SIZE);
-            minDbTextView.setTextColor(getResources().getColor(android.R.color.white));
+            minDbTextView.setTextColor(getResources().getColor(R.color.primary_text));
             minDbTextView.setText((minEQLevel / 100) + " dB");
 
             TextView maxDbTextView = new TextView(this);
@@ -184,7 +209,7 @@ public class EqualizerSherlockActivity extends TrackedActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
             maxDbTextView.setText((maxEQLevel / 100) + " dB");
-            maxDbTextView.setTextColor(getResources().getColor(android.R.color.white));
+            maxDbTextView.setTextColor(getResources().getColor(R.color.primary_text));
             maxDbTextView.setTextSize(TEXT_SIZE);
 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -226,7 +251,7 @@ public class EqualizerSherlockActivity extends TrackedActivity {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         bassBoostTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         bassBoostTextView.setTextSize(TEXT_SIZE);
-        bassBoostTextView.setTextColor(getResources().getColor(android.R.color.white));
+        bassBoostTextView.setTextColor(getResources().getColor(R.color.primary_text));
         bassBoostTextView.setText("Bass boost");
         mainLinearLayout.addView(bassBoostTextView);
 
