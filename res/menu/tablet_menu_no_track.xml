@@ -3,7 +3,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/edit_modes_button"
-          android:icon="@drawable/editmode"
+          android:icon="@drawable/ic_edit_mode"
           android:title="@string/switch_edit_mode"
           app:showAsAction="always|collapseActionView"/>
     <item
@@ -22,7 +22,7 @@
                   app:showAsAction="ifRoom|collapseActionView"
                   android:title="@string/search"/>
             <item android:id="@+id/playlist_edit_mode_button"
-                  android:icon="@drawable/editmode"
+                  android:icon="@drawable/ic_edit_mode"
                   android:title="@string/switch_edit_mode"
                   app:showAsAction="always|withText"/>
             <item android:id="@+id/fixate_search_result_button"

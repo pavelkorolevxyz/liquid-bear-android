@@ -101,6 +101,7 @@ public class HandsetFragment extends Fragment {
     private View tutorialLayout;
     private Animation tutorialBlinkAnimation;
     private ViewGroup backLayout;
+    private ViewGroup bottomControlsLayout;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -126,7 +127,7 @@ public class HandsetFragment extends Fragment {
         pager.setOffscreenPageLimit(views.size());
         indicator = (UnderlinePageIndicator) v.findViewById(R.id.indicator);
 
-        indicator.setSelectedColor(getResources().getColor(R.color.clear_blue));
+        indicator.setSelectedColor(getResources().getColor(R.color.accent));
         indicator.setOnClickListener(null);
         indicator.setViewPager(pager);
         changeViewPagerItem(1);
@@ -147,7 +148,7 @@ public class HandsetFragment extends Fragment {
                         tutorialLayout.setVisibility(View.GONE);
                     }
                     SharedPreferences.Editor editor = startPreferences.edit();
-                    editor.putBoolean(Constants.TUTORIAL_DISABLED, true).commit();
+                    editor.putBoolean(Constants.TUTORIAL_DISABLED, true).apply();
                 }
             }
 
@@ -190,6 +191,7 @@ public class HandsetFragment extends Fragment {
         playPauseButton = (ImageButton) playbackTab.findViewById(
                 R.id.play_pause_button_playback_tab);
         backLayout = (ViewGroup) playbackTab.findViewById(R.id.back_layout);
+        bottomControlsLayout = (ViewGroup) playbackTab.findViewById(R.id.bottom_controls_layout);
 
         seekBar = (SeekBar) playbackTab.findViewById(R.id.seek_bar_playback_tab);
         timeTextView = (TextView) playbackTab.findViewById(
@@ -545,7 +547,27 @@ public class HandsetFragment extends Fragment {
         if (PreferencesManager.getPreferences()
                 .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
             imageLoader.displayImage(AudioTimeline.getImageUrl(),
-                    artistImageView, options);
+                    artistImageView, options, new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted() {
+
+                        }
+
+                        @Override
+                        public void onLoadingFailed(FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(Bitmap bitmap) {
+                            updatePaletteWithBitmap(bitmap);
+                        }
+
+                        @Override
+                        public void onLoadingCancelled() {
+
+                        }
+                    });
         }
 
         Album album = AudioTimeline.getAlbum();
@@ -688,7 +710,28 @@ public class HandsetFragment extends Fragment {
                             Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
                         String imageUrl = intent.getStringExtra(Constants.IMAGE_URL);
                         AudioTimeline.setImageUrl(imageUrl);
-                        imageLoader.displayImage(imageUrl, artistImageView, options);
+                        imageLoader.displayImage(imageUrl, artistImageView, options,
+                                new ImageLoadingListener() {
+                                    @Override
+                                    public void onLoadingStarted() {
+
+                                    }
+
+                                    @Override
+                                    public void onLoadingFailed(FailReason failReason) {
+
+                                    }
+
+                                    @Override
+                                    public void onLoadingComplete(Bitmap bitmap) {
+                                        updatePaletteWithBitmap(bitmap);
+                                    }
+
+                                    @Override
+                                    public void onLoadingCancelled() {
+
+                                    }
+                                });
                     }
                     break;
                 case MusicPlaybackService.NO_URL_CALLBACK:
@@ -706,36 +749,7 @@ public class HandsetFragment extends Fragment {
                         } else {
                             albumImageView.setVisibility(View.VISIBLE);
                             imageLoader.displayImage(imageUrl, albumImageView,
-                                    options, new ImageLoadingListener() {
-                                        @Override
-                                        public void onLoadingStarted() {
-
-                                        }
-
-                                        @Override
-                                        public void onLoadingFailed(FailReason failReason) {
-
-                                        }
-
-                                        @Override
-                                        public void onLoadingComplete(Bitmap bitmap) {
-                                            Palette.generateAsync(bitmap,
-                                                    new Palette.PaletteAsyncListener() {
-                                                        @Override
-                                                        public void onGenerated(Palette palette) {
-                                                            Palette.Swatch vibrantSwatch = palette.getDarkMutedSwatch();
-                                                            if (vibrantSwatch == null) return;
-                                                            backLayout.setBackgroundColor(
-                                                                    vibrantSwatch.getRgb());
-                                                        }
-                                                    });
-                                        }
-
-                                        @Override
-                                        public void onLoadingCancelled() {
-
-                                        }
-                                    });
+                                    options);
 
                         }
                         String title = album.getTitle();
@@ -757,5 +771,36 @@ public class HandsetFragment extends Fragment {
             }
         }
 
+    }
+
+    private void updatePaletteWithBitmap(Bitmap bitmap) {
+        if (bitmap == null) {
+            backLayout.setBackgroundColor(getResources().getColor(R.color.accent_dark));
+            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent));
+            return;
+        }
+        Palette.generateAsync(bitmap,
+                new Palette.PaletteAsyncListener() {
+                    @Override
+                    public void onGenerated(Palette palette) {
+                        Palette.Swatch backSwatch =
+                                palette.getDarkMutedSwatch();
+                        if (backSwatch == null) {
+                            backLayout.setBackgroundColor(getResources().getColor(R.color.accent_dark));
+                            return;
+                        }
+                        backLayout.setBackgroundColor(
+                                backSwatch.getRgb());
+
+                        Palette.Swatch bottomSwatch =
+                                palette.getDarkVibrantSwatch();
+                        if (bottomSwatch == null) {
+                            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent));
+                            return;
+                        }
+                        bottomControlsLayout.setBackgroundColor(
+                                bottomSwatch.getRgb());
+                    }
+                });
     }
 }

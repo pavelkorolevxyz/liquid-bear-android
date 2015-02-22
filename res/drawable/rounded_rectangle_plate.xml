@@ -5,11 +5,11 @@
     android:orientation="vertical"
     android:shape="rectangle">
 
-    <solid android:color="@color/accent" />
+    <solid android:color="@color/primary" />
 
     <stroke
         android:width="2dip"
-        android:color="@color/accent" />
+        android:color="@color/primary" />
 
     <corners
         android:bottomLeftRadius="4dip"
