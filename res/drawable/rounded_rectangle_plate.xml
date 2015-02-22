@@ -3,13 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:shape="rectangle" >
+    android:shape="rectangle">
 
-    <solid android:color="#55595959" />
+    <solid android:color="@color/accent" />
 
     <stroke
-        android:width="3dip"
-        android:color="#33707070" />
+        android:width="2dip"
+        android:color="@color/accent" />
 
     <corners
         android:bottomLeftRadius="4dip"

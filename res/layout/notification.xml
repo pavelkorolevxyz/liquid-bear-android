@@ -80,5 +80,5 @@
     <ImageView
             android:layout_width="64dp"
             android:layout_height="fill_parent"
-            android:id="@+id/album_cover_image_view" android:src="@drawable/vinyl" android:scaleType="fitCenter"/>
+            android:id="@+id/album_cover_image_view" android:src="@drawable/lb_icon_white" android:scaleType="fitCenter"/>
 </RelativeLayout>

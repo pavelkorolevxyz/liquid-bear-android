@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp"
     android:background="@color/icons">
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -18,7 +17,7 @@
             android:clickable="true"
             android:linksClickable="true"
             android:autoLink="all"
-            android:padding="8dp"
+            android:padding="12dp"
             android:textColor="@color/primary_text"
             android:textSize="18sp"
             android:textColorLink="@color/accent" />

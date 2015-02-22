@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="fill_parent"
-             android:layout_height="fill_parent"
-             android:focusable="false"
-             android:focusableInTouchMode="false"
-             android:orientation="horizontal"
-             android:padding="4dp">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:orientation="horizontal"
+    android:padding="4dp">
+
     <ImageView
-            android:id="@+id/image_tile_list_item"
-            android:layout_width="fill_parent"
-            android:layout_height="120dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:focusable="false"
-            android:scaleType="centerCrop"
-            android:focusableInTouchMode="false"
-            android:contentDescription=""/>
+        android:id="@+id/image_tile_list_item"
+        android:layout_width="fill_parent"
+        android:layout_height="120dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:scaleType="centerCrop"
+        android:focusableInTouchMode="false"
+        android:contentDescription="" />
+
     <TextView
-            android:id="@+id/text_tile_list_item"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:padding="6dp"
-            android:textColor="@android:color/white"
-            android:background="@color/darkening_bg"
-            android:textSize="14dip"
-            android:gravity="center"
-            android:layout_gravity="center_horizontal|bottom"/>
+        android:id="@+id/text_tile_list_item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:padding="6dp"
+        android:textColor="@android:color/white"
+        android:background="@color/accent"
+        android:textSize="14dip"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal|bottom" />
 </FrameLayout>

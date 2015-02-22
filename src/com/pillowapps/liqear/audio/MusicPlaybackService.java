@@ -766,7 +766,7 @@ public class MusicPlaybackService extends Service implements
 
         Bitmap bitmap = AudioTimeline.getCurrentAlbumBitmap();
         if (bitmap == null) {
-            contentView.setInt(R.id.album_cover_image_view, "setImageResource", R.drawable.vinyl);
+            contentView.setInt(R.id.album_cover_image_view, "setImageResource", R.drawable.lb_icon_white);
         } else {
             contentView.setImageViewBitmap(R.id.album_cover_image_view, bitmap);
         }
@@ -824,7 +824,7 @@ public class MusicPlaybackService extends Service implements
             }
 
             if (bitmap == null) {
-                bigView.setInt(R.id.album_cover_image_view, "setImageResource", R.drawable.vinyl);
+                bigView.setInt(R.id.album_cover_image_view, "setImageResource", R.drawable.lb_icon_white);
             } else {
                 bigView.setImageViewBitmap(R.id.album_cover_image_view, bitmap);
             }

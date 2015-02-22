@@ -142,7 +142,7 @@ public class EqualizerSherlockActivity extends TrackedActivity {
                     for (short i = 0; i < bands; i++) {
                         editor.putInt(Constants.EQUALIZER + i, equalizer.getBandLevel(i));
                     }
-                    editor.commit();
+                    editor.apply();
                     setupEqualizerSeeks();
                 }
 

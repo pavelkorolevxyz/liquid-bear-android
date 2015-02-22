@@ -94,7 +94,7 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
         }
         Bitmap bitmap = AudioTimeline.getCurrentAlbumBitmap();
         if (bitmap == null) {
-            views.setInt(R.id.album_cover_image_view, "setImageResource", R.drawable.vinyl);
+            views.setInt(R.id.album_cover_image_view, "setImageResource", R.drawable.lb_icon_white);
         } else {
             views.setImageViewBitmap(R.id.album_cover_image_view, bitmap);
         }

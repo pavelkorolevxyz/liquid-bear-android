@@ -124,7 +124,7 @@ public class ListArrayAdapter<T> extends ArrayAdapter<T> {
 
         convertView.setBackgroundDrawable(position % 2 == 0 ?
                 Config.resources.getDrawable(R.drawable.list_item_background) :
-                Config.resources.getDrawable(R.drawable.list_item_background_blue));
+                Config.resources.getDrawable(R.drawable.list_item_background_tinted));
 
         return convertView;
     }

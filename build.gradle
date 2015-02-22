@@ -33,6 +33,7 @@ android {
             assets.srcDirs = ['assets']
         }
     }
+    
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'

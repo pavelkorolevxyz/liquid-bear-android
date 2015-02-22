@@ -247,7 +247,7 @@ public class MainActivity extends SlidingFragmentActivity {
         SharedPreferences preferences = PreferencesManager.getPreferences();
         try {
             preferences.edit().putInt("version", getPackageManager()
-                    .getPackageInfo(getPackageName(), 0).versionCode).commit();
+                    .getPackageInfo(getPackageName(), 0).versionCode).apply();
         } catch (PackageManager.NameNotFoundException ignored) {
         }
         PlaylistManager.getInstance().updateDatabase();

@@ -7,7 +7,7 @@
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:background="@null" android:src="@drawable/vinyl"
+            android:background="@null" android:src="@drawable/lb_icon_white"
             android:adjustViewBounds="true"
             android:id="@+id/album_cover_image_view" android:scaleType="fitCenter" android:paddingLeft="4dp"
             android:paddingTop="10dp" android:paddingBottom="10dp"/>

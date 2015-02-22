@@ -14,8 +14,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
@@ -59,7 +64,7 @@ public class PlaylistsSherlockListActivity extends ResultSherlockActivity {
         actionBar.setTitle(getResources().getString(R.string.playlist_tab));
         listView.setOnCreateContextMenuListener(this);
         List<Playlist> playlists = PlaylistManager.getInstance().getPlaylists();
-        adapter = new PlaylistsArrayAdapter<Playlist>(
+        adapter = new PlaylistsArrayAdapter<>(
                 PlaylistsSherlockListActivity.this, playlists, Playlist.class);
         listView.setAdapter(adapter);
 
@@ -292,11 +297,15 @@ public class PlaylistsSherlockListActivity extends ResultSherlockActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.search_hint_item, parent,
-                    false);
+            View rowView = inflater.inflate(R.layout.search_hint_item, parent, false);
             TextView textView = (TextView) rowView.findViewById(R.id.text_list_item);
             if (clazz == Playlist.class) {
                 textView.setText(((Playlist) values.get(position)).getTitle());
+            }
+            if (position % 2 == 0) {
+                rowView.setBackgroundResource(R.drawable.list_item_background);
+            } else {
+                rowView.setBackgroundResource(R.drawable.list_item_background_tinted);
             }
             return rowView;
         }

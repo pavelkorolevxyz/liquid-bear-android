@@ -9,7 +9,7 @@
             android:layout_height="fill_parent"
             android:id="@+id/album_cover_image_view"
             android:layout_alignParentTop="true"
-            android:src="@drawable/vinyl"
+            android:src="@drawable/lb_icon_white"
             android:layout_alignBottom="@+id/linearLayout" android:scaleType="centerCrop"
             android:contentDescription="image"/>
     <ImageView android:layout_width="fill_parent" android:layout_height="fill_parent"

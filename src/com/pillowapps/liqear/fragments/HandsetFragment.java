@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.graphics.Palette;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -99,6 +100,7 @@ public class HandsetFragment extends Fragment {
     private ImageView swipeRightImageView;
     private View tutorialLayout;
     private Animation tutorialBlinkAnimation;
+    private ViewGroup backLayout;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -187,6 +189,7 @@ public class HandsetFragment extends Fragment {
         titleTextView = (TextView) playbackTab.findViewById(R.id.title_text_view_playback_tab);
         playPauseButton = (ImageButton) playbackTab.findViewById(
                 R.id.play_pause_button_playback_tab);
+        backLayout = (ViewGroup) playbackTab.findViewById(R.id.back_layout);
 
         seekBar = (SeekBar) playbackTab.findViewById(R.id.seek_bar_playback_tab);
         timeTextView = (TextView) playbackTab.findViewById(
@@ -454,7 +457,7 @@ public class HandsetFragment extends Fragment {
                 text = Utils.secondsToString(timeFromBeginning);
             }
             timeTextView.setText(text);
-            timeDurationTextView.setText(Utils.secondsToString(duration / 1000));
+            timeDurationTextView.setText(String.format(" / %s", Utils.secondsToString(duration / 1000)));
         }
     }
 
@@ -685,8 +688,7 @@ public class HandsetFragment extends Fragment {
                             Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
                         String imageUrl = intent.getStringExtra(Constants.IMAGE_URL);
                         AudioTimeline.setImageUrl(imageUrl);
-                        imageLoader.displayImage(imageUrl, artistImageView,
-                                options);
+                        imageLoader.displayImage(imageUrl, artistImageView, options);
                     }
                     break;
                 case MusicPlaybackService.NO_URL_CALLBACK:
@@ -704,7 +706,37 @@ public class HandsetFragment extends Fragment {
                         } else {
                             albumImageView.setVisibility(View.VISIBLE);
                             imageLoader.displayImage(imageUrl, albumImageView,
-                                    options);
+                                    options, new ImageLoadingListener() {
+                                        @Override
+                                        public void onLoadingStarted() {
+
+                                        }
+
+                                        @Override
+                                        public void onLoadingFailed(FailReason failReason) {
+
+                                        }
+
+                                        @Override
+                                        public void onLoadingComplete(Bitmap bitmap) {
+                                            Palette.generateAsync(bitmap,
+                                                    new Palette.PaletteAsyncListener() {
+                                                        @Override
+                                                        public void onGenerated(Palette palette) {
+                                                            Palette.Swatch vibrantSwatch = palette.getDarkMutedSwatch();
+                                                            if (vibrantSwatch == null) return;
+                                                            backLayout.setBackgroundColor(
+                                                                    vibrantSwatch.getRgb());
+                                                        }
+                                                    });
+                                        }
+
+                                        @Override
+                                        public void onLoadingCancelled() {
+
+                                        }
+                                    });
+
                         }
                         String title = album.getTitle();
                         if (title == null) {

@@ -38,7 +38,7 @@
             android:singleLine="true"
             android:layout_alignRight="@+id/clear_edit_text_button_playlist_tab"
             android:paddingRight="50dp"
-            android:inputType="none"></EditText>
+            android:inputType="none" />
 
         <ImageButton
             android:id="@+id/clear_edit_text_button_playlist_tab"

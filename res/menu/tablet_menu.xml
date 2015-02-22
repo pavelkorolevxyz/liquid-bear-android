@@ -70,15 +70,15 @@
         <menu>
             <item android:id="@+id/share_track_button"
                   android:title="@string/share_track"
-                  android:icon="@drawable/share"
+                  android:icon="@drawable/ic_share"
                   app:showAsAction="always|withText"/>
             <item android:id="@+id/next_url_button"
                   android:title="@string/next_url"
-                  android:icon="@drawable/next_url"
+                  android:icon="@drawable/ic_next_url"
                   app:showAsAction="always|withText"/>
             <item android:id="@+id/lyrics_button"
                   android:title="@string/lyrics"
-                  android:icon="@drawable/lyrics_normal"
+                  android:icon="@drawable/ic_lyrics"
                   app:showAsAction="always|withText"/>
             <item android:id="@+id/youtube_video_button"
                   android:title="@string/video"

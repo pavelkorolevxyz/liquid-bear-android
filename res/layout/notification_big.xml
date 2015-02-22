@@ -154,6 +154,6 @@
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:id="@+id/album_cover_image_view"
-        android:src="@drawable/vinyl"
+        android:src="@drawable/lb_icon_white"
         android:scaleType="fitCenter" />
 </RelativeLayout>

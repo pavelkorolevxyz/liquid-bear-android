@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.MenuCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +24,8 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
@@ -211,7 +214,7 @@ public class RecommendationsSherlockActivity extends ResultSherlockActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
+            final ViewHolder holder;
             LayoutInflater inflater = getLayoutInflater();
             Artist artist = (Artist) values.get(position);
             if (gridMode) {
@@ -229,7 +232,37 @@ public class RecommendationsSherlockActivity extends ResultSherlockActivity {
                 }
                 holder.text.setText(artist.getName());
                 if (holder.loadImages) {
-                    imageLoader.displayImage(artist.getPreviewUrl(), holder.image, options);
+                    imageLoader.displayImage(artist.getPreviewUrl(), holder.image, options,
+                            new ImageLoadingListener() {
+                                @Override
+                                public void onLoadingStarted() {
+
+                                }
+
+                                @Override
+                                public void onLoadingFailed(FailReason failReason) {
+
+                                }
+
+                                @Override
+                                public void onLoadingComplete(Bitmap bitmap) {
+                                    Palette.generateAsync(bitmap,
+                                            new Palette.PaletteAsyncListener() {
+                                                @Override
+                                                public void onGenerated(Palette palette) {
+                                                    Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                                                    if (vibrantSwatch == null) return;
+                                                    holder.text.setBackgroundColor(
+                                                            vibrantSwatch.getRgb());
+                                                }
+                                            });
+                                }
+
+                                @Override
+                                public void onLoadingCancelled() {
+
+                                }
+                            });
                 } else {
                     holder.image.setVisibility(View.GONE);
                 }

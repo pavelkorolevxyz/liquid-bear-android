@@ -1342,7 +1342,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 if (aim == SearchMode.AUDIO_SEARCH_RESULT_ADD_VK
                         || aim == SearchMode.AUDIO_SEARCH_RESULT)
                     holder.mainLayout.setBackgroundResource(highlighted == position ?
-                                    R.drawable.list_item_background_blue :
+                                    R.drawable.list_item_background_tinted :
                                     R.drawable.list_item_background
                     );
             } else if (clazz == Album.class) {

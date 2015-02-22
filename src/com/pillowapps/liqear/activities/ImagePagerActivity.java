@@ -29,6 +29,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -251,7 +252,6 @@ public class ImagePagerActivity extends TrackedActivity {
             View imageLayout = inflater.inflate(R.layout.item_pager_image, view, false);
             TouchImageView imageView = (TouchImageView) imageLayout.findViewById(R.id.image);
             final ProgressBar spinner = (ProgressBar) imageLayout.findViewById(R.id.loading);
-
 
             imageLoader.displayImage(images.get(position), imageView, options,
                     new ImageLoadingListener() {

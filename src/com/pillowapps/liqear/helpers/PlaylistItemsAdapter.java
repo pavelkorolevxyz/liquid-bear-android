@@ -103,7 +103,7 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         holder.layout.setBackgroundDrawable(position % 2 == 0 ?
                 Config.resources.getDrawable(R.drawable.list_item_background) :
-                Config.resources.getDrawable(R.drawable.list_item_background_blue));
+                Config.resources.getDrawable(R.drawable.list_item_background_tinted));
 
         holder.positionTextView.setText(String.valueOf(currentTrack.getRealPosition() + 1));
         holder.artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
