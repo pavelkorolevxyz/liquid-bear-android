@@ -129,7 +129,9 @@ public class AuthActivity extends TrackedActivity {
         indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
         indicator.setCurrentItem(0);
-        indicator.setFooterColor(getResources().getColor(R.color.blue_darken));
+        indicator.setFooterColor(getResources().getColor(R.color.accent));
+        indicator.setTextColor(getResources().getColor(R.color.primary_text));
+        indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {

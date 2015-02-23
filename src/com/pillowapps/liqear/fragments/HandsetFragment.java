@@ -775,8 +775,8 @@ public class HandsetFragment extends Fragment {
 
     private void updatePaletteWithBitmap(Bitmap bitmap) {
         if (bitmap == null) {
-            backLayout.setBackgroundColor(getResources().getColor(R.color.accent_dark));
-            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent));
+            backLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono_dark));
+            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono));
             return;
         }
         Palette.generateAsync(bitmap,
@@ -786,7 +786,7 @@ public class HandsetFragment extends Fragment {
                         Palette.Swatch backSwatch =
                                 palette.getDarkMutedSwatch();
                         if (backSwatch == null) {
-                            backLayout.setBackgroundColor(getResources().getColor(R.color.accent_dark));
+                            backLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono_dark));
                             return;
                         }
                         backLayout.setBackgroundColor(
@@ -795,7 +795,7 @@ public class HandsetFragment extends Fragment {
                         Palette.Swatch bottomSwatch =
                                 palette.getDarkVibrantSwatch();
                         if (bottomSwatch == null) {
-                            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent));
+                            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono));
                             return;
                         }
                         bottomControlsLayout.setBackgroundColor(

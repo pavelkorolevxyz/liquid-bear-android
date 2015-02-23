@@ -52,7 +52,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/accent_dark"
+            android:background="@color/accent_mono_dark"
             android:id="@+id/back_layout"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"

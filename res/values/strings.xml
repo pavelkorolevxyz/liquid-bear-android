@@ -115,7 +115,7 @@
     <string name="city">City</string>
     <string name="venue">Venue</string>
     <string name="search">Search</string>
-    <string name="setlist">setlists</string>
+    <string name="setlist">Setlists</string>
     <string name="share_track">Share track</string>
     <string name="share_friends">Share with friends</string>
     <string name="listening_now" formatted="false">Listening to %a% - %t% now via #LiquidBear</string>

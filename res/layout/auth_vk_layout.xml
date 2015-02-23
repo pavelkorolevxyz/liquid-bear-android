@@ -5,7 +5,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent" android:gravity="center"
               android:id="@+id/relativeLayout" android:padding="@dimen/normal_padding"
-              android:background="@android:color/black">
+              android:background="@color/icons">
 
     <RelativeLayout
             android:layout_width="fill_parent"
@@ -17,11 +17,11 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/name_text_view"
                 android:layout_toRightOf="@+id/avatar" android:layout_alignBottom="@+id/avatar"
-                android:textSize="18sp" android:textColor="@android:color/white"/>
+                android:textSize="18sp" android:textColor="@color/primary_text"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/authorized_as"
                   android:textSize="14sp"
                   android:layout_alignLeft="@+id/name_text_view" android:layout_above="@+id/name_text_view"
-                  android:textColor="@android:color/white"/>
+                  android:textColor="@color/secondary_text"/>
         <ImageView android:layout_width="@dimen/avatar_size" android:layout_height="@dimen/avatar_size" android:id="@+id/avatar"
                    android:layout_alignParentBottom="true" android:paddingRight="4dp"
                 />
