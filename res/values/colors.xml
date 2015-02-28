@@ -12,6 +12,7 @@
     <color name="icons_shaded">#f0f0f0</color>
     <color name="divider">#B6B6B6</color>
     <color name="accent_mono_dark">#35434C</color>
+    <color name="background_notification">#424242</color>
 
     <color name="success_green">#196d1d</color>
     <color name="error_red">#821c1c</color>

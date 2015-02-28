@@ -40,7 +40,7 @@
     <ImageButton android:id="@+id/play_pause" android:paddingRight="6dp" android:paddingLeft="6dp"
                  android:layout_height="match_parent" android:layout_width="wrap_content"
                  android:layout_gravity="center"
-                 android:scaleType="fitCenter" android:src="@drawable/play_white_normal"
+                 android:scaleType="fitCenter" android:src="@drawable/ic_play"
                  android:contentDescription="play / pause"
                  android:layout_toLeftOf="@+id/next"
                  android:layout_alignTop="@+id/album_cover_image_view" android:background="@null"/>

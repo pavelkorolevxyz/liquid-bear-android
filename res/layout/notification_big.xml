@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical">
+    android:layout_gravity="center_vertical"
+    android:background="@color/background_notification">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -77,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            android:src="@drawable/play_white_normal"
+            android:src="@drawable/ic_play"
             android:background="@color/none"
             android:contentDescription="play / pause"
             android:layout_toLeftOf="@+id/next"
@@ -113,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:scaleType="fitCenter"
-            android:src="@drawable/love_not_active"
+            android:src="@drawable/ic_love"
             android:background="@color/none"
             android:contentDescription="next"
             android:layout_toLeftOf="@+id/force_close"
@@ -144,7 +145,7 @@
         android:layout_gravity="center"
         android:scaleType="fitCenter"
         android:background="@color/none"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:src="@drawable/ic_exit"
         android:contentDescription="close"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/linearLayout"

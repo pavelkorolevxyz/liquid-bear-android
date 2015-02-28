@@ -25,25 +25,25 @@ public class Utils {
     public static int getShuffleButtonImage() {
         switch (AudioTimeline.getShuffleMode()) {
             case SHUFFLE:
-                return R.drawable.shuffle_active;
+                return R.drawable.ic_shuffle_active;
             case DEFAULT:
-                return R.drawable.shuffle_normal;
+                return R.drawable.ic_shuffle;
             default:
                 break;
         }
-        return R.drawable.shuffle_normal;
+        return R.drawable.ic_shuffle;
     }
 
     public static int getRepeatButtonImage() {
         switch (AudioTimeline.getRepeatMode()) {
             case REPEAT_PLAYLIST:
-                return R.drawable.repeat_normal;
+                return R.drawable.ic_repeat;
             case REPEAT:
-                return R.drawable.repeat_active;
+                return R.drawable.ic_repeat_active;
             default:
                 break;
         }
-        return R.drawable.repeat_normal;
+        return R.drawable.ic_repeat;
     }
 
     public static String secondsToString(final int timeInSeconds) {
@@ -117,7 +117,7 @@ public class Utils {
 
     public static int getLoveButtonImage() {
         Track track = AudioTimeline.getCurrentTrack();
-        if (track == null) return R.drawable.love_not_active;
-        return track.isLoved() ? R.drawable.love_clicked : R.drawable.love_not_active;
+        if (track == null) return R.drawable.ic_love;
+        return track.isLoved() ? R.drawable.ic_love_active : R.drawable.ic_love;
     }
 }

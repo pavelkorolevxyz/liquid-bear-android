@@ -122,7 +122,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/accent"
+            android:background="@color/accent_mono"
             android:id="@+id/bottom_controls_layout"
             android:layout_below="@+id/back_layout">
 
@@ -141,7 +141,7 @@
                     android:id="@+id/repeat_button_playback_tab"
                     android:layout_height="48dp"
                     android:background="@null"
-                    android:src="@drawable/repeat_normal"
+                    android:src="@drawable/ic_repeat"
                     android:layout_width="48dp"
                     android:layout_gravity="left"
                     android:layout_alignParentLeft="false"
@@ -200,7 +200,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="false"
                     android:background="@null"
-                    android:src="@drawable/shuffle_normal"
+                    android:src="@drawable/ic_shuffle"
                     android:layout_width="48dp"
                     android:contentDescription="@string/shuffle_button"
                     android:layout_alignParentLeft="false"

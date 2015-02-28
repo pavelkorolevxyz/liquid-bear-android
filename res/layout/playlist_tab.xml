@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:drawableLeft="@drawable/ic_simple_search_mode"
+            android:drawableLeft="@drawable/ic_search_dark"
             android:ems="10"
             android:maxLength="50"
             android:singleLine="true"
