@@ -48,7 +48,7 @@
     <string name="newcomers">нове</string>
     <string name="similar_artists">подібні виконавці</string>
     <string name="error">Помилка</string>
-    <string name="internet_connection_need">Для роботи додатку з цієї версії інтернет не обов\'язковий. Однак без нього ви не зможете користуватись онлайн функціями</string>
+    <string name="internet_connection_need">Для роботи додатку з цієї версії, інтернет не обов\'язковий. Однак без нього ви не зможете користуватись онлайн функціями</string>
     <string name="top_tracks">Рейтинг композицій</string>
     <string name="loved_tracks">Улюблені композиціїy</string>
     <string name="top_artists">Кращі виконавці</string>
@@ -63,7 +63,7 @@
     <string name="continue_from_position">Продовжувати при запуску</string>
     <string name="about">Про додаток</string>
     <string name="donate">Підтримай</string>
-    <string name="donate_summary">Підтримати розробника, хоча він і москаль</string>
+    <string name="donate_summary">Підтримати розробника</string>
     <string name="disclaimer">Дисклеймер</string>
     <string name="disclaimer_summary">Важлива інформація</string>
     <string name="disclaimer_text">Додаток створено виключно для ознайомлення користувачів з музикальним матеріалом.
@@ -210,7 +210,7 @@
     <string name="widget_label_4x3alt">Віджет 4x3 альтернативний</string>
     <string name="auth_error_happened">Помилка авторизації. Будь ласка, увійдіть знову</string>
     <string name="play_discography">Грати дискографію</string>
-    <string name="shake_to_next">Струсни, щоб змінити пісню</string>
+    <string name="shake_to_next">Струснути, щоб змінити пісню</string>
     <string name="shake_to_next_summary"> Змінювати пісню, струшуючи пристроєм</string>
     <string name="show_track_choice_dialog_on_add_to_vk">Додаткові налаштування додавання пісні до ВКонтакті</string>
     <string name="show_track_choice_dialog_on_add_to_vk_summary">Показувати вікно пошуку перед додаванням до ВКонтакті</string>
