@@ -4,8 +4,9 @@ import android.view.View;
 
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Artist;
-import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.models.Track;
+import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
+import com.pillowapps.liqear.models.vk.VkAlbum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,19 @@ public class PagerResultSherlockActivity extends ResultSherlockActivity {
     }
 
     protected void fillAlbums(List<LastfmAlbum> albums, ViewerPage viewer) {
+        Class<Album> clazz = Album.class;
+        ListArrayAdapter adapter = viewer.getAdapter();
+        int adapterSize = adapter == null ? 0 : adapter.getCount();
+        if (adapterSize + albums.size() == 0) {
+            viewer.showEmpty();
+            viewer.getProgressBar().setVisibility(View.GONE);
+        } else {
+            viewer.hideEmpty();
+            fixAdapter(viewer, clazz, albums);
+        }
+    }
+
+    protected void fillVkAlbums(List<VkAlbum> albums, ViewerPage viewer) {
         Class<Album> clazz = Album.class;
         ListArrayAdapter adapter = viewer.getAdapter();
         int adapterSize = adapter == null ? 0 : adapter.getCount();

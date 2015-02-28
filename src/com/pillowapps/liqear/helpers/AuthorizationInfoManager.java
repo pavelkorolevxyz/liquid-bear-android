@@ -2,13 +2,9 @@ package com.pillowapps.liqear.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.pillowapps.liqear.LiqearApplication;
 
-/**
- * Help class with static parameters which uses often.
- *
- * @author PK
- */
 public class AuthorizationInfoManager {
     public static final String VK_PREFERENCES = "vk_preferences_v2";
     public static final String LASTFM_PREFERENCES = "lastfm_preferences";
@@ -21,11 +17,11 @@ public class AuthorizationInfoManager {
         return vkPreferences.getString("access_token", null);
     }
 
-    public static long getVkUserId() {
+    public static String getVkUserId() {
         Context context = LiqearApplication.getAppContext();
         SharedPreferences vkPreferences =
                 context.getSharedPreferences(VK_PREFERENCES, Context.MODE_PRIVATE);
-        return vkPreferences.getLong("uid", -1);
+        return String.valueOf(vkPreferences.getLong("uid", 0));
     }
 
     public static String getLastfmName() {
@@ -47,7 +43,7 @@ public class AuthorizationInfoManager {
     }
 
     public static boolean isAuthorizedOnVk() {
-        return getVkAccessToken() != null && getVkUserId() != -1;
+        return getVkAccessToken() != null && !"0".equals(getVkUserId());
     }
 
     public static String getLastfmApiKey() {
@@ -67,7 +63,7 @@ public class AuthorizationInfoManager {
     public static void setVkName(String vkName) {
         Context context = LiqearApplication.getAppContext();
         SharedPreferences preferences = context.getSharedPreferences(VK_PREFERENCES, Context.MODE_PRIVATE);
-        preferences.edit().putString("name", vkName).commit();
+        preferences.edit().putString("name", vkName).apply();
     }
 
     public static String getLastfmAvatar() {
@@ -79,7 +75,7 @@ public class AuthorizationInfoManager {
     public static void setLastfmAvatar(String lastfmAvatar) {
         Context context = LiqearApplication.getAppContext();
         SharedPreferences lastfmPreferences = context.getSharedPreferences(LASTFM_PREFERENCES, Context.MODE_PRIVATE);
-        lastfmPreferences.edit().putString("avatar", lastfmAvatar).commit();
+        lastfmPreferences.edit().putString("avatar", lastfmAvatar).apply();
     }
 
     public static String getVkAvatar() {
@@ -93,7 +89,7 @@ public class AuthorizationInfoManager {
         Context context = LiqearApplication.getAppContext();
         SharedPreferences preferences =
                 context.getSharedPreferences(VK_PREFERENCES, Context.MODE_PRIVATE);
-        preferences.edit().putString("avatar", avatarUrl).commit();
+        preferences.edit().putString("avatar", avatarUrl).apply();
     }
 
     public static void signOutVk() {

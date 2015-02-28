@@ -18,6 +18,12 @@ public class Track implements Parcelable {
     };
     private String title;
     private String artist;
+
+    public String getAlbum() {
+        return album;
+    }
+
+    private String album;
     private int duration;
     private int percentageChange;
     private int loves;

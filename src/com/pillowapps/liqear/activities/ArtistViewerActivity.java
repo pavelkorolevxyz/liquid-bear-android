@@ -317,7 +317,7 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks, Response response) {
                         progressBar.setVisibility(View.GONE);
-                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
                                 getViewer(TOP_TRACKS_INDEX));
                     }
 
@@ -350,7 +350,7 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
                 new Callback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks, Response response) {
-                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
                                 getViewer(PERSONAL_TOP_INDEX));
                         progressBar.setVisibility(View.GONE);
                     }

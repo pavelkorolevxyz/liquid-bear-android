@@ -37,4 +37,18 @@ public class ErrorNotifier {
         builder.setPositiveButton(android.R.string.ok, null);
         builder.show();
     }
+
+    public static void showVkError(Activity activity, RetrofitError error) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        Object body = error.getBody();
+        String message;
+        if (body != null) {
+            message = body.toString();
+        } else {
+            message = error.getMessage();
+        }
+        builder.setMessage(message);
+        builder.setPositiveButton(android.R.string.ok, null);
+        builder.show();
+    }
 }

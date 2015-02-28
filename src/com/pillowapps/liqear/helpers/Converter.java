@@ -11,6 +11,7 @@ import com.pillowapps.liqear.models.lastfm.LastfmImage;
 import com.pillowapps.liqear.models.lastfm.LastfmTag;
 import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.lastfm.LastfmUser;
+import com.pillowapps.liqear.models.vk.VkTrack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,12 @@ public class Converter {
     public static Track convertTrack(LastfmTrack lastfmTrack) {
         String artist = lastfmTrack.getArtist().getName();
         String title = lastfmTrack.getName();
+        return new Track(artist, title);
+    }
+
+    private static Track convertTrack(VkTrack vkTrack) {
+        String artist = vkTrack.getArtist();
+        String title = vkTrack.getTitle();
         return new Track(artist, title);
     }
 
@@ -56,9 +63,18 @@ public class Converter {
         return new Album(artist, name);
     }
 
-    public static List<Track> convertTrackList(List<LastfmTrack> lastfmTracks) {
+    public static List<Track> convertLastfmTrackList(List<LastfmTrack> lastfmTracks) {
         List<Track> tracks = new ArrayList<>();
         for (LastfmTrack lastfmTrack : lastfmTracks) {
+            Track track = convertTrack(lastfmTrack);
+            tracks.add(track);
+        }
+        return tracks;
+    }
+
+    public static List<Track> convertVkTrackList(List<VkTrack> vkTracks) {
+        List<Track> tracks = new ArrayList<>();
+        for (VkTrack lastfmTrack : vkTracks) {
             Track track = convertTrack(lastfmTrack);
             tracks.add(track);
         }

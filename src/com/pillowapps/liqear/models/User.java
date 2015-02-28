@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
+public class User implements Serializable {
 
     private enum Gender {
         MALE, FEMALE, UNKNOWN;
@@ -17,7 +17,7 @@ public class User implements Serializable{
     private long playcount;
     private Gender gender;
     private double match;
-    private long uid;
+    private String uid;
     private String imageUrl;
 
     public String getImageUrl() {
@@ -33,7 +33,7 @@ public class User implements Serializable{
         this.name = name;
     }
 
-    public User(String name, long uid) {
+    public User(String name, String uid) {
         this.name = name;
         this.uid = uid;
     }
@@ -89,11 +89,11 @@ public class User implements Serializable{
         this.match = match;
     }
 
-    public long getUid() {
+    public String getUid() {
         return uid;
     }
 
-    public void setUid(long uid) {
+    public void setUid(String uid) {
         this.uid = uid;
     }
 

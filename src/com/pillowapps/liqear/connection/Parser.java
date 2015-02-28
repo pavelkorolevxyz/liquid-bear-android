@@ -780,7 +780,7 @@ public class Parser {
                     JSONObject responseElement = (JSONObject) response.get(i);
                     User user = new User(responseElement.optString("first_name") + " "
                             + responseElement.optString("last_name"));
-                    user.setUid(responseElement.optLong("uid"));
+                    user.setUid(responseElement.optString("uid"));
                     user.setImageUrl(responseElement.optString("photo_medium"));
                     users.add(user);
                 } catch (JSONException ignored) {
@@ -803,7 +803,7 @@ public class Parser {
                 try {
                     Group group = new Group();
                     JSONObject responseElement = (JSONObject) response.get(i);
-                    group.setGid(responseElement.optLong("gid"));
+                    group.setGid(responseElement.optString("gid"));
                     group.setName(responseElement.optString("name"));
                     group.setImageUrl(responseElement.optString("photo_medium"));
                     groups.add(group);

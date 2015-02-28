@@ -302,7 +302,7 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
                 viewer.getPage("getRecent"), new Callback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks, Response response) {
-                        fillTracks(Converter.convertTrackList(lastfmTracks), viewer);
+                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks), viewer);
                     }
 
                     @Override
@@ -325,7 +325,7 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
                 TRACKS_IN_TOP_COUNT, viewer.getPage("getTracks"), new Callback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks, Response response) {
-                        fillTracks(Converter.convertTrackList(lastfmTracks), viewer);
+                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks), viewer);
                     }
 
                     @Override
@@ -354,7 +354,7 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
                     new Callback<List<LastfmTrack>>() {
                         @Override
                         public void success(List<LastfmTrack> lastfmTracks, Response response) {
-                            fillTracks(Converter.convertTrackList(lastfmTracks), viewer);
+                            fillTracks(Converter.convertLastfmTrackList(lastfmTracks), viewer);
                         }
 
                         @Override

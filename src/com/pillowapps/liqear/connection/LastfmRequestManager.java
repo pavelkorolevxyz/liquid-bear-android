@@ -1,10 +1,6 @@
 package com.pillowapps.liqear.connection;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.LastfmTrackListGsonAdapter;
 import com.pillowapps.liqear.helpers.StringUtils;
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Artist;
@@ -32,17 +28,13 @@ import com.pillowapps.liqear.models.lastfm.roots.LastfmTopArtistsRoot;
 import com.pillowapps.liqear.models.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.models.lastfm.roots.LastfmTracksRoot;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.converter.GsonConverter;
-import timber.log.Timber;
 
 public class LastfmRequestManager {
 
@@ -504,5 +496,26 @@ public class LastfmRequestManager {
                         callback.failure(error);
                     }
                 });
+    }
+
+    public void scrobble(String artist, String title, String album, String currentTime, final Callback<Object> callback) {
+        String sessionKey = AuthorizationInfoManager.getLastfmKey();
+        TreeMap<String, String> params = new TreeMap<>();
+        params.put("artist", artist);
+        params.put("track", title);
+        params.put("album", album);
+        params.put("sk", sessionKey);
+        params.put("method", "track.unlove");
+        lastfmService.scrobble(artist, title, album, generateApiSig(params), sessionKey, new Callback<Object>() {
+            @Override
+            public void success(Object o, Response response) {
+                callback.success(o, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                callback.failure(error);
+            }
+        });
     }
 }

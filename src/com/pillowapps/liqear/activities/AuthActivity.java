@@ -26,6 +26,7 @@ import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.connection.Params;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
+import com.pillowapps.liqear.connection.VkRequestManager;
 import com.pillowapps.liqear.helpers.AuthActivityAdapter;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
@@ -34,6 +35,7 @@ import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.ErrorResponseLastfm;
 import com.pillowapps.liqear.models.ErrorResponseVk;
+import com.pillowapps.liqear.models.vk.VkUser;
 import com.pillowapps.liqear.models.lastfm.LastfmSession;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -168,27 +170,27 @@ public class AuthActivity extends TrackedActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == Constants.AUTH_VK_REQUEST) {
-//            VkRequestManager.getInstance().getUsersInfoVk(AuthorizationInfoManager.getVkUserId(),
-//                    new GetResponseCallback() {
-//                        @Override
-//                        public void onDataReceived(ReadyResult result) {
-//                            if (checkForError(result, Params.ApiSource.VK)) {
-//                                return;
-//                            }
-//                            authVkPanel.setVisibility(View.VISIBLE);
-//                            List<User> users = (List<User>) result.getObject();
-//                            User user = users.get(0);
-//                            AuthorizationInfoManager.setVkAvatar(user.getImageUrl());
-//                            imageLoader.displayImage(user.getImageUrl(), avatarVkImageView, options);
-//                            vkNameTextView.setText(user.getName());
-//                            AuthorizationInfoManager.setVkName(user.getName());
-//                            invalidateOptionsMenu();
-//                            if (firstStart && AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-//                                Utils.startMainActivity(AuthActivity.this);
-//                                finish();
-//                            }
-//                        }
-//                    });todo
+            VkRequestManager.getInstance().getUserInfoVk(AuthorizationInfoManager.getVkUserId(),
+                    new Callback<VkUser>() {
+                        @Override
+                        public void success(VkUser vkUser, Response response) {
+                            authVkPanel.setVisibility(View.VISIBLE);
+                            AuthorizationInfoManager.setVkAvatar(vkUser.getPhotoMedium());
+                            imageLoader.displayImage(vkUser.getPhotoMedium(), avatarVkImageView, options);
+                            vkNameTextView.setText(vkUser.getName());
+                            AuthorizationInfoManager.setVkName(vkUser.getName());
+                            invalidateOptionsMenu();
+                            if (firstStart && AuthorizationInfoManager.isAuthorizedOnLastfm()) {
+                                Utils.startMainActivity(AuthActivity.this);
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

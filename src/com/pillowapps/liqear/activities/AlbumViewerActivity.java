@@ -28,7 +28,6 @@ import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
@@ -43,7 +42,6 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 @SuppressWarnings("unchecked")
 public class AlbumViewerActivity extends ResultSherlockActivity {
@@ -214,7 +212,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
             @Override
             public void success(LastfmAlbum album, Response response) {
                 List<LastfmTrack> tracks = album.getTracks().getTracks();
-                List<Track> list = Converter.convertTrackList(tracks);
+                List<Track> list = Converter.convertLastfmTrackList(tracks);
                 fillWithTracklist(list);
                 List<LastfmImage> images = album.getImages();
                 String imageUrl = null;

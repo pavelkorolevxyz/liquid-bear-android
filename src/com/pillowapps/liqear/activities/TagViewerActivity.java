@@ -152,7 +152,7 @@ public class TagViewerActivity extends PagerResultSherlockActivity {
                 limit, page, new Callback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks, Response response) {
-                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
                                 getViewer(TRACKS_INDEX));
                         getViewer(TRACKS_INDEX).getProgressBar().setVisibility(View.GONE);
                     }

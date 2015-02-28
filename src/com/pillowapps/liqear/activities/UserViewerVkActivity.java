@@ -22,20 +22,28 @@ import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.PagerResultSherlockActivity;
 import com.pillowapps.liqear.components.ViewerPage;
-import com.pillowapps.liqear.connection.GetResponseCallback;
 import com.pillowapps.liqear.connection.Params;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
+import com.pillowapps.liqear.connection.VkRequestManager;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Group;
 import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.User;
+import com.pillowapps.liqear.models.vk.VkAlbum;
+import com.pillowapps.liqear.models.vk.VkTrack;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 @SuppressWarnings("unchecked")
 public class UserViewerVkActivity extends PagerResultSherlockActivity {
@@ -237,87 +245,100 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
     }
 
     private void getFavoritesTracks() {
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.VK)) {
-//                    fillTracks(result, getViewer(FAVORITES));
-                }
-            }
-        };
         if (mode == Mode.USER) {
-            QueryManager.getInstance().getVkUserFavoritesAudio(user.getUid(), TRACKS_IN_TOP_COUNT,
-                    TRACKS_IN_TOP_COUNT * favoritesPage++, callback);
+            VkRequestManager.getInstance().getVkUserFavoritesAudio(TRACKS_IN_TOP_COUNT,
+                    TRACKS_IN_TOP_COUNT * favoritesPage++, new Callback<List<VkTrack>>() {
+                        @Override
+                        public void success(List<VkTrack> vkTracks, Response response) {
+                            fillTracks(Converter.convertVkTrackList(vkTracks), getViewer(FAVORITES));
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
+                        }
+                    });
         }
     }
 
     private void getNewsFeedTracks() {
-        GetResponseCallback callback = new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.VK)) {
-//                    fillTracks(result, getViewer(NEWS_FEED));
-                    return;
-                }
-                if (getViewer(NEWS_FEED).getValues().size() < 20) {
-                    getNewsFeedTracks();
-                }
-            }
-        };
         if (mode == Mode.USER) {
-            QueryManager.getInstance().getVkNewsFeedTracks(100, 100 * newsFeedPage++, callback);
+            VkRequestManager.getInstance().getVkNewsFeedTracks(100, 100 * newsFeedPage++,
+                    new Callback<List<VkTrack>>() {
+                        @Override
+                        public void success(List<VkTrack> vkTracks, Response response) {
+                            fillTracks(Converter.convertVkTrackList(vkTracks), getViewer(NEWS_FEED));
+                            if (getViewer(NEWS_FEED).getValues().size() < 20) {
+                                getNewsFeedTracks();
+                            }
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
+                        }
+                    });
         }
     }
 
     private void getAlbums() {
-        GetResponseCallback callback = new GetResponseCallback() {
+        Callback<List<VkAlbum>> callback = new Callback<List<VkAlbum>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.VK)) {
-//                    fillAlbums(result, getViewer(ALBUM_INDEX));
-                }
+            public void success(List<VkAlbum> vkAlbums, Response response) {
+                fillVkAlbums(vkAlbums, getViewer(ALBUM_INDEX));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
             }
         };
         if (mode == Mode.USER) {
-            QueryManager.getInstance().getVkAlbums(user.getUid(), -1, TRACKS_IN_TOP_COUNT,
+            VkRequestManager.getInstance().getUserVkAlbums(user.getUid(), TRACKS_IN_TOP_COUNT,
                     TRACKS_IN_TOP_COUNT * albumPage++, callback);
         } else {
-            QueryManager.getInstance().getVkAlbums(-1, group.getGid(), TRACKS_IN_TOP_COUNT,
+            VkRequestManager.getInstance().getGroupVkAlbums(group.getGid(), TRACKS_IN_TOP_COUNT,
                     TRACKS_IN_TOP_COUNT * albumPage++, callback);
         }
     }
 
     private void getUserAudio() {
-        GetResponseCallback callback = new GetResponseCallback() {
+        Callback<List<VkTrack>> callback = new Callback<List<VkTrack>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.VK)) {
-//                    fillTracks(result, getViewer(USER_AUDIO_INDEX));
-                }
+            public void success(List<VkTrack> vkTracks, Response response) {
+                fillTracks(Converter.convertVkTrackList(vkTracks), getViewer(USER_AUDIO_INDEX));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
             }
         };
         if (mode == Mode.USER) {
-            QueryManager.getInstance().getVkUserAudio(user.getUid(), 0, 0, callback);
+            VkRequestManager.getInstance().getVkUserAudio(user.getUid(), 0, 0, callback);
         } else {
-            QueryManager.getInstance().getVkGroupAudio(group.getGid(), 0, 0, callback);
+            VkRequestManager.getInstance().getVkGroupAudio(group.getGid(), 0, 0, callback);
         }
     }
 
     private void getWallTracks() {
-        GetResponseCallback callback = new GetResponseCallback() {
+        Callback<List<VkTrack>> callback = new Callback<List<VkTrack>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (!checkError(result, Params.ApiSource.VK)) {
-//                    fillTracks(result, getViewer(WALL_INDEX));
-                }
+            public void success(List<VkTrack> vkTracks, Response response) {
+                fillTracks(Converter.convertVkTrackList(vkTracks), getViewer(WALL_INDEX));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
             }
         };
         if (mode == Mode.USER) {
-            QueryManager.getInstance().getVkUserWallAudio(user.getUid(), TRACKS_IN_TOP_COUNT,
-                    TRACKS_IN_TOP_COUNT * wallPage++, -1, callback);
+            VkRequestManager.getInstance().getVkUserWallAudio(user.getUid(), TRACKS_IN_TOP_COUNT,
+                    TRACKS_IN_TOP_COUNT * wallPage++, callback);
         } else {
-            QueryManager.getInstance().getVkUserWallAudio(-1, TRACKS_IN_TOP_COUNT,
-                    TRACKS_IN_TOP_COUNT * wallPage++, group.getGid(), callback);
+            VkRequestManager.getInstance().getVkUserWallAudio(group.getGid(), TRACKS_IN_TOP_COUNT,
+                    TRACKS_IN_TOP_COUNT * wallPage++, callback);
         }
     }
 

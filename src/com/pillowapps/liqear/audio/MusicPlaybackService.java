@@ -104,9 +104,6 @@ public class MusicPlaybackService extends Service implements
     private static final String AVRCP_PLAYSTATE_CHANGED = "com.android.music.playstatechanged";
     private static final String AVRCP_META_CHANGED = "com.android.music.metachanged";
     private final IBinder binder = new LocalBinder();
-    /**
-     * Object used for PlaybackService startup waiting.
-     */
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private boolean playOnPrepared = false;
     private boolean hasDataSource = false;
@@ -390,7 +387,7 @@ public class MusicPlaybackService extends Service implements
                         || getCurrentPosition() / 1000 > 240) {
                     Track track = AudioTimeline.getCurrentTrack();
                     if (track != null) {
-                        scrobble(track.getArtist(), track.getTitle(), Utils.getCurrentTime());
+                        scrobble(track.getArtist(), track.getTitle(), track.getAlbum(), Utils.getCurrentTime());
                     }
                     scrobbled = true;
                 }
@@ -1259,12 +1256,17 @@ public class MusicPlaybackService extends Service implements
         });
     }
 
-    private void scrobble(final String artist, final String title, final String currentTime) {
+    private void scrobble(final String artist, final String title, final String album, final String currentTime) {
         if (Utils.isOnline()) {
-            QueryManager.getInstance().scrobble(artist, title, currentTime, new PostCallback() {
+            LastfmRequestManager.getInstance().scrobble(artist, title, album, currentTime, new Callback<Object>() {
                 @Override
-                public void onPostSuccess() {
-                    // TODO broadcast scrobbled
+                public void success(Object o, Response response) {
+
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
                 }
             });
         } else {

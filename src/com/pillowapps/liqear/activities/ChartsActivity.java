@@ -113,7 +113,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
                 getViewer(MOST_LOVED).getPage("getMostLoved"), new Callback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks, Response response) {
-                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
                                 getViewer(MOST_LOVED));
                     }
 
@@ -145,7 +145,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
                 getViewer(TOP_TRACKS).getPage("getTracks"), new Callback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks, Response response) {
-                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
                                 getViewer(TOP_TRACKS));
                     }
 
@@ -160,7 +160,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
                 getViewer(HYPED_TRACKS).getPage("getHypedTracks"), new Callback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks, Response response) {
-                        fillTracks(Converter.convertTrackList(lastfmTracks),
+                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
                                 getViewer(HYPED_TRACKS));
                     }
 

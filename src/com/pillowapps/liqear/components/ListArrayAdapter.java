@@ -22,6 +22,7 @@ import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Artist;
 import com.pillowapps.liqear.models.Tag;
 import com.pillowapps.liqear.models.Track;
+import com.pillowapps.liqear.models.vk.VkAlbum;
 
 import java.util.List;
 
@@ -117,6 +118,10 @@ public class ListArrayAdapter<T> extends ArrayAdapter<T> {
             } else {
                 holder.imageView.setVisibility(View.GONE);
             }
+        } else if (clazz == VkAlbum.class) {
+            VkAlbum album = (VkAlbum) currentItem;
+            holder.textView.setText(Html.fromHtml(album.getTitle()));
+            holder.imageView.setVisibility(View.GONE);
         } else if (clazz == Tag.class) {
             holder.textView.setText(Html.fromHtml(((Tag) currentItem).getName()));
             holder.imageView.setVisibility(View.GONE);

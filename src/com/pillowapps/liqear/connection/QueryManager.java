@@ -150,7 +150,7 @@ public class QueryManager {
 
     private static String createSignature(String method, Map<String,
             String> params, String secret) {
-        params = new TreeMap<String, String>(params);
+        params = new TreeMap<>(params);
         params.put("method", method);
         StringBuilder b = new StringBuilder(100);
         for (Map.Entry<String, String> entry : params.entrySet()) {
