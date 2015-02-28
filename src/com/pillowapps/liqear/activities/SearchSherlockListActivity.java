@@ -32,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.costum.android.widget.LoadMoreListView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -44,9 +45,9 @@ import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.connection.GetResponseCallback;
 import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.connection.Params;
-import com.pillowapps.liqear.connection.PostCallback;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
+import com.pillowapps.liqear.connection.VkRequestManager;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
@@ -65,6 +66,8 @@ import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.models.lastfm.LastfmArtist;
 import com.pillowapps.liqear.models.lastfm.LastfmTag;
 import com.pillowapps.liqear.models.lastfm.LastfmUser;
+import com.pillowapps.liqear.models.vk.VkGroup;
+import com.pillowapps.liqear.models.vk.VkTrack;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -228,8 +231,12 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             case VK_ALBUM_TRACKLIST: {
                 actionBar.setTitle(extras.getString("title"));
                 long uid = extras.getLong("uid", -1);
-                long gid = extras.getLong("gid", -1);
-                getVkUserAudioFromAlbum(uid, extras.getLong("album_id"), gid);
+                if (uid == -1) {
+                    long gid = extras.getLong("gid", -1);
+                    getVkGroupAudioFromAlbum(gid, extras.getLong("album_id"));
+                } else {
+                    getVkUserAudioFromAlbum(uid, extras.getLong("album_id"));
+                }
                 ll.setVisibility(View.GONE);
                 setTrackLongClick();
             }
@@ -428,33 +435,52 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             if (adapter != null) adapter.clear();
         }
         this.searchQuery = searchQuery;
-        QueryManager queryManager = QueryManager.getInstance();
-        queryManager.searchVK(searchQuery, count, new GetResponseCallback() {
+        VkRequestManager.getInstance().searchAudio(searchQuery, 0, count, new Callback<List<VkTrack>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.VK)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                fillWithTracklist(result);
+            public void success(List<VkTrack> vkTracks, Response response) {
+                fillWithTracklist(vkTracks);
                 adapter.setHighlighted(PreferencesManager.getUrlNumberPreferences()
                         .getInt(getIntent().getStringExtra(Constants.TARGET), 0));
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
 
-    private void getVkUserAudioFromAlbum(long uid, long album_id, long gid) {
-        QueryManager queryManager = QueryManager.getInstance();
-        queryManager.getVkUserAudioFromAlbum(uid, album_id, gid, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.VK)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                fillWithTracklist(result);
-            }
-        });
+    private void getVkUserAudioFromAlbum(long uid, long albumId) {
+        VkRequestManager.getInstance().getUserAudioFromAlbum(uid, albumId, 0, 0,
+                new Callback<List<VkTrack>>() {
+                    @Override
+                    public void success(List<VkTrack> vkTracks, Response response) {
+                        fillWithTracklist(vkTracks);
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    private void getVkGroupAudioFromAlbum(long gid, long albumId) {
+        VkRequestManager.getInstance().getGroupAudioFromAlbum(gid, albumId, 0, 0,
+                new Callback<List<VkTrack>>() {
+                    @Override
+                    public void success(List<VkTrack> vkTracks, Response response) {
+                        fillWithTracklist(vkTracks);
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
     private void loadAlbumPresets() {
@@ -734,14 +760,18 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 int type = getIntent().getIntExtra("type", 1);
                 if (type == 1) {
                     Track track = (Track) adapter.get(position);
-                    QueryManager.getInstance().addToVkUserAudio(
-                            new Track(track.getAid(), track.getOwnerId()), new PostCallback() {
-                                @Override
-                                public void onPostSuccess() {
-                                    Toast.makeText(LiqearApplication.getAppContext(),
-                                            R.string.added, Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                    VkRequestManager.getInstance().addToUserAudio(track.getAid(), track.getOwnerId(), new Callback<Object>() {
+                        @Override
+                        public void success(Object o, Response response) {
+                            Toast.makeText(LiqearApplication.getAppContext(),
+                                    R.string.added, Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
                 }
                 finish();
                 break;
@@ -798,6 +828,18 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     private void setAdapter() {
         listView.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+    }
+
+    private void fillWithTracklist(List<VkTrack> vkTracks) {
+        List<Track> trackList = Converter.convertVkTrackList(vkTracks);
+        if (adapter == null) {
+            adapter = new QuickSearchArrayAdapter<>(SearchSherlockListActivity.this,
+                    trackList, Track.class);
+            emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
+        } else {
+            adapter.addAll(trackList);
+        }
+        setAdapter();
     }
 
     private void fillWithTracklist(ReadyResult result) {
@@ -885,18 +927,19 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void getVkGroups() {
-        QueryManager queryManager = QueryManager.getInstance();
-        queryManager.getVkGroups(new GetResponseCallback() {
+        VkRequestManager.getInstance().getGroups(0, 0, new Callback<List<VkGroup>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.VK)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                List<Group> groups = (List<Group>) result.getObject();
-                adapter = new QuickSearchArrayAdapter<Group>(SearchSherlockListActivity.this,
+            public void success(List<VkGroup> vkGroups, Response response) {
+                List<Group> groups = Converter.convertGroups(vkGroups);
+                adapter = new QuickSearchArrayAdapter<>(SearchSherlockListActivity.this,
                         groups, Group.class);
                 setAdapter();
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

@@ -144,7 +144,7 @@ public class Track implements Parcelable {
     }
 
     public String getNotation() {
-        return artist + " - " + title;
+        return String.format("%s - %s", artist, title);
     }
 
     public int getPercentageChange() {
@@ -274,6 +274,10 @@ public class Track implements Parcelable {
 
     private String trim(String s) {
         return s.replaceAll("[^\\w\\d\\[\\]\\(\\)\\{\\}\\s/]", "").toLowerCase();
+    }
+
+    public boolean hasAudioString() {
+        return aid > 0 && ownerId > 0;
     }
 
     @Override

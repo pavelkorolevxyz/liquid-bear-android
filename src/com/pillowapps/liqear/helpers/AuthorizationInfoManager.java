@@ -17,11 +17,11 @@ public class AuthorizationInfoManager {
         return vkPreferences.getString("access_token", null);
     }
 
-    public static String getVkUserId() {
+    public static long getVkUserId() {
         Context context = LiqearApplication.getAppContext();
         SharedPreferences vkPreferences =
                 context.getSharedPreferences(VK_PREFERENCES, Context.MODE_PRIVATE);
-        return String.valueOf(vkPreferences.getLong("uid", 0));
+        return vkPreferences.getLong("uid", -1);
     }
 
     public static String getLastfmName() {

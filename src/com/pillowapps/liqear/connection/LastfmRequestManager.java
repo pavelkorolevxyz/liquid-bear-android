@@ -447,7 +447,7 @@ public class LastfmRequestManager {
         String artist = track.getArtist();
         String title = track.getTitle();
 
-        TreeMap<String, String> params = new TreeMap<>();
+        Map<String, String> params = new TreeMap<>();
         params.put("artist", artist);
         params.put("track", title);
         params.put("sk", sessionKey);
@@ -457,17 +457,7 @@ public class LastfmRequestManager {
                 title,
                 generateApiSig(params),
                 sessionKey,
-                new Callback<Object>() {
-                    @Override
-                    public void success(Object o, Response response) {
-                        callback.success(o, response);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        callback.failure(error);
-                    }
-                });
+                callback);
     }
 
     public void unlove(Track track, final Callback<Object> callback) {
@@ -475,7 +465,7 @@ public class LastfmRequestManager {
         String artist = track.getArtist();
         String title = track.getTitle();
 
-        TreeMap<String, String> params = new TreeMap<>();
+        Map<String, String> params = new TreeMap<>();
         params.put("artist", artist);
         params.put("track", title);
         params.put("sk", sessionKey);
@@ -485,37 +475,35 @@ public class LastfmRequestManager {
                 title,
                 generateApiSig(params),
                 sessionKey,
-                new Callback<Object>() {
-                    @Override
-                    public void success(Object o, Response response) {
-                        callback.success(o, response);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        callback.failure(error);
-                    }
-                });
+                callback);
     }
 
-    public void scrobble(String artist, String title, String album, String currentTime, final Callback<Object> callback) {
+    public void scrobble(String artist, String title, String album, String timestamp, final Callback<Object> callback) {
         String sessionKey = AuthorizationInfoManager.getLastfmKey();
-        TreeMap<String, String> params = new TreeMap<>();
+        Map<String, String> params = new TreeMap<>();
         params.put("artist", artist);
         params.put("track", title);
         params.put("album", album);
         params.put("sk", sessionKey);
         params.put("method", "track.unlove");
-        lastfmService.scrobble(artist, title, album, generateApiSig(params), sessionKey, new Callback<Object>() {
-            @Override
-            public void success(Object o, Response response) {
-                callback.success(o, response);
-            }
+        lastfmService.scrobble(artist, title, album, timestamp, generateApiSig(params), sessionKey, callback);
+    }
 
-            @Override
-            public void failure(RetrofitError error) {
-                callback.failure(error);
-            }
-        });
+    public void nowplaying(Track track, final Callback<Object> callback) {
+        String sessionKey = AuthorizationInfoManager.getLastfmKey();
+        Map<String, String> params = new TreeMap<>();
+        String artist = track.getArtist();
+        String title = track.getArtist();
+        String album = track.getAlbum();
+        params.put("artist", artist);
+        params.put("track", title);
+        params.put("sk", sessionKey);
+        params.put("method", "track.updateNowPlaying");
+        if (album != null) {
+            params.put("album", album);
+            lastfmService.nowplaying(artist, title, album, generateApiSig(params), sessionKey, callback);
+        } else {
+            lastfmService.nowplaying(artist, title, generateApiSig(params), sessionKey, callback);
+        }
     }
 }

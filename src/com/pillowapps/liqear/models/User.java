@@ -17,7 +17,7 @@ public class User implements Serializable {
     private long playcount;
     private Gender gender;
     private double match;
-    private String uid;
+    private long uid;
     private String imageUrl;
 
     public String getImageUrl() {
@@ -33,7 +33,7 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public User(String name, String uid) {
+    public User(String name, long uid) {
         this.name = name;
         this.uid = uid;
     }
@@ -89,11 +89,11 @@ public class User implements Serializable {
         this.match = match;
     }
 
-    public String getUid() {
+    public long getUid() {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public void setUid(long uid) {
         this.uid = uid;
     }
 

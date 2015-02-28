@@ -2,6 +2,7 @@ package com.pillowapps.liqear.helpers;
 
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Artist;
+import com.pillowapps.liqear.models.Group;
 import com.pillowapps.liqear.models.Tag;
 import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.User;
@@ -11,6 +12,7 @@ import com.pillowapps.liqear.models.lastfm.LastfmImage;
 import com.pillowapps.liqear.models.lastfm.LastfmTag;
 import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.lastfm.LastfmUser;
+import com.pillowapps.liqear.models.vk.VkGroup;
 import com.pillowapps.liqear.models.vk.VkTrack;
 
 import java.util.ArrayList;
@@ -115,5 +117,22 @@ public class Converter {
             users.add(user);
         }
         return users;
+    }
+
+    public static List<Group> convertGroups(List<VkGroup> vkGroups) {
+        List<Group> groups = new ArrayList<>();
+        for (VkGroup group : vkGroups) {
+            Group user = convertGroup(group);
+            groups.add(user);
+        }
+        return groups;
+    }
+
+    private static Group convertGroup(VkGroup vkGroup) {
+        Group group = new Group();
+        group.setGid(vkGroup.getId());
+        group.setImageUrl(vkGroup.getImageMedium());
+        group.setName(vkGroup.getName());
+        return group;
     }
 }

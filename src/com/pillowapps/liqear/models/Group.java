@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Group implements Serializable {
     private String name;
-    private String gid;
+    private long gid;
     private String imageUrl;
 
     public String getName() {
@@ -15,11 +15,11 @@ public class Group implements Serializable {
         this.name = name;
     }
 
-    public String getGid() {
+    public long getGid() {
         return gid;
     }
 
-    public void setGid(String gid) {
+    public void setGid(long gid) {
         this.gid = gid;
     }
 

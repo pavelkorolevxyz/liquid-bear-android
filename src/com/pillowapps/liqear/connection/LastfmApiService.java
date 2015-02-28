@@ -182,10 +182,19 @@ public interface LastfmApiService {
                            @Query("sk ") String sessionKey,
                            Callback<Object> callback);
 
+    @POST("?method=track.updateNowPlaying")
+    public void nowplaying(@Query("artist") String artist,
+                           @Query("track") String track,
+                           @Query("album") String album,
+                           @Query("api_sig") String apiSig,
+                           @Query("sk ") String sessionKey,
+                           Callback<Object> callback);
+
     @POST("?method=track.scrobble")
     public void scrobble(@Query("artist") String artist,
                          @Query("track") String track,
                          @Query("album") String album,
+                         @Query("timestamp") String timestamp,
                          @Query("api_sig") String apiSig,
                          @Query("sk ") String sessionKey,
                          Callback<Object> callback);

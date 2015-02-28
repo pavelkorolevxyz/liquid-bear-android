@@ -44,9 +44,10 @@ import com.pillowapps.liqear.connection.ApiException;
 import com.pillowapps.liqear.connection.CompletionListener;
 import com.pillowapps.liqear.connection.GetResponseCallback;
 import com.pillowapps.liqear.connection.LastfmRequestManager;
-import com.pillowapps.liqear.connection.PostCallback;
+import com.pillowapps.liqear.connection.PassiveCallback;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
+import com.pillowapps.liqear.connection.VkRequestManager;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
@@ -313,13 +314,18 @@ public class MusicPlaybackService extends Service implements
             } else if (ACTION_ADD_TO_VK_FAST.equals(action)) {
                 final Track track = AudioTimeline.getCurrentTrack();
                 if (track != null) {
-                    QueryManager.getInstance().addAudioFast(track, new GetResponseCallback() {
+                    VkRequestManager.getInstance().addToUserAudioFast(track.getNotation(), new Callback<Object>() {
                         @Override
-                        public void onDataReceived(ReadyResult result) {
+                        public void success(Object o, Response response) {
                             track.setAddedToVk(true);
                             Toast.makeText(LiqearApplication.getAppContext(),
                                     R.string.added, Toast.LENGTH_SHORT).show();
                             showTrackInNotification();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
                         }
                     });
                 }
@@ -327,21 +333,29 @@ public class MusicPlaybackService extends Service implements
                 final Track track = AudioTimeline.getCurrentTrack();
                 if (track != null) {
                     if (!track.isLoved()) {
-                        QueryManager.getInstance().love(track, new PostCallback() {
+                        LastfmRequestManager.getInstance().love(track, new Callback<Object>() {
                             @Override
-                            public void onPostSuccess() {
+                            public void success(Object o, Response response) {
                                 track.setLoved(true);
                                 updateWidgets();
                                 showTrackInNotification();
                             }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                            }
                         });
                     } else {
-                        QueryManager.getInstance().unlove(track, new PostCallback() {
+                        LastfmRequestManager.getInstance().unlove(track, new Callback<Object>() {
                             @Override
-                            public void onPostSuccess() {
+                            public void success(Object o, Response response) {
                                 track.setLoved(false);
                                 updateWidgets();
                                 showTrackInNotification();
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
                             }
                         });
                     }
@@ -1275,17 +1289,11 @@ public class MusicPlaybackService extends Service implements
     }
 
     private void updateNowPlaying(final Track currentTrack) {
-        PostCallback callback = new PostCallback() {
-            @Override
-            public void onPostSuccess() {
-                // No operations.
-            }
-        };
         if (PreferencesManager.getPreferences().getBoolean("nowplaying_check_box_preferences", true)) {
-            new QueryManager().updateNowPlaying(currentTrack, callback);
+            LastfmRequestManager.getInstance().nowplaying(currentTrack, new PassiveCallback());
         }
         if (PreferencesManager.getPreferences().getBoolean("nowplaying_vk_check_box_preferences", true)) {
-            new QueryManager().updateStatus(currentTrack, callback);
+            VkRequestManager.getInstance().updateStatus(currentTrack, new PassiveCallback());
         }
     }
 
@@ -1365,7 +1373,6 @@ public class MusicPlaybackService extends Service implements
     }
 
     public class ConnectionChangeReceiver extends BroadcastReceiver {
-
         public void onReceive(Context context, Intent intent) {
             sendCallback(INTERNET_STATE_CHANGE);
             if (intent.getExtras() != null) {
@@ -1421,4 +1428,4 @@ public class MusicPlaybackService extends Service implements
             }
         }
     }
-};
+}

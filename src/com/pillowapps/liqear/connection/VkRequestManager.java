@@ -1,7 +1,11 @@
 package com.pillowapps.liqear.connection;
 
+import com.pillowapps.liqear.helpers.StringUtils;
+import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.vk.VkAlbum;
 import com.pillowapps.liqear.models.vk.VkAlbumsResponseRoot;
+import com.pillowapps.liqear.models.vk.VkGroup;
+import com.pillowapps.liqear.models.vk.VkGroupsResponseRoot;
 import com.pillowapps.liqear.models.vk.VkTrack;
 import com.pillowapps.liqear.models.vk.VkTracksResponseRoot;
 import com.pillowapps.liqear.models.vk.VkUser;
@@ -31,9 +35,9 @@ public class VkRequestManager {
         return instance;
     }
 
-    public void getUserInfoVk(String userId, final Callback<VkUser> callback) {
+    public void getUserInfoVk(long userId, final Callback<VkUser> callback) {
         String fields = "first_name,last_name,photo_medium";
-        vkService.getUsers(userId, fields, new Callback<List<VkUser>>() {
+        vkService.getUser(userId, fields, new Callback<List<VkUser>>() {
             @Override
             public void success(List<VkUser> users, Response response) {
                 if (users.size() == 0) return;
@@ -48,7 +52,7 @@ public class VkRequestManager {
         });
     }
 
-    public void getVkUserAudio(String uid, int count, int offset, final Callback<List<VkTrack>> callback) {
+    public void getVkUserAudio(long uid, int count, int offset, final Callback<List<VkTrack>> callback) {
         vkService.getAudio(uid, count, offset, new Callback<VkTracksResponseRoot>() {
             @Override
             public void success(VkTracksResponseRoot root, Response response) {
@@ -62,7 +66,7 @@ public class VkRequestManager {
         });
     }
 
-    public void getVkGroupAudio(String gid, int count, int offset, final Callback<List<VkTrack>> callback) {
+    public void getVkGroupAudio(long gid, int count, int offset, final Callback<List<VkTrack>> callback) {
         vkService.getGroupAudio(gid, count, offset, new Callback<VkTracksResponseRoot>() {
             @Override
             public void success(VkTracksResponseRoot root, Response response) {
@@ -110,7 +114,7 @@ public class VkRequestManager {
         });
     }
 
-    public void getUserVkAlbums(String ownerId, int offset, int count, final Callback<List<VkAlbum>> callback) {
+    public void getUserVkAlbums(long ownerId, int offset, int count, final Callback<List<VkAlbum>> callback) {
         vkService.getAlbums(ownerId, offset, count, new Callback<VkAlbumsResponseRoot>() {
             @Override
             public void success(VkAlbumsResponseRoot root, Response response) {
@@ -126,8 +130,8 @@ public class VkRequestManager {
         });
     }
 
-    public void getGroupVkAlbums(String ownerId, int offset, int count, final Callback<List<VkAlbum>> callback) {
-        vkService.getAlbums(String.format("-%s", ownerId), offset, count, new Callback<VkAlbumsResponseRoot>() {
+    public void getGroupVkAlbums(long ownerId, int offset, int count, final Callback<List<VkAlbum>> callback) {
+        vkService.getAlbums(-ownerId, offset, count, new Callback<VkAlbumsResponseRoot>() {
             @Override
             public void success(VkAlbumsResponseRoot root, Response response) {
                 List<VkAlbum> albums = root.getResponse().getAlbums();
@@ -142,7 +146,7 @@ public class VkRequestManager {
         });
     }
 
-    public void getVkUserWallAudio(String ownerId, int count, int offset, final Callback<List<VkTrack>> callback) {
+    public void getVkUserWallAudio(long ownerId, int count, int offset, final Callback<List<VkTrack>> callback) {
         vkService.getWallMessages(ownerId, offset, count, new Callback<VkWallMessagesResponseRoot>() {
             @Override
             public void success(VkWallMessagesResponseRoot root, Response response) {
@@ -159,14 +163,92 @@ public class VkRequestManager {
         });
     }
 
-    public void getVkGroupWallAudio(String ownerId, int count, int offset, final Callback<List<VkTrack>> callback) {
-        vkService.getWallMessages(String.format("-%s", ownerId), offset, count, new Callback<VkWallMessagesResponseRoot>() {
+    public void getVkGroupWallAudio(long ownerId, int count, int offset, final Callback<List<VkTrack>> callback) {
+        vkService.getWallMessages(-ownerId, offset, count, new Callback<VkWallMessagesResponseRoot>() {
             @Override
             public void success(VkWallMessagesResponseRoot root, Response response) {
                 List<VkWallMessage> posts = root.getResponse().getPosts();
                 List<VkTrack> tracks = new ArrayList<>();
                 //todo get tracks from posts
                 callback.success(tracks, response);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                callback.failure(error);
+            }
+        });
+    }
+
+    public void updateStatus(Track track, Callback<Object> callback) {
+        if (track.hasAudioString()) {
+            String audio = track.getOwnerId() + " " + track.getAid();
+            vkService.updateStatus(audio, callback);
+        } else {
+            vkService.setAudioStatusWithSearch(track.getNotation(), callback);
+        }
+    }
+
+    public void getUserAudioFromAlbum(long uid, long albumId, final int count, int offset,
+                                      final Callback<List<VkTrack>> callback) {
+        vkService.getAudio(String.valueOf(uid), String.valueOf(albumId), count, offset,
+                new Callback<VkTracksResponseRoot>() {
+                    @Override
+                    public void success(VkTracksResponseRoot root, Response response) {
+                        callback.success(root.getResponse().getTracks(), response);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        callback.failure(error);
+                    }
+                });
+    }
+
+    public void getGroupAudioFromAlbum(long gid, long albumId, final int count, int offset,
+                                       final Callback<List<VkTrack>> callback) {
+        vkService.getAudio(String.format("-%d", gid), String.valueOf(albumId), count, offset,
+                new Callback<VkTracksResponseRoot>() {
+                    @Override
+                    public void success(VkTracksResponseRoot root, Response response) {
+                        callback.success(root.getResponse().getTracks(), response);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        callback.failure(error);
+                    }
+                });
+    }
+
+    public void searchAudio(String query, int offset, int count, final Callback<List<VkTrack>> callback) {
+        vkService.searchAudio(query.replaceAll("\\?", ""), offset, count,
+                new Callback<VkTracksResponseRoot>() {
+                    @Override
+                    public void success(VkTracksResponseRoot root, Response response) {
+                        callback.success(root.getResponse().getTracks(), response);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        callback.failure(error);
+                    }
+                });
+    }
+
+    public void addToUserAudio(long audioId, long ownerId, Callback<Object> callback) {
+        vkService.addAudio(audioId, ownerId, callback);
+    }
+
+    public void addToUserAudioFast(String notation, Callback<Object> callback) {
+        vkService.addAudioFast(StringUtils.escapeString(notation), callback);
+    }
+
+    public void getGroups(int offset, int count, final Callback<List<VkGroup>> callback) {
+        vkService.getGroups(1, offset, count, new Callback<VkGroupsResponseRoot>() {
+            @Override
+            public void success(VkGroupsResponseRoot root, Response response) {
+                callback.success(root.getResponse().getGroups(), response);
             }
 
             @Override

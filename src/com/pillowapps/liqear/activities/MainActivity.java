@@ -49,6 +49,7 @@ import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.connection.PostCallback;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
+import com.pillowapps.liqear.connection.VkRequestManager;
 import com.pillowapps.liqear.fragments.HandsetFragment;
 import com.pillowapps.liqear.fragments.ModeListFragment;
 import com.pillowapps.liqear.fragments.PlaybackControlFragment;
@@ -818,11 +819,16 @@ public class MainActivity extends SlidingFragmentActivity {
                 startActivity(intent);
             }
         } else {
-            QueryManager.getInstance().addAudioFast(track, new GetResponseCallback() {
+            VkRequestManager.getInstance().addToUserAudioFast(track.getNotation(), new Callback<Object>() {
                 @Override
-                public void onDataReceived(ReadyResult result) {
+                public void success(Object o, Response response) {
                     Toast.makeText(LiqearApplication.getAppContext(),
                             R.string.added, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
                 }
             });
         }
@@ -974,11 +980,17 @@ public class MainActivity extends SlidingFragmentActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        QueryManager.getInstance().love(targetTrack, new PostCallback() {
+                                        LastfmRequestManager.getInstance().love(targetTrack, new Callback<Object>() {
                                             @Override
-                                            public void onPostSuccess() {
-                                                //no op.
-                                                invalidateOptionsMenu();
+                                            public void success(Object o, Response response) {
+                                                progressBar.setVisibility(View.GONE);
+                                                targetTrack.setLoved(true);
+                                                MainActivity.this.invalidateMenu();
+                                            }
+
+                                            @Override
+                                            public void failure(RetrofitError error) {
+                                                progressBar.setVisibility(View.GONE);
                                             }
                                         });
                                         break;
