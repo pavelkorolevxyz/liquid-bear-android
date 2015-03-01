@@ -37,24 +37,27 @@ public class ServiceHelper {
         }
     };
 
-    private static RequestInterceptor vkInterceptor = new RequestInterceptor() {
-        @Override
-        public void intercept(RequestInterceptor.RequestFacade request) {
-            request.addQueryParam("access_token", AuthorizationInfoManager.getVkAccessToken());
-        }
-    };
-
-
     private ServiceHelper() {
         // No op.
     }
 
     public static VkApiService getVkService() {
         if (vkApiService == null) {
+            RequestInterceptor requestInterceptor = new RequestInterceptor() {
+                @Override
+                public void intercept(RequestFacade request) {
+                    request.addQueryParam("access_token", AuthorizationInfoManager.getVkAccessToken());
+                    request.addQueryParam("v", "5.28");
+                }
+            };
+
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setLogLevel(RestAdapter.LogLevel.FULL)
+                    .setRequestInterceptor(requestInterceptor)
                     .setEndpoint(VK_API)
                     .build();
+
+            //access_token
             vkApiService = restAdapter.create(VkApiService.class);
         }
         return vkApiService;

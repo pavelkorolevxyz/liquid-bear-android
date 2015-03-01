@@ -59,7 +59,6 @@ import java.util.TreeMap;
  */
 @SuppressWarnings({"unchecked"})
 public class QueryManager {
-
     public static final String key = "03q8HwJ2xIgJlzxLgxv0";
     public static final String appId = "4613451";
     public static final String EXECUTE_LYRICS = "execute.getLyrics";
