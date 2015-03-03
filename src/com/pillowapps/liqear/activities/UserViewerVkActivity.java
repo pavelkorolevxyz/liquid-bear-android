@@ -23,7 +23,6 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.PagerResultSherlockActivity;
 import com.pillowapps.liqear.components.ViewerPage;
 import com.pillowapps.liqear.connection.Params;
-import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.connection.VkRequestManager;
 import com.pillowapps.liqear.connection.VkSimpleCallback;
@@ -31,7 +30,6 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.Utils;
-import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Group;
 import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.User;
@@ -42,10 +40,6 @@ import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 @SuppressWarnings("unchecked")
 public class UserViewerVkActivity extends PagerResultSherlockActivity {
@@ -146,7 +140,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent searchIntent = new Intent(UserViewerVkActivity.this,
                         SearchSherlockListActivity.class);
-                Album vkAlbum = (Album) getViewer(ALBUM_INDEX).getValues().get(position);
+                VkAlbum vkAlbum = (VkAlbum) getViewer(ALBUM_INDEX).getValues().get(position);
                 searchIntent.putExtra("title", vkAlbum.getTitle());
                 if (mode == Mode.USER) {
                     searchIntent.putExtra("uid", user.getUid());
@@ -192,7 +186,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
         addViewer(new ViewerPage<Track>(view));
         view = inflater.inflate(R.layout.list_tab, null);
         views.add(view);
-        addViewer(new ViewerPage<Album>(view));
+        addViewer(new ViewerPage<VkAlbum>(view));
         if (youMode) {
             view = inflater.inflate(R.layout.list_tab, null);
             views.add(view);
@@ -291,7 +285,6 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             @Override
             public void success(List<VkAlbum> data) {
                 fillVkAlbums(data, getViewer(ALBUM_INDEX));
-
             }
 
             @Override
@@ -300,11 +293,11 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             }
         };
         if (mode == Mode.USER) {
-            VkRequestManager.getInstance().getUserVkAlbums(user.getUid(), TRACKS_IN_TOP_COUNT,
-                    TRACKS_IN_TOP_COUNT * albumPage++, callback);
+            VkRequestManager.getInstance().getUserVkAlbums(user.getUid(),
+                    TRACKS_IN_TOP_COUNT * albumPage++, TRACKS_IN_TOP_COUNT, callback);
         } else {
-            VkRequestManager.getInstance().getGroupVkAlbums(group.getGid(), TRACKS_IN_TOP_COUNT,
-                    TRACKS_IN_TOP_COUNT * albumPage++, callback);
+            VkRequestManager.getInstance().getGroupVkAlbums(group.getGid(),
+                    TRACKS_IN_TOP_COUNT * albumPage++, TRACKS_IN_TOP_COUNT, callback);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.pillowapps.liqear.connection;
 
 import com.pillowapps.liqear.helpers.StringUtils;
+import com.pillowapps.liqear.helpers.VkTracksUtils;
 import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.vk.VkAlbum;
 import com.pillowapps.liqear.models.vk.VkAlbumsResponseRoot;
@@ -14,7 +15,6 @@ import com.pillowapps.liqear.models.vk.VkUser;
 import com.pillowapps.liqear.models.vk.VkWallMessage;
 import com.pillowapps.liqear.models.vk.VkWallMessagesResponseRoot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VkRequestManager {
@@ -97,8 +97,7 @@ public class VkRequestManager {
             @Override
             public void success(VkWallMessagesResponseRoot data) {
                 List<VkWallMessage> posts = data.getResponse().getPosts();
-                List<VkTrack> tracks = new ArrayList<>();
-                //todo get tracks from posts
+                List<VkTrack> tracks = VkTracksUtils.getTracks(posts);
                 callback.success(tracks);
             }
 
@@ -114,8 +113,7 @@ public class VkRequestManager {
             @Override
             public void success(VkWallMessagesResponseRoot data) {
                 List<VkWallMessage> posts = data.getResponse().getPosts();
-                List<VkTrack> tracks = new ArrayList<>();
-                //todo get tracks from posts
+                List<VkTrack> tracks = VkTracksUtils.getTracks(posts);
                 callback.success(tracks);
             }
 
@@ -131,7 +129,6 @@ public class VkRequestManager {
             @Override
             public void success(VkAlbumsResponseRoot data) {
                 List<VkAlbum> albums = data.getResponse().getAlbums();
-                //todo get tracks from albums
                 callback.success(albums);
             }
 
@@ -147,7 +144,6 @@ public class VkRequestManager {
             @Override
             public void success(VkAlbumsResponseRoot data) {
                 List<VkAlbum> albums = data.getResponse().getAlbums();
-                //todo get tracks from albums
                 callback.success(albums);
             }
 
@@ -163,8 +159,7 @@ public class VkRequestManager {
             @Override
             public void success(VkWallMessagesResponseRoot data) {
                 List<VkWallMessage> posts = data.getResponse().getPosts();
-                List<VkTrack> tracks = new ArrayList<>();
-                //todo get tracks from posts
+                List<VkTrack> tracks = VkTracksUtils.getTracks(posts);
                 callback.success(tracks);
             }
 
@@ -181,8 +176,7 @@ public class VkRequestManager {
             @Override
             public void success(VkWallMessagesResponseRoot data) {
                 List<VkWallMessage> posts = data.getResponse().getPosts();
-                List<VkTrack> tracks = new ArrayList<>();
-                //todo get tracks from posts
+                List<VkTrack> tracks = VkTracksUtils.getTracks(posts);
                 callback.success(tracks);
             }
 
@@ -259,7 +253,6 @@ public class VkRequestManager {
 
     public void getGroups(int offset, int count, final VkSimpleCallback<List<VkGroup>> callback) {
         vkService.getGroups(1, offset, count, new VkCallback<VkGroupsResponseRoot>() {
-
             @Override
             public void success(VkGroupsResponseRoot data) {
                 callback.success(data.getResponse().getGroups());

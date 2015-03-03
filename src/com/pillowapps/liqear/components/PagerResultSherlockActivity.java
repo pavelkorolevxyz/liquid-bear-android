@@ -87,7 +87,7 @@ public class PagerResultSherlockActivity extends ResultSherlockActivity {
     }
 
     protected void fillVkAlbums(List<VkAlbum> albums, ViewerPage viewer) {
-        Class<Album> clazz = Album.class;
+        Class<VkAlbum> clazz = VkAlbum.class;
         ListArrayAdapter adapter = viewer.getAdapter();
         int adapterSize = adapter == null ? 0 : adapter.getCount();
         if (adapterSize + albums.size() == 0) {

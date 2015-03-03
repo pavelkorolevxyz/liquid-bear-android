@@ -20,17 +20,17 @@ public interface VkApiService {
 
     @GET("/wall.get")
     public void getWallMessages(@Query("owner_id") long ownerId,
-                                @Query("offset") int offset,
+                                @Query("start_from") int offset,
                                 @Query("count") int count,
                                 Callback<VkWallMessagesResponseRoot> callback);
 
     @GET("/fave.getPosts")
-    public void getFavoriteWallMessages(@Query("offset") int offset,
+    public void getFavoriteWallMessages(@Query("start_from") int offset,
                                         @Query("count") int count,
                                         Callback<VkWallMessagesResponseRoot> callback);
 
     @GET("/newsfeed.get")
-    public void getNewsfeedWallMessages(@Query("offset") int offset,
+    public void getNewsfeedWallMessages(@Query("start_from") int offset,
                                         @Query("count") int count,
                                         Callback<VkWallMessagesResponseRoot> callback);
 
@@ -42,25 +42,25 @@ public interface VkApiService {
     @GET("/audio.get")
     public void getAudio(@Query("owner_id") long ownerId,
                          @Query("count") int count,
-                         @Query("offset") int offset,
+                         @Query("start_from") int offset,
                          Callback<VkTracksResponseRoot> callback);
 
     @GET("/audio.get")
     public void getGroupAudio(@Query("gid") long groupId,
                               @Query("count") int count,
-                              @Query("offset") int offset,
+                              @Query("start_from") int offset,
                               Callback<VkTracksResponseRoot> callback);
 
     @GET("/audio.get")
     public void getAudio(@Query("owner_id") String ownerId,
                          @Query("album_id") String albumId,
                          @Query("count") int count,
-                         @Query("offset") int offset,
+                         @Query("start_from") int offset,
                          Callback<VkTracksResponseRoot> callback);
 
     @GET("/audio.search")
     public void searchAudio(@Query("q") String q,
-                            @Query("offset") int offset,
+                            @Query("start_from") int offset,
                             @Query("count") int count,
                             Callback<VkTracksResponseRoot> callback);
 
@@ -83,25 +83,25 @@ public interface VkApiService {
 
     @GET("/groups.get")
     public void getGroups(@Query("extended") int extended,
-                          @Query("offset") int offset,
+                          @Query("start_from") int offset,
                           @Query("count") int count,
                           Callback<VkGroupsResponseRoot> callback);
 
     @GET("/audio.getAlbums")
     public void getAlbums(@Query("owner_id") long ownerId,
-                          @Query("offset") int offset,
+                          @Query("start_from") int offset,
                           @Query("count") int count,
                           Callback<VkAlbumsResponseRoot> callback);
 
     @GET("/audio.getRecommendations")
-    public void getRecommendations(@Query("offset") int offset,
+    public void getRecommendations(@Query("start_from") int offset,
                                    @Query("count") int count,
                                    Callback<List<VkTrack>> callback);
 
     @GET("/friends.get")
     public void getFriends(@Query("user_id") long userId,
                            @Query("fields") String fields,
-                           @Query("offset") int offset,
+                           @Query("start_from") int offset,
                            @Query("count") int count,
                            Callback<List<LastfmAlbum>> callback);
 
