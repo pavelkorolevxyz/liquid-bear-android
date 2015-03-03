@@ -48,6 +48,7 @@ import com.pillowapps.liqear.connection.Params;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.connection.VkRequestManager;
+import com.pillowapps.liqear.connection.VkSimpleCallback;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
@@ -66,7 +67,9 @@ import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.models.lastfm.LastfmArtist;
 import com.pillowapps.liqear.models.lastfm.LastfmTag;
 import com.pillowapps.liqear.models.lastfm.LastfmUser;
+import com.pillowapps.liqear.models.vk.VkError;
 import com.pillowapps.liqear.models.vk.VkGroup;
+import com.pillowapps.liqear.models.vk.VkResponse;
 import com.pillowapps.liqear.models.vk.VkTrack;
 
 import java.io.File;
@@ -435,17 +438,18 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             if (adapter != null) adapter.clear();
         }
         this.searchQuery = searchQuery;
-        VkRequestManager.getInstance().searchAudio(searchQuery, 0, count, new Callback<List<VkTrack>>() {
+        VkRequestManager.getInstance().searchAudio(searchQuery, 0, count, new VkSimpleCallback<List<VkTrack>>() {
             @Override
-            public void success(List<VkTrack> vkTracks, Response response) {
-                fillWithTracklist(vkTracks);
+            public void success(List<VkTrack> data) {
+                fillWithTracklist(data);
                 adapter.setHighlighted(PreferencesManager.getUrlNumberPreferences()
                         .getInt(getIntent().getStringExtra(Constants.TARGET), 0));
                 progressBar.setVisibility(View.GONE);
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(VkError error) {
+
                 progressBar.setVisibility(View.GONE);
             }
         });
@@ -453,34 +457,27 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
 
     private void getVkUserAudioFromAlbum(long uid, long albumId) {
         VkRequestManager.getInstance().getUserAudioFromAlbum(uid, albumId, 0, 0,
-                new Callback<List<VkTrack>>() {
-                    @Override
-                    public void success(List<VkTrack> vkTracks, Response response) {
-                        fillWithTracklist(vkTracks);
-                        progressBar.setVisibility(View.GONE);
-                    }
+                vkTracksCallback());
+    }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+    private VkSimpleCallback<List<VkTrack>> vkTracksCallback() {
+        return new VkSimpleCallback<List<VkTrack>>() {
+            @Override
+            public void success(List<VkTrack> data) {
+                fillWithTracklist(data);
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failure(VkError error) {
+                progressBar.setVisibility(View.GONE);
+            }
+        };
     }
 
     private void getVkGroupAudioFromAlbum(long gid, long albumId) {
         VkRequestManager.getInstance().getGroupAudioFromAlbum(gid, albumId, 0, 0,
-                new Callback<List<VkTrack>>() {
-                    @Override
-                    public void success(List<VkTrack> vkTracks, Response response) {
-                        fillWithTracklist(vkTracks);
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+                vkTracksCallback());
     }
 
     private void loadAlbumPresets() {
@@ -760,15 +757,15 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 int type = getIntent().getIntExtra("type", 1);
                 if (type == 1) {
                     Track track = (Track) adapter.get(position);
-                    VkRequestManager.getInstance().addToUserAudio(track.getAid(), track.getOwnerId(), new Callback<Object>() {
+                    VkRequestManager.getInstance().addToUserAudio(track.getAid(), track.getOwnerId(), new VkSimpleCallback<VkResponse>() {
                         @Override
-                        public void success(Object o, Response response) {
+                        public void success(VkResponse data) {
                             Toast.makeText(LiqearApplication.getAppContext(),
                                     R.string.added, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
+                        public void failure(VkError error) {
 
                         }
                     });
@@ -927,10 +924,10 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void getVkGroups() {
-        VkRequestManager.getInstance().getGroups(0, 0, new Callback<List<VkGroup>>() {
+        VkRequestManager.getInstance().getGroups(0, 0, new VkSimpleCallback<List<VkGroup>>() {
             @Override
-            public void success(List<VkGroup> vkGroups, Response response) {
-                List<Group> groups = Converter.convertGroups(vkGroups);
+            public void success(List<VkGroup> data) {
+                List<Group> groups = Converter.convertGroups(data);
                 adapter = new QuickSearchArrayAdapter<>(SearchSherlockListActivity.this,
                         groups, Group.class);
                 setAdapter();
@@ -938,7 +935,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(VkError error) {
                 progressBar.setVisibility(View.GONE);
             }
         });

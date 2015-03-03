@@ -5,13 +5,14 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class PassiveCallback implements Callback<Object> {
+
     @Override
-    public void success(Object t, Response response) {
-        // No operation.
+    public void success(Object o, Response response) {
+
     }
 
     @Override
     public void failure(RetrofitError error) {
-        // No operation.
+
     }
 }

@@ -2,7 +2,7 @@ package com.pillowapps.liqear.models.vk;
 
 import com.google.gson.annotations.SerializedName;
 
-public class VkTracksResponseRoot {
+public class VkTracksResponseRoot extends VkResponse{
     @SerializedName("response")
     private VkTracksResponse response;
     @SerializedName("count")

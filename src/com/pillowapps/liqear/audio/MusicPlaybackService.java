@@ -45,9 +45,11 @@ import com.pillowapps.liqear.connection.CompletionListener;
 import com.pillowapps.liqear.connection.GetResponseCallback;
 import com.pillowapps.liqear.connection.LastfmRequestManager;
 import com.pillowapps.liqear.connection.PassiveCallback;
+import com.pillowapps.liqear.connection.VkPassiveCallback;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.connection.VkRequestManager;
+import com.pillowapps.liqear.connection.VkSimpleCallback;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
@@ -61,6 +63,8 @@ import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.TrackUrlQuery;
 import com.pillowapps.liqear.models.lastfm.LastfmArtist;
 import com.pillowapps.liqear.models.lastfm.LastfmImage;
+import com.pillowapps.liqear.models.vk.VkError;
+import com.pillowapps.liqear.models.vk.VkResponse;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -314,9 +318,9 @@ public class MusicPlaybackService extends Service implements
             } else if (ACTION_ADD_TO_VK_FAST.equals(action)) {
                 final Track track = AudioTimeline.getCurrentTrack();
                 if (track != null) {
-                    VkRequestManager.getInstance().addToUserAudioFast(track.getNotation(), new Callback<Object>() {
+                    VkRequestManager.getInstance().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>(){
                         @Override
-                        public void success(Object o, Response response) {
+                        public void success(VkResponse data) {
                             track.setAddedToVk(true);
                             Toast.makeText(LiqearApplication.getAppContext(),
                                     R.string.added, Toast.LENGTH_SHORT).show();
@@ -324,7 +328,7 @@ public class MusicPlaybackService extends Service implements
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
+                        public void failure(VkError error) {
 
                         }
                     });
@@ -1293,7 +1297,7 @@ public class MusicPlaybackService extends Service implements
             LastfmRequestManager.getInstance().nowplaying(currentTrack, new PassiveCallback());
         }
         if (PreferencesManager.getPreferences().getBoolean("nowplaying_vk_check_box_preferences", true)) {
-            VkRequestManager.getInstance().updateStatus(currentTrack, new PassiveCallback());
+            VkRequestManager.getInstance().updateStatus(currentTrack, new VkPassiveCallback());
         }
     }
 

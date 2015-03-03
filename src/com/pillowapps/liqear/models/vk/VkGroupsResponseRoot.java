@@ -2,7 +2,7 @@ package com.pillowapps.liqear.models.vk;
 
 import com.google.gson.annotations.SerializedName;
 
-public class VkGroupsResponseRoot {
+public class VkGroupsResponseRoot extends VkResponse{
     @SerializedName("response")
     private VkGroupsResponse response;
 

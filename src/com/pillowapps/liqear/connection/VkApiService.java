@@ -3,6 +3,7 @@ package com.pillowapps.liqear.connection;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.models.vk.VkAlbumsResponseRoot;
 import com.pillowapps.liqear.models.vk.VkGroupsResponseRoot;
+import com.pillowapps.liqear.models.vk.VkResponse;
 import com.pillowapps.liqear.models.vk.VkTrack;
 import com.pillowapps.liqear.models.vk.VkTracksResponseRoot;
 import com.pillowapps.liqear.models.vk.VkUser;
@@ -36,7 +37,7 @@ public interface VkApiService {
     @POST("/wall.post")
     public void postWallMessages(@Query("message") String message,
                                  @Query("attachment") String attachment,
-                                 Callback<Object> callback);
+                                 Callback<VkResponse> callback);
 
     @GET("/audio.get")
     public void getAudio(@Query("owner_id") long ownerId,
@@ -70,15 +71,15 @@ public interface VkApiService {
 
     @POST("/status.set")
     public void setAudioStatus(@Query("audio") String audio,
-                               Callback<Object> callback);
+                               Callback<VkResponse> callback);
 
     @POST("/execute.saps")
     public void setAudioStatusWithSearch(@Query("q") String searchQuery,
-                                         Callback<Object> callback);
+                                         Callback<VkResponse> callback);
 
     @POST("/execute.ta")
     public void addAudioWithSearch(@Query("q") String searchQuery,
-                                   Callback<Object> callback);
+                                   Callback<VkResponse> callback);
 
     @GET("/groups.get")
     public void getGroups(@Query("extended") int extended,
@@ -118,21 +119,21 @@ public interface VkApiService {
     public void saveWallPhoto(@Query("server") String server,
                               @Query("photo") String photo,
                               @Query("hash") String hash,
-                              Callback<Object> callback);
+                              Callback<VkResponse> callback);
 
     @GET("/photos.getWallUploadServer")
-    public void getWallUploadServer(Callback<Object> callback);
+    public void getWallUploadServer(Callback<VkResponse> callback);
 
     @POST("/status.set")
     public void updateStatus(@Query("audio") String audioString,
-                             Callback<Object> callback);
+                             Callback<VkResponse> callback);
 
     @POST("/audio.add")
     void addAudio(@Query("audio_id") long audioId,
                   @Query("owner_id") long ownerId,
-                  Callback<Object> callback);
+                  Callback<VkResponse> callback);
 
     @POST("/execute.ta")
     void addAudioFast(@Query("q") String q,
-                      Callback<Object> callback);
+                      Callback<VkResponse> callback);
 }

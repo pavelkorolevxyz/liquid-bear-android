@@ -50,6 +50,7 @@ import com.pillowapps.liqear.connection.PostCallback;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.connection.VkRequestManager;
+import com.pillowapps.liqear.connection.VkSimpleCallback;
 import com.pillowapps.liqear.fragments.HandsetFragment;
 import com.pillowapps.liqear.fragments.ModeListFragment;
 import com.pillowapps.liqear.fragments.PlaybackControlFragment;
@@ -69,6 +70,8 @@ import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.MainActivityStartEnum;
 import com.pillowapps.liqear.models.Track;
+import com.pillowapps.liqear.models.vk.VkError;
+import com.pillowapps.liqear.models.vk.VkResponse;
 
 import org.codechimp.apprater.AppRater;
 
@@ -819,15 +822,15 @@ public class MainActivity extends SlidingFragmentActivity {
                 startActivity(intent);
             }
         } else {
-            VkRequestManager.getInstance().addToUserAudioFast(track.getNotation(), new Callback<Object>() {
+            VkRequestManager.getInstance().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>() {
                 @Override
-                public void success(Object o, Response response) {
+                public void success(VkResponse data) {
                     Toast.makeText(LiqearApplication.getAppContext(),
                             R.string.added, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
+                public void failure(VkError error) {
 
                 }
             });

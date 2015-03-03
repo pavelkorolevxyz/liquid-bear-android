@@ -26,6 +26,7 @@ import com.pillowapps.liqear.connection.Params;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.connection.VkRequestManager;
+import com.pillowapps.liqear.connection.VkSimpleCallback;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
@@ -35,6 +36,7 @@ import com.pillowapps.liqear.models.Group;
 import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.User;
 import com.pillowapps.liqear.models.vk.VkAlbum;
+import com.pillowapps.liqear.models.vk.VkError;
 import com.pillowapps.liqear.models.vk.VkTrack;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -247,15 +249,17 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
     private void getFavoritesTracks() {
         if (mode == Mode.USER) {
             VkRequestManager.getInstance().getVkUserFavoritesAudio(TRACKS_IN_TOP_COUNT,
-                    TRACKS_IN_TOP_COUNT * favoritesPage++, new Callback<List<VkTrack>>() {
+                    TRACKS_IN_TOP_COUNT * favoritesPage++, new VkSimpleCallback<List<VkTrack>>() {
                         @Override
-                        public void success(List<VkTrack> vkTracks, Response response) {
-                            fillTracks(Converter.convertVkTrackList(vkTracks), getViewer(FAVORITES));
+                        public void success(List<VkTrack> data) {
+                            fillTracks(Converter.convertVkTrackList(data), getViewer(FAVORITES));
+
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
+                        public void failure(VkError error) {
                             ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
+
                         }
                     });
         }
@@ -264,32 +268,34 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
     private void getNewsFeedTracks() {
         if (mode == Mode.USER) {
             VkRequestManager.getInstance().getVkNewsFeedTracks(100, 100 * newsFeedPage++,
-                    new Callback<List<VkTrack>>() {
+                    new VkSimpleCallback<List<VkTrack>>() {
                         @Override
-                        public void success(List<VkTrack> vkTracks, Response response) {
-                            fillTracks(Converter.convertVkTrackList(vkTracks), getViewer(NEWS_FEED));
+                        public void success(List<VkTrack> data) {
+                            fillTracks(Converter.convertVkTrackList(data), getViewer(NEWS_FEED));
                             if (getViewer(NEWS_FEED).getValues().size() < 20) {
                                 getNewsFeedTracks();
                             }
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
+                        public void failure(VkError error) {
                             ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
+
                         }
                     });
         }
     }
 
     private void getAlbums() {
-        Callback<List<VkAlbum>> callback = new Callback<List<VkAlbum>>() {
+        VkSimpleCallback<List<VkAlbum>> callback = new VkSimpleCallback<List<VkAlbum>>() {
             @Override
-            public void success(List<VkAlbum> vkAlbums, Response response) {
-                fillVkAlbums(vkAlbums, getViewer(ALBUM_INDEX));
+            public void success(List<VkAlbum> data) {
+                fillVkAlbums(data, getViewer(ALBUM_INDEX));
+
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(VkError error) {
 
             }
         };
@@ -303,14 +309,14 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
     }
 
     private void getUserAudio() {
-        Callback<List<VkTrack>> callback = new Callback<List<VkTrack>>() {
+        VkSimpleCallback<List<VkTrack>> callback = new VkSimpleCallback<List<VkTrack>>() {
             @Override
-            public void success(List<VkTrack> vkTracks, Response response) {
-                fillTracks(Converter.convertVkTrackList(vkTracks), getViewer(USER_AUDIO_INDEX));
+            public void success(List<VkTrack> data) {
+                fillTracks(Converter.convertVkTrackList(data), getViewer(USER_AUDIO_INDEX));
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(VkError error) {
                 ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
             }
         };
@@ -322,14 +328,14 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
     }
 
     private void getWallTracks() {
-        Callback<List<VkTrack>> callback = new Callback<List<VkTrack>>() {
+        VkSimpleCallback<List<VkTrack>> callback = new VkSimpleCallback<List<VkTrack>>() {
             @Override
-            public void success(List<VkTrack> vkTracks, Response response) {
-                fillTracks(Converter.convertVkTrackList(vkTracks), getViewer(WALL_INDEX));
+            public void success(List<VkTrack> data) {
+                fillTracks(Converter.convertVkTrackList(data), getViewer(WALL_INDEX));
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(VkError error) {
                 ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
             }
         };

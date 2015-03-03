@@ -27,6 +27,7 @@ import com.pillowapps.liqear.connection.Params;
 import com.pillowapps.liqear.connection.QueryManager;
 import com.pillowapps.liqear.connection.ReadyResult;
 import com.pillowapps.liqear.connection.VkRequestManager;
+import com.pillowapps.liqear.connection.VkSimpleCallback;
 import com.pillowapps.liqear.helpers.AuthActivityAdapter;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
@@ -35,6 +36,7 @@ import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.ErrorResponseLastfm;
 import com.pillowapps.liqear.models.ErrorResponseVk;
+import com.pillowapps.liqear.models.vk.VkError;
 import com.pillowapps.liqear.models.vk.VkUser;
 import com.pillowapps.liqear.models.lastfm.LastfmSession;
 import com.viewpagerindicator.TitlePageIndicator;
@@ -171,9 +173,9 @@ public class AuthActivity extends TrackedActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == Constants.AUTH_VK_REQUEST) {
             VkRequestManager.getInstance().getUserInfoVk(AuthorizationInfoManager.getVkUserId(),
-                    new Callback<VkUser>() {
+                    new VkSimpleCallback<VkUser>() {
                         @Override
-                        public void success(VkUser vkUser, Response response) {
+                        public void success(VkUser vkUser) {
                             authVkPanel.setVisibility(View.VISIBLE);
                             AuthorizationInfoManager.setVkAvatar(vkUser.getPhotoMedium());
                             imageLoader.displayImage(vkUser.getPhotoMedium(), avatarVkImageView, options);
@@ -187,7 +189,7 @@ public class AuthActivity extends TrackedActivity {
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
+                        public void failure(VkError error) {
 
                         }
                     });
