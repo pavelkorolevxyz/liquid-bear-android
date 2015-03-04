@@ -14,6 +14,7 @@ import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.lastfm.LastfmUser;
 import com.pillowapps.liqear.models.vk.VkGroup;
 import com.pillowapps.liqear.models.vk.VkTrack;
+import com.pillowapps.liqear.models.vk.VkUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,5 +135,21 @@ public class Converter {
         group.setImageUrl(vkGroup.getImageMedium());
         group.setName(vkGroup.getName());
         return group;
+    }
+
+    public static List<User> convertVkUserList(List<VkUser> vkUsers) {
+        List<User> users = new ArrayList<>();
+        for (VkUser vkUser : vkUsers) {
+            User user = convertUser(vkUser);
+            users.add(user);
+        }
+        return users;
+    }
+
+    private static User convertUser(VkUser vkUser) {
+        User user = new User(vkUser.getName());
+        user.setUid(vkUser.getId());
+        user.setImageUrl(vkUser.getPhotoMedium());
+        return user;
     }
 }

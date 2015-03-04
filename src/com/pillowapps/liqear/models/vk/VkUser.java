@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class VkUser {
     @SerializedName("id")
-    private String id;
+    private long id;
     @SerializedName("first_name")
     private String firstName;
     @SerializedName("last_name")
@@ -15,7 +15,7 @@ public class VkUser {
     public VkUser() {
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 

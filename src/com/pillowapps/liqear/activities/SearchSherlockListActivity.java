@@ -71,6 +71,7 @@ import com.pillowapps.liqear.models.vk.VkError;
 import com.pillowapps.liqear.models.vk.VkGroup;
 import com.pillowapps.liqear.models.vk.VkResponse;
 import com.pillowapps.liqear.models.vk.VkTrack;
+import com.pillowapps.liqear.models.vk.VkUser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -942,31 +943,34 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void getVkFriends() {
-        QueryManager queryManager = QueryManager.getInstance();
-        queryManager.getVkFriends(new GetResponseCallback() {
+        VkRequestManager.getInstance().getFriends(0, 0, new VkSimpleCallback<List<VkUser>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.VK)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                fillWithUsers((List<User>) result.getObject());
+            public void success(List<VkUser> data) {
+                progressBar.setVisibility(View.GONE);
+                fillWithUsers(Converter.convertVkUserList(data));
+            }
+
+            @Override
+            public void failure(VkError error) {
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
 
     private void searchVkRecommendations(int limit, int page) {
-        QueryManager queryManager = QueryManager.getInstance();
-        queryManager.getVkRecommendations(limit, page, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.VK)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                fillWithTracklist(result);
-            }
-        });
+        VkRequestManager.getInstance().getVkRecommendations(limit, page * limit,
+                new VkSimpleCallback<List<VkTrack>>() {
+                    @Override
+                    public void success(List<VkTrack> data) {
+                        progressBar.setVisibility(View.GONE);
+                        fillWithTracklist(data);
+                    }
+
+                    @Override
+                    public void failure(VkError error) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
     private void searchSetlists(String artist, String venue, final String city) {

@@ -1,16 +1,12 @@
 package com.pillowapps.liqear.connection;
 
-import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.models.vk.VkAlbumsResponseRoot;
 import com.pillowapps.liqear.models.vk.VkGroupsResponseRoot;
 import com.pillowapps.liqear.models.vk.VkResponse;
-import com.pillowapps.liqear.models.vk.VkTrack;
 import com.pillowapps.liqear.models.vk.VkTracksResponseRoot;
-import com.pillowapps.liqear.models.vk.VkUser;
+import com.pillowapps.liqear.models.vk.VkGetUsersResponseRoot;
 import com.pillowapps.liqear.models.vk.VkUsersResponseRoot;
 import com.pillowapps.liqear.models.vk.VkWallMessagesResponseRoot;
-
-import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -68,7 +64,7 @@ public interface VkApiService {
     @GET("/users.get")
     public void getUser(@Query("user_ids") long uid,
                         @Query("fields") String fields,
-                        VkCallback<VkUsersResponseRoot> callback);
+                        VkCallback<VkGetUsersResponseRoot> callback);
 
     @POST("/status.set")
     public void setAudioStatus(@Query("audio") String audio,
@@ -97,14 +93,14 @@ public interface VkApiService {
     @GET("/audio.getRecommendations")
     public void getRecommendations(@Query("start_from") int offset,
                                    @Query("count") int count,
-                                   Callback<List<VkTrack>> callback);
+                                   Callback<VkTracksResponseRoot> callback);
 
     @GET("/friends.get")
-    public void getFriends(@Query("user_id") long userId,
-                           @Query("fields") String fields,
+    public void getFriends(@Query("fields") String fields,
+                           @Query("order") String order,
                            @Query("start_from") int offset,
                            @Query("count") int count,
-                           Callback<List<LastfmAlbum>> callback);
+                           VkCallback<VkUsersResponseRoot> callback);
 
     @GET("/execute.u")
     public void getTrackUrl(@Query("q") String trackNotation,

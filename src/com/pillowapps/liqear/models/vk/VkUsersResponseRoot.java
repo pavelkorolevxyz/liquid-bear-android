@@ -6,12 +6,12 @@ import java.util.List;
 
 public class VkUsersResponseRoot extends VkResponse {
     @SerializedName("response")
-    private List<VkUser> users;
+    private VkUsersResponse response;
 
     public VkUsersResponseRoot() {
     }
 
-    public List<VkUser> getUsers() {
-        return users;
+    public VkUsersResponse getResponse() {
+        return response;
     }
 }

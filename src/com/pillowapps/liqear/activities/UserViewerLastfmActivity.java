@@ -55,8 +55,6 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
     public static final int LOVED_INDEX = 0;
     public static final String TAB_INDEX = "tab_index";
     private static final int PAGES_LENGTH = RECENT_INDEX + 1;
-    @SuppressWarnings("rawtypes")
-    //    private CancellableThread searchThread;
     private ViewPager pager;
     private TitlePageIndicator indicator;
     private User user;

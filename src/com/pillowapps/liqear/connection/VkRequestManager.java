@@ -6,6 +6,7 @@ import com.pillowapps.liqear.models.Track;
 import com.pillowapps.liqear.models.vk.VkAlbum;
 import com.pillowapps.liqear.models.vk.VkAlbumsResponseRoot;
 import com.pillowapps.liqear.models.vk.VkError;
+import com.pillowapps.liqear.models.vk.VkGetUsersResponseRoot;
 import com.pillowapps.liqear.models.vk.VkGroup;
 import com.pillowapps.liqear.models.vk.VkGroupsResponseRoot;
 import com.pillowapps.liqear.models.vk.VkResponse;
@@ -50,9 +51,9 @@ public class VkRequestManager {
 
     public void getUserInfoVk(long userId, final VkSimpleCallback<VkUser> callback) {
         String fields = "first_name,last_name,photo_medium";
-        vkService.getUser(userId, fields, new VkCallback<VkUsersResponseRoot>() {
+        vkService.getUser(userId, fields, new VkCallback<VkGetUsersResponseRoot>() {
             @Override
-            public void success(VkUsersResponseRoot data) {
+            public void success(VkGetUsersResponseRoot data) {
                 List<VkUser> users = data.getUsers();
                 if (users == null || users.size() == 0) return;
                 VkUser user = users.get(0);
@@ -258,6 +259,36 @@ public class VkRequestManager {
             @Override
             public void success(VkGroupsResponseRoot data) {
                 callback.success(data.getResponse().getGroups());
+            }
+
+            @Override
+            public void failure(VkError error) {
+                callback.failure(error);
+            }
+        });
+    }
+
+    public void getVkRecommendations(int count, int offset, final VkSimpleCallback<List<VkTrack>> callback) {
+        vkService.getRecommendations(offset, count, new VkCallback<VkTracksResponseRoot>() {
+            @Override
+            public void success(VkTracksResponseRoot data) {
+                callback.success(data.getResponse().getTracks());
+            }
+
+            @Override
+            public void failure(VkError error) {
+                callback.failure(error);
+            }
+        });
+    }
+
+    public void getFriends(int count, int offset, final VkSimpleCallback<List<VkUser>> callback) {
+        String fields = "first_name,last_name,uid,photo_medium";
+        String order = "hints";
+        vkService.getFriends(fields, order, offset, count, new VkCallback<VkUsersResponseRoot>() {
+            @Override
+            public void success(VkUsersResponseRoot data) {
+                callback.success(data.getResponse().getUsers());
             }
 
             @Override

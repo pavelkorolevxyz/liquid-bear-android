@@ -76,7 +76,7 @@ public class ListArrayAdapter<T> extends ArrayAdapter<T> {
         if (convertView == null) {
             holder = new ViewHolder();
             if (clazz == Track.class) {
-                convertView = inflater.inflate(R.layout.track_list_item, null);
+                convertView = inflater.inflate(R.layout.playlist_tab_list_item, null);
                 holder.textView = (TextView) convertView.findViewById(R.id.artist_list_item);
                 holder.secondTextView = (TextView) convertView.findViewById(R.id.title_list_item);
                 holder.positionTextView = (TextView) convertView.findViewById(
