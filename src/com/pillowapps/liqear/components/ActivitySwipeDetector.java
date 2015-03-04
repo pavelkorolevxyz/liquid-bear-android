@@ -2,7 +2,7 @@ package com.pillowapps.liqear.components;
 
 import android.view.MotionEvent;
 import android.view.View;
-import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activity.MainActivity;
 
 public class ActivitySwipeDetector implements View.OnTouchListener {
     static final int MIN_DISTANCE = 100;

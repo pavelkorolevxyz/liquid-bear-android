@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.*;
+import com.pillowapps.liqear.activity.*;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Utils;

@@ -22,7 +22,7 @@
         android:allowBackup="true"
         android:label="@string/app_name">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:configChanges="orientation|keyboardHidden"
@@ -33,59 +33,59 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.AuthActivity"
+            android:name=".activity.AuthActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.UserViewerVkActivity"
+            android:name=".activity.UserViewerVkActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.UserViewerLastfmActivity"
+            android:name=".activity.UserViewerLastfmActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.ChartsActivity"
+            android:name=".activity.ChartsActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.SearchSherlockListActivity"
+            android:name=".activity.SearchSherlockListActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.ArtistViewerActivity"
+            android:name=".activity.ArtistViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.AlbumViewerActivity"
+            android:name=".activity.AlbumViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.ImagePagerActivity"
+            android:name=".activity.ImagePagerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.EqualizerSherlockActivity"
+            android:name=".activity.EqualizerSherlockActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.TextSherlockActivity"
+            android:name=".activity.TextSherlockActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.PreferencesActivity"
+            android:name=".activity.PreferencesActivity"
             android:theme="@style/PreferencesTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.RecommendationsSherlockActivity"
+            android:name=".activity.RecommendationsSherlockActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.TagViewerActivity"
+            android:name=".activity.TagViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.PlaylistsSherlockListActivity"
+            android:name=".activity.PlaylistsSherlockListActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.SetlistSearchSherlockActivity"
+            android:name=".activity.SetlistSearchSherlockActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.NewcomersSherlockListActivity"
+            android:name=".activity.NewcomersSherlockListActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.DonateSherlockActivity"
+            android:name=".activity.DonateSherlockActivity"
             android:windowSoftInputMode="stateHidden" />
 
         <receiver android:name=".audio.MediaButtonReceiver">
@@ -133,7 +133,7 @@
                 android:resource="@xml/widget_info_4x3_alt" />
         </receiver>
 
-        <receiver android:name=".connection.NetworkStateReceiver">
+        <receiver android:name=".network.NetworkStateReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>

@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent" android:gravity="center" android:padding="@dimen/normal_padding"
-              android:id="@+id/main_layout" android:background="@color/icons">
+              android:id="@+id/main_layout">
 
     <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
                     android:id="@+id/auth_panel" android:layout_alignParentLeft="true"

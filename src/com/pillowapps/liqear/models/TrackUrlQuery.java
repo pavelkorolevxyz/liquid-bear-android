@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.models;
 
-import com.pillowapps.liqear.connection.GetResponseCallback;
+import com.pillowapps.liqear.network.GetResponseCallback;
 
 public class TrackUrlQuery {
     private final GetResponseCallback getResponseCallback;

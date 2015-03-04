@@ -5,7 +5,6 @@ import android.media.audiofx.BassBoost;
 
 import com.pillowapps.liqear.helpers.CompatEq;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.LLog;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 
 public class EqualizerManager {

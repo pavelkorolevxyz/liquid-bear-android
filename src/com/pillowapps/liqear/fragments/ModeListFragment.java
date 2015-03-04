@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activity.MainActivity;
 import com.pillowapps.liqear.components.ModeClickListener;
 import com.pillowapps.liqear.components.ModeListAdapter;
 import com.pillowapps.liqear.components.UpdateAdapterCallback;

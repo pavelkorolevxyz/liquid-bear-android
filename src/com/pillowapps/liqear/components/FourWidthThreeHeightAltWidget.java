@@ -11,7 +11,7 @@ import android.graphics.Bitmap;
 import android.text.Html;
 import android.widget.RemoteViews;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activity.MainActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.helpers.Constants;

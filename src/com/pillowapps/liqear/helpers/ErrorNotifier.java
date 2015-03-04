@@ -5,7 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 
 import com.pillowapps.liqear.LiqearApplication;
-import com.pillowapps.liqear.activities.UserViewerVkActivity;
+import com.pillowapps.liqear.activity.UserViewerVkActivity;
 import com.pillowapps.liqear.models.vk.VkError;
 
 import retrofit.RetrofitError;

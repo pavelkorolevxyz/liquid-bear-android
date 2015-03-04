@@ -46,7 +46,6 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
     }
 
     public void setValues(List<Track> tracks) {
-        LLog.log("tracks = " + tracks);
         if (tracks == null) return;
         this.tracks.clear();
         this.original.clear();

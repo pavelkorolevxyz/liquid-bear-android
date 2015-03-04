@@ -35,21 +35,21 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.activities.SearchSherlockListActivity;
+import com.pillowapps.liqear.activity.MainActivity;
+import com.pillowapps.liqear.activity.SearchSherlockListActivity;
 import com.pillowapps.liqear.components.FourWidthOneHeightWidget;
 import com.pillowapps.liqear.components.FourWidthThreeHeightAltWidget;
 import com.pillowapps.liqear.components.FourWidthThreeHeightWidget;
-import com.pillowapps.liqear.connection.ApiException;
-import com.pillowapps.liqear.connection.CompletionListener;
-import com.pillowapps.liqear.connection.GetResponseCallback;
-import com.pillowapps.liqear.connection.LastfmRequestManager;
-import com.pillowapps.liqear.connection.PassiveCallback;
-import com.pillowapps.liqear.connection.VkPassiveCallback;
-import com.pillowapps.liqear.connection.QueryManager;
-import com.pillowapps.liqear.connection.ReadyResult;
-import com.pillowapps.liqear.connection.VkRequestManager;
-import com.pillowapps.liqear.connection.VkSimpleCallback;
+import com.pillowapps.liqear.network.ApiException;
+import com.pillowapps.liqear.network.CompletionListener;
+import com.pillowapps.liqear.network.GetResponseCallback;
+import com.pillowapps.liqear.network.LastfmRequestManager;
+import com.pillowapps.liqear.network.PassiveCallback;
+import com.pillowapps.liqear.network.VkPassiveCallback;
+import com.pillowapps.liqear.network.QueryManager;
+import com.pillowapps.liqear.network.ReadyResult;
+import com.pillowapps.liqear.network.VkRequestManager;
+import com.pillowapps.liqear.network.VkSimpleCallback;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
@@ -489,7 +489,7 @@ public class MusicPlaybackService extends Service implements
                 AudioTimeline.getShuffleMode() == ShuffleMode.SHUFFLE);
         editor.putBoolean(Constants.REPEAT_MODE_ON,
                 AudioTimeline.getRepeatMode() == RepeatMode.REPEAT);
-        editor.commit();
+        editor.apply();
     }
 
     private void saveTrackState() {
@@ -504,7 +504,7 @@ public class MusicPlaybackService extends Service implements
                     .getDuration());
         }
         editor.putInt(Constants.CURRENT_INDEX, AudioTimeline.getCurrentIndex());
-        editor.commit();
+        editor.apply();
     }
 
     /**

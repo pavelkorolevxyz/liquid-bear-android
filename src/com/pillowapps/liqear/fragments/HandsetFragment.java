@@ -35,9 +35,9 @@ import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.AlbumViewerActivity;
-import com.pillowapps.liqear.activities.ArtistViewerActivity;
-import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activity.AlbumViewerActivity;
+import com.pillowapps.liqear.activity.ArtistViewerActivity;
+import com.pillowapps.liqear.activity.MainActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.audio.RepeatMode;
@@ -46,7 +46,6 @@ import com.pillowapps.liqear.components.ActivitySwipeDetector;
 import com.pillowapps.liqear.components.ModeClickListener;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.LLog;
 import com.pillowapps.liqear.helpers.MainActivityAdapter;
 import com.pillowapps.liqear.helpers.ModeAdapter;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
@@ -631,7 +630,6 @@ public class HandsetFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        LLog.log("HANDSET onResume()");
         shuffleButton.setImageResource(Utils.getShuffleButtonImage());
         repeatButton.setImageResource(Utils.getRepeatButtonImage());
         ModeAdapter adapter = mainActivity.getModeAdapter();

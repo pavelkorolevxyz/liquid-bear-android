@@ -9,10 +9,10 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activity.MainActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
-import com.pillowapps.liqear.connection.Params;
-import com.pillowapps.liqear.connection.ReadyResult;
+import com.pillowapps.liqear.network.Params;
+import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.models.ErrorResponseLastfm;
 import com.pillowapps.liqear.models.ErrorResponseVk;
 import com.pillowapps.liqear.models.Track;

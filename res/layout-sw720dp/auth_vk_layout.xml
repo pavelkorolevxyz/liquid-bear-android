@@ -4,8 +4,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent" android:gravity="center"
-              android:id="@+id/relativeLayout" android:padding="@dimen/normal_padding"
-              android:background="@color/icons">
+              android:id="@+id/relativeLayout" android:padding="@dimen/normal_padding">
 
     <RelativeLayout
             android:layout_width="fill_parent"
