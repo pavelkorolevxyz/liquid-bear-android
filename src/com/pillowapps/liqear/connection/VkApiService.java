@@ -7,6 +7,7 @@ import com.pillowapps.liqear.models.vk.VkResponse;
 import com.pillowapps.liqear.models.vk.VkTrack;
 import com.pillowapps.liqear.models.vk.VkTracksResponseRoot;
 import com.pillowapps.liqear.models.vk.VkUser;
+import com.pillowapps.liqear.models.vk.VkUsersResponseRoot;
 import com.pillowapps.liqear.models.vk.VkWallMessagesResponseRoot;
 
 import java.util.List;
@@ -67,7 +68,7 @@ public interface VkApiService {
     @GET("/users.get")
     public void getUser(@Query("user_ids") long uid,
                         @Query("fields") String fields,
-                        Callback<List<VkUser>> callback);
+                        VkCallback<VkUsersResponseRoot> callback);
 
     @POST("/status.set")
     public void setAudioStatus(@Query("audio") String audio,

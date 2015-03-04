@@ -12,6 +12,7 @@ import com.pillowapps.liqear.models.vk.VkResponse;
 import com.pillowapps.liqear.models.vk.VkTrack;
 import com.pillowapps.liqear.models.vk.VkTracksResponseRoot;
 import com.pillowapps.liqear.models.vk.VkUser;
+import com.pillowapps.liqear.models.vk.VkUsersResponseRoot;
 import com.pillowapps.liqear.models.vk.VkWallMessage;
 import com.pillowapps.liqear.models.vk.VkWallMessagesResponseRoot;
 
@@ -49,19 +50,20 @@ public class VkRequestManager {
 
     public void getUserInfoVk(long userId, final VkSimpleCallback<VkUser> callback) {
         String fields = "first_name,last_name,photo_medium";
-//        vkService.getUser(userId, fields, new VkCallback<VkU<VkUser>>() {
-//            @Override
-//            public void success(List<VkUser> users) {
-//                if (users.size() == 0) return;
-//                VkUser user = users.get(0);
-//                callback.success(user);
-//            }
-//
-//            @Override
-//            public void failure(VkError error) {
-//                callback.failure(error);
-//            }
-//        });
+        vkService.getUser(userId, fields, new VkCallback<VkUsersResponseRoot>() {
+            @Override
+            public void success(VkUsersResponseRoot data) {
+                List<VkUser> users = data.getUsers();
+                if (users == null || users.size() == 0) return;
+                VkUser user = users.get(0);
+                callback.success(user);
+            }
+
+            @Override
+            public void failure(VkError error) {
+                callback.failure(error);
+            }
+        });
     }
 
     public void getVkUserAudio(long uid, int count, int offset, final VkSimpleCallback<List<VkTrack>> callback) {
