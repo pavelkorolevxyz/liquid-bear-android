@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.helpers;
+package com.pillowapps.liqear.adapter;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

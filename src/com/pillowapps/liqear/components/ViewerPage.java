@@ -5,6 +5,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.adapter.ListArrayAdapter;
 
 import java.util.List;
 

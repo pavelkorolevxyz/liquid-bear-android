@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.network;
+package com.pillowapps.liqear.network.service;
 
 import retrofit.Callback;
 import retrofit.http.Multipart;

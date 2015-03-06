@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.helpers;
+package com.pillowapps.liqear.adapter;
 
 import android.content.Context;
 import android.text.Html;

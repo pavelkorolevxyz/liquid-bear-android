@@ -28,7 +28,7 @@ import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.VkRequestManager;
 import com.pillowapps.liqear.network.VkSimpleCallback;
-import com.pillowapps.liqear.helpers.AuthActivityAdapter;
+import com.pillowapps.liqear.adapter.AuthActivityAdapter;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;

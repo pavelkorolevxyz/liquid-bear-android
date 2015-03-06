@@ -50,10 +50,10 @@ public class ModeItemsHelper {
             new Mode(R.string.artist_radio, R.drawable.ic_artists_mode, Category.LOCAL, ModeEnum.LOCAL_ARTISTS, false),
             new Mode(R.string.albums, R.drawable.ic_audio_mode, Category.LOCAL, ModeEnum.LOCAL_ALBUMS, false)
     );
-    private List<Mode> modes = new ArrayList<Mode>(allModes.size());
+    private List<Mode> modes = new ArrayList<>(allModes.size());
     private List<Item> items;
-    private List<Category> categories = new ArrayList<Category>(4);
-    private List<Integer> itemsPerCategory = new ArrayList<Integer>(4);
+    private List<Category> categories = new ArrayList<>(4);
+    private List<Integer> itemsPerCategory = new ArrayList<>(4);
 
     public static boolean isEditMode() {
         return editMode;
@@ -104,7 +104,7 @@ public class ModeItemsHelper {
 
     public List<Item> createItemsList(UpdateAdapterCallback callback) {
         calcNewModesList();
-        items = new ArrayList<Item>();
+        items = new ArrayList<>();
         Mode prev;
         if (modes.size() > 0) {
             prev = modes.get(0);

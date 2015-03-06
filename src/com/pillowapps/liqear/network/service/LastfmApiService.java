@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.network;
+package com.pillowapps.liqear.network.service;
 
 import com.pillowapps.liqear.models.lastfm.LastfmArtist;
 import com.pillowapps.liqear.models.lastfm.LastfmTag;

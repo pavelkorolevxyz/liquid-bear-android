@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.components;
+package com.pillowapps.liqear.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;

@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.helpers;
+package com.pillowapps.liqear.adapter;
 
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;

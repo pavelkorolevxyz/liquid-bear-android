@@ -144,24 +144,24 @@
     <string name="appearance">Appearance</string>
     <string name="show_images_grid">Show images grid</string>
     <string name="show_images_grid_summary">Show grid with images instead of lists</string>
-    <string name="funkysouls" translatable="false">funkysouls</string>
+    <string name="funkysouls" translatable="false">Funkysouls</string>
     <string name="no_url">VKontakte has no these tracks</string>
     <string name="local">Local</string>
-    <string name="tracks">tracks</string>
+    <string name="tracks">Tracks</string>
     <string name="about_internet">Internet</string>
     <string name="vk_not_authorized">VK authorization needed</string>
     <string name="no_internet">No Internet connection</string>
     <string name="share_liqear">#LiquidBear - free online/offline audio player. Last.fm+VK.
         https://play.google.com/store/apps/details?id=com.pillowapps.liqear
     </string>
-    <string name="vk_wall">wall</string>
-    <string name="vk_favorites">favorites</string>
+    <string name="vk_wall">Wall</string>
+    <string name="vk_favorites">Favorites</string>
     <string name="enable_equalizer">Enable equalizer</string>
     <string name="pk_twitter_summary">Developer\'s twitter</string>
     <string name="pk_twitter" translatable="false">\@P_King64</string>
     <string name="scroll_to_current">Scroll to current track</string>
     <string name="scroll_to_current_summary">Scroll playlist to current track on track change</string>
-    <string name="alterportal" translatable="false">alterportal</string>
+    <string name="alterportal" translatable="false">Alterportal</string>
     <string name="choose_target">Target</string>
     <string name="sort_by_artist">Sort by artist</string>
     <string name="folder_mode" translatable="false">folders</string>
@@ -222,7 +222,7 @@
     <string name="track">Track</string>
     <string name="couldnt_be_empty">Artist or title field could not be empty</string>
     <string name="service_not_connected">Connecting to service. Try later.</string>
-    <string name="vk_feed">feed</string>
+    <string name="vk_feed">Feed</string>
     <string name="widget_label_4x1">Widget 4x1</string>
     <string name="widget_label_4x3">Widget 4x3</string>
     <string name="widget_label_4x3alt">Widget 4x3 alt</string>

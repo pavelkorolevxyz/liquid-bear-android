@@ -147,9 +147,7 @@ public class NewcomersSherlockListActivity extends ResultSherlockActivity {
                 getNewcomersAlterportal(visiblePages++);
                 actionBar.setTitle(getResources().getString(R.string.alterportal));
                 break;
-            case POST_HARDCORE_RU:
-                getNewcomersPostHardcoreRu(visiblePages++);
-                actionBar.setTitle(getResources().getString(R.string.post_hardcore_ru));
+            default:
                 break;
         }
         initListeners();
@@ -166,8 +164,7 @@ public class NewcomersSherlockListActivity extends ResultSherlockActivity {
                     case ALTERPORTAL:
                         getNewcomersAlterportal(visiblePages++);
                         break;
-                    case POST_HARDCORE_RU:
-                        getNewcomersPostHardcoreRu(visiblePages++);
+                    default:
                         break;
                 }
             }
@@ -243,28 +240,6 @@ public class NewcomersSherlockListActivity extends ResultSherlockActivity {
                         listView.onLoadMoreComplete();
                         if (listView.getCount() < NEWCOMERS_START_ITEMS) {
                             getNewcomersAlterportal(visiblePages++);
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    private void getNewcomersPostHardcoreRu(int page) {
-        QueryManager.getInstance().getNewcomersPostHardcoreRu(Arrays.asList(page),
-                new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result)) return;
-                final Object object = result.getObject();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<Album> albums = (List<Album>) object;
-                        fillAlbums(albums);
-                        listView.onLoadMoreComplete();
-                        if (listView.getCount() < NEWCOMERS_START_ITEMS) {
-                            getNewcomersPostHardcoreRu(visiblePages++);
                         }
                     }
                 });

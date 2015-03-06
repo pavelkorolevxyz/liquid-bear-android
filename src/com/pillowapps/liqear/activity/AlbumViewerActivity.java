@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.ListArrayAdapter;
+import com.pillowapps.liqear.adapter.ListArrayAdapter;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.network.LastfmRequestManager;
 import com.pillowapps.liqear.global.Config;

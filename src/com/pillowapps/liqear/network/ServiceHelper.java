@@ -4,8 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.LastfmTrackListGsonAdapter;
+import com.pillowapps.liqear.adapter.LastfmTrackListGsonAdapter;
 import com.pillowapps.liqear.models.lastfm.LastfmTrack;
+import com.pillowapps.liqear.network.service.LastfmApiService;
+import com.pillowapps.liqear.network.service.LastfmAuthService;
+import com.pillowapps.liqear.network.service.VkApiService;
+import com.pillowapps.liqear.network.service.VkUploadService;
 
 import java.lang.reflect.Type;
 import java.util.List;

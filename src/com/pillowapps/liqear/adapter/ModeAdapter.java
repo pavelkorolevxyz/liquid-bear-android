@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.helpers;
+package com.pillowapps.liqear.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,6 +14,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.ModeItemsHelper;
+import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.models.Mode;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
 

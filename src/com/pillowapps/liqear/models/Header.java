@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.ModeListAdapter;
+import com.pillowapps.liqear.adapter.ModeListAdapter;
 
 public class Header implements Item {
     private final String name;

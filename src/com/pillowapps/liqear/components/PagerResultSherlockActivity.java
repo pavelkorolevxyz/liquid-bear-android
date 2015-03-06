@@ -2,6 +2,7 @@ package com.pillowapps.liqear.components;
 
 import android.view.View;
 
+import com.pillowapps.liqear.adapter.ListArrayAdapter;
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Artist;
 import com.pillowapps.liqear.models.Track;

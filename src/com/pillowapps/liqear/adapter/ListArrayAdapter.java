@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.components;
+package com.pillowapps.liqear.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;

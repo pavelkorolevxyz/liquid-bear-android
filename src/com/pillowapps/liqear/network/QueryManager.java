@@ -13,7 +13,6 @@ import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.components.CancellableThread;
 import com.pillowapps.liqear.network.alterportal.AlterportalReader;
 import com.pillowapps.liqear.network.funkysouls.FunkySoulsReader;
-import com.pillowapps.liqear.network.posthardcore.PostHardcoreRuReader;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistManager;
@@ -192,16 +191,6 @@ public class QueryManager {
             public void run() {
                 List<Album> result = new FunkySoulsReader().selectAlbumsFromPages(pages);
                 callback.onDataReceived(new ReadyResult(FUNKY, result));
-            }
-        }).start();
-    }
-
-    public void getNewcomersPostHardcoreRu(final List<Integer> pages, final GetResponseCallback callback) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Album> result = new PostHardcoreRuReader().selectAlbumsFromPages(pages);
-                callback.onDataReceived(new ReadyResult(POST_HARDCORE_RU, result));
             }
         }).start();
     }

@@ -101,7 +101,7 @@
 
         <receiver
             android:label="@string/widget_label_4x1"
-            android:name=".components.FourWidthOneHeightWidget">
+            android:name=".widget.FourWidthOneHeightWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -112,7 +112,7 @@
         </receiver>
         <receiver
             android:label="@string/widget_label_4x3"
-            android:name=".components.FourWidthThreeHeightWidget">
+            android:name=".widget.FourWidthThreeHeightWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -123,7 +123,7 @@
         </receiver>
         <receiver
             android:label="@string/widget_label_4x3alt"
-            android:name=".components.FourWidthThreeHeightAltWidget">
+            android:name=".widget.FourWidthThreeHeightAltWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

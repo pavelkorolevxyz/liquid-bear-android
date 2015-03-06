@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.components;
+package com.pillowapps.liqear.adapter;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.pillowapps.liqear.components.UpdateAdapterCallback;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.models.Item;
 import com.pillowapps.liqear.models.Mode;

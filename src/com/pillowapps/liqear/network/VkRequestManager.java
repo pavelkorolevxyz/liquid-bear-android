@@ -16,6 +16,7 @@ import com.pillowapps.liqear.models.vk.VkUser;
 import com.pillowapps.liqear.models.vk.VkUsersResponseRoot;
 import com.pillowapps.liqear.models.vk.VkWallMessage;
 import com.pillowapps.liqear.models.vk.VkWallMessagesResponseRoot;
+import com.pillowapps.liqear.network.service.VkApiService;
 
 import java.util.List;
 

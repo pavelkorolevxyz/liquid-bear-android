@@ -7,7 +7,6 @@ import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activity.AuthActivity;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.BuildModeHelper;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.models.ErrorResponseLastfm;
 import com.pillowapps.liqear.models.ErrorResponseVk;

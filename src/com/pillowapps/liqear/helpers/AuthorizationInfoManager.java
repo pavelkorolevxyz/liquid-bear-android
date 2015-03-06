@@ -43,7 +43,7 @@ public class AuthorizationInfoManager {
     }
 
     public static boolean isAuthorizedOnVk() {
-        return getVkAccessToken() != null && !"0".equals(getVkUserId());
+        return getVkAccessToken() != null && 0 != getVkUserId();
     }
 
     public static String getLastfmApiKey() {

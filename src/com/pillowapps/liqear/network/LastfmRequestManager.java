@@ -27,6 +27,7 @@ import com.pillowapps.liqear.models.lastfm.roots.LastfmTopAlbumsRoot;
 import com.pillowapps.liqear.models.lastfm.roots.LastfmTopArtistsRoot;
 import com.pillowapps.liqear.models.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.models.lastfm.roots.LastfmTracksRoot;
+import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
 import java.util.Locale;

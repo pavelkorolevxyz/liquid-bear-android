@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.ModeListAdapter;
+import com.pillowapps.liqear.adapter.ModeListAdapter;
 import com.pillowapps.liqear.components.UpdateAdapterCallback;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;

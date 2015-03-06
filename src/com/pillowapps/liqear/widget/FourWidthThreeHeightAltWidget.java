@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.components;
+package com.pillowapps.liqear.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -14,25 +14,29 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activity.MainActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
+import com.pillowapps.liqear.components.CancellableThread;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.Album;
 import com.pillowapps.liqear.models.Track;
 
-public class FourWidthOneHeightWidget extends AppWidgetProvider {
+public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
     private static boolean sEnabled;
     private static CancellableThread imageTask;
 
     public static void checkEnabled(Context context, AppWidgetManager manager) {
-        sEnabled = manager.getAppWidgetIds(new ComponentName(context,
-                FourWidthOneHeightWidget.class)).length != 0;
+        sEnabled = manager.getAppWidgetIds(
+                new ComponentName(context, FourWidthThreeHeightAltWidget.class)).length != 0;
     }
 
-    public static void updateWidget(final Context context, final AppWidgetManager manager, boolean playing) {
+    public static void updateWidget(final Context context,
+                                    final AppWidgetManager manager, boolean playing) {
         if (!sEnabled)
             return;
 
-        final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+        final RemoteViews views = new RemoteViews(context.getPackageName(),
+                R.layout.widget_layout_4x3_alt);
 
         Track track = AudioTimeline.getCurrentTrack();
         String artist;
@@ -51,10 +55,17 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.artist, Html.fromHtml(artist));
         views.setTextViewText(R.id.title, Html.fromHtml(title));
 
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-
         int playButton = playing ? R.drawable.pause_button_states : R.drawable.play_button_states;
         views.setInt(R.id.play_pause, "setImageResource", playButton);
+
+        int shuffleButton = Utils.getShuffleButtonImage();
+        views.setInt(R.id.shuffle_button, "setImageResource", shuffleButton);
+
+        int repeatButton = Utils.getRepeatButtonImage();
+        views.setInt(R.id.repeat_button, "setImageResource", repeatButton);
+
+        int loveButton = Utils.getLoveButtonImage();
+        views.setInt(R.id.love_button, "setImageResource", loveButton);
 
         ComponentName service = new ComponentName(context, MusicPlaybackService.class);
 
@@ -78,8 +89,29 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.force_close,
                 PendingIntent.getService(context, 0, closeIntent, 0));
 
+        Intent shuffleIntent = new Intent(MusicPlaybackService.ACTION_SHUFFLE);
+        shuffleIntent.setComponent(service);
+        views.setOnClickPendingIntent(R.id.shuffle_button,
+                PendingIntent.getService(context, 0, shuffleIntent, 0));
+
+        Intent repeatIntent = new Intent(MusicPlaybackService.ACTION_REPEAT);
+        repeatIntent.setComponent(service);
+        views.setOnClickPendingIntent(R.id.repeat_button,
+                PendingIntent.getService(context, 0, repeatIntent, 0));
+
+        Intent loveIntent = new Intent(MusicPlaybackService.ACTION_LOVE);
+        loveIntent.setComponent(service);
+        views.setOnClickPendingIntent(R.id.love_button,
+                PendingIntent.getService(context, 0, loveIntent, 0));
+
+        Intent addToVkIntent = new Intent(MusicPlaybackService.ACTION_ADD_TO_VK);
+        addToVkIntent.setComponent(service);
+        views.setOnClickPendingIntent(R.id.add_to_vk_button,
+                PendingIntent.getService(context, 0, addToVkIntent, 0));
+
+        Intent notificationIntent = new Intent(context, MainActivity.class);
         PendingIntent activity = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        views.setOnClickPendingIntent(R.id.album_cover_image_view, activity);
+        views.setOnClickPendingIntent(R.id.imageView, activity);
         views.setOnClickPendingIntent(R.id.clicable_widget_part2, activity);
         views.setOnClickPendingIntent(R.id.clicable_widget_part3, activity);
 
@@ -98,7 +130,8 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
         } else {
             views.setImageViewBitmap(R.id.album_cover_image_view, bitmap);
         }
-        manager.updateAppWidget(new ComponentName(context, FourWidthOneHeightWidget.class), views);
+        manager.updateAppWidget(new ComponentName(context,
+                FourWidthThreeHeightAltWidget.class), views);
     }
 
     @Override
@@ -114,6 +147,6 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager manager, int[] appWidgetIds) {
         sEnabled = true;
-        updateWidget(context, manager, false);
+        updateWidget(context, manager, AudioTimeline.isPlaying());
     }
 }

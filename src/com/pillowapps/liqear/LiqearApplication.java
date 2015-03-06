@@ -8,7 +8,6 @@ import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.pillowapps.liqear.global.Config;
-import com.pillowapps.liqear.helpers.BuildModeHelper;
 
 import timber.log.Timber;
 
@@ -23,9 +22,8 @@ public class LiqearApplication extends Application {
     public void onCreate() {
         super.onCreate();
         LiqearApplication.context = getApplicationContext();
-        if (!BuildModeHelper.DEBUG) {
+        if (BuildConfig.DEBUG)
             Crashlytics.start(this);
-        }
 
         ImageLoaderConfiguration config =
                 new ImageLoaderConfiguration.Builder(getApplicationContext())
