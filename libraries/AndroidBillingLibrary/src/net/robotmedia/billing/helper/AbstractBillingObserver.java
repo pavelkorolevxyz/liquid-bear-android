@@ -61,7 +61,7 @@ public abstract class AbstractBillingObserver implements IBillingObserver {
 		final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
 		final Editor editor = preferences.edit();
 		editor.putBoolean(KEY_TRANSACTIONS_RESTORED, true);
-		editor.commit();
+		editor.apply();
 	}
 
 }

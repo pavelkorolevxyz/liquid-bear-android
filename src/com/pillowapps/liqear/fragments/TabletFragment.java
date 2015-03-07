@@ -32,20 +32,19 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.AlbumViewerActivity;
 import com.pillowapps.liqear.activities.ArtistViewerActivity;
 import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.adapters.ModeListAdapter;
+import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.audio.RepeatMode;
 import com.pillowapps.liqear.audio.ShuffleMode;
 import com.pillowapps.liqear.components.ActivitySwipeDetector;
-import com.pillowapps.liqear.adapters.ModeListAdapter;
-import com.pillowapps.liqear.global.Config;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
-import com.pillowapps.liqear.entities.Album;
-import com.pillowapps.liqear.entities.Track;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -271,7 +270,7 @@ public class TabletFragment extends Fragment {
                     AudioTimeline.getRepeatMode() == RepeatMode.REPEAT);
             editor.putInt(Constants.CURRENT_INDEX, AudioTimeline.getCurrentIndex());
         }
-        editor.commit();
+        editor.apply();
     }
 
     private void saveTrackState() {
@@ -285,13 +284,13 @@ public class TabletFragment extends Fragment {
             editor.putInt(Constants.DURATION, currentTrack.getDuration());
         }
         editor.putInt(Constants.CURRENT_INDEX, AudioTimeline.getCurrentIndex());
-        editor.commit();
+        editor.apply();
     }
 
     public void setServiceConnected() {
         receiver = new ServiceBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Config.ACTION_SERVICE);
+        intentFilter.addAction(Constants.ACTION_SERVICE);
         mainActivity.registerReceiver(receiver, intentFilter);
         if (AudioTimeline.getCurrentTrack() != null) {
             playPauseButton.setImageResource(AudioTimeline.isPlaying() ?
@@ -362,7 +361,7 @@ public class TabletFragment extends Fragment {
         Track currentTrack = tracks.get(currentIndex);
         boolean tracksEquals = currentFits && (artist + title)
                 .equalsIgnoreCase(currentTrack.getArtist()
-                + currentTrack.getTitle());
+                        + currentTrack.getTitle());
         if (!tracksEquals) {
             currentIndex = 0;
             artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));

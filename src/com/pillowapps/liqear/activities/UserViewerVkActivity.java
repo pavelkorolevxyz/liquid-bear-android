@@ -22,20 +22,20 @@ import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.PagerResultSherlockActivity;
 import com.pillowapps.liqear.components.ViewerPage;
-import com.pillowapps.liqear.network.Params;
-import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.VkRequestManager;
-import com.pillowapps.liqear.network.VkSimpleCallback;
-import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.entities.Group;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
+import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
+import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.network.Params;
+import com.pillowapps.liqear.network.ReadyResult;
+import com.pillowapps.liqear.network.VkRequestManager;
+import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
@@ -336,7 +336,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             VkRequestManager.getInstance().getVkUserWallAudio(user.getUid(), TRACKS_IN_TOP_COUNT,
                     TRACKS_IN_TOP_COUNT * wallPage++, callback);
         } else {
-            VkRequestManager.getInstance().getVkUserWallAudio(group.getGid(), TRACKS_IN_TOP_COUNT,
+            VkRequestManager.getInstance().getVkGroupWallAudio(group.getGid(), TRACKS_IN_TOP_COUNT,
                     TRACKS_IN_TOP_COUNT * wallPage++, callback);
         }
     }

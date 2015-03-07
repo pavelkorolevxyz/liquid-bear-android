@@ -38,7 +38,7 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.LastfmArtistModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
 import com.viewpagerindicator.TitlePageIndicator;

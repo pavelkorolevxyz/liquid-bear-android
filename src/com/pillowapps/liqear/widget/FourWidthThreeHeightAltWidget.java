@@ -10,20 +10,19 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.text.Html;
 import android.widget.RemoteViews;
+
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
-import com.pillowapps.liqear.components.CancellableThread;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
-import com.pillowapps.liqear.entities.Album;
-import com.pillowapps.liqear.entities.Track;
 
 public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
     private static boolean sEnabled;
-    private static CancellableThread imageTask;
 
     public static void checkEnabled(Context context, AppWidgetManager manager) {
         sEnabled = manager.getAppWidgetIds(
@@ -47,7 +46,7 @@ public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
             title = track.getTitle();
             SharedPreferences.Editor edit = savePreferences.edit();
             edit.putString(Constants.WIDGET_ARTIST, artist)
-                    .putString(Constants.WIDGET_TITLE, title).commit();
+                    .putString(Constants.WIDGET_TITLE, title).apply();
         } else {
             artist = savePreferences.getString(Constants.WIDGET_ARTIST, "");
             title = savePreferences.getString(Constants.WIDGET_TITLE, "");
@@ -122,7 +121,7 @@ public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
             albumFromTimeline.setImageUrl(imageUrl);
         } else {
             savePreferences.edit().putString(Constants.WIDGET_ALBUM_IMAGE,
-                    albumFromTimeline.getImageUrl()).commit();
+                    albumFromTimeline.getImageUrl()).apply();
         }
         Bitmap bitmap = AudioTimeline.getCurrentAlbumBitmap();
         if (bitmap == null) {

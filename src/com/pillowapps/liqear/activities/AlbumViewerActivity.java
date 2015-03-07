@@ -33,7 +33,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.LastfmAlbumModel;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -59,7 +59,6 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
     private ProgressBar progressBar;
     private LastfmAlbumModel albumModel = new LastfmAlbumModel();
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

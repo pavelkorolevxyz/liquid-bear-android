@@ -18,8 +18,7 @@ public class ModeListFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.list, null);
-        return view;
+        return inflater.inflate(R.layout.list, null);
     }
 
     @Override

@@ -44,7 +44,6 @@ import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
-import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.Constants;
@@ -54,16 +53,15 @@ import com.pillowapps.liqear.helpers.ShakeDetector;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.LastfmArtistModel;
 import com.pillowapps.liqear.models.LastfmTrackModel;
-import com.pillowapps.liqear.network.ApiException;
 import com.pillowapps.liqear.network.CompletionListener;
 import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.LastfmPassiveCallback;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.VkPassiveCallback;
 import com.pillowapps.liqear.network.VkRequestManager;
-import com.pillowapps.liqear.network.VkSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmPassiveCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.VkPassiveCallback;
+import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.widget.FourWidthOneHeightWidget;
 import com.pillowapps.liqear.widget.FourWidthThreeHeightAltWidget;
 import com.pillowapps.liqear.widget.FourWidthThreeHeightWidget;
@@ -517,7 +515,7 @@ public class MusicPlaybackService extends Service implements
                         .getCurrentIndex()) {
                     updateNowPlaying(AudioTimeline.getCurrentTrack());
                 }
-            } catch (ApiException e) {
+            } catch (Exception e) {
                 // No operations.
             }
             if (AudioTimeline.isPlaying()) {
@@ -917,7 +915,7 @@ public class MusicPlaybackService extends Service implements
 
     private void sendCallback(int callback) {
         Intent intent = new Intent();
-        intent.setAction(Config.ACTION_SERVICE);
+        intent.setAction(Constants.ACTION_SERVICE);
         intent.putExtra(Constants.CALLBACK_TYPE, callback);
         sendBroadcast(intent);
         switch (callback) {
@@ -1038,7 +1036,7 @@ public class MusicPlaybackService extends Service implements
         }
         currentBuffer = percent;
         Intent intent = new Intent();
-        intent.setAction(Config.ACTION_SERVICE);
+        intent.setAction(Constants.ACTION_SERVICE);
         intent.putExtra(Constants.CALLBACK_TYPE, BUFFERIZATION_CALLBACK);
         intent.putExtra("track-buffering", percent);
         sendBroadcast(intent);
@@ -1164,7 +1162,7 @@ public class MusicPlaybackService extends Service implements
         if (currentTrack == null) return;
         final String notation = currentTrack.getNotation();
         editor.putInt(notation, urlNumber);
-        editor.commit();
+        editor.apply();
         AudioTimeline.getCurrentTrack().setUrl(null);
         play(false);
     }
@@ -1301,7 +1299,7 @@ public class MusicPlaybackService extends Service implements
                     imageUrl = lastfmImage != null ? lastfmImage.getUrl() : null;
                 }
                 Intent intent = new Intent();
-                intent.setAction(Config.ACTION_SERVICE);
+                intent.setAction(Constants.ACTION_SERVICE);
                 intent.putExtra(Constants.CALLBACK_TYPE, ARTIST_INFO_CALLBACK);
                 intent.putExtra(Constants.IMAGE_URL, imageUrl);
                 sendBroadcast(intent);
@@ -1322,7 +1320,7 @@ public class MusicPlaybackService extends Service implements
                     Album album = (Album) list.get(0);
                     boolean loved = (Boolean) list.get(1);
                     Intent intent = new Intent();
-                    intent.setAction(Config.ACTION_SERVICE);
+                    intent.setAction(Constants.ACTION_SERVICE);
                     intent.putExtra(Constants.CALLBACK_TYPE, ALBUM_INFO_CALLBACK);
                     AudioTimeline.setCurrentAlbum(album);
                     QueryManager.getInstance().getAlbumImage(album, new CompletionListener() {

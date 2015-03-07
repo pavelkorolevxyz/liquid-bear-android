@@ -21,7 +21,9 @@ public class Constants {
     public static final int MAIN_REQUEST_CODE = 1;
     public static final int CAPTCHA_NEEDED = 14;
     public static final int MAIN_FADE_DURATION = 1200;
+    public static final int PRESET_WANTED_COUNT = 21;
 
+    public static final String ACTION_SERVICE = "com.pillowapps.liqear.actionservice";
     public static final String DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES = "download_images_check_box_preferences";
     public static final String TIME_TOP_TRACKS = "time_top_tracks";
     public static final String TIME_TOP_ARTISTS = "time_top_artists";

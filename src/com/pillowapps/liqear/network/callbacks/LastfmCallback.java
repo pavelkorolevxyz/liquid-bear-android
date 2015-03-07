@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.network;
+package com.pillowapps.liqear.network.callbacks;
 
 import com.pillowapps.liqear.entities.LastfmResponse;
 

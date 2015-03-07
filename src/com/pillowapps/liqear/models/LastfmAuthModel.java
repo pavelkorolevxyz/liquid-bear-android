@@ -3,8 +3,8 @@ package com.pillowapps.liqear.models;
 import com.pillowapps.liqear.entities.lastfm.LastfmSession;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmSessionRoot;
 import com.pillowapps.liqear.helpers.LastfmApiHelper;
-import com.pillowapps.liqear.network.LastfmCallback;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmAuthService;
 

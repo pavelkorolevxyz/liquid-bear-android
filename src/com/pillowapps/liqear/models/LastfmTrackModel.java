@@ -4,7 +4,7 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.LastfmApiHelper;
 import com.pillowapps.liqear.helpers.LastfmCallbackUtils;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 

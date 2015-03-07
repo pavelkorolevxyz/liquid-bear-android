@@ -58,7 +58,6 @@ import com.pillowapps.liqear.entities.vk.VkGroup;
 import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.entities.vk.VkUser;
-import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
@@ -70,12 +69,12 @@ import com.pillowapps.liqear.models.LastfmArtistModel;
 import com.pillowapps.liqear.models.LastfmTagModel;
 import com.pillowapps.liqear.models.LastfmUserModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.VkRequestManager;
-import com.pillowapps.liqear.network.VkSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -225,7 +224,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 String title = extras.getString("title");
                 actionBar.setTitle(title);
                 List<Track> tracks = PlaylistManager.getInstance().getPlaylist(extras.getLong("pid"));
-                adapter = new QuickSearchArrayAdapter<Track>(
+                adapter = new QuickSearchArrayAdapter<>(
                         SearchSherlockListActivity.this, tracks, Track.class);
                 setAdapter();
                 listView.setOnCreateContextMenuListener(this);
@@ -251,11 +250,11 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 String artist = extras.getString("artist");
                 String albumTitle = extras.getString("title");
                 actionBar.setTitle(artist + " - " + albumTitle);
-                List<Track> tracks = new ArrayList<Track>();
+                List<Track> tracks = new ArrayList<>();
                 for (String trackTitle : stringArrayList) {
                     tracks.add(new Track(artist, trackTitle));
                 }
-                adapter = new QuickSearchArrayAdapter<Track>(
+                adapter = new QuickSearchArrayAdapter<>(
                         SearchSherlockListActivity.this, tracks, Track.class);
                 setAdapter();
                 setTrackLongClick();
@@ -481,17 +480,17 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void loadAlbumPresets() {
-        LinkedHashSet<Album> albums = new LinkedHashSet<Album>(Config.PRESET_WANTED_COUNT);
+        LinkedHashSet<Album> albums = new LinkedHashSet<Album>(Constants.PRESET_WANTED_COUNT);
         SharedPreferences artistPreferences = PreferencesManager.getAlbumPreferences();
         int albumCount = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
-        if (albumCount >= Config.PRESET_WANTED_COUNT) {
-            for (int i = albumCount - 1; i >= albumCount - Config.PRESET_WANTED_COUNT; i--) {
+        if (albumCount >= Constants.PRESET_WANTED_COUNT) {
+            for (int i = albumCount - 1; i >= albumCount - Constants.PRESET_WANTED_COUNT; i--) {
                 albums.add(new Album(
-                        artistPreferences.getString(Constants.ALBUM_ARTIST_NUMBER + (i % Config.PRESET_WANTED_COUNT), ""),
-                        artistPreferences.getString(Constants.ALBUM_TITLE_NUMBER + (i % Config.PRESET_WANTED_COUNT), ""),
+                        artistPreferences.getString(Constants.ALBUM_ARTIST_NUMBER + (i % Constants.PRESET_WANTED_COUNT), ""),
+                        artistPreferences.getString(Constants.ALBUM_TITLE_NUMBER + (i % Constants.PRESET_WANTED_COUNT), ""),
                         null,
                         null,
-                        artistPreferences.getString(Constants.IMAGE + (i % Config.PRESET_WANTED_COUNT), "")
+                        artistPreferences.getString(Constants.IMAGE + (i % Constants.PRESET_WANTED_COUNT), "")
                 ));
             }
         } else {
@@ -509,13 +508,13 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void loadTagPresets() {
-        LinkedHashSet<Tag> tags = new LinkedHashSet<Tag>(Config.PRESET_WANTED_COUNT);
+        LinkedHashSet<Tag> tags = new LinkedHashSet<Tag>(Constants.PRESET_WANTED_COUNT);
         SharedPreferences tagPreferences = PreferencesManager.getTagPreferences();
         int tagsCount = tagPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
-        if (tagsCount >= Config.PRESET_WANTED_COUNT) {
-            for (int i = tagsCount - 1; i >= tagsCount - Config.PRESET_WANTED_COUNT; i--) {
+        if (tagsCount >= Constants.PRESET_WANTED_COUNT) {
+            for (int i = tagsCount - 1; i >= tagsCount - Constants.PRESET_WANTED_COUNT; i--) {
                 tags.add(new Tag(tagPreferences.getString(Constants.TAG_NUMBER
-                        + (i % Config.PRESET_WANTED_COUNT), "")));
+                        + (i % Constants.PRESET_WANTED_COUNT), "")));
             }
         } else {
             for (int i = tagsCount - 1; i >= 0; i--) {
@@ -524,22 +523,22 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
         }
         String[] presets = getResources().getStringArray(R.array.tag_presets);
         int i = 0;
-        while (tags.size() < Config.PRESET_WANTED_COUNT) {
+        while (tags.size() < Constants.PRESET_WANTED_COUNT) {
             tags.add(new Tag(presets[i++]));
         }
         fillWithTags(new ArrayList<Tag>(tags));
     }
 
     private void loadArtistPresets() {
-        LinkedHashSet<Artist> artists = new LinkedHashSet<Artist>(Config.PRESET_WANTED_COUNT);
+        LinkedHashSet<Artist> artists = new LinkedHashSet<Artist>(Constants.PRESET_WANTED_COUNT);
         SharedPreferences artistPreferences = PreferencesManager.getArtistPreferences();
         int artistCount = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
-        if (artistCount >= Config.PRESET_WANTED_COUNT) {
-            for (int i = artistCount - 1; i >= artistCount - Config.PRESET_WANTED_COUNT; i--) {
+        if (artistCount >= Constants.PRESET_WANTED_COUNT) {
+            for (int i = artistCount - 1; i >= artistCount - Constants.PRESET_WANTED_COUNT; i--) {
                 Artist artist = new Artist(artistPreferences
-                        .getString(Constants.ARTIST_NUMBER + (i % Config.PRESET_WANTED_COUNT), ""));
+                        .getString(Constants.ARTIST_NUMBER + (i % Constants.PRESET_WANTED_COUNT), ""));
                 artist.setPreviewUrl(artistPreferences
-                        .getString(Constants.IMAGE + (i % Config.PRESET_WANTED_COUNT), ""));
+                        .getString(Constants.IMAGE + (i % Constants.PRESET_WANTED_COUNT), ""));
                 artists.add(artist);
             }
         } else {
@@ -660,12 +659,12 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 SharedPreferences artistPreferences = PreferencesManager.getArtistPreferences();
                 SharedPreferences.Editor editor = artistPreferences.edit();
                 int artistLastNumberAll = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
-                int artistsLastNumberMod = artistLastNumberAll % Config.PRESET_WANTED_COUNT;
+                int artistsLastNumberMod = artistLastNumberAll % Constants.PRESET_WANTED_COUNT;
                 editor.putInt(Constants.PRESET_LAST_NUMBER, artistLastNumberAll + 1);
                 Artist artist = (Artist) adapter.get(position);
                 editor.putString(Constants.ARTIST_NUMBER + artistsLastNumberMod, artist.getName());
                 editor.putString(Constants.IMAGE + artistsLastNumberMod, artist.getPreviewUrl());
-                editor.commit();
+                editor.apply();
                 openArtist(artist);
             }
             break;
@@ -673,11 +672,11 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 SharedPreferences tagPreferences = PreferencesManager.getTagPreferences();
                 SharedPreferences.Editor editor = tagPreferences.edit();
                 int tagLastNumberAll = tagPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
-                int tagsLastNumberMod = tagLastNumberAll % Config.PRESET_WANTED_COUNT;
+                int tagsLastNumberMod = tagLastNumberAll % Constants.PRESET_WANTED_COUNT;
                 editor.putInt(Constants.PRESET_LAST_NUMBER, tagLastNumberAll + 1);
                 Tag tag = (Tag) adapter.get(position);
                 editor.putString(Constants.TAG_NUMBER + tagsLastNumberMod, tag.getName());
-                editor.commit();
+                editor.apply();
                 openTag(tag);
             }
             break;
@@ -685,7 +684,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 SharedPreferences albumPreferences = PreferencesManager.getAlbumPreferences();
                 SharedPreferences.Editor editor = albumPreferences.edit();
                 int albumLastNumberAll = albumPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
-                int albumsLastNumberMod = albumLastNumberAll % Config.PRESET_WANTED_COUNT;
+                int albumsLastNumberMod = albumLastNumberAll % Constants.PRESET_WANTED_COUNT;
                 editor.putInt(Constants.PRESET_LAST_NUMBER, albumLastNumberAll + 1);
                 Album album = (Album) adapter.get(position);
                 editor.putString(Constants.ALBUM_ARTIST_NUMBER + albumsLastNumberMod,
@@ -693,7 +692,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 editor.putString(Constants.ALBUM_TITLE_NUMBER + albumsLastNumberMod,
                         album.getTitle());
                 editor.putString(Constants.IMAGE + albumsLastNumberMod, album.getImageUrl());
-                editor.commit();
+                editor.apply();
                 openAlbum(album);
             }
             break;

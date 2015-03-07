@@ -64,7 +64,7 @@ public class ListItem implements Item {
             public void onClick(View view) {
                 SharedPreferences.Editor editor = modePreferences.edit();
                 editor.putBoolean(Constants.MODE_VISIBLE + mode.getModeEnum(), !modeVisible);
-                editor.commit();
+                editor.apply();
                 callback.onUpdate();
             }
         });

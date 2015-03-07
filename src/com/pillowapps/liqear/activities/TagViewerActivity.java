@@ -28,7 +28,7 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.models.LastfmTagModel;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;

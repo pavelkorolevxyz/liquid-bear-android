@@ -10,8 +10,8 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecentTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.network.LastfmCallback;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 

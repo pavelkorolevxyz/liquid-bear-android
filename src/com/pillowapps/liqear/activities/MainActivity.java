@@ -65,11 +65,11 @@ import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.LastfmTrackModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.VkRequestManager;
-import com.pillowapps.liqear.network.VkSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
 import org.codechimp.apprater.AppRater;
 
@@ -518,7 +518,7 @@ public class MainActivity extends SlidingFragmentActivity {
                                 SharedPreferences.Editor editor =
                                         PreferencesManager.getPreferences().edit();
                                 editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
-                                editor.commit();
+                                editor.apply();
                             }
                         });
                 AlertDialog alertDialog = builder.create();

@@ -34,20 +34,16 @@ import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.models.LastfmAuthModel;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.VkRequestManager;
-import com.pillowapps.liqear.network.VkSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class AuthActivity extends TrackedActivity {
     private static final int VK_INDEX = 0;
@@ -231,7 +227,7 @@ public class AuthActivity extends TrackedActivity {
                                         .getLastfmPreferences(AuthActivity.this).edit();
                                 editor.putString(Constants.LASTFM_NAME, name);
                                 editor.putString(Constants.LASTFM_KEY, session.getKey());
-                                editor.commit();
+                                editor.apply();
                                 lastfmNameTextView.setText(name);
                                 authLastfmPanel.setVisibility(View.VISIBLE);
                                 QueryManager.getInstance().getUserInfo(name, new GetResponseCallback() {

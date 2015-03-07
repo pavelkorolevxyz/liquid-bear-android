@@ -174,7 +174,7 @@ public class EqualizerSherlockActivity extends TrackedActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 Editor editor = PreferencesManager.getEqualizerPreferences().edit();
                 editor.putBoolean("enabled", isChecked);
-                editor.commit();
+                editor.apply();
                 EqualizerManager.setEnabled(isChecked);
                 checkEnabled();
             }
@@ -233,7 +233,7 @@ public class EqualizerSherlockActivity extends TrackedActivity {
                     Editor editor = PreferencesManager.getEqualizerPreferences().edit();
                     editor.putInt(Constants.EQUALIZER + band, equalizer.getBandLevel(band));
                     editor.putBoolean("changed", true);
-                    editor.commit();
+                    editor.apply();
                 }
             });
 
@@ -277,7 +277,7 @@ public class EqualizerSherlockActivity extends TrackedActivity {
                 Editor editor = PreferencesManager.getEqualizerPreferences().edit();
                 editor.putInt(Constants.EQUALIZER_BASS, (int) bassBoost.getRoundedStrength());
                 editor.putBoolean("changed", true);
-                editor.commit();
+                editor.apply();
             }
         });
         LinearLayout row = new LinearLayout(this);

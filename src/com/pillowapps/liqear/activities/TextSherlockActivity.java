@@ -25,16 +25,16 @@ import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
-import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.models.LastfmArtistModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 
 public class TextSherlockActivity extends ResultSherlockActivity {
     public static final String ARTIST_NAME = "artist_name";
@@ -76,7 +76,7 @@ public class TextSherlockActivity extends ResultSherlockActivity {
 
                 receiver = new ServiceBroadcastReceiver();
                 IntentFilter intentFilter = new IntentFilter();
-                intentFilter.addAction(Config.ACTION_SERVICE);
+                intentFilter.addAction(Constants.ACTION_SERVICE);
                 registerReceiver(receiver, intentFilter);
 
                 break;
@@ -136,7 +136,7 @@ public class TextSherlockActivity extends ResultSherlockActivity {
                     final SharedPreferences.Editor editor = lyricsNumberPreferences.edit();
                     editor.putInt(googleRequest,
                             lyricsNumberPreferences.getInt(googleRequest, 0) + 1);
-                    editor.commit();
+                    editor.apply();
                     getTrackLyrics(googleRequest, lyricsNumber);
                     progressBar.setVisibility(View.VISIBLE);
                     break;

@@ -15,7 +15,6 @@ import android.widget.ProgressBar;
 
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.network.ApiException;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 
@@ -65,11 +64,11 @@ public class LoginActivity extends TrackedActivity {
                 setResult(RESULT_OK, data);
                 finish();
             }
-        } catch (ApiException ignored) {
+        } catch (Exception ignored) {
         }
     }
 
-    private void setUserConfiguration(String[] strings) throws ApiException {
+    private void setUserConfiguration(String[] strings) throws Exception {
         if (strings.length < 4) {
             return;
         }
@@ -100,9 +99,9 @@ public class LoginActivity extends TrackedActivity {
             editor.putString("access_token", accessToken);
             editor.putLong("uid", userId);
             editor.putString("secret", secret);
-            editor.commit();
+            editor.apply();
         } else {
-            throw new ApiException("Invalid authorization request");
+            throw new Exception("Invalid authorization request");
         }
 
     }

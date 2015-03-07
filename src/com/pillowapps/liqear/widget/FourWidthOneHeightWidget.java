@@ -44,7 +44,7 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
             title = track.getTitle();
             SharedPreferences.Editor edit = savePreferences.edit();
             edit.putString(Constants.WIDGET_ARTIST, artist)
-                    .putString(Constants.WIDGET_TITLE, title).commit();
+                    .putString(Constants.WIDGET_TITLE, title).apply();
         } else {
             artist = savePreferences.getString(Constants.WIDGET_ARTIST, "");
             title = savePreferences.getString(Constants.WIDGET_TITLE, "");
@@ -91,7 +91,7 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
             albumFromTimeline.setImageUrl(imageUrl);
         } else {
             savePreferences.edit().putString(Constants.WIDGET_ALBUM_IMAGE,
-                    albumFromTimeline.getImageUrl()).commit();
+                    albumFromTimeline.getImageUrl()).apply();
         }
         Bitmap bitmap = AudioTimeline.getCurrentAlbumBitmap();
         if (bitmap == null) {

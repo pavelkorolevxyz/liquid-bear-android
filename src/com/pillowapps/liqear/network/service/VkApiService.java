@@ -7,7 +7,7 @@ import com.pillowapps.liqear.entities.vk.roots.VkTracksResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkGetUsersResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkUsersResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkWallMessagesResponseRoot;
-import com.pillowapps.liqear.network.VkCallback;
+import com.pillowapps.liqear.network.callbacks.VkCallback;
 
 import retrofit.Callback;
 import retrofit.http.GET;

@@ -118,7 +118,7 @@ public class PlaybackControlFragment extends Fragment {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean(Constants.TIME_INVERTED,
                         !preferences.getBoolean(Constants.TIME_INVERTED, false));
-                editor.commit();
+                editor.apply();
             }
         });
     }

@@ -413,7 +413,7 @@ public class PlaylistManager {
             try {
                 LiqearApplication.getAppContext().deleteDatabase(DATABASE_TITLE);
                 editor.putInt(Constants.DATABASE_VERSION, DATABASE_VERSION);
-                editor.commit();
+                editor.apply();
             } catch (Exception ignored) {
             }
         }

@@ -4,7 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import com.pillowapps.liqear.global.Config;
+
+import com.pillowapps.liqear.helpers.Constants;
 
 public class HeadsetStateReceiver extends BroadcastReceiver {
 
@@ -14,7 +15,7 @@ public class HeadsetStateReceiver extends BroadcastReceiver {
             AudioTimeline.getMusicPlaybackService().setPlayOnPrepared(false);
             AudioTimeline.getMusicPlaybackService().pause(true);
             Intent intentPause = new Intent();
-            intentPause.setAction(Config.ACTION_SERVICE);
+            intentPause.setAction(Constants.ACTION_SERVICE);
             intentPause.putExtra("callback-type", MusicPlaybackService.PAUSE_CALLBACK);
         }
     }

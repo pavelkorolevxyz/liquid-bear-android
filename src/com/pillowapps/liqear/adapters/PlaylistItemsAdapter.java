@@ -5,10 +5,13 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.TextView;
+
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.AudioTimeline;
-import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.entities.Track;
 
 import java.util.ArrayList;

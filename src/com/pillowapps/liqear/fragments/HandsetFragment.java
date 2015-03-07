@@ -38,23 +38,22 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.AlbumViewerActivity;
 import com.pillowapps.liqear.activities.ArtistViewerActivity;
 import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.adapters.MainActivityAdapter;
+import com.pillowapps.liqear.adapters.ModeAdapter;
+import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.audio.RepeatMode;
 import com.pillowapps.liqear.audio.ShuffleMode;
 import com.pillowapps.liqear.components.ActivitySwipeDetector;
 import com.pillowapps.liqear.components.ModeClickListener;
-import com.pillowapps.liqear.global.Config;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.adapters.MainActivityAdapter;
-import com.pillowapps.liqear.adapters.ModeAdapter;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
-import com.pillowapps.liqear.entities.Album;
-import com.pillowapps.liqear.entities.Track;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -95,8 +94,6 @@ public class HandsetFragment extends Fragment {
     private UnderlinePageIndicator indicator;
     private EditText searchPlaylistEditText;
     private ImageButton clearEditTextButton;
-    private ImageView swipeLeftImageView;
-    private ImageView swipeRightImageView;
     private View tutorialLayout;
     private Animation tutorialBlinkAnimation;
     private ViewGroup backLayout;
@@ -114,7 +111,7 @@ public class HandsetFragment extends Fragment {
 
     private void initViewPager(View v) {
         final LayoutInflater inflater = LayoutInflater.from(mainActivity);
-        final List<View> views = new ArrayList<View>();
+        final List<View> views = new ArrayList<>();
         playlistTab = inflater.inflate(R.layout.playlist_tab, null);
         views.add(playlistTab);
         playbackTab = inflater.inflate(R.layout.play_tab, null);
@@ -220,8 +217,8 @@ public class HandsetFragment extends Fragment {
         boolean tutorialEnabled = !PreferencesManager.getStartPreferences()
                 .getBoolean(Constants.TUTORIAL_DISABLED, false);
         if (tutorialEnabled) {
-            swipeLeftImageView = (ImageView) playbackTab.findViewById(R.id.swipe_left_image_view);
-            swipeRightImageView = (ImageView) playbackTab.findViewById(R.id.swipe_right_image_view);
+            ImageView swipeLeftImageView = (ImageView) playbackTab.findViewById(R.id.swipe_left_image_view);
+            ImageView swipeRightImageView = (ImageView) playbackTab.findViewById(R.id.swipe_right_image_view);
             tutorialLayout = playbackTab.findViewById(R.id.tutorial_layout);
             tutorialLayout.setVisibility(View.VISIBLE);
             tutorialBlinkAnimation = AnimationUtils.loadAnimation(mainActivity,
@@ -420,7 +417,7 @@ public class HandsetFragment extends Fragment {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean(Constants.TIME_INVERTED,
                         !preferences.getBoolean(Constants.TIME_INVERTED, false));
-                editor.commit();
+                editor.apply();
                 updateTime();
             }
         });
@@ -476,7 +473,7 @@ public class HandsetFragment extends Fragment {
                     AudioTimeline.getRepeatMode() == RepeatMode.REPEAT);
             editor.putInt(Constants.CURRENT_INDEX, AudioTimeline.getCurrentIndex());
         }
-        editor.commit();
+        editor.apply();
     }
 
     private void saveTrackState() {
@@ -490,7 +487,7 @@ public class HandsetFragment extends Fragment {
             editor.putInt(Constants.DURATION, currentTrack.getDuration());
         }
         editor.putInt(Constants.CURRENT_INDEX, AudioTimeline.getCurrentIndex());
-        editor.commit();
+        editor.apply();
     }
 
     private void restorePreviousState() {
@@ -592,7 +589,7 @@ public class HandsetFragment extends Fragment {
     public void setServiceConnected() {
         receiver = new ServiceBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Config.ACTION_SERVICE);
+        intentFilter.addAction(Constants.ACTION_SERVICE);
         mainActivity.registerReceiver(receiver, intentFilter);
         if (AudioTimeline.getCurrentTrack() != null) {
             playPauseButton.setImageResource(AudioTimeline.isPlaying() ?
@@ -669,7 +666,7 @@ public class HandsetFragment extends Fragment {
                     track.setCurrent(true);
                     artistTextView.setText(Html.fromHtml(track.getArtist()));
                     titleTextView.setText(Html.fromHtml(track.getTitle()));
-                    List<Integer> listToUpdate = new ArrayList<Integer>(
+                    List<Integer> listToUpdate = new ArrayList<>(
                             AudioTimeline.getPrevClickedItems());
                     listToUpdate.addAll(AudioTimeline.getQueue());
                     AudioTimeline.clearPrevClickedItems();
