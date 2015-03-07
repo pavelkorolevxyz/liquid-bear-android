@@ -6,8 +6,8 @@ import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.models.Album;
-import com.pillowapps.liqear.models.Track;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Track;
 
 import java.util.*;
 

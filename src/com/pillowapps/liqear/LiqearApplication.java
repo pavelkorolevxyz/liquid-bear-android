@@ -7,7 +7,7 @@ import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.pillowapps.liqear.global.Config;
+import com.squareup.picasso.Picasso;
 
 import timber.log.Timber;
 
@@ -22,19 +22,16 @@ public class LiqearApplication extends Application {
     public void onCreate() {
         super.onCreate();
         LiqearApplication.context = getApplicationContext();
-        if (BuildConfig.DEBUG)
+        if (!BuildConfig.DEBUG) {
             Crashlytics.start(this);
+        } else {
+            Timber.plant(new Timber.DebugTree());
+        }
 
         ImageLoaderConfiguration config =
                 new ImageLoaderConfiguration.Builder(getApplicationContext())
                         .memoryCache(new LRULimitedMemoryCache(16 * 1024 * 1024))
                         .build();
         ImageLoader.getInstance().init(config);
-        Timber.plant(new Timber.DebugTree());
-        initConfig();
-    }
-
-    private void initConfig() {
-        Config.resources = getResources();
     }
 }

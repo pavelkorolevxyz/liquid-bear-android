@@ -1,24 +1,26 @@
 package com.pillowapps.liqear.network.service;
 
-import com.pillowapps.liqear.models.lastfm.LastfmArtist;
-import com.pillowapps.liqear.models.lastfm.LastfmTag;
-import com.pillowapps.liqear.models.lastfm.LastfmTrack;
-import com.pillowapps.liqear.models.lastfm.LastfmUser;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmAlbumRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmAlbumSearchResultsRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmArtistRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmArtistSearchResultsRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmArtistsRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmFriendsRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmLovedTracksRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmNeighboursRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmRecentTracksRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmSimilarArtistsRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmTagSearchResultsRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmTopAlbumsRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmTopArtistsRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmTopTracksRoot;
-import com.pillowapps.liqear.models.lastfm.roots.LastfmTracksRoot;
+import com.pillowapps.liqear.entities.LastfmResponse;
+import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.entities.lastfm.LastfmTag;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
+import com.pillowapps.liqear.entities.lastfm.LastfmUser;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumSearchResultsRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmArtistRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmArtistSearchResultsRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmArtistsRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmFriendsRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmLovedTracksRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmNeighboursRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecentTracksRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmSimilarArtistsRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmTagSearchResultsRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopAlbumsRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopArtistsRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmTracksRoot;
+import com.pillowapps.liqear.network.LastfmCallback;
 
 import java.util.List;
 
@@ -167,21 +169,21 @@ public interface LastfmApiService {
                      @Query("track") String track,
                      @Query("api_sig") String apiSig,
                      @Query("sk ") String sessionKey,
-                     Callback<Object> callback);
+                     LastfmCallback<LastfmResponse> callback);
 
     @POST("?method=track.unlove")
     public void unlove(@Query("artist") String artist,
                        @Query("track") String track,
                        @Query("api_sig") String apiSig,
                        @Query("sk ") String sessionKey,
-                       Callback<Object> callback);
+                       LastfmCallback<LastfmResponse> callback);
 
     @POST("?method=track.updateNowPlaying")
     public void nowplaying(@Query("artist") String artist,
                            @Query("track") String track,
                            @Query("api_sig") String apiSig,
                            @Query("sk ") String sessionKey,
-                           Callback<Object> callback);
+                           LastfmCallback<LastfmResponse> callback);
 
     @POST("?method=track.updateNowPlaying")
     public void nowplaying(@Query("artist") String artist,
@@ -189,7 +191,7 @@ public interface LastfmApiService {
                            @Query("album") String album,
                            @Query("api_sig") String apiSig,
                            @Query("sk ") String sessionKey,
-                           Callback<Object> callback);
+                           LastfmCallback<LastfmResponse> callback);
 
     @POST("?method=track.scrobble")
     public void scrobble(@Query("artist") String artist,
@@ -198,7 +200,7 @@ public interface LastfmApiService {
                          @Query("timestamp") String timestamp,
                          @Query("api_sig") String apiSig,
                          @Query("sk ") String sessionKey,
-                         Callback<Object> callback);
+                         LastfmCallback<LastfmResponse> callback);
 
     @GET("/?method=artist.getTopAlbums")
     public void getArtistTopAlbums(@Query("artist") String artist,

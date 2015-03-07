@@ -19,8 +19,8 @@ import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.core.download.URLConnectionImageDownloader;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MediaButtonReceiver;
-import com.pillowapps.liqear.models.Album;
-import com.pillowapps.liqear.models.Track;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Track;
 
 import java.io.File;
 import java.io.FileInputStream;

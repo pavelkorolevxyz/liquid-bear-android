@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.network.service;
 
-import com.pillowapps.liqear.models.lastfm.roots.LastfmSessionRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmSessionRoot;
 
 import retrofit.Callback;
 import retrofit.http.Field;

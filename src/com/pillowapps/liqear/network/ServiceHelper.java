@@ -3,9 +3,9 @@ package com.pillowapps.liqear.network;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.pillowapps.liqear.adapters.LastfmTrackListGsonAdapter;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.adapter.LastfmTrackListGsonAdapter;
-import com.pillowapps.liqear.models.lastfm.LastfmTrack;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 import com.pillowapps.liqear.network.service.LastfmAuthService;
 import com.pillowapps.liqear.network.service.VkApiService;
@@ -69,11 +69,11 @@ public class ServiceHelper {
 
     public static LastfmApiService getLastfmService() {
         if (lastfmApiService == null) {
-            Type myOtherClassListType = new TypeToken<List<LastfmTrack>>() {
+            Type trackListTypeAdapter = new TypeToken<List<LastfmTrack>>() {
             }.getType();
 
             Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(myOtherClassListType, new LastfmTrackListGsonAdapter())
+                    .registerTypeAdapter(trackListTypeAdapter, new LastfmTrackListGsonAdapter())
                     .create();
 
             RestAdapter restAdapter = new RestAdapter.Builder()

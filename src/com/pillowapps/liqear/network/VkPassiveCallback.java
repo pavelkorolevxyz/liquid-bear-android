@@ -1,7 +1,7 @@
 package com.pillowapps.liqear.network;
 
-import com.pillowapps.liqear.models.vk.VkError;
-import com.pillowapps.liqear.models.vk.VkResponse;
+import com.pillowapps.liqear.entities.vk.VkError;
+import com.pillowapps.liqear.entities.vk.VkResponse;
 
 public class VkPassiveCallback extends VkSimpleCallback<VkResponse> {
     @Override

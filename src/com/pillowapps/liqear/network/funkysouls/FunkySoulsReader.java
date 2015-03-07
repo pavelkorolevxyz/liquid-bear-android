@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.network.funkysouls;
 
-import com.pillowapps.liqear.models.Album;
+import com.pillowapps.liqear.entities.Album;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

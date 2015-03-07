@@ -1,20 +1,22 @@
 package com.pillowapps.liqear.helpers;
 
-import com.pillowapps.liqear.models.Album;
-import com.pillowapps.liqear.models.Artist;
-import com.pillowapps.liqear.models.Group;
-import com.pillowapps.liqear.models.Tag;
-import com.pillowapps.liqear.models.Track;
-import com.pillowapps.liqear.models.User;
-import com.pillowapps.liqear.models.lastfm.LastfmAlbum;
-import com.pillowapps.liqear.models.lastfm.LastfmArtist;
-import com.pillowapps.liqear.models.lastfm.LastfmImage;
-import com.pillowapps.liqear.models.lastfm.LastfmTag;
-import com.pillowapps.liqear.models.lastfm.LastfmTrack;
-import com.pillowapps.liqear.models.lastfm.LastfmUser;
-import com.pillowapps.liqear.models.vk.VkGroup;
-import com.pillowapps.liqear.models.vk.VkTrack;
-import com.pillowapps.liqear.models.vk.VkUser;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Artist;
+import com.pillowapps.liqear.entities.Group;
+import com.pillowapps.liqear.entities.Tag;
+import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.User;
+import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
+import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.entities.lastfm.LastfmArtistStruct;
+import com.pillowapps.liqear.entities.lastfm.LastfmImage;
+import com.pillowapps.liqear.entities.lastfm.LastfmTag;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrackArtistStruct;
+import com.pillowapps.liqear.entities.lastfm.LastfmUser;
+import com.pillowapps.liqear.entities.vk.VkGroup;
+import com.pillowapps.liqear.entities.vk.VkTrack;
+import com.pillowapps.liqear.entities.vk.VkUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,5 +153,22 @@ public class Converter {
         user.setUid(vkUser.getId());
         user.setImageUrl(vkUser.getPhotoMedium());
         return user;
+    }
+
+    public static LastfmArtist convertLastfmArtistStruct(LastfmArtistStruct artistStruct) {
+        LastfmArtist artist = new LastfmArtist();
+        artist.setName(artistStruct.getName());
+        return artist;
+    }
+
+    public static List<LastfmTrack> convertLastfmTracksArtistStruct(List<LastfmTrackArtistStruct> tracksArtistStruct) {
+        ArrayList<LastfmTrack> lastfmTracks = new ArrayList<>();
+        for (LastfmTrackArtistStruct trackToConvert : tracksArtistStruct) {
+            LastfmTrack track = new LastfmTrack();
+            track.setName(trackToConvert.getName());
+            track.setArtist(convertLastfmArtistStruct(trackToConvert.getArtist()));
+            lastfmTracks.add(track);
+        }
+        return lastfmTracks;
     }
 }

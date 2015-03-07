@@ -3,12 +3,12 @@ package com.pillowapps.liqear.helpers;
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.UpdateAdapterCallback;
-import com.pillowapps.liqear.models.Category;
-import com.pillowapps.liqear.models.Header;
-import com.pillowapps.liqear.models.Item;
-import com.pillowapps.liqear.models.ListItem;
-import com.pillowapps.liqear.models.Mode;
-import com.pillowapps.liqear.models.ModeEnum;
+import com.pillowapps.liqear.entities.Category;
+import com.pillowapps.liqear.entities.Header;
+import com.pillowapps.liqear.entities.Item;
+import com.pillowapps.liqear.entities.ListItem;
+import com.pillowapps.liqear.entities.Mode;
+import com.pillowapps.liqear.entities.ModeEnum;
 
 import java.util.ArrayList;
 import java.util.Arrays;

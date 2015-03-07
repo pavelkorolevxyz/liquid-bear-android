@@ -5,12 +5,12 @@ import android.os.AsyncTask;
 
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activity.AuthActivity;
+import com.pillowapps.liqear.activities.AuthActivity;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.models.ErrorResponseLastfm;
-import com.pillowapps.liqear.models.ErrorResponseVk;
-import com.pillowapps.liqear.models.Setlist;
+import com.pillowapps.liqear.entities.ErrorResponseLastfm;
+import com.pillowapps.liqear.entities.ErrorResponseVk;
+import com.pillowapps.liqear.entities.Setlist;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

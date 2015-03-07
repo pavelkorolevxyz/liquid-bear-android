@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.components;
 
-import com.pillowapps.liqear.models.Track;
+import com.pillowapps.liqear.entities.Track;
 
 import java.util.Comparator;
 

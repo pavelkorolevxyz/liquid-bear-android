@@ -65,7 +65,6 @@
             android:textColor="@color/secondary_text"
             android:textSize="14dip"
             android:layout_alignParentTop="true"
-            android:text="134"
             android:layout_alignParentLeft="false"
             android:layout_alignParentRight="true" />
 
@@ -77,7 +76,6 @@
             android:focusableInTouchMode="false"
             android:textColor="@color/secondary_text"
             android:textSize="14dip"
-            android:text="(318)"
             android:layout_below="@+id/position_text_view_list_item"
             android:layout_alignParentBottom="true"
             android:gravity="right"

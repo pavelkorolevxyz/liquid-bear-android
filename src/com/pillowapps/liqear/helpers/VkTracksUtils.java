@@ -1,9 +1,9 @@
 package com.pillowapps.liqear.helpers;
 
-import com.pillowapps.liqear.models.vk.VkAttachment;
-import com.pillowapps.liqear.models.vk.VkAttachmentType;
-import com.pillowapps.liqear.models.vk.VkTrack;
-import com.pillowapps.liqear.models.vk.VkWallMessage;
+import com.pillowapps.liqear.entities.vk.VkAttachment;
+import com.pillowapps.liqear.entities.vk.VkAttachmentType;
+import com.pillowapps.liqear.entities.vk.VkTrack;
+import com.pillowapps.liqear.entities.vk.VkWallMessage;
 
 import java.util.ArrayList;
 import java.util.List;

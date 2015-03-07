@@ -5,8 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 
 import com.pillowapps.liqear.LiqearApplication;
-import com.pillowapps.liqear.activity.UserViewerVkActivity;
-import com.pillowapps.liqear.models.vk.VkError;
+import com.pillowapps.liqear.activities.UserViewerVkActivity;
+import com.pillowapps.liqear.entities.vk.VkError;
 
 import retrofit.RetrofitError;
 
@@ -26,15 +26,8 @@ public class ErrorNotifier {
         builder.show();
     }
 
-    public static void showLastfmError(Activity activity, RetrofitError error) {
+    public static void showLastfmError(Activity activity, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        Object body = error.getBody();
-        String message;
-        if (body != null) {
-            message = body.toString();
-        } else {
-            message = error.getMessage();
-        }
         builder.setMessage(message);
         builder.setPositiveButton(android.R.string.ok, null);
         builder.show();

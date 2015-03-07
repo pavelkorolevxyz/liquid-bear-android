@@ -15,12 +15,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activity.AlbumViewerActivity;
-import com.pillowapps.liqear.activity.MainActivity;
+import com.pillowapps.liqear.activities.AlbumViewerActivity;
+import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.models.Album;
+import com.pillowapps.liqear.entities.Album;
 
 public class RightFragment extends Fragment {
     private MainActivity mainActivity;

@@ -18,10 +18,10 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.StringUtils;
-import com.pillowapps.liqear.models.Album;
-import com.pillowapps.liqear.models.Artist;
-import com.pillowapps.liqear.models.Track;
-import com.pillowapps.liqear.models.TrackUrlQuery;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Artist;
+import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.TrackUrlQuery;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

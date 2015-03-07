@@ -35,21 +35,15 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activity.MainActivity;
-import com.pillowapps.liqear.activity.SearchSherlockListActivity;
-import com.pillowapps.liqear.widget.FourWidthOneHeightWidget;
-import com.pillowapps.liqear.widget.FourWidthThreeHeightAltWidget;
-import com.pillowapps.liqear.widget.FourWidthThreeHeightWidget;
-import com.pillowapps.liqear.network.ApiException;
-import com.pillowapps.liqear.network.CompletionListener;
-import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.LastfmRequestManager;
-import com.pillowapps.liqear.network.PassiveCallback;
-import com.pillowapps.liqear.network.VkPassiveCallback;
-import com.pillowapps.liqear.network.QueryManager;
-import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.VkRequestManager;
-import com.pillowapps.liqear.network.VkSimpleCallback;
+import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activities.SearchSherlockListActivity;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.TrackUrlQuery;
+import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.entities.lastfm.LastfmImage;
+import com.pillowapps.liqear.entities.vk.VkError;
+import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.global.Config;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
@@ -58,22 +52,26 @@ import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.ShakeDetector;
 import com.pillowapps.liqear.helpers.Utils;
-import com.pillowapps.liqear.models.Album;
-import com.pillowapps.liqear.models.Track;
-import com.pillowapps.liqear.models.TrackUrlQuery;
-import com.pillowapps.liqear.models.lastfm.LastfmArtist;
-import com.pillowapps.liqear.models.lastfm.LastfmImage;
-import com.pillowapps.liqear.models.vk.VkError;
-import com.pillowapps.liqear.models.vk.VkResponse;
+import com.pillowapps.liqear.models.LastfmArtistModel;
+import com.pillowapps.liqear.models.LastfmTrackModel;
+import com.pillowapps.liqear.network.ApiException;
+import com.pillowapps.liqear.network.CompletionListener;
+import com.pillowapps.liqear.network.GetResponseCallback;
+import com.pillowapps.liqear.network.LastfmPassiveCallback;
+import com.pillowapps.liqear.network.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.QueryManager;
+import com.pillowapps.liqear.network.ReadyResult;
+import com.pillowapps.liqear.network.VkPassiveCallback;
+import com.pillowapps.liqear.network.VkRequestManager;
+import com.pillowapps.liqear.network.VkSimpleCallback;
+import com.pillowapps.liqear.widget.FourWidthOneHeightWidget;
+import com.pillowapps.liqear.widget.FourWidthThreeHeightAltWidget;
+import com.pillowapps.liqear.widget.FourWidthThreeHeightWidget;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 @SuppressWarnings("unchecked")
 public class MusicPlaybackService extends Service implements
@@ -337,29 +335,29 @@ public class MusicPlaybackService extends Service implements
                 final Track track = AudioTimeline.getCurrentTrack();
                 if (track != null) {
                     if (!track.isLoved()) {
-                        LastfmRequestManager.getInstance().love(track, new Callback<Object>() {
+                        new LastfmTrackModel().love(track, new LastfmSimpleCallback<Object>() {
                             @Override
-                            public void success(Object o, Response response) {
+                            public void success(Object o) {
                                 track.setLoved(true);
                                 updateWidgets();
                                 showTrackInNotification();
                             }
 
                             @Override
-                            public void failure(RetrofitError error) {
+                            public void failure(String error) {
                             }
                         });
                     } else {
-                        LastfmRequestManager.getInstance().unlove(track, new Callback<Object>() {
+                        new LastfmTrackModel().unlove(track, new LastfmSimpleCallback<Object>() {
                             @Override
-                            public void success(Object o, Response response) {
+                            public void success(Object o) {
                                 track.setLoved(false);
                                 updateWidgets();
                                 showTrackInNotification();
                             }
 
                             @Override
-                            public void failure(RetrofitError error) {
+                            public void failure(String error) {
                             }
                         });
                     }
@@ -1276,17 +1274,7 @@ public class MusicPlaybackService extends Service implements
 
     private void scrobble(final String artist, final String title, final String album, final String currentTime) {
         if (Utils.isOnline()) {
-            LastfmRequestManager.getInstance().scrobble(artist, title, album, currentTime, new Callback<Object>() {
-                @Override
-                public void success(Object o, Response response) {
-
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
+            new LastfmTrackModel().scrobble(artist, title, album, currentTime, new LastfmPassiveCallback());
         } else {
             PlaylistManager.getInstance().addTrackToScrobble(artist, title, currentTime);
         }
@@ -1294,7 +1282,7 @@ public class MusicPlaybackService extends Service implements
 
     private void updateNowPlaying(final Track currentTrack) {
         if (PreferencesManager.getPreferences().getBoolean("nowplaying_check_box_preferences", true)) {
-            LastfmRequestManager.getInstance().nowplaying(currentTrack, new PassiveCallback());
+            new LastfmTrackModel().nowplaying(currentTrack, new LastfmPassiveCallback());
         }
         if (PreferencesManager.getPreferences().getBoolean("nowplaying_vk_check_box_preferences", true)) {
             VkRequestManager.getInstance().updateStatus(currentTrack, new VkPassiveCallback());
@@ -1302,9 +1290,9 @@ public class MusicPlaybackService extends Service implements
     }
 
     private void getArtistInfo(final String artist, final String username) {
-        LastfmRequestManager.getInstance().getArtistInfo(artist, username, new Callback<LastfmArtist>() {
+        new LastfmArtistModel().getArtistInfo(artist, username, new LastfmSimpleCallback<LastfmArtist>() {
             @Override
-            public void success(LastfmArtist lastfmArtist, Response response) {
+            public void success(LastfmArtist lastfmArtist) {
                 AudioTimeline.setPreviousArtist(artist);
                 List<LastfmImage> list = lastfmArtist.getImages();
                 String imageUrl = null;
@@ -1320,7 +1308,7 @@ public class MusicPlaybackService extends Service implements
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(String error) {
             }
         });
     }

@@ -8,8 +8,8 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import com.pillowapps.liqear.LiqearApplication;
-import com.pillowapps.liqear.models.Playlist;
-import com.pillowapps.liqear.models.Track;
+import com.pillowapps.liqear.entities.Playlist;
+import com.pillowapps.liqear.entities.Track;
 
 import java.util.ArrayList;
 import java.util.Collections;

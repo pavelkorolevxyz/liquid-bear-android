@@ -1,7 +1,7 @@
 package com.pillowapps.liqear.network.alterportal;
 
 import com.pillowapps.liqear.network.funkysouls.NewcomersReaderException;
-import com.pillowapps.liqear.models.Album;
+import com.pillowapps.liqear.entities.Album;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

@@ -11,14 +11,14 @@ import android.graphics.Bitmap;
 import android.text.Html;
 import android.widget.RemoteViews;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activity.MainActivity;
+import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.components.CancellableThread;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.models.Album;
-import com.pillowapps.liqear.models.Track;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Track;
 
 public class FourWidthOneHeightWidget extends AppWidgetProvider {
     private static boolean sEnabled;

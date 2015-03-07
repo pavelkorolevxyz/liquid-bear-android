@@ -1,12 +1,12 @@
 package com.pillowapps.liqear.network.service;
 
-import com.pillowapps.liqear.models.vk.VkAlbumsResponseRoot;
-import com.pillowapps.liqear.models.vk.VkGroupsResponseRoot;
-import com.pillowapps.liqear.models.vk.VkResponse;
-import com.pillowapps.liqear.models.vk.VkTracksResponseRoot;
-import com.pillowapps.liqear.models.vk.VkGetUsersResponseRoot;
-import com.pillowapps.liqear.models.vk.VkUsersResponseRoot;
-import com.pillowapps.liqear.models.vk.VkWallMessagesResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkAlbumsResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkGroupsResponseRoot;
+import com.pillowapps.liqear.entities.vk.VkResponse;
+import com.pillowapps.liqear.entities.vk.roots.VkTracksResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkGetUsersResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkUsersResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkWallMessagesResponseRoot;
 import com.pillowapps.liqear.network.VkCallback;
 
 import retrofit.Callback;
