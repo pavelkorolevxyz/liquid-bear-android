@@ -15,8 +15,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.Binder;
@@ -39,11 +37,11 @@ import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.activities.SearchActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.TrackUrlQuery;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
+import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.Constants;
@@ -1217,7 +1215,7 @@ public class MusicPlaybackService extends Service implements
     }
 
     private void getTrackUrl(final Track currentTrack, final boolean current, final int urlNumber) {
-        QueryManager.setTrackUrlQuery(null);
+//        QueryManager.setTrackUrlQuery(null);
         if (currentTrack.isLocal()) {
             if (AudioTimeline.getCurrentTrack() != null) {
                 AudioTimeline.getCurrentTrack().setUrl(currentTrack.getUrl());
@@ -1235,26 +1233,18 @@ public class MusicPlaybackService extends Service implements
             sendCallback(INTERNET_STATE_CHANGE);
             return;
         }
-        urlQueryManager.getTrackUrl(currentTrack, current, urlNumber, new GetResponseCallback() {
+        new VkAudioModel().getTrackByNotation(currentTrack, urlNumber, new VkSimpleCallback<VkTrack>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
+            public void success(VkTrack track) {
                 if (!Utils.isOnline()) {
-                    QueryManager.setTrackUrlQuery(new TrackUrlQuery(currentTrack, current,
-                            urlNumber, this, System.currentTimeMillis()));
+//                    QueryManager.setTrackUrlQuery(new TrackUrlQuery(currentTrack, current,
+//                            urlNumber, this, System.currentTimeMillis()));
                 }
-                final boolean error = !result.isOk();
-                if (error) {
-                    AudioTimeline.incrementWithoutUrl();
-                    next();
-                    return;
-                }
-                final Object object = result.getObject();
-                if (object != null) {
-                    List<Object> objects = (List<Object>) object;
-                    if (objects.size() > 0 && AudioTimeline.getCurrentTrack() != null) {
-                        AudioTimeline.getCurrentTrack().setUrl((String) objects.get(0));
-                        AudioTimeline.getCurrentTrack().setAid((Long) objects.get(1));
-                        AudioTimeline.getCurrentTrack().setOwnerId((Long) objects.get(2));
+                if (track != null) {
+                    if (AudioTimeline.getCurrentTrack() != null) {
+                        AudioTimeline.getCurrentTrack().setUrl(track.getUrl());
+                        AudioTimeline.getCurrentTrack().setAid(track.getAudioId());
+                        AudioTimeline.getCurrentTrack().setOwnerId(track.getOwnerId());
                         if (!current) {
                             playOnPrepared = false;
                         }
@@ -1267,6 +1257,12 @@ public class MusicPlaybackService extends Service implements
                     AudioTimeline.incrementWithoutUrl();
                     next();
                 }
+            }
+
+            @Override
+            public void failure(VkError error) {
+                AudioTimeline.incrementWithoutUrl();
+                next();
             }
         });
     }
@@ -1365,58 +1361,58 @@ public class MusicPlaybackService extends Service implements
 
     public class ConnectionChangeReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
-            sendCallback(INTERNET_STATE_CHANGE);
-            if (intent.getExtras() != null) {
-                NetworkInfo ni = (NetworkInfo) intent.getExtras()
-                        .get(ConnectivityManager.EXTRA_NETWORK_INFO);
-                if (ni != null && ni.getState() == NetworkInfo.State.CONNECTED) {
-                    final TrackUrlQuery trackUrlQuery = QueryManager.getTrackUrlQuery();
-                    if (trackUrlQuery != null
-                            && System.currentTimeMillis() - trackUrlQuery.getTimeStamp() < 3000) {
-                        final Track currentTrack = trackUrlQuery.getCurrentTrack();
-                        final boolean current = trackUrlQuery.isCurrent();
-                        final int trackUrlNumber = trackUrlQuery.getUrlNumber();
-                        if (currentTrack.getUrl() == null || currentTrack.getUrl().isEmpty()) {
-                            urlQueryManager.getTrackUrl(currentTrack, current, trackUrlNumber,
-                                    new GetResponseCallback() {
-                                        @Override
-                                        public void onDataReceived(ReadyResult result) {
-                                            final boolean error = !result.isOk();
-                                            if (error) {
-                                                AudioTimeline.incrementWithoutUrl();
-                                                next();
-                                                return;
-                                            }
-                                            final Object object = result.getObject();
-                                            if (object != null) {
-                                                List<Object> objects = (List<Object>) object;
-                                                if (objects.size() > 0
-                                                        && AudioTimeline.getCurrentTrack() != null) {
-                                                    AudioTimeline.getCurrentTrack()
-                                                            .setUrl((String) objects.get(0));
-                                                    AudioTimeline.getCurrentTrack()
-                                                            .setAid((Long) objects.get(1));
-                                                    AudioTimeline.getCurrentTrack()
-                                                            .setOwnerId((Long) objects.get(2));
-                                                    if (!current) {
-                                                        playOnPrepared = false;
-                                                    }
-                                                    play(true);
-                                                } else {
-                                                    AudioTimeline.incrementWithoutUrl();
-                                                    next();
-                                                }
-                                            } else {
-                                                AudioTimeline.incrementWithoutUrl();
-                                                next();
-                                            }
-                                        }
-                                    });
-                        }
-                    }
-                    QueryManager.getInstance().scrobbleOffline();
-                }
-            }
+//            sendCallback(INTERNET_STATE_CHANGE);
+//            if (intent.getExtras() != null) {
+//                NetworkInfo ni = (NetworkInfo) intent.getExtras()
+//                        .get(ConnectivityManager.EXTRA_NETWORK_INFO);
+//                if (ni != null && ni.getState() == NetworkInfo.State.CONNECTED) {
+//                    final TrackUrlQuery trackUrlQuery = QueryManager.getTrackUrlQuery();
+//                    if (trackUrlQuery != null
+//                            && System.currentTimeMillis() - trackUrlQuery.getTimeStamp() < 3000) {
+//                        final Track currentTrack = trackUrlQuery.getCurrentTrack();
+//                        final boolean current = trackUrlQuery.isCurrent();
+//                        final int trackUrlNumber = trackUrlQuery.getUrlNumber();
+//                        if (currentTrack.getUrl() == null || currentTrack.getUrl().isEmpty()) {
+//                            urlQueryManager.getTrackByNotation(currentTrack, current, trackUrlNumber,
+//                                    new GetResponseCallback() {
+//                                        @Override
+//                                        public void onDataReceived(ReadyResult result) {
+//                                            final boolean error = !result.isOk();
+//                                            if (error) {
+//                                                AudioTimeline.incrementWithoutUrl();
+//                                                next();
+//                                                return;
+//                                            }
+//                                            final Object object = result.getObject();
+//                                            if (object != null) {
+//                                                List<Object> objects = (List<Object>) object;
+//                                                if (objects.size() > 0
+//                                                        && AudioTimeline.getCurrentTrack() != null) {
+//                                                    AudioTimeline.getCurrentTrack()
+//                                                            .setUrl((String) objects.get(0));
+//                                                    AudioTimeline.getCurrentTrack()
+//                                                            .setAid((Long) objects.get(1));
+//                                                    AudioTimeline.getCurrentTrack()
+//                                                            .setOwnerId((Long) objects.get(2));
+//                                                    if (!current) {
+//                                                        playOnPrepared = false;
+//                                                    }
+//                                                    play(true);
+//                                                } else {
+//                                                    AudioTimeline.incrementWithoutUrl();
+//                                                    next();
+//                                                }
+//                                            } else {
+//                                                AudioTimeline.incrementWithoutUrl();
+//                                                next();
+//                                            }
+//                                        }
+//                                    });
+//                        }
+//                    }
+//                    QueryManager.getInstance().scrobbleOffline();
+//                }
+//            }
         }
     }
 }

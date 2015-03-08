@@ -1,10 +1,12 @@
 package com.pillowapps.liqear.models.vk;
 
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.entities.vk.roots.VkAlbumsResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkTrackUrlResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkTracksResponseRoot;
 import com.pillowapps.liqear.helpers.StringUtils;
 import com.pillowapps.liqear.helpers.VkCallbackUtils;
@@ -136,6 +138,28 @@ public class VkAudioModel {
             @Override
             public void success(VkTracksResponseRoot data) {
                 callback.success(data.getResponse().getTracks());
+            }
+
+            @Override
+            public void failure(VkError error) {
+                callback.failure(error);
+            }
+        });
+    }
+
+    public void getTrackByNotation(Track track, int index, final VkSimpleCallback<VkTrack> callback) {
+        vkService.getTrackUrl(track.getNotation(), index, new VkCallback<VkTrackUrlResponseRoot>() {
+            @Override
+            public void success(VkTrackUrlResponseRoot data) {
+                List<VkTrack> tracks = data.getResponse();
+                int tracksSize = tracks.size();
+                if (tracksSize > 1) {
+                    callback.success(tracks.get(1));
+                } else if (tracksSize == 1) {
+                    callback.success(tracks.get(0));
+                } else {
+                    callback.success(null);
+                }
             }
 
             @Override

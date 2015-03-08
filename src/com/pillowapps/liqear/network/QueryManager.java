@@ -14,7 +14,6 @@ import com.pillowapps.liqear.components.CancellableThread;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.TrackUrlQuery;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistManager;
@@ -57,57 +56,22 @@ import java.util.TreeMap;
 public class QueryManager {
     public static final String EXECUTE_LYRICS = "execute.getLyrics";
     public static final String EXECUTE_URL = "execute.u";
-    public static final String EXECUTE_SEARCH_AND_POST_STATUS = "execute.saps";
-    public static final String FRIENDS_GET = "friends.get";
-    public static final String GROUPS_GET = "groups.get";
-    public static final String STATUS_SET = "status.set";
-    public static final String AUDIO_ADD = "audio.add";
-    public static final String FAST_AUDIO_ADD = "execute.ta";
-    public static final String AUDIO_DELETE = "audio.delete";
-    public static final String USERS_GET = "users.get";
-    public static final String ALBUM_SEARCH = "album.search";
-    public static final String TAG_SEARCH = "tag.search";
-    public static final String ARTIST_SEARCH = "artist.search";
-    public static final String ARTIST_GET_SIMILAR = "artist.getSimilar";
-    public static final String ARTIST_GET_INFO = "artist.getInfo";
-    public static final String AUDIO_GET = "audio.get";
-    public static final String TRACK_UPDATE_NOW_PLAYING = "track.updateNowPlaying";
-    public static final String TRACK_LOVE = "track.love";
     public static final String USER_GET_WEEKLY_TRACK_CHART = "user.getWeeklyTrackChart";
     public static final String USER_GET_LOVED_TRACKS = "user.getLovedTracks";
-    public static final String CHART_GET_HYPED_TRACKS = "chart.getHypedTracks";
-    public static final String CHART_GET_HYPED_ARTISTS = "chart.getHypedArtists";
-    public static final String CHART_GET_LOVED_TRACKS = "chart.getLovedTracks";
-    public static final String CHART_GET_TOP_ARTISTS = "chart.getTopArtists";
     public static final String USER_GET_TOP_TRACKS = "user.getTracks";
-    public static final String LIBRARY_GET_TRACKS = "library.getTracks";
     public static final String PHOTOS_GET_WALL_UPLOAD_SERVER = "photos.getWallUploadServer";
     public static final String TRACK_GET_INFO = "track.getInfo";
     public static final String ALBUM_GET_INFO = "album.getInfo";
     public static final String USER_GET_INFO = "user.getInfo";
     public static final String ARTIST_GET_TOP_TRACKS = "artist.getTracks";
-    public static final String USER_GET_PLAYLISTS = "user.getPlaylists";
-    public static final String USER_GET_FRIENDS = "user.getFriends";
-    public static final String USER_GET_RECOMMENDED_ARTISTS = "user.getRecommendedArtists";
-    public static final String AUDIO_SEARCH = "audio.search";
-    public static final String AUDIO_GET_ALBUMS = "audio.getAlbums";
     public static final String LIBRARY = "library";
     public static final String SETLISTS = "setlists";
     public static final String FUNKY = "funky";
-    public static final String POST_HARDCORE_RU = "post_hardcore_ru";
     private static final String EXECUTE_LIVE_URL = "execute.getAudioLiveUrl";
     private static final String RECOMMENDATIONS = "recommended";
-    private static final String WALL_GET = "wall.get";
     private static final String WALL_POST = "wall.post";
-    private static final String AUDIO_GET_RECOMMENDATIONS = "audio.getRecommendations";
-    private static final String FAVE_GET_POSTS = "fave.getPosts";
-    private static final String ARTIST_GET_TAGS = "artist.getTags";
     private static final String ALTERPORTAL = "alterportal";
-    private static final String ARTIST_GET_ALBUMS = "artist.getTopAlbums";
-    private static final String USER_GET_TOP_ARTISTS = "user.getTopArtists";
     private static final String PHOTOS_SAVE_WALL_PHOTO = "photos.saveWallPhoto";
-    private static final String NEWS_FEED_POST = "newsfeed.get";
-    private static TrackUrlQuery trackUrlQuery;
     private final String secret;
     private final String apiKey;
     private final String sk;
@@ -140,14 +104,6 @@ public class QueryManager {
         }
         b.append(secret);
         return StringUtils.md5(b.toString());
-    }
-
-    public static TrackUrlQuery getTrackUrlQuery() {
-        return trackUrlQuery;
-    }
-
-    public static void setTrackUrlQuery(TrackUrlQuery trackUrlQuery) {
-        QueryManager.trackUrlQuery = trackUrlQuery;
     }
 
     private void doQuery(final GetResponseCallback callback, Params methodParams) {
@@ -501,40 +457,6 @@ public class QueryManager {
             params.setApiSource(Params.ApiSource.VK);
             doQuery(callback, params);
         }
-    }
-
-    public void getTrackUrl(Track track, boolean current, int aimUrl,
-                            final GetResponseCallback callback) {
-        boolean live = track.isLive();
-        final Params params = new Params(live ? EXECUTE_LIVE_URL :
-                EXECUTE_URL, ApiMethod.EXECUTE_URL);
-        String request = escapeString(track.getNotation());
-        params.putParameter("q", request);
-        params.putParameter("n", Integer.toString(aimUrl + 1));
-        params.setApiSource(Params.ApiSource.VK);
-        if (current) {
-            params.setAdditionalParameter("current");
-        } else {
-            params.setAdditionalParameter("not_current");
-        }
-        doQuery(callback, params);
-    }
-
-    public void getTrackLyrics(Track track, int lyricsNumber, final GetResponseCallback callback) {
-        getTrackLyrics(track.getNotation(), lyricsNumber, callback);
-    }
-
-    public String escapeString(String s) {
-        return Html.fromHtml(s).toString().replaceAll("[\\?&!@#$%^*()_+{}]", "");
-    }
-
-    public void getTrackLyrics(String q, int count, final GetResponseCallback callback) {
-        final Params params = new Params(EXECUTE_LYRICS, ApiMethod.EXECUTE_LYRICS);
-        String request = escapeString(q);
-        params.putParameter("q", request);
-        params.putParameter("aim", Integer.toString(count + 1));
-        params.setApiSource(Params.ApiSource.VK);
-        doQuery(callback, params);
     }
 
     public void uploadBitmap(final String imageUrl, final GetResponseCallback callback) {

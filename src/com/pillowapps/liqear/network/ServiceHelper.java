@@ -49,7 +49,7 @@ public class ServiceHelper {
 
     public static VkApiService getVkService() {
         if (vkApiService == null) {
-            RequestInterceptor requestInterceptor = new RequestInterceptor() {
+            RequestInterceptor vkRequestInterceptor = new RequestInterceptor() {
                 @Override
                 public void intercept(RequestFacade request) {
                     request.addQueryParam("access_token", AuthorizationInfoManager.getVkAccessToken());
@@ -60,7 +60,7 @@ public class ServiceHelper {
 
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setLogLevel(RestAdapter.LogLevel.FULL)
-                    .setRequestInterceptor(requestInterceptor)
+                    .setRequestInterceptor(vkRequestInterceptor)
                     .setClient(new OkClient(okHttpClient))
                     .setEndpoint(VK_API)
                     .build();

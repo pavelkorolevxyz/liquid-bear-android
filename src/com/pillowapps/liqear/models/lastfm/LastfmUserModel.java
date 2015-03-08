@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.models.lastfm;
 
-import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecommendationsArtistRoot;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
@@ -8,6 +7,7 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmFriendsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmLovedTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmNeighboursRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecentTracksRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecommendationsArtistRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
@@ -164,5 +164,9 @@ public class LastfmUserModel {
                 callback.failure(error);
             }
         });
+    }
+
+    public void getWeeklyTracksChart(String user, int count, final LastfmSimpleCallback<List<LastfmTrack>> callback) {
+        lastfmService.getWeeklyTracksChart(user, count);
     }
 }

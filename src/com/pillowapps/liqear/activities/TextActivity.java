@@ -25,16 +25,16 @@ import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.entities.vk.VkError;
+import com.pillowapps.liqear.entities.vk.VkLyrics;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
-import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.Params;
-import com.pillowapps.liqear.network.QueryManager;
-import com.pillowapps.liqear.network.ReadyResult;
+import com.pillowapps.liqear.models.vk.VkLyricsModel;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
 public class TextActivity extends ResultSherlockActivity {
     public static final String ARTIST_NAME = "artist_name";
@@ -222,44 +222,40 @@ public class TextActivity extends ResultSherlockActivity {
         });
     }
 
-    private void getTrackLyrics(Track track, int lyricsNumber) {
-        QueryManager.getInstance().getTrackLyrics(track, lyricsNumber, new GetResponseCallback() {
+    private void getTrackLyrics(Track track, int index) {
+        new VkLyricsModel().getLyrics(track, index, new VkSimpleCallback<VkLyrics>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.VK)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
+            public void success(VkLyrics lyrics) {
                 textView.scrollTo(0, 0);
-                Object object = result.getObject();
-                if (object != null) {
-                    String lyrics = object.toString();
-                    if (lyrics.length() == 0) {
-                        lyrics = getString(R.string.not_found);
-                    }
-                    textView.setText(Html.fromHtml(lyrics.replace("\n", "<br />")));
+                String lyricsText = lyrics.getText();
+                if (lyricsText.isEmpty()) {
+                    lyricsText = getString(R.string.not_found);
                 }
+                textView.setText(Html.fromHtml(lyricsText.replace("\n", "<br />")));
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failure(VkError error) {
+
                 progressBar.setVisibility(View.GONE);
             }
         });
     }
 
-    private void getTrackLyrics(String request, int lyricsNumber) {
-        QueryManager.getInstance().getTrackLyrics(request, lyricsNumber, new GetResponseCallback() {
+    private void getTrackLyrics(String notation, int lyricsNumber) {
+        new VkLyricsModel().getLyrics(notation, lyricsNumber, new VkSimpleCallback<VkLyrics>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.VK)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                Object object = result.getObject();
-                if (object != null) {
-                    String lyrics = object.toString();
-                    if (lyrics.length() == 0) {
-                        lyrics = getString(R.string.not_found);
-                    }
-                    textView.setText(Html.fromHtml(lyrics.replace("\n", "<br />")));
-                }
+            public void success(VkLyrics lyrics) {
+                String lyricsText = lyrics == null
+                        ? getString(R.string.not_found)
+                        : lyrics.getText();
+                textView.setText(Html.fromHtml(lyricsText.replace("\n", "<br />")));
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failure(VkError error) {
                 progressBar.setVisibility(View.GONE);
             }
         });

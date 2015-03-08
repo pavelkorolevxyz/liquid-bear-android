@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class VkTrack {
     @SerializedName("id")
-    private String audioId;
+    private long audioId;
     @SerializedName("ownerId")
-    private String ownerId;
+    private long ownerId;
     @SerializedName("artist")
     private String artist;
     @SerializedName("title")
@@ -17,11 +17,11 @@ public class VkTrack {
     public VkTrack() {
     }
 
-    public String getAudioId() {
+    public long getAudioId() {
         return audioId;
     }
 
-    public String getOwnerId() {
+    public long getOwnerId() {
         return ownerId;
     }
 

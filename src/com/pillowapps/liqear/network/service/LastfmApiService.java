@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.network.service;
 
-import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecommendationsArtistRoot;
 import com.pillowapps.liqear.entities.LastfmResponse;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
@@ -14,12 +13,14 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmFriendsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmLovedTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmNeighboursRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecentTracksRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecommendationsArtistRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmSimilarArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTagSearchResultsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopAlbumsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTracksRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmWeeklyTrackChartRoot;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
+import rx.Observable;
 
 public interface LastfmApiService {
 
@@ -164,28 +166,28 @@ public interface LastfmApiService {
     @GET("/?method=tag.getTopTags")
     public void getTopTags(Callback<LastfmTag> callback);
 
-    @POST("?method=track.love")
+    @POST("/?method=track.love")
     public void love(@Query("artist") String artist,
                      @Query("track") String track,
                      @Query("api_sig") String apiSig,
                      @Query("sk ") String sessionKey,
                      LastfmCallback<LastfmResponse> callback);
 
-    @POST("?method=track.unlove")
+    @POST("/?method=track.unlove")
     public void unlove(@Query("artist") String artist,
                        @Query("track") String track,
                        @Query("api_sig") String apiSig,
                        @Query("sk ") String sessionKey,
                        LastfmCallback<LastfmResponse> callback);
 
-    @POST("?method=track.updateNowPlaying")
+    @POST("/?method=track.updateNowPlaying")
     public void nowplaying(@Query("artist") String artist,
                            @Query("track") String track,
                            @Query("api_sig") String apiSig,
                            @Query("sk ") String sessionKey,
                            LastfmCallback<LastfmResponse> callback);
 
-    @POST("?method=track.updateNowPlaying")
+    @POST("/?method=track.updateNowPlaying")
     public void nowplaying(@Query("artist") String artist,
                            @Query("track") String track,
                            @Query("album") String album,
@@ -193,7 +195,7 @@ public interface LastfmApiService {
                            @Query("sk ") String sessionKey,
                            LastfmCallback<LastfmResponse> callback);
 
-    @POST("?method=track.scrobble")
+    @POST("/?method=track.scrobble")
     public void scrobble(@Query("artist") String artist,
                          @Query("track") String track,
                          @Query("album") String album,
@@ -218,4 +220,8 @@ public interface LastfmApiService {
                         @Query("limit") int limit,
                         @Query("page") int page,
                         Callback<LastfmLovedTracksRoot> callback);
+
+    @GET("/?method=user.getWeeklyTrackChart")
+    Observable<LastfmWeeklyTrackChartRoot> getWeeklyTracksChart(@Query("user") String user,
+                                                                @Query("count") int count);
 }

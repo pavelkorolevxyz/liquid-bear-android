@@ -1,10 +1,12 @@
 package com.pillowapps.liqear.network.service;
 
-import com.pillowapps.liqear.entities.vk.roots.VkAlbumsResponseRoot;
-import com.pillowapps.liqear.entities.vk.roots.VkGroupsResponseRoot;
 import com.pillowapps.liqear.entities.vk.VkResponse;
-import com.pillowapps.liqear.entities.vk.roots.VkTracksResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkAlbumsResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkGetUsersResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkGroupsResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkLyricsResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkTrackUrlResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkTracksResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkUsersResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkWallMessagesResponseRoot;
 import com.pillowapps.liqear.network.callbacks.VkCallback;
@@ -103,15 +105,15 @@ public interface VkApiService {
                            @Query("count") int count,
                            VkCallback<VkUsersResponseRoot> callback);
 
-    @GET("/execute.u")
-    public void getTrackUrl(@Query("q") String trackNotation,
-                            @Query("n") String offset,
-                            Callback<String> callback);
+    @GET("/execute.getUrl")
+    public void getTrackUrl(@Query("notation") String trackNotation,
+                            @Query("index") int index,
+                            VkCallback<VkTrackUrlResponseRoot> callback);
 
     @GET("/execute.getLyrics")
-    public void getLyrics(@Query("q") String trackNotation,
-                          @Query("aim") String offset,
-                          Callback<String> callback);
+    public void getLyrics(@Query("notation") String trackNotation,
+                          @Query("index") int index,
+                          Callback<VkLyricsResponseRoot> callback);
 
     @POST("/photos.saveWallPhoto")
     public void saveWallPhoto(@Query("server") String server,

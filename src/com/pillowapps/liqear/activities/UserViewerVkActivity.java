@@ -6,8 +6,6 @@ import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,11 +29,8 @@ import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
-import com.pillowapps.liqear.network.Params;
-import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -170,16 +165,9 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
         changeViewPagerItem(defaultIndex);
     }
 
-    private boolean checkError(ReadyResult result, Params.ApiSource apiSource) {
-        if (!result.isOk()) {
-            Utils.showErrorDialog(result, UserViewerVkActivity.this, apiSource);
-        }
-        return !result.isOk();
-    }
-
     private void initViewPager() {
         final LayoutInflater inflater = LayoutInflater.from(this);
-        final List<View> views = new ArrayList<View>();
+        final List<View> views = new ArrayList<>();
         View view = inflater.inflate(R.layout.list_tab, null);
         views.add(view);
         addViewer(new ViewerPage<Track>(view));
@@ -352,14 +340,6 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
         }
     }
 
-    /**
-     * Context menu items' positions.
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -379,13 +359,6 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             break;
         }
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(android.view.MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-                .getMenuInfo();
-        return super.onContextItemSelected(item);
     }
 
     @Override
