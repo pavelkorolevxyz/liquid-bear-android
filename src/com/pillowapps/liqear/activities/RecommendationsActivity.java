@@ -240,6 +240,7 @@ public class RecommendationsActivity extends ResultSherlockActivity {
                     holder.image.setImageBitmap(null);
                 }
                 holder.text.setText(artist.getName());
+                holder.text.setBackgroundColor(getResources().getColor(R.color.accent));
                 if (holder.loadImages) {
                     imageLoader.displayImage(artist.getPreviewUrl(), holder.image, options,
                             new ImageLoadingListener() {

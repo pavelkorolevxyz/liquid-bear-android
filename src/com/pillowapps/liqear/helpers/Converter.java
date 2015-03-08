@@ -61,7 +61,7 @@ public class Converter {
         return new Tag(name);
     }
 
-    private static Album convertAlbum(LastfmAlbum lastfmAlbum) {
+    public static Album convertAlbum(LastfmAlbum lastfmAlbum) {
         String artist = lastfmAlbum.getArtist();
         String name = lastfmAlbum.getName();
 

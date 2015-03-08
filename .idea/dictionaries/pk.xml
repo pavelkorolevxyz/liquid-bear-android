@@ -1,11 +1,8 @@
 <component name="ProjectDictionaryState">
-  <dictionary name="pk">
+  <dictionary name="PK">
     <words>
-      <w>attacher</w>
-      <w>compat</w>
-      <w>lastfm</w>
-      <w>playcount</w>
-      <w>timeline</w>
+      <w>gson</w>
+      <w>nowplaying</w>
     </words>
   </dictionary>
 </component>

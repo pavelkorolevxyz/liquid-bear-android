@@ -26,7 +26,6 @@ public class AuthActivityAdapter extends PagerAdapter {
         titles[LASTFM_TAB_INDEX] = LiqearApplication.getAppContext().getString(R.string.last_fm);
     }
 
-
     public AuthActivityAdapter(List<View> inViews) {
         views = inViews;
     }

@@ -39,12 +39,14 @@ import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.ShakeDetector;
@@ -54,9 +56,7 @@ import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkStatusModel;
 import com.pillowapps.liqear.network.CompletionListener;
-import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.network.QueryManager;
-import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.callbacks.LastfmPassiveCallback;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkPassiveCallback;
@@ -1309,34 +1309,37 @@ public class MusicPlaybackService extends Service implements
     }
 
     private void getTrackInfo(final Track track) {
-        trackInfoQueryManager.getTrackInfo(track, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (result.isOk()) {
-                    List<Object> list = (List<Object>) result.getObject();
-                    Album album = (Album) list.get(0);
-                    boolean loved = (Boolean) list.get(1);
-                    Intent intent = new Intent();
-                    intent.setAction(Constants.ACTION_SERVICE);
-                    intent.putExtra(Constants.CALLBACK_TYPE, ALBUM_INFO_CALLBACK);
-                    AudioTimeline.setCurrentAlbum(album);
-                    QueryManager.getInstance().getAlbumImage(album, new CompletionListener() {
-                        @Override
-                        public void onCompleted() {
-                            showTrackInNotification();
+        new LastfmTrackModel().getTrackInfo(track, AuthorizationInfoManager.getLastfmName(),
+                new LastfmSimpleCallback<LastfmTrack>() {
+                    @Override
+                    public void success(LastfmTrack lastfmTrack) {
+                        Album album = Converter.convertAlbum(lastfmTrack.getAlbum());
+                        Boolean loved = lastfmTrack.isLoved();
+                        Intent intent = new Intent();
+                        intent.setAction(Constants.ACTION_SERVICE);
+                        intent.putExtra(Constants.CALLBACK_TYPE, ALBUM_INFO_CALLBACK);
+                        AudioTimeline.setCurrentAlbum(album);
+                        QueryManager.getInstance().getAlbumImage(album, new CompletionListener() {
+                            @Override
+                            public void onCompleted() {
+                                showTrackInNotification();
+                            }
+                        });
+                        track.setLoved(loved);
+                        intent.putExtra(Constants.TRACK_IS_LOVED, loved);
+                        sendBroadcast(intent);
+                        updateWidgets();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                            CompatIcs.updateRemote(MusicPlaybackService.this,
+                                    AudioTimeline.getCurrentTrack());
                         }
-                    });
-                    track.setLoved(loved);
-                    intent.putExtra(Constants.TRACK_IS_LOVED, loved);
-                    sendBroadcast(intent);
-                    updateWidgets();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                        CompatIcs.updateRemote(MusicPlaybackService.this,
-                                AudioTimeline.getCurrentTrack());
                     }
-                }
-            }
-        });
+
+                    @Override
+                    public void failure(String errorMessage) {
+
+                    }
+                });
     }
 
     public void stopPlayProgressUpdater() {

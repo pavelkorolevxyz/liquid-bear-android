@@ -10,12 +10,16 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecentTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecommendationsArtistRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmUserRoot;
+import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LastfmApiHelper;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.VkCallback;
+import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
@@ -168,5 +172,19 @@ public class LastfmUserModel {
 
     public void getWeeklyTracksChart(String user, int count, final LastfmSimpleCallback<List<LastfmTrack>> callback) {
         lastfmService.getWeeklyTracksChart(user, count);
+    }
+
+    public void getUserInfo(String name, final VkSimpleCallback<LastfmUser> callback) {
+        lastfmService.getUserInfo(name, new VkCallback<LastfmUserRoot>() {
+            @Override
+            public void success(LastfmUserRoot data) {
+                callback.success(data.getUser());
+            }
+
+            @Override
+            public void failure(VkError error) {
+                callback.failure(error);
+            }
+        });
     }
 }

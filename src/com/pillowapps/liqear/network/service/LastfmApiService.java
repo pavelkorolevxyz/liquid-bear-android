@@ -3,7 +3,6 @@ package com.pillowapps.liqear.network.service;
 import com.pillowapps.liqear.entities.LastfmResponse;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
-import com.pillowapps.liqear.entities.lastfm.LastfmUser;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumSearchResultsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmArtistRoot;
@@ -19,9 +18,12 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmTagSearchResultsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopAlbumsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmTrackRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTracksRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmUserRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmWeeklyTrackChartRoot;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
+import com.pillowapps.liqear.network.callbacks.VkCallback;
 
 import java.util.List;
 
@@ -156,12 +158,13 @@ public interface LastfmApiService {
 
     @GET("/?method=user.getInfo")
     public void getUserInfo(@Query("user") String user,
-                            Callback<LastfmUser> callback);
+                            VkCallback<LastfmUserRoot> callback);
 
     @GET("/?method=track.getInfo")
     public void getTrackInfo(@Query("artist") String artist,
                              @Query("track") String track,
-                             Callback<LastfmTrack> callback);
+                             @Query("username") String username,
+                             LastfmCallback<LastfmTrackRoot> callback);
 
     @GET("/?method=tag.getTopTags")
     public void getTopTags(Callback<LastfmTag> callback);
@@ -170,21 +173,21 @@ public interface LastfmApiService {
     public void love(@Query("artist") String artist,
                      @Query("track") String track,
                      @Query("api_sig") String apiSig,
-                     @Query("sk ") String sessionKey,
+                     @Query("sk") String sessionKey,
                      LastfmCallback<LastfmResponse> callback);
 
     @POST("/?method=track.unlove")
     public void unlove(@Query("artist") String artist,
                        @Query("track") String track,
                        @Query("api_sig") String apiSig,
-                       @Query("sk ") String sessionKey,
+                       @Query("sk") String sessionKey,
                        LastfmCallback<LastfmResponse> callback);
 
     @POST("/?method=track.updateNowPlaying")
     public void nowplaying(@Query("artist") String artist,
                            @Query("track") String track,
                            @Query("api_sig") String apiSig,
-                           @Query("sk ") String sessionKey,
+                           @Query("sk") String sessionKey,
                            LastfmCallback<LastfmResponse> callback);
 
     @POST("/?method=track.updateNowPlaying")
@@ -192,7 +195,7 @@ public interface LastfmApiService {
                            @Query("track") String track,
                            @Query("album") String album,
                            @Query("api_sig") String apiSig,
-                           @Query("sk ") String sessionKey,
+                           @Query("sk") String sessionKey,
                            LastfmCallback<LastfmResponse> callback);
 
     @POST("/?method=track.scrobble")
@@ -201,7 +204,7 @@ public interface LastfmApiService {
                          @Query("album") String album,
                          @Query("timestamp") String timestamp,
                          @Query("api_sig") String apiSig,
-                         @Query("sk ") String sessionKey,
+                         @Query("sk") String sessionKey,
                          LastfmCallback<LastfmResponse> callback);
 
     @GET("/?method=artist.getTopAlbums")

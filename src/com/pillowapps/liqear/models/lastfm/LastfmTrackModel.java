@@ -1,11 +1,14 @@
 package com.pillowapps.liqear.models.lastfm;
 
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmTrackRoot;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.LastfmApiHelper;
 import com.pillowapps.liqear.helpers.LastfmCallbackUtils;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.ServiceHelper;
+import com.pillowapps.liqear.network.callbacks.LastfmCallback;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.Map;
@@ -94,5 +97,20 @@ public class LastfmTrackModel {
                     sessionKey,
                     LastfmCallbackUtils.createTransitiveCallback(callback));
         }
+    }
+
+    public void getTrackInfo(Track track, String username, final LastfmSimpleCallback<LastfmTrack> callback) {
+        lastfmService.getTrackInfo(track.getArtist(), track.getTitle(), username,
+                new LastfmCallback<LastfmTrackRoot>() {
+                    @Override
+                    public void success(LastfmTrackRoot data) {
+                        callback.success(data.getTrack());
+                    }
+
+                    @Override
+                    public void failure(String error) {
+                        callback.failure(error);
+                    }
+                });
     }
 }

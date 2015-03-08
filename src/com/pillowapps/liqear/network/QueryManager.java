@@ -199,26 +199,6 @@ public class QueryManager {
         doQuery(callback, params);
     }
 
-    public void getUserInfo(String name, final GetResponseCallback callback) {
-        final Params params = new Params(USER_GET_INFO, ApiMethod.USER_GET_INFO);
-        params.putParameter("user", Html.fromHtml(name).toString());
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void getTrackInfo(Track track, final GetResponseCallback callback) {
-        final Params params = new Params(TRACK_GET_INFO, ApiMethod.TRACK_GET_INFO);
-        params.putParameter("track", Html.fromHtml(track.getTitle()).toString());
-        params.putParameter("artist", Html.fromHtml(track.getArtist())
-                .toString());
-        params.putParameter("username",
-                AuthorizationInfoManager.getLastfmName());
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
     public void getUserTopTracks(String name, String period, int limit,
                                  int page, boolean append, final GetResponseCallback callback) {
         final Params params = new Params(USER_GET_TOP_TRACKS, ApiMethod.USER_GET_TOP_TRACKS);

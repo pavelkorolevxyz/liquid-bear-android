@@ -24,7 +24,9 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.AuthActivityAdapter;
 import com.pillowapps.liqear.entities.ErrorResponseLastfm;
 import com.pillowapps.liqear.entities.ErrorResponseVk;
+import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmSession;
+import com.pillowapps.liqear.entities.lastfm.LastfmUser;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkUser;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
@@ -33,10 +35,9 @@ import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.lastfm.LastfmAuthModel;
+import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.models.vk.VkUserModel;
-import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.network.Params;
-import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
@@ -230,15 +231,19 @@ public class AuthActivity extends TrackedActivity {
                                 editor.apply();
                                 lastfmNameTextView.setText(name);
                                 authLastfmPanel.setVisibility(View.VISIBLE);
-                                QueryManager.getInstance().getUserInfo(name, new GetResponseCallback() {
+                                new LastfmUserModel().getUserInfo(name, new VkSimpleCallback<LastfmUser>() {
                                     @Override
-                                    public void onDataReceived(ReadyResult result) {
-                                        if (result.isOk()) {
-                                            String url = (String) result.getObject();
-                                            AuthorizationInfoManager.setLastfmAvatar(url);
-                                            imageLoader.displayImage(url,
-                                                    avatarLastfmImageView, options);
-                                        }
+                                    public void success(LastfmUser user) {
+                                        List<LastfmImage> images = user.getImages();
+                                        String url = images.get(images.size() - 1).getUrl();
+                                        AuthorizationInfoManager.setLastfmAvatar(url);
+                                        imageLoader.displayImage(url,
+                                                avatarLastfmImageView, options);
+                                    }
+
+                                    @Override
+                                    public void failure(VkError error) {
+
                                     }
                                 });
                                 invalidateOptionsMenu();
