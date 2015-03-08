@@ -11,17 +11,17 @@ import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.components.CancellableThread;
-import com.pillowapps.liqear.network.alterportal.AlterportalReader;
-import com.pillowapps.liqear.network.funkysouls.FunkySoulsReader;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Artist;
+import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.TrackUrlQuery;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.StringUtils;
-import com.pillowapps.liqear.entities.Album;
-import com.pillowapps.liqear.entities.Artist;
-import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.TrackUrlQuery;
+import com.pillowapps.liqear.network.alterportal.AlterportalReader;
+import com.pillowapps.liqear.network.funkysouls.FunkySoulsReader;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -46,7 +46,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -212,19 +211,6 @@ public class QueryManager {
         final Params params = new Params(SETLISTS, ApiMethod.SETLISTS, url);
         params.setApiSource(Params.ApiSource.SETLISTFM);
         doQuery(callback, params);
-    }
-
-    public void getRecommendedArtists(int limit, int page, final GetResponseCallback callback) {
-        final Map<String, String> params = StringUtils.map("api_key", apiKey, "sk", sk);
-        String method = USER_GET_RECOMMENDED_ARTISTS;
-        params.put("limit", Integer.toString(limit));
-        params.put("page", Integer.toString(page));
-        String apiSig = createSignature(method, params, secret);
-        params.put("api_sig", apiSig);
-        final Params methodParams = new Params(method,
-                ApiMethod.USER_GET_RECOMMENDED_ARTISTS, params);
-        methodParams.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, methodParams);
     }
 
     public void getArtistTopTracksSync(Artist artist, int limit, int page,
@@ -483,74 +469,6 @@ public class QueryManager {
         scrobbleThread.start();
     }
 
-    public void getArtistInfo(String artist, String username, final GetResponseCallback callback) {
-        final Params params = new Params(ARTIST_GET_INFO, ApiMethod.ARTIST_GET_INFO);
-        params.putParameter("artist", Html.fromHtml(artist).toString());
-        if (Locale.getDefault().getLanguage().equals("ru")) {
-            params.putParameter("lang", "ru");
-        } else if (Locale.getDefault().getLanguage().equals("es")) {
-            params.putParameter("lang", "es");
-        }
-        if (username != null) {
-            params.putParameter("username", username);
-        }
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void getSimilarArtists(String artist, final GetResponseCallback callback) {
-        final Params params = new Params(ARTIST_GET_SIMILAR, ApiMethod.ARTIST_GET_SIMILAR);
-        params.putParameter("artist", Html.fromHtml(artist).toString());
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void searchArtist(String artist, final GetResponseCallback callback) {
-        final Params params = new Params(ARTIST_SEARCH, ApiMethod.ARTIST_SEARCH);
-        params.putParameter("artist", Html.fromHtml(artist).toString());
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void searchTag(String tag, final GetResponseCallback callback) {
-        final Params params = new Params(TAG_SEARCH, ApiMethod.TAG_SEARCH);
-        params.putParameter("tag", Html.fromHtml(tag).toString());
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void searchAlbum(String album, final GetResponseCallback callback) {
-        final Params params = new Params(ALBUM_SEARCH, ApiMethod.ALBUM_SEARCH);
-        params.putParameter("album", Html.fromHtml(album).toString());
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void getVkUserAudio(long id, int count, int offset, final GetResponseCallback callback) {
-        final Params params = new Params(AUDIO_GET, ApiMethod.AUDIO_GET);
-        params.putParameter("oid", Long.toString(id));
-        params.putParameter("offset", Integer.toString(offset));
-        params.putParameter("count", Integer.toString(count));
-        params.setApiSource(Params.ApiSource.VK);
-        doQuery(callback, params);
-    }
-
-    public void getVkUserWallAudio(long id, int count, int offset, long gid,
-                                   final GetResponseCallback callback) {
-        final Params params = new Params(WALL_GET, ApiMethod.WALL_GET);
-        String ownerId = id == -1 ? "-" + gid : String.valueOf(id);
-        params.putParameter("owner_id", ownerId);
-        params.putParameter("offset", Integer.toString(offset));
-        params.putParameter("count", Integer.toString(count));
-        params.setApiSource(Params.ApiSource.VK);
-        doQuery(callback, params);
-    }
-
     public void postVkUserWall(String message, String bitmap, final Track track,
                                final GetResponseCallback callback) {
         final Params params = new Params(WALL_POST, ApiMethod.WALL_POST);
@@ -616,30 +534,6 @@ public class QueryManager {
         params.putParameter("q", request);
         params.putParameter("aim", Integer.toString(count + 1));
         params.setApiSource(Params.ApiSource.VK);
-        doQuery(callback, params);
-    }
-
-    public void getUserTopArtists(String name, String period, int limit, int page,
-                                  GetResponseCallback callback) {
-        final Params params = new Params(USER_GET_TOP_ARTISTS, ApiMethod.USER_GET_TOP_ARTISTS);
-        params.putParameter("api_key", apiKey);
-        params.putParameter("user", name);
-        params.putParameter("period", period);
-        params.putParameter("limit", Integer.toString(limit));
-        params.putParameter("page", String.valueOf(page));
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    public void getPersonalArtistTop(String artist, String username, int limit, int page,
-                                     GetResponseCallback callback) {
-        final Params params = new Params(LIBRARY_GET_TRACKS, ApiMethod.LIBRARY_GET_TRACKS);
-        params.putParameter("artist", Html.fromHtml(artist).toString());
-        params.putParameter("api_key", apiKey);
-        params.putParameter("user", username);
-        params.putParameter("limit", Integer.toString(limit));
-        params.putParameter("page", Integer.toString(page));
-        params.setApiSource(Params.ApiSource.LASTFM);
         doQuery(callback, params);
     }
 

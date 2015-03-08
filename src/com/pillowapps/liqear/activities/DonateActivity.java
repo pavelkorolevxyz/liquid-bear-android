@@ -20,7 +20,7 @@ import net.robotmedia.billing.helper.AbstractBillingActivity;
 import net.robotmedia.billing.model.Transaction.PurchaseState;
 
 @SuppressWarnings("UnusedParameters")
-public class DonateSherlockActivity extends AbstractBillingActivity {
+public class DonateActivity extends AbstractBillingActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +67,7 @@ public class DonateSherlockActivity extends AbstractBillingActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Copy number", ((Button) v).getText()
                 .toString());
-        Toast.makeText(DonateSherlockActivity.this, getResources().getString(R.string.copied), Toast.LENGTH_SHORT).show();
+        Toast.makeText(DonateActivity.this, getResources().getString(R.string.copied), Toast.LENGTH_SHORT).show();
         clipboard.setPrimaryClip(clip);
     }
 
@@ -143,7 +143,7 @@ public class DonateSherlockActivity extends AbstractBillingActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         finish();
-                        DonateSherlockActivity.this.finish();
+                        DonateActivity.this.finish();
                     }
                 });
         AlertDialog dialog = builder.create();

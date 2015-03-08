@@ -32,7 +32,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.models.LastfmAlbumModel;
+import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.TitlePageIndicator;

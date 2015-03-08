@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.models;
+package com.pillowapps.liqear.models.lastfm;
 
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;

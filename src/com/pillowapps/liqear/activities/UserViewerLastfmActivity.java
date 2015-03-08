@@ -33,7 +33,7 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
-import com.pillowapps.liqear.models.LastfmUserModel;
+import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.ReadyResult;

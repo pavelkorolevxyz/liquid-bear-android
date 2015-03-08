@@ -8,7 +8,7 @@ import android.widget.Toast;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.AlbumViewerActivity;
 import com.pillowapps.liqear.activities.ArtistViewerActivity;
-import com.pillowapps.liqear.activities.PlaylistsSherlockListActivity;
+import com.pillowapps.liqear.activities.PlaylistsActivity;
 import com.pillowapps.liqear.activities.TagViewerActivity;
 import com.pillowapps.liqear.activities.TrackedActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
@@ -105,8 +105,8 @@ public class ResultSherlockActivity extends TrackedActivity {
 
     public void saveAsPlaylist(List<Track> tracks) {
         Intent intent = new Intent(ResultSherlockActivity.this,
-                PlaylistsSherlockListActivity.class);
-        intent.putExtra("aim", PlaylistsSherlockListActivity.Aim.SAVE_AS_PLAYLIST);
+                PlaylistsActivity.class);
+        intent.putExtra("aim", PlaylistsActivity.Aim.SAVE_AS_PLAYLIST);
         intent.putParcelableArrayListExtra(Constants.TRACKLIST, (ArrayList<Track>) tracks);
         startActivity(intent);
     }

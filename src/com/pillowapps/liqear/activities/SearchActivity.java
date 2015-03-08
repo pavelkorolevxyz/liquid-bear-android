@@ -64,15 +64,17 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.models.LastfmAlbumModel;
-import com.pillowapps.liqear.models.LastfmArtistModel;
-import com.pillowapps.liqear.models.LastfmTagModel;
-import com.pillowapps.liqear.models.LastfmUserModel;
+import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
+import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
+import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
+import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
+import com.pillowapps.liqear.models.vk.VkAudioModel;
+import com.pillowapps.liqear.models.vk.VkFriendModel;
+import com.pillowapps.liqear.models.vk.VkGroupModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.VkRequestManager;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
@@ -83,7 +85,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class SearchSherlockListActivity extends ResultSherlockActivity implements OnItemClickListener {
+public class SearchActivity extends ResultSherlockActivity implements OnItemClickListener {
     public static final String SEARCH_MODE = "search_destiny";
     public static final int USERS_COUNT = 20;
     @SuppressWarnings("rawtypes")
@@ -157,7 +159,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 searchButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         progressBar.setVisibility(View.VISIBLE);
-                        Intent intent = new Intent(SearchSherlockListActivity.this,
+                        Intent intent = new Intent(SearchActivity.this,
                                 UserViewerLastfmActivity.class);
                         intent.putExtra(UserViewerLastfmActivity.USER,
                                 new User(editText.getText().toString()));
@@ -225,7 +227,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 actionBar.setTitle(title);
                 List<Track> tracks = PlaylistManager.getInstance().getPlaylist(extras.getLong("pid"));
                 adapter = new QuickSearchArrayAdapter<>(
-                        SearchSherlockListActivity.this, tracks, Track.class);
+                        SearchActivity.this, tracks, Track.class);
                 setAdapter();
                 listView.setOnCreateContextMenuListener(this);
                 setTrackLongClick();
@@ -255,7 +257,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                     tracks.add(new Track(artist, trackTitle));
                 }
                 adapter = new QuickSearchArrayAdapter<>(
-                        SearchSherlockListActivity.this, tracks, Track.class);
+                        SearchActivity.this, tracks, Track.class);
                 setAdapter();
                 setTrackLongClick();
             }
@@ -271,7 +273,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                     tracks.add(new Track(artist, trackTitle, live));
                 }
                 adapter = new QuickSearchArrayAdapter<Track>(
-                        SearchSherlockListActivity.this, tracks, Track.class);
+                        SearchActivity.this, tracks, Track.class);
                 setAdapter();
                 setTrackLongClick();
             }
@@ -395,7 +397,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void showError(String error) {
-        ErrorNotifier.showLastfmError(SearchSherlockListActivity.this, error);
+        ErrorNotifier.showLastfmError(SearchActivity.this, error);
     }
 
     private void searchTag(String searchQuery, int limit, int page) {
@@ -437,7 +439,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             if (adapter != null) adapter.clear();
         }
         this.searchQuery = searchQuery;
-        VkRequestManager.getInstance().searchAudio(searchQuery, 0, count, new VkSimpleCallback<List<VkTrack>>() {
+        new VkAudioModel().searchAudio(searchQuery, 0, count, new VkSimpleCallback<List<VkTrack>>() {
             @Override
             public void success(List<VkTrack> data) {
                 fillWithTracklist(data);
@@ -455,7 +457,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void getVkUserAudioFromAlbum(long uid, long albumId) {
-        VkRequestManager.getInstance().getUserAudioFromAlbum(uid, albumId, 0, 0,
+        new VkAudioModel().getUserAudioFromAlbum(uid, albumId, 0, 0,
                 vkTracksCallback());
     }
 
@@ -475,7 +477,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void getVkGroupAudioFromAlbum(long gid, long albumId) {
-        VkRequestManager.getInstance().getGroupAudioFromAlbum(gid, albumId, 0, 0,
+        new VkAudioModel().getGroupAudioFromAlbum(gid, albumId, 0, 0,
                 vkTracksCallback());
     }
 
@@ -587,7 +589,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
         if (SearchMode.ARTIST == aim) {
             switch (item.getItemId()) {
                 case 0:
-                    Intent intent = new Intent(SearchSherlockListActivity.this,
+                    Intent intent = new Intent(SearchActivity.this,
                             ArtistViewerActivity.class);
                     intent.putExtra(ArtistViewerActivity.ARTIST,
                             ((Artist) adapter.getItem(info.position)).getName());
@@ -619,7 +621,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
         switch (itemId) {
             case android.R.id.home: {
                 finish();
-                Intent intent = new Intent(SearchSherlockListActivity.this, MainActivity.class);
+                Intent intent = new Intent(SearchActivity.this, MainActivity.class);
                 intent.setAction(Intent.ACTION_MAIN);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -628,7 +630,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             case R.id.to_playlist: {
                 if (adapter == null) return true;
                 addToMainPlaylist(adapter.getValues());
-                Toast.makeText(SearchSherlockListActivity.this, R.string.added,
+                Toast.makeText(SearchActivity.this, R.string.added,
                         Toast.LENGTH_SHORT).show();
             }
             return true;
@@ -702,7 +704,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             break;
             case LASTFM_FRIENDS:
             case NEIGHBOURS: {
-                Intent intent = new Intent(SearchSherlockListActivity.this,
+                Intent intent = new Intent(SearchActivity.this,
                         UserViewerLastfmActivity.class);
                 intent.putExtra(UserViewerLastfmActivity.USER, (User) adapter.get(position));
                 intent.putExtra(UserViewerLastfmActivity.TAB_INDEX,
@@ -712,7 +714,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             break;
             case GROUP: {
                 Group group = (Group) adapter.getValues().get(position);
-                Intent userViewerIntent = new Intent(SearchSherlockListActivity.this,
+                Intent userViewerIntent = new Intent(SearchActivity.this,
                         UserViewerVkActivity.class);
                 userViewerIntent.putExtra(UserViewerVkActivity.GROUP, group);
                 startActivityForResult(userViewerIntent, Constants.MAIN_REQUEST_CODE);
@@ -720,7 +722,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
             break;
             case VK_FRIENDS: {
                 User user = (User) adapter.getValues().get(position);
-                Intent userViewerIntent = new Intent(SearchSherlockListActivity.this,
+                Intent userViewerIntent = new Intent(SearchActivity.this,
                         UserViewerVkActivity.class);
                 userViewerIntent.putExtra(UserViewerVkActivity.USER, user);
                 startActivityForResult(userViewerIntent, Constants.MAIN_REQUEST_CODE);
@@ -756,7 +758,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 int type = getIntent().getIntExtra("type", 1);
                 if (type == 1) {
                     Track track = (Track) adapter.get(position);
-                    VkRequestManager.getInstance().addToUserAudio(track.getAid(), track.getOwnerId(), new VkSimpleCallback<VkResponse>() {
+                    new VkAudioModel().addToUserAudio(track.getAid(), track.getOwnerId(), new VkSimpleCallback<VkResponse>() {
                         @Override
                         public void success(VkResponse data) {
                             Toast.makeText(LiqearApplication.getAppContext(),
@@ -773,8 +775,8 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 break;
             }
             case SETLIST: {
-                Intent searchIntent = new Intent(SearchSherlockListActivity.this,
-                        SearchSherlockListActivity.class);
+                Intent searchIntent = new Intent(SearchActivity.this,
+                        SearchActivity.class);
                 Setlist setlist = (Setlist) adapter.getValues().get(position);
                 searchIntent.putStringArrayListExtra("tracks",
                         new ArrayList<String>(setlist.getTracks()));
@@ -785,8 +787,8 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 break;
             }
             case LOCAL_ALBUMS: {
-                Intent searchIntent = new Intent(SearchSherlockListActivity.this,
-                        SearchSherlockListActivity.class);
+                Intent searchIntent = new Intent(SearchActivity.this,
+                        SearchActivity.class);
                 Album album = (Album) adapter.getValues().get(position);
                 searchIntent.putExtra("albumId", album.getId());
                 searchIntent.putExtra(SEARCH_MODE, SearchMode.LOCAL_TRACKS);
@@ -794,8 +796,8 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 break;
             }
             case LOCAL_ARTISTS: {
-                Intent searchIntent = new Intent(SearchSherlockListActivity.this,
-                        SearchSherlockListActivity.class);
+                Intent searchIntent = new Intent(SearchActivity.this,
+                        SearchActivity.class);
                 Artist artist = (Artist) adapter.getValues().get(position);
                 searchIntent.putExtra("artistId", artist.getId());
                 searchIntent.putExtra(SEARCH_MODE, SearchMode.LOCAL_TRACKS);
@@ -803,8 +805,8 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
                 break;
             }
             case LOCAL_FOLDERS: {
-                Intent searchIntent = new Intent(SearchSherlockListActivity.this,
-                        SearchSherlockListActivity.class);
+                Intent searchIntent = new Intent(SearchActivity.this,
+                        SearchActivity.class);
                 File artist = (File) adapter.getValues().get(position);
                 searchIntent.putExtra("filePath", artist.getAbsolutePath());
                 searchIntent.putExtra(SEARCH_MODE, SearchMode.LOCAL_TRACKS);
@@ -829,7 +831,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     private void fillWithTracklist(List<VkTrack> vkTracks) {
         List<Track> trackList = Converter.convertVkTrackList(vkTracks);
         if (adapter == null) {
-            adapter = new QuickSearchArrayAdapter<>(SearchSherlockListActivity.this,
+            adapter = new QuickSearchArrayAdapter<>(SearchActivity.this,
                     trackList, Track.class);
             emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
         } else {
@@ -841,7 +843,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     private void fillWithTracklist(ReadyResult result) {
         List<Track> trackList = (List<Track>) result.getObject();
         if (adapter == null) {
-            adapter = new QuickSearchArrayAdapter<Track>(SearchSherlockListActivity.this,
+            adapter = new QuickSearchArrayAdapter<Track>(SearchActivity.this,
                     trackList, Track.class);
             emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
         } else {
@@ -923,11 +925,11 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void getVkGroups() {
-        VkRequestManager.getInstance().getGroups(0, 0, new VkSimpleCallback<List<VkGroup>>() {
+        new VkGroupModel().getGroups(0, 0, new VkSimpleCallback<List<VkGroup>>() {
             @Override
             public void success(List<VkGroup> data) {
                 List<Group> groups = Converter.convertGroups(data);
-                adapter = new QuickSearchArrayAdapter<>(SearchSherlockListActivity.this,
+                adapter = new QuickSearchArrayAdapter<>(SearchActivity.this,
                         groups, Group.class);
                 setAdapter();
                 progressBar.setVisibility(View.GONE);
@@ -941,7 +943,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void getVkFriends() {
-        VkRequestManager.getInstance().getFriends(0, 0, new VkSimpleCallback<List<VkUser>>() {
+        new VkFriendModel().getFriends(0, 0, new VkSimpleCallback<List<VkUser>>() {
             @Override
             public void success(List<VkUser> data) {
                 progressBar.setVisibility(View.GONE);
@@ -956,7 +958,7 @@ public class SearchSherlockListActivity extends ResultSherlockActivity implement
     }
 
     private void searchVkRecommendations(int limit, int page) {
-        VkRequestManager.getInstance().getVkRecommendations(limit, page * limit,
+        new VkAudioModel().getVkRecommendations(limit, page * limit,
                 new VkSimpleCallback<List<VkTrack>>() {
                     @Override
                     public void success(List<VkTrack> data) {

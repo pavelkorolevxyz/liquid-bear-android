@@ -93,31 +93,31 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case ARTIST_RADIO: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.ARTIST);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.ARTIST);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Artist search");
             }
             break;
             case TAG_RADIO: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.TAG);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.TAG);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Tag search");
             }
             break;
             case ALBUM_RADIO: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.ALBUM);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.ALBUM);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Album search");
             }
             break;
             case RECOMMENDATIONS: {
-                Intent intent = new Intent(activity, RecommendationsSherlockActivity.class);
+                Intent intent = new Intent(activity, RecommendationsActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Recommended");
             }
@@ -128,17 +128,17 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case NEIGHBOURS: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.NEIGHBOURS);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.NEIGHBOURS);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Neighbours");
             }
             break;
             case FRIENDS_LAST: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.LASTFM_FRIENDS);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.LASTFM_FRIENDS);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Friends");
             }
@@ -166,25 +166,25 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case GROUP_VK: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.GROUP);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.GROUP);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Group");
             }
             break;
             case FRIENDS_VK: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.VK_FRIENDS);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.VK_FRIENDS);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Friends");
             }
             break;
             case SEARCH_VK: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.VK_SIMPLE_SEARCH);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.VK_SIMPLE_SEARCH);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Search");
             }
@@ -201,9 +201,9 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case RECOMMENDATIONS_VK: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.VK_RECOMMENDATIONS);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.VK_RECOMMENDATIONS);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Recommendations");
             }
@@ -242,55 +242,55 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case FUNKY: {
-                Intent intent = new Intent(activity, NewcomersSherlockListActivity.class);
-                intent.putExtra(NewcomersSherlockListActivity.MODE,
-                        NewcomersSherlockListActivity.Mode.FUNKYSOULS);
+                Intent intent = new Intent(activity, NewcomersActivity.class);
+                intent.putExtra(NewcomersActivity.MODE,
+                        NewcomersActivity.Mode.FUNKYSOULS);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[OTHER] FunkySouls");
             }
             break;
             case ALTERPORTAL: {
-                Intent intent = new Intent(activity, NewcomersSherlockListActivity.class);
-                intent.putExtra(NewcomersSherlockListActivity.MODE,
-                        NewcomersSherlockListActivity.Mode.ALTERPORTAL);
+                Intent intent = new Intent(activity, NewcomersActivity.class);
+                intent.putExtra(NewcomersActivity.MODE,
+                        NewcomersActivity.Mode.ALTERPORTAL);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[OTHER] Alterportal");
             }
             break;
             case POSTHARDCORE: {
-                Intent intent = new Intent(activity, NewcomersSherlockListActivity.class);
-                intent.putExtra(NewcomersSherlockListActivity.MODE,
-                        NewcomersSherlockListActivity.Mode.POST_HARDCORE_RU);
+                Intent intent = new Intent(activity, NewcomersActivity.class);
+                intent.putExtra(NewcomersActivity.MODE,
+                        NewcomersActivity.Mode.POST_HARDCORE_RU);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[OTHER] Post-hardcore.ru");
             }
             break;
             case SETLIST: {
-                Intent intent = new Intent(activity, SetlistSearchSherlockActivity.class);
+                Intent intent = new Intent(activity, SetlistsActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[OTHER] Setlists");
             }
             break;
             case LOCAL_ARTISTS: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.LOCAL_ARTISTS);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.LOCAL_ARTISTS);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LOCAL] Artists");
             }
             break;
             case LOCAL_TRACKS: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.LOCAL_TRACKS);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.LOCAL_TRACKS);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LOCAL] Tracks");
             }
             break;
             case LOCAL_ALBUMS: {
-                Intent intent = new Intent(activity, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.LOCAL_ALBUMS);
+                Intent intent = new Intent(activity, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.LOCAL_ALBUMS);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LOCAL] Albums");
             }

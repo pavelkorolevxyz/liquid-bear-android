@@ -26,7 +26,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.models.LastfmChartModel;
+import com.pillowapps.liqear.models.lastfm.LastfmChartModel;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 

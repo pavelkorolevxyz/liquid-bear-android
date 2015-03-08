@@ -53,9 +53,9 @@ public class PreferencesActivity extends PreferenceActivity {
         disclaimerPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 Intent myIntent = new Intent(getApplicationContext(),
-                        TextSherlockActivity.class);
-                myIntent.putExtra(TextSherlockActivity.TEXT_AIM,
-                        TextSherlockActivity.Aim.DISCLAIMER);
+                        TextActivity.class);
+                myIntent.putExtra(TextActivity.TEXT_AIM,
+                        TextActivity.Aim.DISCLAIMER);
                 startActivity(myIntent);
                 return true;
             }
@@ -99,8 +99,8 @@ public class PreferencesActivity extends PreferenceActivity {
         thanksPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 Intent myIntent = new Intent(getApplicationContext(),
-                        TextSherlockActivity.class);
-                myIntent.putExtra(TextSherlockActivity.TEXT_AIM, TextSherlockActivity.Aim.THANKS);
+                        TextActivity.class);
+                myIntent.putExtra(TextActivity.TEXT_AIM, TextActivity.Aim.THANKS);
                 startActivity(myIntent);
                 return true;
             }

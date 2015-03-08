@@ -48,7 +48,7 @@
             android:name=".activities.ChartsActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.SearchSherlockListActivity"
+            android:name=".activities.SearchActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.ArtistViewerActivity"
@@ -60,32 +60,32 @@
             android:name=".activities.ImagePagerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.EqualizerSherlockActivity"
+            android:name=".activities.EqualizerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.TextSherlockActivity"
+            android:name=".activities.TextActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.PreferencesActivity"
             android:theme="@style/PreferencesTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.RecommendationsSherlockActivity"
+            android:name=".activities.RecommendationsActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.TagViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.PlaylistsSherlockListActivity"
+            android:name=".activities.PlaylistsActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.SetlistSearchSherlockActivity"
+            android:name=".activities.SetlistsActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.NewcomersSherlockListActivity"
+            android:name=".activities.NewcomersActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.DonateSherlockActivity"
+            android:name=".activities.DonateActivity"
             android:windowSoftInputMode="stateHidden" />
 
         <receiver android:name=".audio.MediaButtonReceiver">

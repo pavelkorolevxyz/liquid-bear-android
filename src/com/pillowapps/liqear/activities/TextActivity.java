@@ -29,14 +29,14 @@ import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.models.LastfmArtistModel;
+import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 
-public class TextSherlockActivity extends ResultSherlockActivity {
+public class TextActivity extends ResultSherlockActivity {
     public static final String ARTIST_NAME = "artist_name";
     public static final String TEXT_AIM = "text_aim";
     private TextView textView;
@@ -217,7 +217,7 @@ public class TextSherlockActivity extends ResultSherlockActivity {
             @Override
             public void failure(String error) {
                 progressBar.setVisibility(View.GONE);
-                ErrorNotifier.showLastfmError(TextSherlockActivity.this, error);
+                ErrorNotifier.showLastfmError(TextActivity.this, error);
             }
         });
     }

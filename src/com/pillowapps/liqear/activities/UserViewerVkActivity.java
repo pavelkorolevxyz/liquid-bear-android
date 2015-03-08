@@ -32,9 +32,10 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.vk.VkAudioModel;
+import com.pillowapps.liqear.models.vk.VkWallModel;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.VkRequestManager;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -65,8 +66,9 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
     private int favoritesPage = 0;
     private int newsFeedPage = 0;
     private int albumPage = 0;
+    private VkWallModel vkWallModel = new VkWallModel();
+    private VkAudioModel vkAudioModel = new VkAudioModel();
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,7 +141,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent searchIntent = new Intent(UserViewerVkActivity.this,
-                        SearchSherlockListActivity.class);
+                        SearchActivity.class);
                 VkAlbum vkAlbum = (VkAlbum) getViewer(ALBUM_INDEX).getValues().get(position);
                 searchIntent.putExtra("title", vkAlbum.getTitle());
                 if (mode == Mode.USER) {
@@ -148,8 +150,8 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
                     searchIntent.putExtra("gid", group.getGid());
                 }
                 searchIntent.putExtra("album_id", vkAlbum.getAlbumId());
-                searchIntent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.VK_ALBUM_TRACKLIST);
+                searchIntent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.VK_ALBUM_TRACKLIST);
                 startActivityForResult(searchIntent, Constants.MAIN_REQUEST_CODE);
             }
         });
@@ -242,7 +244,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
 
     private void getFavoritesTracks() {
         if (mode == Mode.USER) {
-            VkRequestManager.getInstance().getVkUserFavoritesAudio(TRACKS_IN_TOP_COUNT,
+            vkWallModel.getVkUserFavoritesAudio(TRACKS_IN_TOP_COUNT,
                     TRACKS_IN_TOP_COUNT * favoritesPage++, new VkSimpleCallback<List<VkTrack>>() {
                         @Override
                         public void success(List<VkTrack> data) {
@@ -261,7 +263,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
 
     private void getNewsFeedTracks() {
         if (mode == Mode.USER) {
-            VkRequestManager.getInstance().getVkNewsFeedTracks(100, 100 * newsFeedPage++,
+            vkWallModel.getVkNewsFeedTracks(100, 100 * newsFeedPage++,
                     new VkSimpleCallback<List<VkTrack>>() {
                         @Override
                         public void success(List<VkTrack> data) {
@@ -293,10 +295,10 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             }
         };
         if (mode == Mode.USER) {
-            VkRequestManager.getInstance().getUserVkAlbums(user.getUid(),
+            vkAudioModel.getUserVkAlbums(user.getUid(),
                     TRACKS_IN_TOP_COUNT * albumPage++, TRACKS_IN_TOP_COUNT, callback);
         } else {
-            VkRequestManager.getInstance().getGroupVkAlbums(group.getGid(),
+            vkAudioModel.getGroupVkAlbums(group.getGid(),
                     TRACKS_IN_TOP_COUNT * albumPage++, TRACKS_IN_TOP_COUNT, callback);
         }
     }
@@ -314,9 +316,9 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             }
         };
         if (mode == Mode.USER) {
-            VkRequestManager.getInstance().getVkUserAudio(user.getUid(), 0, 0, callback);
+            vkAudioModel.getVkUserAudio(user.getUid(), 0, 0, callback);
         } else {
-            VkRequestManager.getInstance().getVkGroupAudio(group.getGid(), 0, 0, callback);
+            vkAudioModel.getVkGroupAudio(group.getGid(), 0, 0, callback);
         }
     }
 
@@ -333,10 +335,10 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             }
         };
         if (mode == Mode.USER) {
-            VkRequestManager.getInstance().getVkUserWallAudio(user.getUid(), TRACKS_IN_TOP_COUNT,
+            vkWallModel.getVkUserWallAudio(user.getUid(), TRACKS_IN_TOP_COUNT,
                     TRACKS_IN_TOP_COUNT * wallPage++, callback);
         } else {
-            VkRequestManager.getInstance().getVkGroupWallAudio(group.getGid(), TRACKS_IN_TOP_COUNT,
+            vkWallModel.getVkGroupWallAudio(group.getGid(), TRACKS_IN_TOP_COUNT,
                     TRACKS_IN_TOP_COUNT * wallPage++, callback);
         }
     }

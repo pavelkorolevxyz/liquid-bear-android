@@ -12,7 +12,7 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.helpers.Constants;
 
-public class SetlistSearchSherlockActivity extends ResultSherlockActivity {
+public class SetlistsActivity extends ResultSherlockActivity {
     private EditText artistEditText;
     private EditText venueEditText;
     private EditText cityEditText;
@@ -40,10 +40,10 @@ public class SetlistSearchSherlockActivity extends ResultSherlockActivity {
         searchButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SetlistSearchSherlockActivity.this,
-                        SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.SETLIST);
+                Intent intent = new Intent(SetlistsActivity.this,
+                        SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.SETLIST);
                 intent.putExtra("artist", artistEditText.getText().toString());
                 intent.putExtra("venue", venueEditText.getText().toString());
                 intent.putExtra("city", cityEditText.getText().toString());

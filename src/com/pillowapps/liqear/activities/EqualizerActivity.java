@@ -28,7 +28,7 @@ import com.pillowapps.liqear.helpers.PreferencesManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EqualizerSherlockActivity extends TrackedActivity {
+public class EqualizerActivity extends TrackedActivity {
 
     private static final List<SeekBar> seekBars = new ArrayList<SeekBar>();
     private static final int TEXT_SIZE = 14;

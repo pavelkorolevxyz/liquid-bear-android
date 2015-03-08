@@ -36,7 +36,7 @@ import android.widget.Toast;
 import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.activities.SearchSherlockListActivity;
+import com.pillowapps.liqear.activities.SearchActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.TrackUrlQuery;
@@ -51,13 +51,14 @@ import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.ShakeDetector;
 import com.pillowapps.liqear.helpers.Utils;
-import com.pillowapps.liqear.models.LastfmArtistModel;
-import com.pillowapps.liqear.models.LastfmTrackModel;
+import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
+import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
+import com.pillowapps.liqear.models.vk.VkAudioModel;
+import com.pillowapps.liqear.models.vk.VkStatusModel;
 import com.pillowapps.liqear.network.CompletionListener;
 import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.VkRequestManager;
 import com.pillowapps.liqear.network.callbacks.LastfmPassiveCallback;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkPassiveCallback;
@@ -304,17 +305,17 @@ public class MusicPlaybackService extends Service implements
                 Track track = AudioTimeline.getCurrentTrack();
                 if (track != null) {
                     Intent searchVkIntent = new Intent(getBaseContext(),
-                            SearchSherlockListActivity.class);
+                            SearchActivity.class);
                     searchVkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    searchVkIntent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                            SearchSherlockListActivity.SearchMode.AUDIO_SEARCH_RESULT_ADD_VK);
+                    searchVkIntent.putExtra(SearchActivity.SEARCH_MODE,
+                            SearchActivity.SearchMode.AUDIO_SEARCH_RESULT_ADD_VK);
                     searchVkIntent.putExtra(Constants.TARGET, track.getNotation());
                     getApplication().startActivity(searchVkIntent);
                 }
             } else if (ACTION_ADD_TO_VK_FAST.equals(action)) {
                 final Track track = AudioTimeline.getCurrentTrack();
                 if (track != null) {
-                    VkRequestManager.getInstance().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>(){
+                    new VkAudioModel().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>() {
                         @Override
                         public void success(VkResponse data) {
                             track.setAddedToVk(true);
@@ -1283,7 +1284,7 @@ public class MusicPlaybackService extends Service implements
             new LastfmTrackModel().nowplaying(currentTrack, new LastfmPassiveCallback());
         }
         if (PreferencesManager.getPreferences().getBoolean("nowplaying_vk_check_box_preferences", true)) {
-            VkRequestManager.getInstance().updateStatus(currentTrack, new VkPassiveCallback());
+            new VkStatusModel().updateStatus(currentTrack, new VkPassiveCallback());
         }
     }
 

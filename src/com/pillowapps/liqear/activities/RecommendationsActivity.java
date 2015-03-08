@@ -38,7 +38,7 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.models.LastfmUserModel;
+import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.QueryManager;
@@ -47,7 +47,7 @@ import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 
 import java.util.List;
 
-public class RecommendationsSherlockActivity extends ResultSherlockActivity {
+public class RecommendationsActivity extends ResultSherlockActivity {
     private static final int RECOMMENDATIONS_AMOUNT = 100;
     private RecommendationsArrayAdapter<Artist> adapter;
     private ProgressBar progressBar;
@@ -109,7 +109,7 @@ public class RecommendationsSherlockActivity extends ResultSherlockActivity {
         AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent artistInfoIntent = new Intent(RecommendationsSherlockActivity.this,
+                Intent artistInfoIntent = new Intent(RecommendationsActivity.this,
                         ArtistViewerActivity.class);
                 artistInfoIntent.putExtra(ArtistViewerActivity.ARTIST, adapter.get(i).getName());
                 startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
@@ -136,7 +136,7 @@ public class RecommendationsSherlockActivity extends ResultSherlockActivity {
                 break;
             case 0:
                 if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-                    Toast.makeText(RecommendationsSherlockActivity.this,
+                    Toast.makeText(RecommendationsActivity.this,
                             R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -161,7 +161,7 @@ public class RecommendationsSherlockActivity extends ResultSherlockActivity {
                 progressBar.setVisibility(View.GONE);
                 List<Artist> artists = Converter.convertArtistList(data);
                 if (adapter == null) {
-                    adapter = new RecommendationsArrayAdapter<>(RecommendationsSherlockActivity.this, artists, Artist.class);
+                    adapter = new RecommendationsArrayAdapter<>(RecommendationsActivity.this, artists, Artist.class);
                     if (gridMode) {
                         gridView.setAdapter(adapter);
                     } else {
@@ -178,7 +178,7 @@ public class RecommendationsSherlockActivity extends ResultSherlockActivity {
 
             @Override
             public void failure(String errorMessage) {
-                ErrorNotifier.showLastfmError(RecommendationsSherlockActivity.this, errorMessage);
+                ErrorNotifier.showLastfmError(RecommendationsActivity.this, errorMessage);
             }
         });
     }

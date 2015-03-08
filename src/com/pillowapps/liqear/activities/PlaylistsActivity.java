@@ -32,7 +32,7 @@ import com.pillowapps.liqear.entities.Track;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaylistsSherlockListActivity extends ResultSherlockActivity {
+public class PlaylistsActivity extends ResultSherlockActivity {
     public static final String AIM = "aim";
     @SuppressWarnings("rawtypes")
     private PlaylistsArrayAdapter adapter;
@@ -65,7 +65,7 @@ public class PlaylistsSherlockListActivity extends ResultSherlockActivity {
         listView.setOnCreateContextMenuListener(this);
         List<Playlist> playlists = PlaylistManager.getInstance().getPlaylists();
         adapter = new PlaylistsArrayAdapter<>(
-                PlaylistsSherlockListActivity.this, playlists, Playlist.class);
+                PlaylistsActivity.this, playlists, Playlist.class);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new OnItemClickListener() {
@@ -82,10 +82,10 @@ public class PlaylistsSherlockListActivity extends ResultSherlockActivity {
                     }
                     case SHOW_PLAYLISTS: {
                         Intent intent = new Intent(
-                                PlaylistsSherlockListActivity.this,
-                                SearchSherlockListActivity.class);
-                        intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                                SearchSherlockListActivity.SearchMode.PLAYLIST_TRACKLIST);
+                                PlaylistsActivity.this,
+                                SearchActivity.class);
+                        intent.putExtra(SearchActivity.SEARCH_MODE,
+                                SearchActivity.SearchMode.PLAYLIST_TRACKLIST);
                         Playlist playlist = (Playlist) adapter.get(position);
                         intent.putExtra("title", playlist.getTitle());
                         intent.putExtra("pid", playlist.getPid());

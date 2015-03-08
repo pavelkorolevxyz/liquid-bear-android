@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class NewcomersSherlockListActivity extends ResultSherlockActivity {
+public class NewcomersActivity extends ResultSherlockActivity {
     public static final String MODE = "mode";
     public static final int NEWCOMERS_START_ITEMS = 20;
     private Mode mode;
@@ -62,7 +62,7 @@ public class NewcomersSherlockListActivity extends ResultSherlockActivity {
         switch (itemId) {
             case android.R.id.home:
                 finish();
-                Intent intent = new Intent(NewcomersSherlockListActivity.this, MainActivity.class);
+                Intent intent = new Intent(NewcomersActivity.this, MainActivity.class);
                 intent.setAction(Intent.ACTION_MAIN);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -172,14 +172,14 @@ public class NewcomersSherlockListActivity extends ResultSherlockActivity {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(NewcomersSherlockListActivity.this,
-                        SearchSherlockListActivity.class);
+                Intent intent = new Intent(NewcomersActivity.this,
+                        SearchActivity.class);
                 Album album = (Album) adapter.getValues().get(position);
                 intent.putExtra("artist", album.getArtist());
                 intent.putStringArrayListExtra("tracks", new ArrayList<String>(album.getTracks()));
                 intent.putExtra("title", album.getTitle());
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.TRACKLIST_FUNKY);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.TRACKLIST_FUNKY);
                 startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
             }
         });

@@ -32,13 +32,13 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.vk.VkUserModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.models.LastfmAuthModel;
+import com.pillowapps.liqear.models.lastfm.LastfmAuthModel;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.VkRequestManager;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -170,7 +170,7 @@ public class AuthActivity extends TrackedActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == Constants.AUTH_VK_REQUEST) {
-            VkRequestManager.getInstance().getUserInfoVk(AuthorizationInfoManager.getVkUserId(),
+            new VkUserModel().getUserInfoVk(AuthorizationInfoManager.getVkUserId(),
                     new VkSimpleCallback<VkUser>() {
                         @Override
                         public void success(VkUser vkUser) {

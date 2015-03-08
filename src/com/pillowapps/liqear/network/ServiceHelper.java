@@ -10,12 +10,14 @@ import com.pillowapps.liqear.network.service.LastfmApiService;
 import com.pillowapps.liqear.network.service.LastfmAuthService;
 import com.pillowapps.liqear.network.service.VkApiService;
 import com.pillowapps.liqear.network.service.VkUploadService;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
 public class ServiceHelper {
@@ -54,14 +56,15 @@ public class ServiceHelper {
                     request.addQueryParam("v", "5.28");
                 }
             };
+            OkHttpClient okHttpClient = new OkHttpClient();
 
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setRequestInterceptor(requestInterceptor)
+                    .setClient(new OkClient(okHttpClient))
                     .setEndpoint(VK_API)
                     .build();
 
-            //access_token
             vkApiService = restAdapter.create(VkApiService.class);
         }
         return vkApiService;
@@ -76,9 +79,12 @@ public class ServiceHelper {
                     .registerTypeAdapter(trackListTypeAdapter, new LastfmTrackListGsonAdapter())
                     .create();
 
+            OkHttpClient okHttpClient = new OkHttpClient();
+
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setConverter(new GsonConverter(gson))
+                    .setClient(new OkClient(okHttpClient))
                     .setRequestInterceptor(lastfmInterceptor)
                     .setEndpoint(LASTFM_API)
                     .build();
@@ -89,9 +95,11 @@ public class ServiceHelper {
     }
 
     public static LastfmAuthService getLastfmAuthService() {
+        OkHttpClient okHttpClient = new OkHttpClient();
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(lastfmInterceptor)
+                .setClient(new OkClient(okHttpClient))
                 .setEndpoint(LASTFM_API_HTTPS)
                 .build();
         return restAdapter.create(LastfmAuthService.class);
@@ -99,9 +107,11 @@ public class ServiceHelper {
     }
 
     public static VkUploadService getVkUploadService(String uploadServer) {
+        OkHttpClient okHttpClient = new OkHttpClient();
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(uploadServer)
+                .setClient(new OkClient(okHttpClient))
                 .build();
         return restAdapter.create(VkUploadService.class);
     }

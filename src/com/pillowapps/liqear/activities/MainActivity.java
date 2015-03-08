@@ -63,12 +63,12 @@ import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
-import com.pillowapps.liqear.models.LastfmTrackModel;
+import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
+import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.VkRequestManager;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
 import org.codechimp.apprater.AppRater;
@@ -379,10 +379,10 @@ public class MainActivity extends SlidingFragmentActivity {
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                Intent intent = new Intent(MainActivity.this, SearchSherlockListActivity.class);
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 intent.putExtra(Constants.TARGET, currentTrack.getNotation());
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.AUDIO_SEARCH_RESULT);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.AUDIO_SEARCH_RESULT);
                 intent.putExtra(Constants.TYPE, 2);
                 startActivityForResult(intent, 7463);
             }
@@ -481,12 +481,12 @@ public class MainActivity extends SlidingFragmentActivity {
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                Intent intent = new Intent(MainActivity.this, EqualizerSherlockActivity.class);
+                Intent intent = new Intent(MainActivity.this, EqualizerActivity.class);
                 startActivity(intent);
             }
             return true;
             case R.id.donate_button: {
-                Intent myIntent = new Intent(MainActivity.this, DonateSherlockActivity.class);
+                Intent myIntent = new Intent(MainActivity.this, DonateActivity.class);
                 startActivity(myIntent);
             }
             return true;
@@ -530,9 +530,9 @@ public class MainActivity extends SlidingFragmentActivity {
             }
             return true;
             case R.id.playlists_button: {
-                Intent intent = new Intent(MainActivity.this, PlaylistsSherlockListActivity.class);
-                intent.putExtra(PlaylistsSherlockListActivity.AIM,
-                        PlaylistsSherlockListActivity.Aim.SHOW_PLAYLISTS);
+                Intent intent = new Intent(MainActivity.this, PlaylistsActivity.class);
+                intent.putExtra(PlaylistsActivity.AIM,
+                        PlaylistsActivity.Aim.SHOW_PLAYLISTS);
                 startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
             }
             return true;
@@ -807,14 +807,14 @@ public class MainActivity extends SlidingFragmentActivity {
     private void addToVk(Track track) {
         if (PreferencesManager.getPreferences().getBoolean("add_to_vk_slow", true)) {
             if (track != null) {
-                Intent intent = new Intent(MainActivity.this, SearchSherlockListActivity.class);
-                intent.putExtra(SearchSherlockListActivity.SEARCH_MODE,
-                        SearchSherlockListActivity.SearchMode.AUDIO_SEARCH_RESULT_ADD_VK);
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                intent.putExtra(SearchActivity.SEARCH_MODE,
+                        SearchActivity.SearchMode.AUDIO_SEARCH_RESULT_ADD_VK);
                 intent.putExtra(Constants.TARGET, track.getNotation());
                 startActivity(intent);
             }
         } else {
-            VkRequestManager.getInstance().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>() {
+            new VkAudioModel().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>() {
                 @Override
                 public void success(VkResponse data) {
                     Toast.makeText(LiqearApplication.getAppContext(),
@@ -830,10 +830,10 @@ public class MainActivity extends SlidingFragmentActivity {
     }
 
     private void openLyrics(Track currentTrack) {
-        Intent intent = new Intent(MainActivity.this, TextSherlockActivity.class);
+        Intent intent = new Intent(MainActivity.this, TextActivity.class);
         intent.putExtra("artist", currentTrack.getArtist());
         intent.putExtra("title", currentTrack.getTitle());
-        intent.putExtra(TextSherlockActivity.TEXT_AIM, TextSherlockActivity.Aim.LYRICS);
+        intent.putExtra(TextActivity.TEXT_AIM, TextActivity.Aim.LYRICS);
         startActivity(intent);
     }
 
@@ -936,9 +936,9 @@ public class MainActivity extends SlidingFragmentActivity {
         final Track track = (Track) listView.getAdapter().getItem(info.position);
         switch (item.getItemId()) {
             case 0:
-                Intent intent = new Intent(MainActivity.this, PlaylistsSherlockListActivity.class);
-                intent.putExtra(PlaylistsSherlockListActivity.AIM,
-                        PlaylistsSherlockListActivity.Aim.ADD_TO_PLAYLIST);
+                Intent intent = new Intent(MainActivity.this, PlaylistsActivity.class);
+                intent.putExtra(PlaylistsActivity.AIM,
+                        PlaylistsActivity.Aim.ADD_TO_PLAYLIST);
                 intent.putExtra(Constants.ARTIST, track.getArtist());
                 intent.putExtra(Constants.TITLE, track.getTitle());
                 startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);

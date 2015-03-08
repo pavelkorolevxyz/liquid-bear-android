@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.models;
+package com.pillowapps.liqear.models.lastfm;
 
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;

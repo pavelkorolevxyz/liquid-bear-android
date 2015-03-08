@@ -10,6 +10,9 @@ apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://jitpack.io"
+    }
 }
 
 android {
@@ -33,7 +36,7 @@ android {
             assets.srcDirs = ['assets']
         }
     }
-    
+
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
@@ -62,6 +65,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'io.reactivex:rxjava:1.0.3'
     compile 'com.makeramen:roundedimageview:1.5.0'
+    compile 'com.github.inaka:tinytask:v1'
     compile project(':libraries:SlidingMenu')
     compile project(':libraries:PullToRefreshLibrary')
     compile project(':libraries:DragSortListLibrary')
