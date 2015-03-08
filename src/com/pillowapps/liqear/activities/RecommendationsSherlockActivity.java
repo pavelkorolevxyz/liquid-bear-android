@@ -30,15 +30,20 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
+import com.pillowapps.liqear.entities.Artist;
+import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
+import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.models.LastfmUserModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.entities.Artist;
-import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 
 import java.util.List;
 
@@ -150,26 +155,30 @@ public class RecommendationsSherlockActivity extends ResultSherlockActivity {
     private void getRecommendedArtists(int limit, int page) {
         loading = true;
         progressBar.setVisibility(View.VISIBLE);
-        QueryManager.getInstance().getRecommendedArtists(limit, page, new GetResponseCallback() {
+        new LastfmUserModel().getUserRecommendedArtists(limit, page, new LastfmSimpleCallback<List<LastfmArtist>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) return;
-                final Object object = result.getObject();
+            public void success(List<LastfmArtist> data) {
                 progressBar.setVisibility(View.GONE);
+                List<Artist> artists = Converter.convertArtistList(data);
                 if (adapter == null) {
-                    adapter = new RecommendationsArrayAdapter<Artist>(RecommendationsSherlockActivity.this, (List) object, Artist.class);
+                    adapter = new RecommendationsArrayAdapter<>(RecommendationsSherlockActivity.this, artists, Artist.class);
                     if (gridMode) {
                         gridView.setAdapter(adapter);
                     } else {
                         listView.setAdapter(adapter);
                     }
                 } else {
-                    adapter.addValues((List) object);
+                    adapter.addValues(artists);
                     adapter.notifyDataSetChanged();
                 }
                 loadedArtists += RECOMMENDATIONS_AMOUNT;
                 loadedPages++;
                 loading = false;
+            }
+
+            @Override
+            public void failure(String errorMessage) {
+                ErrorNotifier.showLastfmError(RecommendationsSherlockActivity.this, errorMessage);
             }
         });
     }

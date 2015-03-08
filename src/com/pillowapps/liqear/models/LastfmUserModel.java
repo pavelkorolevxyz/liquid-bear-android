@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.models;
 
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecommendationsArtistRoot;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
@@ -9,16 +10,21 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmNeighboursRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecentTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
+import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.LastfmApiHelper;
+import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class LastfmUserModel {
     private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
+    private LastfmApiHelper apiHelper = new LastfmApiHelper();
 
     public void getUserTopArtists(String userName, String period, int limit, int page,
                                   final LastfmSimpleCallback<List<LastfmArtist>> callback) {
@@ -30,6 +36,33 @@ public class LastfmUserModel {
                     @Override
                     public void success(LastfmTopArtistsRoot data) {
                         callback.success(data.getArtists().getArtists());
+                    }
+
+                    @Override
+                    public void failure(String error) {
+                        callback.failure(error);
+                    }
+                });
+    }
+
+    public void getUserRecommendedArtists(int limit, int page,
+                                          final LastfmSimpleCallback<List<LastfmArtist>> callback) {
+        String sessionKey = AuthorizationInfoManager.getLastfmKey();
+
+        Map<String, String> params = new TreeMap<>();
+        params.put("limit", String.valueOf(limit));
+        params.put("page", String.valueOf(page));
+        params.put("method", "user.getRecommendedArtists");
+        params.put("sk", sessionKey);
+        lastfmService.getRecommendedArtists(
+                limit,
+                page,
+                apiHelper.generateApiSig(params),
+                sessionKey,
+                new LastfmCallback<LastfmRecommendationsArtistRoot>() {
+                    @Override
+                    public void success(LastfmRecommendationsArtistRoot data) {
+                        callback.success(data.getRecommendations().getArtists());
                     }
 
                     @Override

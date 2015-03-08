@@ -1,7 +1,7 @@
 package com.pillowapps.liqear.network.service;
 
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecommendationsArtistRoot;
 import com.pillowapps.liqear.entities.LastfmResponse;
-import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
@@ -41,7 +41,7 @@ public interface LastfmApiService {
                                       @Query("page") int page,
                                       @Query("api_sig") String apiSig,
                                       @Query("sk") String sessionKey,
-                                      Callback<List<LastfmArtist>> callback);
+                                      LastfmCallback<LastfmRecommendationsArtistRoot> callback);
 
     @GET("/?method=user.getTopArtists")
     public void getUserTopArtists(@Query("user") String user,
