@@ -50,6 +50,7 @@ import com.pillowapps.liqear.components.ArtistTrackComparator;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.fragments.HandsetFragment;
@@ -59,16 +60,19 @@ import com.pillowapps.liqear.fragments.RightFragment;
 import com.pillowapps.liqear.fragments.TabletFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
+import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
 import org.codechimp.apprater.AppRater;
@@ -1152,16 +1156,22 @@ public class MainActivity extends SlidingFragmentActivity {
     public void openRadiomix() {
         progressBar.setVisibility(View.VISIBLE);
         if (isTablet()) showContent();
-        QueryManager.getInstance().getRadiomix(AuthorizationInfoManager.getLastfmName(),
-                new GetResponseCallback() {
+        new LastfmLibraryModel().getRadiomix(AuthorizationInfoManager.getLastfmName(),
+                new LastfmSimpleCallback<List<LastfmTrack>>() {
                     @Override
-                    public void onDataReceived(ReadyResult result) {
+                    public void success(List<LastfmTrack> tracks) {
                         int positionToPlay = 0;
-                        List<Track> tracklist = (List<Track>) result.getObject();
+                        List<Track> trackList = Converter.convertLastfmTrackList(tracks);
                         if (!isTablet()) handsetFragment.changeViewPagerItem(0);
-                        AudioTimeline.setPlaylist(tracklist);
+                        AudioTimeline.setPlaylist(trackList);
                         updateAdapter();
                         changePlaylist(positionToPlay, true);
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void failure(String errorMessage) {
+                        ErrorNotifier.showLastfmError(MainActivity.this, errorMessage);
                         progressBar.setVisibility(View.GONE);
                     }
                 });

@@ -11,6 +11,7 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmRecommendationsArtistRo
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmUserRoot;
+import com.pillowapps.liqear.entities.lastfm.roots.LastfmWeeklyTrackChartRoot;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
@@ -25,6 +26,8 @@ import com.pillowapps.liqear.network.service.LastfmApiService;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import rx.Observable;
 
 public class LastfmUserModel {
     private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
@@ -170,8 +173,8 @@ public class LastfmUserModel {
         });
     }
 
-    public void getWeeklyTracksChart(String user, int count, final LastfmSimpleCallback<List<LastfmTrack>> callback) {
-        lastfmService.getWeeklyTracksChart(user, count);
+    public Observable<LastfmWeeklyTrackChartRoot> getWeeklyTracksChart(String user) {
+        return lastfmService.getWeeklyTracksChart(user);
     }
 
     public void getUserInfo(String name, final VkSimpleCallback<LastfmUser> callback) {

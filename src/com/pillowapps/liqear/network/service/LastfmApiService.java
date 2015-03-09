@@ -225,6 +225,5 @@ public interface LastfmApiService {
                         Callback<LastfmLovedTracksRoot> callback);
 
     @GET("/?method=user.getWeeklyTrackChart")
-    Observable<LastfmWeeklyTrackChartRoot> getWeeklyTracksChart(@Query("user") String user,
-                                                                @Query("count") int count);
+    Observable<LastfmWeeklyTrackChartRoot> getWeeklyTracksChart(@Query("user") String user);
 }

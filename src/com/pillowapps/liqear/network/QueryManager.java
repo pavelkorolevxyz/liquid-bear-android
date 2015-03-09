@@ -541,9 +541,7 @@ public class QueryManager {
 
             return null;
         }
-
     }
-
 }
 
 

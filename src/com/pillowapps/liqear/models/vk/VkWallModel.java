@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.models.vk;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.entities.vk.VkWallMessage;
@@ -10,6 +12,7 @@ import com.pillowapps.liqear.network.callbacks.VkCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.network.service.VkApiService;
 
+import java.io.File;
 import java.util.List;
 
 public class VkWallModel {
@@ -80,4 +83,39 @@ public class VkWallModel {
         });
     }
 
+    public void postMessage(String message, String imageUrl, final Track track) {
+        StringBuilder attachmentsBuilder = new StringBuilder();
+
+        if (imageUrl == null) {
+            uploadWallImage(imageUrl);
+            long photoId = 0;
+            attachmentsBuilder.append(photoId);
+            if (track.getOwnerId() != 0) {
+                if (photoId != 0) {
+                    attachmentsBuilder.append(",");
+                }
+                attachmentsBuilder.append("audio")
+                        .append(track.getOwnerId())
+                        .append("_")
+                        .append(track.getAid());
+            }
+        } else {
+            if (track.getOwnerId() != 0) {
+                attachmentsBuilder.append("audio")
+                        .append(track.getOwnerId())
+                        .append("_")
+                        .append(track.getAid());
+            }
+        }
+    }
+
+    private void uploadWallImage(String imageUrl) {
+        final File cachedImage = ImageLoader.getInstance().getDiscCache().get(imageUrl);
+        String server = getPhotosWallUploadServer();
+//        uploadUserPhoto(cachedImage, (String) result.getObject(), callback);
+    }
+
+    private String getPhotosWallUploadServer() {
+        return null;
+    }
 }
