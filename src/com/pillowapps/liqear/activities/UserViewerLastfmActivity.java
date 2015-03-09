@@ -332,7 +332,7 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
     }
 
     private void showError(String error) {
-        ErrorNotifier.showLastfmError(UserViewerLastfmActivity.this, error);
+        ErrorNotifier.showError(UserViewerLastfmActivity.this, error);
     }
 
     private void getLoved(int limit, boolean loadIfFull) {

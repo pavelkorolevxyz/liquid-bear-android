@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.helpers.Constants;

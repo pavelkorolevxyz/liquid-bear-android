@@ -118,7 +118,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
                     @Override
                     public void failure(String errorMessage) {
-                        ErrorNotifier.showLastfmError(ChartsActivity.this, errorMessage);
+                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
                     }
                 });
     }
@@ -134,7 +134,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
                     @Override
                     public void failure(String errorMessage) {
-                        ErrorNotifier.showLastfmError(ChartsActivity.this, errorMessage);
+                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
                     }
                 });
     }
@@ -150,7 +150,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
                     @Override
                     public void failure(String errorMessage) {
-                        ErrorNotifier.showLastfmError(ChartsActivity.this, errorMessage);
+                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
                     }
                 });
     }
@@ -166,7 +166,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
                     @Override
                     public void failure(String errorMessage) {
-                        ErrorNotifier.showLastfmError(ChartsActivity.this, errorMessage);
+                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
                     }
                 });
     }
@@ -182,7 +182,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
                     @Override
                     public void failure(String errorMessage) {
-                        ErrorNotifier.showLastfmError(ChartsActivity.this, errorMessage);
+                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
                     }
                 });
     }

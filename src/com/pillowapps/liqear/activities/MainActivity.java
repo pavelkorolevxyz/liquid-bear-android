@@ -1171,7 +1171,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
                     @Override
                     public void failure(String errorMessage) {
-                        ErrorNotifier.showLastfmError(MainActivity.this, errorMessage);
+                        ErrorNotifier.showError(MainActivity.this, errorMessage);
                         progressBar.setVisibility(View.GONE);
                     }
                 });
@@ -1195,7 +1195,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
                     @Override
                     public void failure(String errorMessage) {
-                        ErrorNotifier.showLastfmError(MainActivity.this, errorMessage);
+                        ErrorNotifier.showError(MainActivity.this, errorMessage);
                         progressBar.setVisibility(View.GONE);
                     }
                 });

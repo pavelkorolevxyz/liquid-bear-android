@@ -154,9 +154,6 @@ public class MusicPlaybackService extends Service implements
     private Thread thread;
     private int currentBuffer = 0;
     private ConnectionChangeReceiver connectionReceiver;
-    private QueryManager urlQueryManager = QueryManager.getInstance();
-    private QueryManager artistQueryManager = QueryManager.getInstance();
-    private QueryManager trackInfoQueryManager = QueryManager.getInstance();
     private WakeLock wakeLock;
     private WifiLock wifiLock;
     private Handler handler;

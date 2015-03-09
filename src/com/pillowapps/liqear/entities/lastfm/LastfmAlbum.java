@@ -6,22 +6,22 @@ import java.util.List;
 
 public class LastfmAlbum {
 
-    @SerializedName("name")
-    String name;
+    @SerializedName("title")
+    private String title;
     @SerializedName("artist")
-    String artist;
+    private String artist;
     @SerializedName("releaseDate")
-    String releaseDate;
+    private String releaseDate;
     @SerializedName("image")
-    List<LastfmImage> images;
+    private List<LastfmImage> images;
     @SerializedName("tracks")
-    LastfmTracks tracks;
+    private LastfmTracks tracks;
 
     public LastfmAlbum() {
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public String getArtist() {
@@ -43,7 +43,7 @@ public class LastfmAlbum {
     @Override
     public String toString() {
         return "LastfmAlbum{" +
-                "name='" + name + '\'' +
+                "title='" + title + '\'' +
                 ", artist='" + artist + '\'' +
                 ", releaseDate=" + releaseDate +
                 ", images=" + images +

@@ -45,7 +45,6 @@ import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Group;
-import com.pillowapps.liqear.entities.Setlist;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.User;
@@ -53,6 +52,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
+import com.pillowapps.liqear.entities.setlistfm.SetlistfmSetlist;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkGroup;
 import com.pillowapps.liqear.entities.vk.VkResponse;
@@ -64,18 +64,18 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SetlistfmUtils;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
+import com.pillowapps.liqear.models.setlistsfm.SetlistsfmSetlistModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkFriendModel;
 import com.pillowapps.liqear.models.vk.VkGroupModel;
-import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.Params;
-import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SetlistfmSimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
 import java.io.File;
@@ -397,7 +397,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
     }
 
     private void showError(String error) {
-        ErrorNotifier.showLastfmError(SearchActivity.this, error);
+        ErrorNotifier.showError(SearchActivity.this, error);
     }
 
     private void searchTag(String searchQuery, int limit, int page) {
@@ -777,10 +777,10 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
             case SETLIST: {
                 Intent searchIntent = new Intent(SearchActivity.this,
                         SearchActivity.class);
-                Setlist setlist = (Setlist) adapter.getValues().get(position);
+                SetlistfmSetlist setlist = (SetlistfmSetlist) adapter.getValues().get(position);
                 searchIntent.putStringArrayListExtra("tracks",
-                        new ArrayList<String>(setlist.getTracks()));
-                searchIntent.putExtra("artist", setlist.getArtist());
+                        SetlistfmUtils.getStringTracks(setlist));
+                searchIntent.putExtra("artist", setlist.getArtist().getName());
                 searchIntent.putExtra("notation", setlist.getNotation());
                 searchIntent.putExtra(SEARCH_MODE, SearchMode.TRACKLIST_SETLIST);
                 startActivityForResult(searchIntent, Constants.MAIN_REQUEST_CODE);
@@ -870,10 +870,9 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
         setAdapter();
     }
 
-    private void fillWithSetlists(ReadyResult result) {
-        List<Setlist> setlists = (List<Setlist>) result.getObject();
+    private void fillWithSetlists(List<SetlistfmSetlist> setlists) {
         emptyTextView.setVisibility(setlists.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new QuickSearchArrayAdapter<Setlist>(this, setlists, Setlist.class);
+        adapter = new QuickSearchArrayAdapter<>(this, setlists, SetlistfmSetlist.class);
         setAdapter();
     }
 
@@ -974,15 +973,15 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
     }
 
     private void searchSetlists(String artist, String venue, final String city) {
-        QueryManager queryManager = QueryManager.getInstance();
-        queryManager.getSetlists(artist, venue, city, new GetResponseCallback() {
+        new SetlistsfmSetlistModel().getSetlists(artist, venue, city, new SetlistfmSimpleCallback<List<SetlistfmSetlist>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.SETLISTFM)) {
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                fillWithSetlists(result);
+            public void success(List<SetlistfmSetlist> setlists) {
+                fillWithSetlists(setlists);
+            }
+
+            @Override
+            public void failure(String errorMessage) {
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -1397,8 +1396,8 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
                 } else {
                     holder.imageView.setVisibility(View.GONE);
                 }
-            } else if (clazz == Setlist.class) {
-                holder.textView.setText(Html.fromHtml(((Setlist) currentItem).getNotation()));
+            } else if (clazz == SetlistfmSetlist.class) {
+                holder.textView.setText(((SetlistfmSetlist) currentItem).getNotation());
                 holder.imageView.setVisibility(View.GONE);
             }
             return convertView;

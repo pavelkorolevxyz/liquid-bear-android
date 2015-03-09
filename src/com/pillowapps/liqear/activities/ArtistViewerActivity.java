@@ -362,7 +362,7 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
 
     private void showError(String errorMessage, ProgressBar progressBar) {
         progressBar.setVisibility(View.GONE);
-        ErrorNotifier.showLastfmError(ArtistViewerActivity.this, errorMessage);
+        ErrorNotifier.showError(ArtistViewerActivity.this, errorMessage);
     }
 
     private void getSimilarArtists(String artistName, int limit, int page) {

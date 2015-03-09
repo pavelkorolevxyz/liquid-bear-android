@@ -255,7 +255,7 @@ public class AuthActivity extends TrackedActivity {
 
                             @Override
                             public void failure(String errorMessage) {
-                                ErrorNotifier.showLastfmError(AuthActivity.this, errorMessage);
+                                ErrorNotifier.showError(AuthActivity.this, errorMessage);
                             }
                         });
             }

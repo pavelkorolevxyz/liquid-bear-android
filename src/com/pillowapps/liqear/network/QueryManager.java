@@ -17,8 +17,6 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.StringUtils;
-import com.pillowapps.liqear.network.alterportal.AlterportalReader;
-import com.pillowapps.liqear.network.funkysouls.FunkySoulsReader;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -52,20 +50,12 @@ import java.util.TreeMap;
  */
 @SuppressWarnings({"unchecked"})
 public class QueryManager {
-    public static final String EXECUTE_LYRICS = "execute.getLyrics";
-    public static final String EXECUTE_URL = "execute.u";
-    public static final String USER_GET_WEEKLY_TRACK_CHART = "user.getWeeklyTrackChart";
-    public static final String USER_GET_LOVED_TRACKS = "user.getLovedTracks";
     public static final String USER_GET_TOP_TRACKS = "user.getTracks";
     public static final String PHOTOS_GET_WALL_UPLOAD_SERVER = "photos.getWallUploadServer";
-    public static final String TRACK_GET_INFO = "track.getInfo";
     public static final String ALBUM_GET_INFO = "album.getInfo";
-    public static final String USER_GET_INFO = "user.getInfo";
     public static final String ARTIST_GET_TOP_TRACKS = "artist.getTracks";
-    public static final String LIBRARY = "library";
     public static final String SETLISTS = "setlists";
     public static final String FUNKY = "funky";
-    private static final String EXECUTE_LIVE_URL = "execute.getAudioLiveUrl";
     private static final String RECOMMENDATIONS = "recommended";
     private static final String WALL_POST = "wall.post";
     private static final String ALTERPORTAL = "alterportal";
@@ -135,36 +125,6 @@ public class QueryManager {
         } else {
             task.execute(methodParams);
         }
-    }
-
-    public void getNewcomersFunky(final List<Integer> pages,
-                                  final GetResponseCallback callback) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Album> result = new FunkySoulsReader().selectAlbumsFromPages(pages);
-                callback.onDataReceived(new ReadyResult(FUNKY, result));
-            }
-        }).start();
-    }
-
-    public void getNewcomersAlterportal(final List<Integer> pages, final GetResponseCallback callback) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Album> result = new AlterportalReader().selectAlbumsFromPages(pages);
-                callback.onDataReceived(new ReadyResult(ALTERPORTAL, result));
-            }
-        }).start();
-    }
-
-    public void getSetlists(String artist, String venue, String city,
-                            final GetResponseCallback callback) {
-        String url = String.format("http://api.setlist.fm/rest/0.1/search/setlists.json?cityName=%s&venueName=%s&artistName=%s",
-                StringUtils.encode(city), StringUtils.encode(venue), StringUtils.encode(artist));
-        final Params params = new Params(SETLISTS, ApiMethod.SETLISTS, url);
-        params.setApiSource(Params.ApiSource.SETLISTFM);
-        doQuery(callback, params);
     }
 
     public void getArtistTopTracksSync(Artist artist, int limit, int page,

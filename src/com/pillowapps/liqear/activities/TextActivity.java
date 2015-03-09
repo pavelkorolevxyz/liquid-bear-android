@@ -217,7 +217,7 @@ public class TextActivity extends ResultSherlockActivity {
             @Override
             public void failure(String error) {
                 progressBar.setVisibility(View.GONE);
-                ErrorNotifier.showLastfmError(TextActivity.this, error);
+                ErrorNotifier.showError(TextActivity.this, error);
             }
         });
     }

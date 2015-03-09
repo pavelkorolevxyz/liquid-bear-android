@@ -15,7 +15,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import com.costum.android.widget.LoadMoreListView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -23,13 +29,14 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
-import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.QueryManager;
-import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.models.portals.AlterportalAlbumModel;
+import com.pillowapps.liqear.models.portals.FunkySoulsAlbumModel;
+import com.pillowapps.liqear.network.ReadyResult;
+import com.pillowapps.liqear.network.callbacks.NewcomersSimpleCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,9 +83,6 @@ public class NewcomersActivity extends ResultSherlockActivity {
                     case ALTERPORTAL:
                         url = "http://alterportal.ru";
                         break;
-                    case POST_HARDCORE_RU:
-                        url = "http://post-hardcore.ru";
-                        break;
                 }
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
@@ -112,9 +116,6 @@ public class NewcomersActivity extends ResultSherlockActivity {
                 break;
             case ALTERPORTAL:
                 item = menu.add(getResources().getString(R.string.alterportal));
-                break;
-            case POST_HARDCORE_RU:
-                item = menu.add(getResources().getString(R.string.post_hardcore_ru));
                 break;
         }
         MenuItemCompat.setShowAsAction(item,
@@ -205,46 +206,40 @@ public class NewcomersActivity extends ResultSherlockActivity {
     }
 
     private void getNewcomersFunky(int page) {
-        QueryManager.getInstance().getNewcomersFunky(Arrays.asList(page), new GetResponseCallback() {
+        new FunkySoulsAlbumModel().getNewcomers(Arrays.asList(page), new NewcomersSimpleCallback<List<Album>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result)) return;
-                final Object object = result.getObject();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<Album> albums = (List<Album>) object;
-                        fillAlbums(albums);
-                        listView.onLoadMoreComplete();
-                        if (listView.getCount() < NEWCOMERS_START_ITEMS) {
-                            getNewcomersFunky(visiblePages++);
-                        }
-                    }
-                });
+            public void success(List<Album> albums) {
+                fillAlbums(albums);
+                listView.onLoadMoreComplete();
+                if (listView.getCount() < NEWCOMERS_START_ITEMS) {
+                    getNewcomersFunky(visiblePages++);
+                }
+            }
+
+            @Override
+            public void failure(String errorMessage) {
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
 
     private void getNewcomersAlterportal(int page) {
-        QueryManager.getInstance().getNewcomersAlterportal(Arrays.asList(page),
-                new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result)) return;
-                final Object object = result.getObject();
-                runOnUiThread(new Runnable() {
+        new AlterportalAlbumModel().getNewcomers(Arrays.asList(page),
+                new NewcomersSimpleCallback<List<Album>>() {
                     @Override
-                    public void run() {
-                        List<Album> albums = (List<Album>) object;
+                    public void success(List<Album> albums) {
                         fillAlbums(albums);
                         listView.onLoadMoreComplete();
                         if (listView.getCount() < NEWCOMERS_START_ITEMS) {
                             getNewcomersAlterportal(visiblePages++);
                         }
                     }
+
+                    @Override
+                    public void failure(String errorMessage) {
+                        progressBar.setVisibility(View.GONE);
+                    }
                 });
-            }
-        });
     }
 
     private void fillAlbums(List<Album> albums) {
@@ -263,12 +258,10 @@ public class NewcomersActivity extends ResultSherlockActivity {
 
     public enum Mode {
         FUNKYSOULS,
-        ALTERPORTAL,
-        POST_HARDCORE_RU
+        ALTERPORTAL
     }
 
     static class ViewHolder {
-
         TextView artistAlbum;
         TextView genre;
         ImageView cover;

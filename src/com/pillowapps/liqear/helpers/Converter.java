@@ -14,6 +14,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrackArtistStruct;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
+import com.pillowapps.liqear.entities.setlistfm.SetlistfmTrack;
 import com.pillowapps.liqear.entities.vk.VkGroup;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.entities.vk.VkUser;
@@ -64,9 +65,16 @@ public class Converter {
     public static Album convertAlbum(LastfmAlbum lastfmAlbum) {
         if (lastfmAlbum == null) return null;
         String artist = lastfmAlbum.getArtist();
-        String name = lastfmAlbum.getName();
+        String name = lastfmAlbum.getTitle();
 
-        return new Album(artist, name);
+        Album album = new Album(artist, name);
+        List<LastfmImage> images = lastfmAlbum.getImages();
+        String imageUrl = null;
+        if (images != null && images.size() > 0) {
+            imageUrl = images.get(images.size() - 1).getUrl();
+        }
+        album.setImageUrl(imageUrl);
+        return album;
     }
 
     public static List<Track> convertLastfmTrackList(List<LastfmTrack> lastfmTracks) {
@@ -163,7 +171,7 @@ public class Converter {
     }
 
     public static List<LastfmTrack> convertLastfmTracksArtistStruct(List<LastfmTrackArtistStruct> tracksArtistStruct) {
-        ArrayList<LastfmTrack> lastfmTracks = new ArrayList<>();
+        List<LastfmTrack> lastfmTracks = new ArrayList<>();
         for (LastfmTrackArtistStruct trackToConvert : tracksArtistStruct) {
             LastfmTrack track = new LastfmTrack();
             track.setName(trackToConvert.getName());
@@ -171,5 +179,18 @@ public class Converter {
             lastfmTracks.add(track);
         }
         return lastfmTracks;
+    }
+
+    public static List<Track> convertSetlistTracks(String artist, List<SetlistfmTrack> setlistfmTracks) {
+        List<Track> tracks = new ArrayList<>();
+        if (setlistfmTracks == null) return tracks;
+        for (SetlistfmTrack setlistfmTrack : setlistfmTracks) {
+            tracks.add(convertTrack(artist, setlistfmTrack));
+        }
+        return tracks;
+    }
+
+    private static Track convertTrack(String artist, SetlistfmTrack setlistfmTrack) {
+        return new Track(artist, setlistfmTrack.getTitle());
     }
 }

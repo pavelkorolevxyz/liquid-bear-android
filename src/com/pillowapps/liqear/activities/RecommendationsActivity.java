@@ -178,7 +178,7 @@ public class RecommendationsActivity extends ResultSherlockActivity {
 
             @Override
             public void failure(String errorMessage) {
-                ErrorNotifier.showLastfmError(RecommendationsActivity.this, errorMessage);
+                ErrorNotifier.showError(RecommendationsActivity.this, errorMessage);
             }
         });
     }

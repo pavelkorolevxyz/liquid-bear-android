@@ -242,7 +242,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
 
                         @Override
                         public void failure(VkError error) {
-                            ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
+                            ErrorNotifier.showError(UserViewerVkActivity.this, error.getErrorMessage());
 
                         }
                     });
@@ -263,7 +263,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
 
                         @Override
                         public void failure(VkError error) {
-                            ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
+                            ErrorNotifier.showError(UserViewerVkActivity.this, error.getErrorMessage());
 
                         }
                     });
@@ -300,7 +300,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
 
             @Override
             public void failure(VkError error) {
-                ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
+                ErrorNotifier.showError(UserViewerVkActivity.this, error.getErrorMessage());
             }
         };
         if (mode == Mode.USER) {
@@ -319,7 +319,7 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
 
             @Override
             public void failure(VkError error) {
-                ErrorNotifier.showVkError(UserViewerVkActivity.this, error);
+                ErrorNotifier.showError(UserViewerVkActivity.this, error.getErrorMessage());
             }
         };
         if (mode == Mode.USER) {

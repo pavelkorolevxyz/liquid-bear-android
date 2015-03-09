@@ -230,7 +230,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
                             }
                         });
                 artistTextView.setText(album.getArtist());
-                titleTextView.setText(album.getName());
+                titleTextView.setText(album.getTitle());
                 otherTextView.setText(album.getReleaseDate());
                 tracksProgressBar.setVisibility(View.GONE);
             }
@@ -238,7 +238,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
             @Override
             public void failure(String errorMessage) {
                 tracksProgressBar.setVisibility(View.GONE);
-                ErrorNotifier.showLastfmError(AlbumViewerActivity.this, errorMessage);
+                ErrorNotifier.showError(AlbumViewerActivity.this, errorMessage);
             }
         });
     }

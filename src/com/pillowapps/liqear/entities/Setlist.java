@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.entities;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Setlist {
@@ -8,6 +10,9 @@ public class Setlist {
     private String city;
     private String country;
     private String date;
+
+    public Setlist(String name, ArrayList<Object> objects, String name1, Date eventDate) {
+    }
 
     public String getVenue() {
         return venue;

@@ -4,14 +4,26 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
+
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.*;
+import com.pillowapps.liqear.activities.ChartsActivity;
+import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activities.NewcomersActivity;
+import com.pillowapps.liqear.activities.RecommendationsActivity;
+import com.pillowapps.liqear.activities.SearchActivity;
+import com.pillowapps.liqear.activities.SetlistsActivity;
+import com.pillowapps.liqear.activities.UserViewerLastfmActivity;
+import com.pillowapps.liqear.activities.UserViewerVkActivity;
+import com.pillowapps.liqear.entities.Category;
+import com.pillowapps.liqear.entities.ListItem;
+import com.pillowapps.liqear.entities.Mode;
+import com.pillowapps.liqear.entities.ModeEnum;
+import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Utils;
-import com.pillowapps.liqear.entities.*;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapterWrapper;
 
@@ -257,14 +269,6 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
                 sendAnalyticsModeClickEvent("[OTHER] Alterportal");
             }
             break;
-            case POSTHARDCORE: {
-                Intent intent = new Intent(activity, NewcomersActivity.class);
-                intent.putExtra(NewcomersActivity.MODE,
-                        NewcomersActivity.Mode.POST_HARDCORE_RU);
-                activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-                sendAnalyticsModeClickEvent("[OTHER] Post-hardcore.ru");
-            }
-            break;
             case SETLIST: {
                 Intent intent = new Intent(activity, SetlistsActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
@@ -303,11 +307,11 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
     private void sendAnalyticsModeClickEvent(String mode) {
         EasyTracker easyTracker = EasyTracker.getInstance(activity);
         easyTracker.send(MapBuilder
-                .createEvent("ui_action",     // Event category (required)
-                        "mode_click",  // Event action (required)
-                        mode,   // Event label
-                        null)            // Event value
-                .build()
+                        .createEvent("ui_action",     // Event category (required)
+                                "mode_click",  // Event action (required)
+                                mode,   // Event label
+                                null)            // Event value
+                        .build()
         );
     }
 }
