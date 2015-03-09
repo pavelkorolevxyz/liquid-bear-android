@@ -173,10 +173,6 @@ public class LastfmUserModel {
         });
     }
 
-    public Observable<LastfmWeeklyTrackChartRoot> getWeeklyTracksChart(String user) {
-        return lastfmService.getWeeklyTracksChart(user);
-    }
-
     public void getUserInfo(String name, final VkSimpleCallback<LastfmUser> callback) {
         lastfmService.getUserInfo(name, new VkCallback<LastfmUserRoot>() {
             @Override
@@ -189,5 +185,26 @@ public class LastfmUserModel {
                 callback.failure(error);
             }
         });
+    }
+
+    public Observable<LastfmWeeklyTrackChartRoot> getWeeklyTracksChart(String user) {
+        return lastfmService.getWeeklyTracksChart(user);
+    }
+
+    public Observable<LastfmTopTracksRoot> getTopTracks(String userName, String period, int limit, int page) {
+        return lastfmService.getUserTopTracks(
+                userName,
+                period,
+                limit,
+                page
+        );
+    }
+
+    public Observable<LastfmLovedTracksRoot> getLovedTracks(String user, int limit, int page) {
+        return lastfmService.getLovedTracks(
+                user,
+                limit,
+                page
+        );
     }
 }

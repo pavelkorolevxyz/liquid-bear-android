@@ -15,9 +15,7 @@ import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistManager;
-import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.StringUtils;
 import com.pillowapps.liqear.network.alterportal.AlterportalReader;
 import com.pillowapps.liqear.network.funkysouls.FunkySoulsReader;
@@ -266,108 +264,6 @@ public class QueryManager {
                 }
             });
         }
-    }
-
-    public void getLovedTracks(String name, int limit, int page,
-                               final GetResponseCallback callback) {
-        final Params params = new Params(USER_GET_LOVED_TRACKS, ApiMethod.USER_GET_LOVED_TRACKS);
-        params.putParameter("user", name);
-        params.putParameter("api_key", apiKey);
-        params.putParameter("limit", Integer.toString(limit));
-        params.putParameter("page", Integer.toString(page));
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
-    /**
-     * @param callback returns ReadyResult object as List<Track>
-     */
-    public void getLibraryTracks(final String user, final GetResponseCallback callback) {
-        final Set<Track> libraryTracks = new HashSet<>();
-        QueryManager.getInstance().getLovedTracks(user, PreferencesManager.getModePreferences()
-                .getInt(Constants.LOVED_IN_LIBRARY, 200), 0, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                if (result.isOk()) {
-                    final ArrayList<Track> lovedTracks = (ArrayList<Track>) result.getObject();
-                    libraryTracks.addAll(lovedTracks);
-                }
-                QueryManager.getInstance().getUserTopTracks(user, Constants.PERIODS_ARRAY[0],
-                        PreferencesManager.getModePreferences()
-                                .getInt(Constants.TOP_TRACKS_IN_LIBRARY, 200), 0, true,
-                        new GetResponseCallback() {
-                            @Override
-                            public void onDataReceived(ReadyResult result) {
-                                if (result.isOk()) {
-                                    final ArrayList<Track> topTracks = (ArrayList<Track>) result.getObject();
-                                    libraryTracks.addAll(topTracks);
-                                }
-                                List<Track> trackList = new ArrayList<>(libraryTracks);
-                                Collections.shuffle(trackList);
-                                callback.onDataReceived(new ReadyResult(LIBRARY, trackList));
-                            }
-                        });
-            }
-        });
-    }
-
-    /**
-     * @param callback returns ReadyResult object as List<Track>
-     */
-    public void getRadiomix(final String user, final GetResponseCallback callback) {
-        final Set<Track> libraryTracks = new HashSet<>();
-        QueryManager.getInstance().getLovedTracks(user,
-                PreferencesManager.getModePreferences()
-                        .getInt(Constants.LOVED_IN_RADIOMIX, 100), 0, new GetResponseCallback() {
-                    @Override
-                    public void onDataReceived(ReadyResult result) {
-                        if (result.isOk()) {
-                            final ArrayList<Track> lovedTracks = (ArrayList<Track>) result.getObject();
-                            libraryTracks.addAll(lovedTracks);
-                        }
-                        QueryManager.getInstance().getUserTopTracks(user, Constants.PERIODS_ARRAY[0],
-                                PreferencesManager.getModePreferences()
-                                        .getInt(Constants.TOP_IN_RADIOMIX, 100), 0, true, new GetResponseCallback() {
-                                    @Override
-                                    public void onDataReceived(ReadyResult result) {
-                                        if (result.isOk()) {
-                                            final ArrayList<Track> topTracks = (ArrayList<Track>) result.getObject();
-                                            libraryTracks.addAll(topTracks);
-                                        }
-                                        QueryManager.getInstance().getWeeklyTrackChart(user,
-                                                PreferencesManager.getModePreferences()
-                                                        .getInt(Constants.WEEKLY_IN_RADIOMIX, 200), true,
-                                                new GetResponseCallback() {
-                                                    @Override
-                                                    public void onDataReceived(ReadyResult result) {
-                                                        if (result.isOk()) {
-                                                            final ArrayList<Track> weeklyTracks =
-                                                                    (ArrayList<Track>) result.getObject();
-                                                            libraryTracks.addAll(weeklyTracks);
-                                                        }
-                                                        List<Track> trackList = new ArrayList<>(libraryTracks);
-                                                        Collections.shuffle(trackList);
-                                                        callback.onDataReceived(new ReadyResult(LIBRARY, trackList));
-                                                    }
-                                                });
-                                    }
-                                });
-                    }
-                });
-    }
-
-    public void getWeeklyTrackChart(String user, int count, boolean append,
-                                    final GetResponseCallback callback) {
-        final Params params = new Params(USER_GET_WEEKLY_TRACK_CHART,
-                ApiMethod.USER_GET_WEEKLY_TRACK_CHART);
-        params.putParameter("user", user);
-        params.putParameter("count", Integer.toString(count));
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        if (append) {
-            params.setAdditionalParameter("append");
-        }
-        doQuery(callback, params);
     }
 
     public void scrobbleOffline() {

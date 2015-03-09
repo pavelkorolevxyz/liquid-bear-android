@@ -62,6 +62,7 @@ public class Converter {
     }
 
     public static Album convertAlbum(LastfmAlbum lastfmAlbum) {
+        if (lastfmAlbum == null) return null;
         String artist = lastfmAlbum.getArtist();
         String name = lastfmAlbum.getName();
 

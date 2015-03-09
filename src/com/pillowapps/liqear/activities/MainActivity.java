@@ -1180,16 +1180,22 @@ public class MainActivity extends SlidingFragmentActivity {
     public void openLibrary() {
         progressBar.setVisibility(View.VISIBLE);
         if (isTablet()) showContent();
-        QueryManager.getInstance().getLibraryTracks(AuthorizationInfoManager.getLastfmName(),
-                new GetResponseCallback() {
+        new LastfmLibraryModel().getLibrary(AuthorizationInfoManager.getLastfmName(),
+                new LastfmSimpleCallback<List<LastfmTrack>>() {
                     @Override
-                    public void onDataReceived(ReadyResult result) {
+                    public void success(List<LastfmTrack> tracks) {
                         int positionToPlay = 0;
-                        List<Track> tracklist = (List<Track>) result.getObject();
+                        List<Track> trackList = Converter.convertLastfmTrackList(tracks);
                         if (!isTablet()) handsetFragment.changeViewPagerItem(0);
-                        AudioTimeline.setPlaylist(tracklist);
+                        AudioTimeline.setPlaylist(trackList);
                         updateAdapter();
                         changePlaylist(positionToPlay, true);
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void failure(String errorMessage) {
+                        ErrorNotifier.showLastfmError(MainActivity.this, errorMessage);
                         progressBar.setVisibility(View.GONE);
                     }
                 });

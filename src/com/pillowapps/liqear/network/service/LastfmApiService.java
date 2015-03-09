@@ -226,4 +226,15 @@ public interface LastfmApiService {
 
     @GET("/?method=user.getWeeklyTrackChart")
     Observable<LastfmWeeklyTrackChartRoot> getWeeklyTracksChart(@Query("user") String user);
+
+    @GET("/?method=user.getTopTracks")
+    Observable<LastfmTopTracksRoot> getUserTopTracks(@Query("user") String user,
+                                                     @Query("period") String period,
+                                                     @Query("limit") int limit,
+                                                     @Query("page") int page);
+
+    @GET("/?method=user.getLovedTracks")
+    Observable<LastfmLovedTracksRoot> getLovedTracks(@Query("user") String user,
+                                                     @Query("limit") int limit,
+                                                     @Query("page") int page);
 }
