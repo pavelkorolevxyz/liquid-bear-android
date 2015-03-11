@@ -43,7 +43,7 @@ import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 
 import java.util.List;
 
@@ -155,7 +155,7 @@ public class RecommendationsActivity extends ResultSherlockActivity {
     private void getRecommendedArtists(int limit, int page) {
         loading = true;
         progressBar.setVisibility(View.VISIBLE);
-        new LastfmUserModel().getUserRecommendedArtists(limit, page, new LastfmSimpleCallback<List<LastfmArtist>>() {
+        new LastfmUserModel().getUserRecommendedArtists(limit, page, new SimpleCallback<List<LastfmArtist>>() {
             @Override
             public void success(List<LastfmArtist> data) {
                 progressBar.setVisibility(View.GONE);

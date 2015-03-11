@@ -9,7 +9,7 @@ public class LastfmAlbum {
     @SerializedName("title")
     private String title;
     @SerializedName("artist")
-    private String artist;
+    private String artistName;
     @SerializedName("releaseDate")
     private String releaseDate;
     @SerializedName("image")
@@ -20,12 +20,32 @@ public class LastfmAlbum {
     public LastfmAlbum() {
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setImages(List<LastfmImage> images) {
+        this.images = images;
+    }
+
+    public void setTracks(LastfmTracks tracks) {
+        this.tracks = tracks;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    public String getArtist() {
-        return artist;
+    public String getArtistName() {
+        return artistName;
     }
 
     public List<LastfmImage> getImages() {
@@ -44,7 +64,7 @@ public class LastfmAlbum {
     public String toString() {
         return "LastfmAlbum{" +
                 "title='" + title + '\'' +
-                ", artist='" + artist + '\'' +
+                ", artistName='" + artistName + '\'' +
                 ", releaseDate=" + releaseDate +
                 ", images=" + images +
                 ", tracks=" + tracks +

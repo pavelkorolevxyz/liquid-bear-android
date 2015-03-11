@@ -72,7 +72,7 @@ import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.network.GetResponseCallback;
 import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
 import org.codechimp.apprater.AppRater;
@@ -443,7 +443,7 @@ public class MainActivity extends SlidingFragmentActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 final Track track = AudioTimeline.getCurrentTrack();
                 if (!track.isLoved()) {
-                    new LastfmTrackModel().love(track, new LastfmSimpleCallback<Object>() {
+                    new LastfmTrackModel().love(track, new SimpleCallback<Object>() {
                         @Override
                         public void success(Object data) {
                             progressBar.setVisibility(View.GONE);
@@ -458,7 +458,7 @@ public class MainActivity extends SlidingFragmentActivity {
                         }
                     });
                 } else {
-                    new LastfmTrackModel().unlove(track, new LastfmSimpleCallback<Object>() {
+                    new LastfmTrackModel().unlove(track, new SimpleCallback<Object>() {
                         @Override
                         public void success(Object o) {
                             progressBar.setVisibility(View.GONE);
@@ -979,7 +979,7 @@ public class MainActivity extends SlidingFragmentActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        new LastfmTrackModel().love(targetTrack, new LastfmSimpleCallback<Object>() {
+                                        new LastfmTrackModel().love(targetTrack, new SimpleCallback<Object>() {
                                             @Override
                                             public void success(Object o) {
                                                 progressBar.setVisibility(View.GONE);
@@ -1157,7 +1157,7 @@ public class MainActivity extends SlidingFragmentActivity {
         progressBar.setVisibility(View.VISIBLE);
         if (isTablet()) showContent();
         new LastfmLibraryModel().getRadiomix(AuthorizationInfoManager.getLastfmName(),
-                new LastfmSimpleCallback<List<LastfmTrack>>() {
+                new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> tracks) {
                         int positionToPlay = 0;
@@ -1181,7 +1181,7 @@ public class MainActivity extends SlidingFragmentActivity {
         progressBar.setVisibility(View.VISIBLE);
         if (isTablet()) showContent();
         new LastfmLibraryModel().getLibrary(AuthorizationInfoManager.getLastfmName(),
-                new LastfmSimpleCallback<List<LastfmTrack>>() {
+                new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> tracks) {
                         int positionToPlay = 0;

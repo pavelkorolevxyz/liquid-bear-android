@@ -8,7 +8,7 @@ import com.pillowapps.liqear.helpers.LastfmApiHelper;
 import com.pillowapps.liqear.helpers.LastfmCallbackUtils;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.Map;
@@ -18,7 +18,7 @@ public class LastfmTrackModel {
     private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
     private LastfmApiHelper apiHelper = new LastfmApiHelper();
 
-    public void love(Track track, final LastfmSimpleCallback<Object> callback) {
+    public void love(Track track, final SimpleCallback<Object> callback) {
         String sessionKey = AuthorizationInfoManager.getLastfmKey();
         String artist = track.getArtist();
         String title = track.getTitle();
@@ -36,7 +36,7 @@ public class LastfmTrackModel {
                 LastfmCallbackUtils.createTransitiveCallback(callback));
     }
 
-    public void unlove(Track track, final LastfmSimpleCallback<Object> callback) {
+    public void unlove(Track track, final SimpleCallback<Object> callback) {
         String sessionKey = AuthorizationInfoManager.getLastfmKey();
         String artist = track.getArtist();
         String title = track.getTitle();
@@ -55,7 +55,7 @@ public class LastfmTrackModel {
     }
 
     public void scrobble(String artist, String title, String album, String timestamp,
-                         final LastfmSimpleCallback<Object> callback) {
+                         final SimpleCallback<Object> callback) {
         String sessionKey = AuthorizationInfoManager.getLastfmKey();
         Map<String, String> params = new TreeMap<>();
         params.put("artist", artist);
@@ -72,7 +72,7 @@ public class LastfmTrackModel {
                 LastfmCallbackUtils.createTransitiveCallback(callback));
     }
 
-    public void nowplaying(Track track, final LastfmSimpleCallback<Object> callback) {
+    public void nowplaying(Track track, final SimpleCallback<Object> callback) {
         String sessionKey = AuthorizationInfoManager.getLastfmKey();
         Map<String, String> params = new TreeMap<>();
         String artist = track.getArtist();
@@ -99,7 +99,7 @@ public class LastfmTrackModel {
         }
     }
 
-    public void getTrackInfo(Track track, String username, final LastfmSimpleCallback<LastfmTrack> callback) {
+    public void getTrackInfo(Track track, String username, final SimpleCallback<LastfmTrack> callback) {
         lastfmService.getTrackInfo(track.getArtist(), track.getTitle(), username,
                 new LastfmCallback<LastfmTrackRoot>() {
                     @Override

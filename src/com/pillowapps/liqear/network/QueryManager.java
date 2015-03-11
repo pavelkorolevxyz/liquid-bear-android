@@ -157,21 +157,6 @@ public class QueryManager {
         doQuery(callback, params);
     }
 
-    public void getUserTopTracks(String name, String period, int limit,
-                                 int page, boolean append, final GetResponseCallback callback) {
-        final Params params = new Params(USER_GET_TOP_TRACKS, ApiMethod.USER_GET_TOP_TRACKS);
-        params.putParameter("api_key", apiKey);
-        params.putParameter("user", name);
-        params.putParameter("period", period);
-        params.putParameter("limit", Integer.toString(limit));
-        params.putParameter("page", String.valueOf(page));
-        params.setApiSource(Params.ApiSource.LASTFM);
-        if (append) {
-            params.setAdditionalParameter("append");
-        }
-        doQuery(callback, params);
-    }
-
     public void getArtistImages(String artist, int page, final GetResponseCallback callback) {
         final Params params = new Params(null, ApiMethod.ARTIST_IMAGES);
         params.setApiSource(Params.ApiSource.STRAIGHT);

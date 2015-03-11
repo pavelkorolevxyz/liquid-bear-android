@@ -27,7 +27,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.lastfm.LastfmChartModel;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
@@ -109,7 +109,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
     private void getMostLoved() {
         chartsModel.getLovedTracksChart(TRACKS_IN_TOP_COUNT,
-                getViewer(MOST_LOVED).getPage("getMostLoved"), new LastfmSimpleCallback<List<LastfmTrack>>() {
+                getViewer(MOST_LOVED).getPage("getMostLoved"), new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
                         fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
@@ -125,7 +125,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
     private void getTopArtists() {
         chartsModel.getTopArtists(TRACKS_IN_TOP_COUNT,
-                getViewer(TOP_ARTISTS).getPage("getTopArtists"), new LastfmSimpleCallback<List<LastfmArtist>>() {
+                getViewer(TOP_ARTISTS).getPage("getTopArtists"), new SimpleCallback<List<LastfmArtist>>() {
                     @Override
                     public void success(List<LastfmArtist> lastfmArtists) {
                         fillArtists(Converter.convertArtistList(lastfmArtists),
@@ -141,7 +141,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
     private void getTopTracks() {
         chartsModel.getTopTracksChart(TRACKS_IN_TOP_COUNT,
-                getViewer(TOP_TRACKS).getPage("getTracks"), new LastfmSimpleCallback<List<LastfmTrack>>() {
+                getViewer(TOP_TRACKS).getPage("getTracks"), new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
                         fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
@@ -157,7 +157,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
     private void getHypedTracks() {
         chartsModel.getHypedTracks(TRACKS_IN_TOP_COUNT,
-                getViewer(HYPED_TRACKS).getPage("getHypedTracks"), new LastfmSimpleCallback<List<LastfmTrack>>() {
+                getViewer(HYPED_TRACKS).getPage("getHypedTracks"), new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
                         fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
@@ -173,7 +173,7 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
     private void getHypedArtists() {
         chartsModel.getHypedArtists(TRACKS_IN_TOP_COUNT,
-                getViewer(HYPED_ARTISTS).getPage("getHypedArtists"), new LastfmSimpleCallback<List<LastfmArtist>>() {
+                getViewer(HYPED_ARTISTS).getPage("getHypedArtists"), new SimpleCallback<List<LastfmArtist>>() {
                     @Override
                     public void success(List<LastfmArtist> lastfmArtists) {
                         fillArtists(Converter.convertArtistList(lastfmArtists),

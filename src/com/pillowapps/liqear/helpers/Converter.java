@@ -11,6 +11,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtistStruct;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
+import com.pillowapps.liqear.entities.lastfm.LastfmTopAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrackArtistStruct;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
@@ -64,7 +65,7 @@ public class Converter {
 
     public static Album convertAlbum(LastfmAlbum lastfmAlbum) {
         if (lastfmAlbum == null) return null;
-        String artist = lastfmAlbum.getArtist();
+        String artist = lastfmAlbum.getArtistName();
         String name = lastfmAlbum.getTitle();
 
         Album album = new Album(artist, name);
@@ -192,5 +193,23 @@ public class Converter {
 
     private static Track convertTrack(String artist, SetlistfmTrack setlistfmTrack) {
         return new Track(artist, setlistfmTrack.getTitle());
+    }
+
+    public static List<LastfmAlbum> convertTopAlbums(List<LastfmTopAlbum> topAlbums) {
+        List<LastfmAlbum> lastfmAlbums = new ArrayList<>();
+        for (LastfmTopAlbum topAlbum : topAlbums) {
+            lastfmAlbums.add(convertTopAlbum(topAlbum));
+        }
+        return lastfmAlbums;
+    }
+
+    public static LastfmAlbum convertTopAlbum(LastfmTopAlbum topAlbum) {
+        LastfmAlbum lastfmAlbum = new LastfmAlbum();
+        lastfmAlbum.setArtistName(topAlbum.getArtist().getName());
+        lastfmAlbum.setTitle(topAlbum.getName());
+        lastfmAlbum.setTracks(topAlbum.getTracks());
+        lastfmAlbum.setImages(topAlbum.getImages());
+        lastfmAlbum.setReleaseDate(topAlbum.getReleaseDate());
+        return lastfmAlbum;
     }
 }

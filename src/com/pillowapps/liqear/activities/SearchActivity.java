@@ -74,7 +74,7 @@ import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkFriendModel;
 import com.pillowapps.liqear.models.vk.VkGroupModel;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.SetlistfmSimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
@@ -381,7 +381,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
         new LastfmArtistModel().searchArtist(searchQuery,
                 limit,
                 page,
-                new LastfmSimpleCallback<List<LastfmArtist>>() {
+                new SimpleCallback<List<LastfmArtist>>() {
                     @Override
                     public void success(List<LastfmArtist> lastfmArtists) {
                         progressBar.setVisibility(View.GONE);
@@ -402,7 +402,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
 
     private void searchTag(String searchQuery, int limit, int page) {
         new LastfmTagModel().searchTag(searchQuery, limit, page,
-                new LastfmSimpleCallback<List<LastfmTag>>() {
+                new SimpleCallback<List<LastfmTag>>() {
                     @Override
                     public void success(List<LastfmTag> tags) {
                         fillWithTags(Converter.convertTags(tags));
@@ -419,7 +419,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
 
     private void searchAlbum(String searchQuery, int limit, int page) {
         new LastfmAlbumModel().searchAlbum(searchQuery, limit, page,
-                new LastfmSimpleCallback<List<LastfmAlbum>>() {
+                new SimpleCallback<List<LastfmAlbum>>() {
                     @Override
                     public void success(List<LastfmAlbum> lastfmAlbums) {
                         progressBar.setVisibility(View.GONE);
@@ -890,7 +890,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
     }
 
     private void getLastfmFriends(String username, int limit, int page) {
-        new LastfmUserModel().getLastfmFriends(username, limit, page, new LastfmSimpleCallback<List<LastfmUser>>() {
+        new LastfmUserModel().getLastfmFriends(username, limit, page, new SimpleCallback<List<LastfmUser>>() {
                     @Override
                     public void success(List<LastfmUser> lastfmUsers) {
                         fillWithUsers(Converter.convertUsers(lastfmUsers));
@@ -908,7 +908,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
 
     private void getNeighbours(String username, int limit) {
         new LastfmUserModel().getNeighbours(username, limit,
-                new LastfmSimpleCallback<List<LastfmUser>>() {
+                new SimpleCallback<List<LastfmUser>>() {
                     @Override
                     public void success(List<LastfmUser> lastfmUsers) {
                         fillWithUsers(Converter.convertUsers(lastfmUsers));

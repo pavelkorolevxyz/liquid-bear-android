@@ -33,7 +33,7 @@ import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.vk.VkLyricsModel;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
 public class TextActivity extends ResultSherlockActivity {
@@ -203,7 +203,7 @@ public class TextActivity extends ResultSherlockActivity {
     }
 
     private void getArtistInfo(String artist, String username) {
-        new LastfmArtistModel().getArtistInfo(artist, username, new LastfmSimpleCallback<LastfmArtist>() {
+        new LastfmArtistModel().getArtistInfo(artist, username, new SimpleCallback<LastfmArtist>() {
             @Override
             public void success(LastfmArtist lastfmArtist) {
                 progressBar.setVisibility(View.GONE);

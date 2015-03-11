@@ -19,6 +19,8 @@ import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
+import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
@@ -114,6 +116,18 @@ public class ListArrayAdapter<T> extends ArrayAdapter<T> {
             holder.textView.setText(Html.fromHtml(album.getTitle()));
             if (holder.loadImages) {
                 imageLoader.displayImage(album.getImageUrl(), holder.imageView, options);
+            } else {
+                holder.imageView.setVisibility(View.GONE);
+            }
+        } else if (clazz == LastfmAlbum.class) {
+            LastfmAlbum album = (LastfmAlbum) currentItem;
+            holder.textView.setText(Html.fromHtml(album.getTitle()));
+            if (holder.loadImages) {
+                List<LastfmImage> images = album.getImages();
+                if (images != null && images.size() > 0) {
+                    imageLoader.displayImage(images.get(images.size() - 1).getUrl(),
+                            holder.imageView, options);
+                }
             } else {
                 holder.imageView.setVisibility(View.GONE);
             }

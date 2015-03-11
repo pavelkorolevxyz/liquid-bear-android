@@ -18,7 +18,7 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LastfmApiHelper;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.network.service.LastfmApiService;
@@ -34,7 +34,7 @@ public class LastfmUserModel {
     private LastfmApiHelper apiHelper = new LastfmApiHelper();
 
     public void getUserTopArtists(String userName, String period, int limit, int page,
-                                  final LastfmSimpleCallback<List<LastfmArtist>> callback) {
+                                  final SimpleCallback<List<LastfmArtist>> callback) {
         lastfmService.getUserTopArtists(userName,
                 period,
                 limit,
@@ -53,7 +53,7 @@ public class LastfmUserModel {
     }
 
     public void getUserRecommendedArtists(int limit, int page,
-                                          final LastfmSimpleCallback<List<LastfmArtist>> callback) {
+                                          final SimpleCallback<List<LastfmArtist>> callback) {
         String sessionKey = AuthorizationInfoManager.getLastfmKey();
 
         Map<String, String> params = new TreeMap<>();
@@ -80,7 +80,7 @@ public class LastfmUserModel {
     }
 
     public void getUserRecentTracks(String userName, int limit, int page,
-                                    final LastfmSimpleCallback<List<LastfmTrack>> callback) {
+                                    final SimpleCallback<List<LastfmTrack>> callback) {
         lastfmService.getRecentTracks(
                 userName,
                 limit,
@@ -100,7 +100,7 @@ public class LastfmUserModel {
     }
 
     public void getUserTopTracks(String userName, String period, int limit, int page,
-                                 final LastfmSimpleCallback<List<LastfmTrack>> callback) {
+                                 final SimpleCallback<List<LastfmTrack>> callback) {
 
         lastfmService.getUserTopTracks(
                 userName,
@@ -124,7 +124,7 @@ public class LastfmUserModel {
 
 
     public void getLovedTracks(String userName, int limit, int page,
-                               final LastfmSimpleCallback<List<LastfmTrack>> callback) {
+                               final SimpleCallback<List<LastfmTrack>> callback) {
         lastfmService.getLovedTracks(
                 userName,
                 limit,
@@ -144,7 +144,7 @@ public class LastfmUserModel {
     }
 
     public void getLastfmFriends(String username, int limit, int page,
-                                 final LastfmSimpleCallback<List<LastfmUser>> callback) {
+                                 final SimpleCallback<List<LastfmUser>> callback) {
         lastfmService.getFriends(username, limit, page, new LastfmCallback<LastfmFriendsRoot>() {
             @Override
             public void success(LastfmFriendsRoot data) {
@@ -159,7 +159,7 @@ public class LastfmUserModel {
     }
 
     public void getNeighbours(String username, int limit,
-                              final LastfmSimpleCallback<List<LastfmUser>> callback) {
+                              final SimpleCallback<List<LastfmUser>> callback) {
         lastfmService.getNeighbours(username, limit, new LastfmCallback<LastfmNeighboursRoot>() {
             @Override
             public void success(LastfmNeighboursRoot data) {

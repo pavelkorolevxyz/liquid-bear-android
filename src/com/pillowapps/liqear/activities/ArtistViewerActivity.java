@@ -37,10 +37,8 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
-import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
-import com.pillowapps.liqear.network.QueryManager;
-import com.pillowapps.liqear.network.ReadyResult;
+import com.pillowapps.liqear.models.lastfm.LastfmDiscographyModel;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
@@ -295,13 +293,18 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
                     break;
                 }
                 getViewer(ALBUMS_INDEX).getProgressBar().setVisibility(View.VISIBLE);
-                QueryManager.getInstance().getAlbumsInfo(getViewer(ALBUMS_INDEX).getValues(),
-                        new GetResponseCallback() {
-                            @Override
-                            public void onDataReceived(ReadyResult result) {
-                                openMainPlaylist((List<Track>) result.getObject(), 0);
-                            }
-                        });
+                List<LastfmAlbum> values = getViewer(ALBUMS_INDEX).getValues();
+                new LastfmDiscographyModel().getDiscographyTracks(values, new SimpleCallback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> tracks) {
+                        openMainPlaylist(Converter.convertLastfmTrackList(tracks), 0);
+                    }
+
+                    @Override
+                    public void failure(String errorMessage) {
+                        ErrorNotifier.showError(ArtistViewerActivity.this, errorMessage);
+                    }
+                });
             }
             return true;
         }
@@ -311,7 +314,7 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
     private void getArtistTopTracks(Artist artist, int limit, int page) {
         final ProgressBar progressBar = getViewer(TOP_TRACKS_INDEX).getProgressBar();
         artistModel.getArtistTopTracks(artist,
-                limit, page, new LastfmSimpleCallback<List<LastfmTrack>>() {
+                limit, page, new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
                         progressBar.setVisibility(View.GONE);
@@ -328,7 +331,7 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
 
     private void getArtistAlbums(String artistName) {
         final ProgressBar progressBar = getViewer(ALBUMS_INDEX).getProgressBar();
-        artistModel.getArtistAlbums(artistName, new LastfmSimpleCallback<List<LastfmAlbum>>() {
+        artistModel.getArtistAlbums(artistName, new SimpleCallback<List<LastfmAlbum>>() {
             @Override
             public void success(List<LastfmAlbum> albums) {
                 progressBar.setVisibility(View.GONE);
@@ -345,7 +348,7 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
     private void getPersonalTop(String artist, String username, int limit, int page) {
         final ProgressBar progressBar = getViewer(PERSONAL_TOP_INDEX).getProgressBar();
         artistModel.getPersonalArtistTop(artist, username, limit, page,
-                new LastfmSimpleCallback<List<LastfmTrack>>() {
+                new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
                         fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
@@ -368,7 +371,7 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
     private void getSimilarArtists(String artistName, int limit, int page) {
         final ProgressBar progressBar = getViewer(SIMILAR_INDEX).getProgressBar();
         artistModel.getSimilarArtists(artistName, limit, page,
-                new LastfmSimpleCallback<List<LastfmArtist>>() {
+                new SimpleCallback<List<LastfmArtist>>() {
                     @Override
                     public void success(List<LastfmArtist> lastfmArtists) {
                         progressBar.setVisibility(View.GONE);
@@ -385,7 +388,7 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
 
     private void getArtistInfo(String artist, String username) {
         artistModel.getArtistInfo(artist, username,
-                new LastfmSimpleCallback<LastfmArtist>() {
+                new SimpleCallback<LastfmArtist>() {
                     @Override
                     public void success(LastfmArtist lastfmArtist) {
                         artistInfoProgressBar.setVisibility(View.GONE);

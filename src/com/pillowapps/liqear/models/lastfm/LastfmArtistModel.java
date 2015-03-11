@@ -3,6 +3,7 @@ package com.pillowapps.liqear.models.lastfm;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.entities.lastfm.LastfmTopAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmArtistRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmArtistSearchResultsRoot;
@@ -10,8 +11,9 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmSimilarArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopAlbumsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTracksRoot;
+import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
@@ -22,7 +24,7 @@ public class LastfmArtistModel {
     private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
 
     public void getArtistTopTracks(Artist artist, int limit, int page,
-                                   final LastfmSimpleCallback<List<LastfmTrack>> callback) {
+                                   final SimpleCallback<List<LastfmTrack>> callback) {
         lastfmService.getArtistTopTracks(
                 artist.getName(),
                 limit,
@@ -41,13 +43,13 @@ public class LastfmArtistModel {
         );
     }
 
-    public void getArtistAlbums(String artistName, final LastfmSimpleCallback<List<LastfmAlbum>> callback) {
+    public void getArtistAlbums(String artistName, final SimpleCallback<List<LastfmAlbum>> callback) {
         lastfmService.getArtistTopAlbums(
                 artistName,
                 new LastfmCallback<LastfmTopAlbumsRoot>() {
                     @Override
                     public void success(LastfmTopAlbumsRoot albumsRoot) {
-                        callback.success(albumsRoot.getAlbums().getAlbums());
+                        callback.success(Converter.convertTopAlbums(albumsRoot.getAlbums().getAlbums()));
                     }
 
                     @Override
@@ -59,7 +61,7 @@ public class LastfmArtistModel {
     }
 
     public void getPersonalArtistTop(String artist, String username, int limit, int page,
-                                     final LastfmSimpleCallback<List<LastfmTrack>> callback) {
+                                     final SimpleCallback<List<LastfmTrack>> callback) {
         lastfmService.getPersonalArtistTopTracks(
                 artist,
                 username,
@@ -80,7 +82,7 @@ public class LastfmArtistModel {
     }
 
     public void getSimilarArtists(String artistName, int limit, int page,
-                                  final LastfmSimpleCallback<List<LastfmArtist>> callback) {
+                                  final SimpleCallback<List<LastfmArtist>> callback) {
         lastfmService.getSimilarArtists(
                 artistName,
                 limit,
@@ -100,7 +102,7 @@ public class LastfmArtistModel {
     }
 
     public void getArtistInfo(String artist, String username,
-                              final LastfmSimpleCallback<LastfmArtist> callback) {
+                              final SimpleCallback<LastfmArtist> callback) {
         String lang = Locale.getDefault().getLanguage();
         lastfmService.getArtistInfo(artist, username, lang, new LastfmCallback<LastfmArtistRoot>() {
             @Override
@@ -116,7 +118,7 @@ public class LastfmArtistModel {
     }
 
     public void searchArtist(String query, int limit, int page,
-                             final LastfmSimpleCallback<List<LastfmArtist>> callback) {
+                             final SimpleCallback<List<LastfmArtist>> callback) {
         lastfmService.searchArtist(query, limit, page,
                 new LastfmCallback<LastfmArtistSearchResultsRoot>() {
                     @Override

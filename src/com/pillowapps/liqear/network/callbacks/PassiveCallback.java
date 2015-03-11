@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.network.callbacks;
 
-public class LastfmPassiveCallback extends LastfmSimpleCallback<Object> {
+public class PassiveCallback extends SimpleCallback<Object> {
     @Override
     public void success(Object data) {
 

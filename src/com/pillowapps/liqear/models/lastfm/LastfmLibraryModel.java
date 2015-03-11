@@ -9,7 +9,7 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.network.ServiceHelper;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import rx.schedulers.Schedulers;
 public class LastfmLibraryModel {
     private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
 
-    public void getRadiomix(final String user, final LastfmSimpleCallback<List<LastfmTrack>> callback) {
+    public void getRadiomix(final String user, final SimpleCallback<List<LastfmTrack>> callback) {
         Observable<LastfmWeeklyTrackChartRoot> weeklyObservable = new LastfmUserModel().getWeeklyTracksChart(user);
         Observable<LastfmTopTracksRoot> topTracksObservable = new LastfmUserModel().getTopTracks(user,
                 Constants.PERIODS_ARRAY[0],
@@ -69,7 +69,7 @@ public class LastfmLibraryModel {
                 });
     }
 
-    public void getLibrary(final String user, final LastfmSimpleCallback<List<LastfmTrack>> callback) {
+    public void getLibrary(final String user, final SimpleCallback<List<LastfmTrack>> callback) {
         Observable<LastfmTopTracksRoot> topTracksObservable = new LastfmUserModel().getTopTracks(user,
                 Constants.PERIODS_ARRAY[0],
                 PreferencesManager.getModePreferences().getInt(Constants.TOP_IN_RADIOMIX, 100),

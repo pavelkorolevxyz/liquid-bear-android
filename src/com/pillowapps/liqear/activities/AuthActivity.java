@@ -39,7 +39,7 @@ import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.models.vk.VkUserModel;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -220,7 +220,7 @@ public class AuthActivity extends TrackedActivity {
                 authModel.getMobileSession(
                         username,
                         password,
-                        new LastfmSimpleCallback<LastfmSession>() {
+                        new SimpleCallback<LastfmSession>() {
                             @Override
                             public void success(LastfmSession session) {
                                 String name = session.getName();

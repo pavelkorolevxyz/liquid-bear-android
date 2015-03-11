@@ -33,7 +33,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.squareup.picasso.Picasso;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -206,7 +206,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
 
     private void getAlbumInfo(Album album) {
         tracksProgressBar.setVisibility(View.VISIBLE);
-        albumModel.getAlbumInfo(album, new LastfmSimpleCallback<LastfmAlbum>() {
+        albumModel.getAlbumInfo(album, new SimpleCallback<LastfmAlbum>() {
             @Override
             public void success(LastfmAlbum album) {
                 List<LastfmTrack> tracks = album.getTracks().getTracks();
@@ -229,7 +229,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
                                 progressBar.setVisibility(View.GONE);
                             }
                         });
-                artistTextView.setText(album.getArtist());
+                artistTextView.setText(album.getArtistName());
                 titleTextView.setText(album.getTitle());
                 otherTextView.setText(album.getReleaseDate());
                 tracksProgressBar.setVisibility(View.GONE);

@@ -100,7 +100,7 @@ public class ServiceHelper {
                     .setRequestInterceptor(lastfmInterceptor)
                     .setEndpoint(LASTFM_API)
                     .build();
-            
+
             lastfmApiService = restAdapter.create(LastfmApiService.class);
         }
 

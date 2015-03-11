@@ -5,7 +5,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTagSearchResultsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
@@ -15,7 +15,7 @@ public class LastfmTagModel {
     private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
 
     public void getTagTopTracks(String tag, int limit, int page,
-                                final LastfmSimpleCallback<List<LastfmTrack>> callback) {
+                                final SimpleCallback<List<LastfmTrack>> callback) {
         lastfmService.getTagTopTracks(tag, limit, page,
                 new LastfmCallback<LastfmTopTracksRoot>() {
                     @Override
@@ -31,7 +31,7 @@ public class LastfmTagModel {
     }
 
     public void searchTag(String query, int limit, int page,
-                          final LastfmSimpleCallback<List<LastfmTag>> callback) {
+                          final SimpleCallback<List<LastfmTag>> callback) {
         lastfmService.searchTag(query, limit, page, new LastfmCallback<LastfmTagSearchResultsRoot>() {
             @Override
             public void success(LastfmTagSearchResultsRoot data) {

@@ -225,16 +225,20 @@ public interface LastfmApiService {
                         Callback<LastfmLovedTracksRoot> callback);
 
     @GET("/?method=user.getWeeklyTrackChart")
-    Observable<LastfmWeeklyTrackChartRoot> getWeeklyTracksChart(@Query("user") String user);
+    public Observable<LastfmWeeklyTrackChartRoot> getWeeklyTracksChart(@Query("user") String user);
 
     @GET("/?method=user.getTopTracks")
-    Observable<LastfmTopTracksRoot> getUserTopTracks(@Query("user") String user,
-                                                     @Query("period") String period,
-                                                     @Query("limit") int limit,
-                                                     @Query("page") int page);
+    public Observable<LastfmTopTracksRoot> getUserTopTracks(@Query("user") String user,
+                                                            @Query("period") String period,
+                                                            @Query("limit") int limit,
+                                                            @Query("page") int page);
 
     @GET("/?method=user.getLovedTracks")
-    Observable<LastfmLovedTracksRoot> getLovedTracks(@Query("user") String user,
-                                                     @Query("limit") int limit,
-                                                     @Query("page") int page);
+    public Observable<LastfmLovedTracksRoot> getLovedTracks(@Query("user") String user,
+                                                            @Query("limit") int limit,
+                                                            @Query("page") int page);
+
+    @GET("/?method=album.getInfo")
+    public Observable<LastfmAlbumRoot> getAlbumInfo(@Query("artist") String artist,
+                                                    @Query("album") String album);
 }

@@ -28,7 +28,7 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
@@ -146,7 +146,7 @@ public class TagViewerActivity extends PagerResultSherlockActivity {
 
     private void getTagTopTracks(Tag tag, int limit, int page) {
         tagModel.getTagTopTracks(tag.getName(),
-                limit, page, new LastfmSimpleCallback<List<LastfmTrack>>() {
+                limit, page, new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
                         fillTracks(Converter.convertLastfmTrackList(lastfmTracks),

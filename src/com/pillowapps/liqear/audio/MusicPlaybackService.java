@@ -57,8 +57,8 @@ import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkStatusModel;
 import com.pillowapps.liqear.network.CompletionListener;
 import com.pillowapps.liqear.network.QueryManager;
-import com.pillowapps.liqear.network.callbacks.LastfmPassiveCallback;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.PassiveCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkPassiveCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.widget.FourWidthOneHeightWidget;
@@ -329,7 +329,7 @@ public class MusicPlaybackService extends Service implements
                 final Track track = AudioTimeline.getCurrentTrack();
                 if (track != null) {
                     if (!track.isLoved()) {
-                        new LastfmTrackModel().love(track, new LastfmSimpleCallback<Object>() {
+                        new LastfmTrackModel().love(track, new SimpleCallback<Object>() {
                             @Override
                             public void success(Object o) {
                                 track.setLoved(true);
@@ -342,7 +342,7 @@ public class MusicPlaybackService extends Service implements
                             }
                         });
                     } else {
-                        new LastfmTrackModel().unlove(track, new LastfmSimpleCallback<Object>() {
+                        new LastfmTrackModel().unlove(track, new SimpleCallback<Object>() {
                             @Override
                             public void success(Object o) {
                                 track.setLoved(false);
@@ -1266,7 +1266,7 @@ public class MusicPlaybackService extends Service implements
 
     private void scrobble(final String artist, final String title, final String album, final String currentTime) {
         if (Utils.isOnline()) {
-            new LastfmTrackModel().scrobble(artist, title, album, currentTime, new LastfmPassiveCallback());
+            new LastfmTrackModel().scrobble(artist, title, album, currentTime, new PassiveCallback());
         } else {
             PlaylistManager.getInstance().addTrackToScrobble(artist, title, currentTime);
         }
@@ -1274,7 +1274,7 @@ public class MusicPlaybackService extends Service implements
 
     private void updateNowPlaying(final Track currentTrack) {
         if (PreferencesManager.getPreferences().getBoolean("nowplaying_check_box_preferences", true)) {
-            new LastfmTrackModel().nowplaying(currentTrack, new LastfmPassiveCallback());
+            new LastfmTrackModel().nowplaying(currentTrack, new PassiveCallback());
         }
         if (PreferencesManager.getPreferences().getBoolean("nowplaying_vk_check_box_preferences", true)) {
             new VkStatusModel().updateStatus(currentTrack, new VkPassiveCallback());
@@ -1282,7 +1282,7 @@ public class MusicPlaybackService extends Service implements
     }
 
     private void getArtistInfo(final String artist, final String username) {
-        new LastfmArtistModel().getArtistInfo(artist, username, new LastfmSimpleCallback<LastfmArtist>() {
+        new LastfmArtistModel().getArtistInfo(artist, username, new SimpleCallback<LastfmArtist>() {
             @Override
             public void success(LastfmArtist lastfmArtist) {
                 AudioTimeline.setPreviousArtist(artist);
@@ -1307,7 +1307,7 @@ public class MusicPlaybackService extends Service implements
 
     private void getTrackInfo(final Track track) {
         new LastfmTrackModel().getTrackInfo(track, AuthorizationInfoManager.getLastfmName(),
-                new LastfmSimpleCallback<LastfmTrack>() {
+                new SimpleCallback<LastfmTrack>() {
                     @Override
                     public void success(LastfmTrack lastfmTrack) {
                         Album album = Converter.convertAlbum(lastfmTrack.getAlbum());

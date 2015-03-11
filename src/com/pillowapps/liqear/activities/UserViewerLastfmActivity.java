@@ -34,7 +34,7 @@ import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
-import com.pillowapps.liqear.network.callbacks.LastfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.Params;
 import com.pillowapps.liqear.network.ReadyResult;
 import com.viewpagerindicator.TitlePageIndicator;
@@ -272,7 +272,7 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
             viewer.getProgressBar().setVisibility(View.VISIBLE);
         }
         userModel.getUserTopArtists(user.getName(), topArtistsPeriod,
-                TRACKS_IN_TOP_COUNT, viewer.getPage("getTopArtists"), new LastfmSimpleCallback<List<LastfmArtist>>() {
+                TRACKS_IN_TOP_COUNT, viewer.getPage("getTopArtists"), new SimpleCallback<List<LastfmArtist>>() {
                     @Override
                     public void success(List<LastfmArtist> lastfmArtists) {
                         fillArtists(Converter.convertArtistList(lastfmArtists), viewer);
@@ -295,7 +295,7 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
             viewer.getProgressBar().setVisibility(View.VISIBLE);
         }
         userModel.getUserRecentTracks(user.getName(), TRACKS_IN_TOP_COUNT,
-                viewer.getPage("getRecent"), new LastfmSimpleCallback<List<LastfmTrack>>() {
+                viewer.getPage("getRecent"), new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
                         fillTracks(Converter.convertLastfmTrackList(lastfmTracks), viewer);
@@ -318,7 +318,7 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
             viewer.getProgressBar().setVisibility(View.VISIBLE);
         }
         userModel.getUserTopTracks(user.getName(), topTracksPeriod,
-                TRACKS_IN_TOP_COUNT, viewer.getPage("getTracks"), new LastfmSimpleCallback<List<LastfmTrack>>() {
+                TRACKS_IN_TOP_COUNT, viewer.getPage("getTracks"), new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
                         fillTracks(Converter.convertLastfmTrackList(lastfmTracks), viewer);
@@ -347,7 +347,7 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
         int page = viewer.getPage("getLoved");
         if (page > 0) {
             userModel.getLovedTracks(user.getName(), limit, page,
-                    new LastfmSimpleCallback<List<LastfmTrack>>() {
+                    new SimpleCallback<List<LastfmTrack>>() {
                         @Override
                         public void success(List<LastfmTrack> lastfmTracks) {
                             fillTracks(Converter.convertLastfmTrackList(lastfmTracks), viewer);
