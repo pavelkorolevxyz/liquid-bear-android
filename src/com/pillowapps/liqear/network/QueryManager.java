@@ -12,7 +12,6 @@ import com.pillowapps.liqear.LiqearApplication;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.components.CancellableThread;
 import com.pillowapps.liqear.entities.Album;
-import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.PlaylistManager;
@@ -36,13 +35,8 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -50,15 +44,9 @@ import java.util.TreeMap;
  */
 @SuppressWarnings({"unchecked"})
 public class QueryManager {
-    public static final String USER_GET_TOP_TRACKS = "user.getTracks";
     public static final String PHOTOS_GET_WALL_UPLOAD_SERVER = "photos.getWallUploadServer";
-    public static final String ALBUM_GET_INFO = "album.getInfo";
-    public static final String ARTIST_GET_TOP_TRACKS = "artist.getTracks";
     public static final String SETLISTS = "setlists";
-    public static final String FUNKY = "funky";
-    private static final String RECOMMENDATIONS = "recommended";
     private static final String WALL_POST = "wall.post";
-    private static final String ALTERPORTAL = "alterportal";
     private static final String PHOTOS_SAVE_WALL_PHOTO = "photos.saveWallPhoto";
     private final String secret;
     private final String apiKey;
@@ -111,104 +99,12 @@ public class QueryManager {
         }
     }
 
-    private void doQuerySync(final GetResponseCallback callback, Params methodParams) {
-        RestTaskCallback restTaskCallback = new RestTaskCallback() {
-            @Override
-            public void onTaskComplete(ReadyResult response) {
-                if (response != null)
-                    callback.onDataReceived(response);
-            }
-        };
-        task = new GetTask(restTaskCallback);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, methodParams);
-        } else {
-            task.execute(methodParams);
-        }
-    }
-
-    public void getArtistTopTracksSync(Artist artist, int limit, int page,
-                                       final GetResponseCallback callback) {
-        getArtistTopTracksSync(artist, limit, page, false, callback);
-    }
-
-    public void getArtistTopTracksSync(Artist artist, int limit, int page,
-                                       boolean append, final GetResponseCallback callback) {
-        final Params params = new Params(ARTIST_GET_TOP_TRACKS, ApiMethod.ARTIST_GET_TOP_TRACKS);
-        params.putParameter("artist", Html.fromHtml(artist.getName())
-                .toString());
-        params.putParameter("api_key", apiKey);
-        params.putParameter("limit", Integer.toString(limit));
-        params.putParameter("page", Integer.toString(page));
-        params.setApiSource(Params.ApiSource.LASTFM);
-        if (append) {
-            params.setAdditionalParameter("append");
-        }
-        doQuerySync(callback, params);
-    }
-
-    public void getAlbumInfo(Album album, final GetResponseCallback callback) {
-        final Params params = new Params(ALBUM_GET_INFO, ApiMethod.ALBUM_GET_INFO);
-        params.putParameter("artist", Html.fromHtml(album.getArtist())
-                .toString());
-        params.putParameter("album", Html.fromHtml(album.getTitle()).toString());
-        params.putParameter("api_key", apiKey);
-        params.setApiSource(Params.ApiSource.LASTFM);
-        doQuery(callback, params);
-    }
-
     public void getArtistImages(String artist, int page, final GetResponseCallback callback) {
         final Params params = new Params(null, ApiMethod.ARTIST_IMAGES);
         params.setApiSource(Params.ApiSource.STRAIGHT);
         params.setUrl(String.format("http://www.lastfm.ru/music/%s/+images?page=%d",
                 StringUtils.encode(artist), page));
         doQuery(callback, params);
-    }
-
-    public void getRecommendedTracks(final List<Artist> artists,
-                                     final GetResponseCallback callback) {
-        final Set<Track> trackSet = new HashSet<>();
-        final int[] completed = {0};
-        for (int i = 0; i < artists.size(); i++) {
-            Artist artist = artists.get(i);
-            final int finalI = i;
-            getArtistTopTracksSync(artist, 5, 0, new GetResponseCallback() {
-                @Override
-                public void onDataReceived(ReadyResult result) {
-                    if (result.isOk()) {
-                        List<Track> artistTopTracks = (List<Track>) result.getObject();
-                        trackSet.addAll(artistTopTracks);
-                    }
-                    if (++completed[0] == artists.size()) {
-                        List<Track> trackList = new ArrayList<>(trackSet);
-                        Collections.shuffle(trackList);
-                        callback.onDataReceived(new ReadyResult(RECOMMENDATIONS, trackList));
-                    }
-                }
-            });
-        }
-    }
-
-    public void getAlbumsInfo(final List<Album> albums, final GetResponseCallback callback) {
-        final Set<Track> trackSet = new LinkedHashSet<>();
-        final int[] completed = {0};
-        for (int i = 0; i < albums.size(); i++) {
-            Album album = albums.get(i);
-            QueryManager.getInstance().getAlbumInfo(album, new GetResponseCallback() {
-                @Override
-                public void onDataReceived(ReadyResult result) {
-                    if (result.isOk()) {
-                        List<Object> list = (List<Object>) result.getObject();
-                        List<Track> albumTracks = (List<Track>) list.get(1);
-                        trackSet.addAll(albumTracks);
-                    }
-                    if (++completed[0] == albums.size()) {
-                        List<Track> trackList = new ArrayList<>(trackSet);
-                        callback.onDataReceived(new ReadyResult(RECOMMENDATIONS, trackList));
-                    }
-                }
-            });
-        }
     }
 
     public void scrobbleOffline() {

@@ -3,7 +3,6 @@ package com.pillowapps.liqear.models.lastfm;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
-import com.pillowapps.liqear.entities.lastfm.LastfmTopAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmArtistRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmArtistSearchResultsRoot;
@@ -12,13 +11,15 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopAlbumsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTracksRoot;
 import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
 import java.util.Locale;
+
+import rx.Observable;
 
 public class LastfmArtistModel {
     private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
@@ -131,5 +132,13 @@ public class LastfmArtistModel {
                         callback.failure(error);
                     }
                 });
+    }
+
+    public Observable<LastfmTopTracksRoot> getArtistTopTracks(Artist artist, int limit, int page) {
+        return lastfmService.getArtistTopTracks(
+                artist.getName(),
+                limit,
+                page
+        );
     }
 }

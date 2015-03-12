@@ -241,4 +241,9 @@ public interface LastfmApiService {
     @GET("/?method=album.getInfo")
     public Observable<LastfmAlbumRoot> getAlbumInfo(@Query("artist") String artist,
                                                     @Query("album") String album);
+
+    @GET("/?method=artist.getTopTracks")
+    public Observable<LastfmTopTracksRoot> getArtistTopTracks(@Query("artist") String artist,
+                                                              @Query("limit") int limit,
+                                                              @Query("page") int page);
 }

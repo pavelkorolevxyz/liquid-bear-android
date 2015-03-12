@@ -31,24 +31,21 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.ResultSherlockActivity;
 import com.pillowapps.liqear.entities.Artist;
-import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.models.lastfm.LastfmRecommendationsModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
-import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.Params;
-import com.pillowapps.liqear.network.QueryManager;
-import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 
 import java.util.List;
 
 public class RecommendationsActivity extends ResultSherlockActivity {
-    private static final int RECOMMENDATIONS_AMOUNT = 100;
+    private static final int RECOMMENDATIONS_AMOUNT = 20;
     private RecommendationsArrayAdapter<Artist> adapter;
     private ProgressBar progressBar;
     private GridView gridView;
@@ -184,11 +181,15 @@ public class RecommendationsActivity extends ResultSherlockActivity {
     }
 
     private void getRecommendedTracks(List<Artist> artists) {
-        QueryManager.getInstance().getRecommendedTracks(artists, new GetResponseCallback() {
+        new LastfmRecommendationsModel().getRecommendationsTracks(artists, new SimpleCallback<List<LastfmTrack>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                if (checkForError(result, Params.ApiSource.LASTFM)) return;
-                openMainPlaylist((List<Track>) result.getObject(), 0);
+            public void success(List<LastfmTrack> data) {
+                openMainPlaylist(Converter.convertLastfmTrackList(data), 0);
+            }
+
+            @Override
+            public void failure(String errorMessage) {
+
             }
         });
     }
