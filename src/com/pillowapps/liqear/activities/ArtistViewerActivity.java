@@ -122,9 +122,9 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                         Intent intent = new Intent(ArtistViewerActivity.this,
                                 AlbumViewerActivity.class);
-                        Album album = (Album) getViewer(ALBUMS_INDEX).get(position);
+                        LastfmAlbum album = (LastfmAlbum) getViewer(ALBUMS_INDEX).get(position);
                         intent.putExtra(AlbumViewerActivity.ALBUM, album.getTitle());
-                        intent.putExtra(AlbumViewerActivity.ARTIST, album.getArtist());
+                        intent.putExtra(AlbumViewerActivity.ARTIST, album.getArtistName());
                         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                     }
                 };
