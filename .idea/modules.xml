@@ -2,7 +2,18 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/libraries/AndroidBillingLibrary/AndroidBillingLibrary.iml" filepath="$PROJECT_DIR$/libraries/AndroidBillingLibrary/AndroidBillingLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/AppRater/AppRater.iml" filepath="$PROJECT_DIR$/libraries/AppRater/AppRater.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/DragSortListLibrary/DragSortListLibrary.iml" filepath="$PROJECT_DIR$/libraries/DragSortListLibrary/DragSortListLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/LiquidBearAndroid.iml" filepath="$PROJECT_DIR$/LiquidBearAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/NumberPicker/NumberPicker.iml" filepath="$PROJECT_DIR$/libraries/NumberPicker/NumberPicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/PanningViewLibrary/PanningViewLibrary.iml" filepath="$PROJECT_DIR$/libraries/PanningViewLibrary/PanningViewLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/PhotoView/PhotoView.iml" filepath="$PROJECT_DIR$/libraries/PhotoView/PhotoView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/PullToRefreshLibrary/PullToRefreshLibrary.iml" filepath="$PROJECT_DIR$/libraries/PullToRefreshLibrary/PullToRefreshLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/SlidingMenu/SlidingMenu.iml" filepath="$PROJECT_DIR$/libraries/SlidingMenu/SlidingMenu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/StickyGridHeaders/StickyGridHeaders.iml" filepath="$PROJECT_DIR$/libraries/StickyGridHeaders/StickyGridHeaders.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/ViewPagerIndicatorLibrary/ViewPagerIndicatorLibrary.iml" filepath="$PROJECT_DIR$/libraries/ViewPagerIndicatorLibrary/ViewPagerIndicatorLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/libraries.iml" filepath="$PROJECT_DIR$/libraries/libraries.iml" />
     </modules>
   </component>
 </project>

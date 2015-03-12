@@ -197,6 +197,7 @@ public class Converter {
 
     public static List<LastfmAlbum> convertTopAlbums(List<LastfmTopAlbum> topAlbums) {
         List<LastfmAlbum> lastfmAlbums = new ArrayList<>();
+        if (topAlbums == null) return lastfmAlbums;
         for (LastfmTopAlbum topAlbum : topAlbums) {
             lastfmAlbums.add(convertTopAlbum(topAlbum));
         }
