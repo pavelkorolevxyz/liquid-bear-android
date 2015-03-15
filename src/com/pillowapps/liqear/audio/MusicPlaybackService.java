@@ -163,7 +163,7 @@ public class MusicPlaybackService extends Service implements
     @Override
     public void onCreate() {
         super.onCreate();
-        QueryManager.getInstance().scrobbleOffline();
+//        QueryManager.getInstance().scrobbleOffline();
         AudioTimeline.setMusicPlaybackService(this);
         mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         PowerManager pm = (PowerManager) getApplicationContext()

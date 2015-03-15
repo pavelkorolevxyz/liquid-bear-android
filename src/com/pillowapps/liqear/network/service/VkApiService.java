@@ -5,8 +5,10 @@ import com.pillowapps.liqear.entities.vk.roots.VkAlbumsResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkGetUsersResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkGroupsResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkLyricsResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkSavePhotoRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkTrackUrlResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkTracksResponseRoot;
+import com.pillowapps.liqear.entities.vk.roots.VkUploadServerRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkUsersResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkWallMessagesResponseRoot;
 import com.pillowapps.liqear.network.callbacks.VkCallback;
@@ -15,6 +17,7 @@ import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
+import rx.Observable;
 
 public interface VkApiService {
 
@@ -35,9 +38,8 @@ public interface VkApiService {
                                         Callback<VkWallMessagesResponseRoot> callback);
 
     @POST("/wall.post")
-    public void postWallMessages(@Query("message") String message,
-                                 @Query("attachment") String attachment,
-                                 Callback<VkResponse> callback);
+    public Observable<VkResponse> postWallMessages(@Query("message") String message,
+                                                   @Query("attachment") String attachment);
 
     @GET("/audio.get")
     public void getAudio(@Query("owner_id") long ownerId,
@@ -73,7 +75,7 @@ public interface VkApiService {
     public void setAudioStatus(@Query("audio") String audio,
                                Callback<VkResponse> callback);
 
-    @POST("/execute.saps")
+    @POST("/execute.searchAndPostStatus")
     public void setAudioStatusWithSearch(@Query("q") String searchQuery,
                                          Callback<VkResponse> callback);
 
@@ -116,13 +118,12 @@ public interface VkApiService {
                           Callback<VkLyricsResponseRoot> callback);
 
     @POST("/photos.saveWallPhoto")
-    public void saveWallPhoto(@Query("server") String server,
-                              @Query("photo") String photo,
-                              @Query("hash") String hash,
-                              Callback<VkResponse> callback);
+    public Observable<VkSavePhotoRoot> saveWallPhoto(@Query("server") String server,
+                                                     @Query("photo") String photo,
+                                                     @Query("hash") String hash);
 
     @GET("/photos.getWallUploadServer")
-    public void getWallUploadServer(Callback<VkResponse> callback);
+    public Observable<VkUploadServerRoot> getPhotoWallUploadServer();
 
     @POST("/status.set")
     public void updateStatus(@Query("audio") String audioString,

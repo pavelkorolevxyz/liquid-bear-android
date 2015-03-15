@@ -11,6 +11,10 @@ public class VkError {
     public VkError() {
     }
 
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     public int getErrorCode() {
         return errorCode;
     }

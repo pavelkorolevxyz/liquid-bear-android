@@ -69,10 +69,9 @@ import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
-import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.QueryManager;
-import com.pillowapps.liqear.network.ReadyResult;
+import com.pillowapps.liqear.models.vk.VkWallModel;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
+import com.pillowapps.liqear.network.callbacks.VkPassiveCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
 import org.codechimp.apprater.AppRater;
@@ -637,7 +636,7 @@ public class MainActivity extends SlidingFragmentActivity {
                 if (currentTrack == null) return;
 
                 String imageUrl = album != null && album.getArtist().equals(currentTrack.getArtist()) ? album.getImageUrl() : null;
-                shareTrackVk(currentTrack, shareBody, imageUrl);
+                new VkWallModel().postMessage(shareBody, imageUrl, currentTrack, new VkPassiveCallback());
                 Toast.makeText(MainActivity.this, R.string.shared, Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
@@ -661,14 +660,6 @@ public class MainActivity extends SlidingFragmentActivity {
         dialog.show();
     }
 
-    private void shareTrackVk(final Track track, final String message, final String photo) {
-        QueryManager.getInstance().postVkUserWall(message, photo, track, new GetResponseCallback() {
-            @Override
-            public void onDataReceived(ReadyResult result) {
-                // No operations.
-            }
-        });
-    }
 
     public void removeTrack(int position) {
         if (position < AudioTimeline.getCurrentIndex()) {

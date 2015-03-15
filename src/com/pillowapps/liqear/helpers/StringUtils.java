@@ -3,10 +3,13 @@ package com.pillowapps.liqear.helpers;
 import android.text.Html;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class StringUtils {
@@ -63,5 +66,21 @@ public class StringUtils {
 
     public static String escapeString(String s) {
         return Html.fromHtml(s).toString().replaceAll("[\\?&!@#$%^*()_+{}]", "");
+    }
+
+    public static Map<String, String> parseUrlParams(URL url) {
+        Map<String, String> params = new LinkedHashMap<>();
+        try {
+            String query = url.getQuery();
+            String[] pairs = query.split("&");
+            for (String pair : pairs) {
+                int idx = pair.indexOf("=");
+                params.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
+                        URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+            }
+        } catch (UnsupportedEncodingException ignored) {
+
+        }
+        return params;
     }
 }

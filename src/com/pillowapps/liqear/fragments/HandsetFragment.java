@@ -754,6 +754,9 @@ public class HandsetFragment extends Fragment {
                             albumTextView.setVisibility(View.VISIBLE);
                             albumTextView.setText(title);
                         }
+                    } else if (album == null) {
+                        albumImageView.setVisibility(View.GONE);
+                        albumTextView.setVisibility(View.GONE);
                     }
                     mainActivity.invalidateMenu();
                     break;

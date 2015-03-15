@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class VkTrack {
     @SerializedName("id")
     private long audioId;
-    @SerializedName("ownerId")
+    @SerializedName("owner_id")
     private long ownerId;
     @SerializedName("artist")
     private String artist;
