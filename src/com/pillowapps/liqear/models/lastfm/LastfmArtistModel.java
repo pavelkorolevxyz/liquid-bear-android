@@ -11,14 +11,23 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopAlbumsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTracksRoot;
 import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.StringUtils;
+import com.pillowapps.liqear.network.Parser;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.service.LastfmApiService;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import inaka.com.tinytask.DoThis;
+import inaka.com.tinytask.Something;
+import inaka.com.tinytask.TinyTask;
 import rx.Observable;
 
 public class LastfmArtistModel {
@@ -140,5 +149,34 @@ public class LastfmArtistModel {
                 limit,
                 page
         );
+    }
+
+    public void getArtistImages(String artistName, int page, final SimpleCallback<List<String>> callback) {
+        final String url = String.format("http://www.lastfm.ru/music/%s/+images?page=%d",
+                StringUtils.encode(artistName), page);
+        final OkHttpClient client = new OkHttpClient();
+        TinyTask.perform(new Something<List<String>>() {
+            @Override
+            public List<String> whichDoes() throws Exception {
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                if (!response.isSuccessful())
+                    throw new IOException("Loading images failed");
+                return new Parser().parseGetArtistImages(response);
+            }
+        }).whenDone(new DoThis<List<String>>() {
+            @Override
+            public void ifOK(List<String> imagesList) {
+                callback.success(imagesList);
+            }
+
+            @Override
+            public void ifNotOK(Exception e) {
+                callback.failure(e.getMessage());
+            }
+        }).go();
     }
 }

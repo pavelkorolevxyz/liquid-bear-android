@@ -207,6 +207,14 @@ public interface LastfmApiService {
                          @Query("sk") String sessionKey,
                          LastfmCallback<LastfmResponse> callback);
 
+    @POST("/?method=track.scrobble")
+    public Observable<LastfmResponse> scrobble(@Query("artist") String artist,
+                                               @Query("track") String track,
+                                               @Query("album") String album,
+                                               @Query("timestamp") String timestamp,
+                                               @Query("api_sig") String apiSig,
+                                               @Query("sk") String sessionKey);
+
     @GET("/?method=artist.getTopAlbums")
     public void getArtistTopAlbums(@Query("artist") String artist,
                                    Callback<LastfmTopAlbumsRoot> callback);

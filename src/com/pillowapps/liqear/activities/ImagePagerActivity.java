@@ -43,10 +43,9 @@ import com.nostra13.universalimageloader.core.download.URLConnectionImageDownloa
 import com.nostra13.universalimageloader.utils.FileUtils;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.TouchImageView;
-import com.pillowapps.liqear.network.GetResponseCallback;
-import com.pillowapps.liqear.network.QueryManager;
-import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,6 +56,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ImagePagerActivity extends TrackedActivity {
 
@@ -73,7 +73,7 @@ public class ImagePagerActivity extends TrackedActivity {
             .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
             .build();
     private ImageLoader imageLoader = ImageLoader.getInstance();
-    private ArrayList<String> imageUrls;
+    private List<String> imageUrls;
     private String artist;
     private boolean loading = false;
     private int page = 1;
@@ -204,11 +204,9 @@ public class ImagePagerActivity extends TrackedActivity {
     private void getImages(final int i) {
         loading = true;
         Toast.makeText(this, R.string.wait, Toast.LENGTH_SHORT).show();
-        QueryManager.getInstance().getArtistImages(artist, page++, new GetResponseCallback() {
+        new LastfmArtistModel().getArtistImages(artist, page++, new SimpleCallback<List<String>>() {
             @Override
-            public void onDataReceived(ReadyResult result) {
-                loading = false;
-                ArrayList<String> images = (ArrayList<String>) result.getObject();
+            public void success(List<String> images) {
                 if (images == null) return;
                 if (imageUrls == null) {
                     imageUrls = images;
@@ -217,6 +215,11 @@ public class ImagePagerActivity extends TrackedActivity {
                 }
                 adapter.notifyDataSetChanged();
                 actionBar.setTitle(String.format(PAGE_FORMAT, i + 1, imageUrls.size()) + artist);
+            }
+
+            @Override
+            public void failure(String errorMessage) {
+
             }
         });
     }
@@ -228,10 +231,10 @@ public class ImagePagerActivity extends TrackedActivity {
 
     private class ImagePagerAdapter extends PagerAdapter {
 
-        private ArrayList<String> images;
+        private List<String> images;
         private LayoutInflater inflater;
 
-        ImagePagerAdapter(ArrayList<String> images) {
+        ImagePagerAdapter(List<String> images) {
             this.images = images;
             inflater = getLayoutInflater();
         }

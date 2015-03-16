@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 
 public class Params {
     private String methodString;
-    private ApiMethod methodEnum;
     private Map<String, String> params = new HashMap<String, String>();
     private ApiSource apiSource;
     private String additionalParameter;
@@ -18,18 +17,15 @@ public class Params {
 
     public Params(String methodString, ApiMethod methodEnum) {
         this.methodString = methodString;
-        this.methodEnum = methodEnum;
     }
 
     public Params(String methodString, ApiMethod methodEnum, String url) {
         this.methodString = methodString;
-        this.methodEnum = methodEnum;
         this.url = url;
     }
 
     public Params(String methodString, ApiMethod methodEnum, Map<String, String> params) {
         this.methodString = methodString;
-        this.methodEnum = methodEnum;
         this.params = params;
     }
 
@@ -97,14 +93,6 @@ public class Params {
             default:
                 return url;
         }
-    }
-
-    public ApiMethod getMethodEnum() {
-        return methodEnum;
-    }
-
-    public void setMethodEnum(ApiMethod methodEnum) {
-        this.methodEnum = methodEnum;
     }
 
     public String getMethodString() {

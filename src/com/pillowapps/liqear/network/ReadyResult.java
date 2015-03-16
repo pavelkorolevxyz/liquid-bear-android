@@ -3,7 +3,6 @@ package com.pillowapps.liqear.network;
 public class ReadyResult {
     private String method;
     private Long errorCode = null;
-    private ApiMethod methodEnum;
     private Object object;
     private boolean append = false;
     private int totalPages;
@@ -11,12 +10,6 @@ public class ReadyResult {
     public ReadyResult(String method, Object object) {
         this.method = method;
         this.object = object;
-    }
-
-    public ReadyResult(String method, Object object, ApiMethod methodEnum) {
-        this.method = method;
-        this.object = object;
-        this.methodEnum = methodEnum;
     }
 
     public ReadyResult(String method, Object object, boolean append) {
@@ -28,7 +21,6 @@ public class ReadyResult {
     public ReadyResult(String method, Long errorCode, ApiMethod methodEnum, Object object) {
         this.method = method;
         this.errorCode = errorCode;
-        this.methodEnum = methodEnum;
         this.object = object;
     }
     public ReadyResult(String method, Object object, int page) {
@@ -40,7 +32,6 @@ public class ReadyResult {
     public ReadyResult(String method, Object object, ApiMethod methodEnum, int page) {
         this.method = method;
         this.object = object;
-        this.methodEnum = methodEnum;
         this.totalPages = page;
     }
 
@@ -55,7 +46,6 @@ public class ReadyResult {
                        Object object, int page) {
         this.method = method;
         this.errorCode = errorCode;
-        this.methodEnum = methodEnum;
         this.object = object;
         this.totalPages = page;
     }
@@ -81,18 +71,9 @@ public class ReadyResult {
         return "ReadyResult{" +
                 "method='" + method + '\'' +
                 ", errorCode=" + errorCode +
-                ", methodEnum=" + methodEnum +
                 ", object=" + object +
                 ", append=" + append +
                 '}';
-    }
-
-    public ApiMethod getMethodEnum() {
-        return methodEnum;
-    }
-
-    public void setMethodEnum(ApiMethod methodEnum) {
-        this.methodEnum = methodEnum;
     }
 
     public long getErrorCode() {
@@ -104,6 +85,6 @@ public class ReadyResult {
     }
 
     public boolean isOk() {
-        return methodEnum != ApiMethod.ERROR;
+        return false;
     }
 }

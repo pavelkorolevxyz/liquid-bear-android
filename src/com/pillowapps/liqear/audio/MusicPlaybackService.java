@@ -51,12 +51,12 @@ import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.ShakeDetector;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkStatusModel;
 import com.pillowapps.liqear.network.CompletionListener;
-import com.pillowapps.liqear.network.QueryManager;
 import com.pillowapps.liqear.network.callbacks.PassiveCallback;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkPassiveCallback;
@@ -1316,7 +1316,7 @@ public class MusicPlaybackService extends Service implements
                         intent.setAction(Constants.ACTION_SERVICE);
                         intent.putExtra(Constants.CALLBACK_TYPE, ALBUM_INFO_CALLBACK);
                         AudioTimeline.setCurrentAlbum(album);
-                        QueryManager.getInstance().getAlbumImage(album, new CompletionListener() {
+                        new LastfmAlbumModel().getCover(album, new CompletionListener() {
                             @Override
                             public void onCompleted() {
                                 showTrackInNotification();
