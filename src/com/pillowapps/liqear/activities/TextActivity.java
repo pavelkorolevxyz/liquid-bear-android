@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
-import com.pillowapps.liqear.components.ResultSherlockActivity;
+import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.vk.VkError;
@@ -36,7 +36,7 @@ import com.pillowapps.liqear.models.vk.VkLyricsModel;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
-public class TextActivity extends ResultSherlockActivity {
+public class TextActivity extends ResultActivity {
     public static final String ARTIST_NAME = "artist_name";
     public static final String TEXT_AIM = "text_aim";
     private TextView textView;

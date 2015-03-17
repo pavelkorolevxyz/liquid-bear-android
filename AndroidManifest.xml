@@ -16,7 +16,7 @@
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
-        android:name=".LiqearApplication"
+        android:name=".LBApplication"
         android:icon="@drawable/lb_icon_white"
         android:theme="@style/LiquidBearAppTheme"
         android:allowBackup="true"

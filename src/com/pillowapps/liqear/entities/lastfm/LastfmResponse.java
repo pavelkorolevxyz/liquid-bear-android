@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.entities;
+package com.pillowapps.liqear.entities.lastfm;
 
 import com.google.gson.annotations.SerializedName;
 

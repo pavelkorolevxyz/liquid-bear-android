@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.network.callbacks;
 
-import com.pillowapps.liqear.entities.LastfmResponse;
+import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;

@@ -24,7 +24,7 @@ import com.pillowapps.liqear.helpers.PreferencesManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultSherlockActivity extends TrackedActivity {
+public class ResultActivity extends TrackedActivity {
     public static final String TAB_INDEX = "tab_index";
     public int TRACKS_IN_TOP_COUNT = getPageSize();
 
@@ -53,7 +53,7 @@ public class ResultSherlockActivity extends TrackedActivity {
 
     public void openMainPlaylist(List<Track> tracks, int position, boolean local) {
         if (!AuthorizationInfoManager.isAuthorizedOnVk() && !local) {
-            Toast.makeText(ResultSherlockActivity.this, R.string.vk_not_authorized,
+            Toast.makeText(ResultActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -68,7 +68,7 @@ public class ResultSherlockActivity extends TrackedActivity {
 
     public void addToMainPlaylist(List<Track> tracks) {
         if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-            Toast.makeText(ResultSherlockActivity.this, R.string.vk_not_authorized,
+            Toast.makeText(ResultActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -77,7 +77,7 @@ public class ResultSherlockActivity extends TrackedActivity {
 
     public void trackLongClick(List<Track> tracks, int position) {
         if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-            Toast.makeText(ResultSherlockActivity.this, R.string.vk_not_authorized,
+            Toast.makeText(ResultActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -85,7 +85,7 @@ public class ResultSherlockActivity extends TrackedActivity {
     }
 
     public void saveAsPlaylist(List<Track> tracks) {
-        Intent intent = new Intent(ResultSherlockActivity.this,
+        Intent intent = new Intent(ResultActivity.this,
                 PlaylistsActivity.class);
         intent.putExtra("aim", PlaylistsActivity.Aim.SAVE_AS_PLAYLIST);
         intent.putParcelableArrayListExtra(Constants.TRACKLIST, (ArrayList<Track>) tracks);
@@ -93,19 +93,19 @@ public class ResultSherlockActivity extends TrackedActivity {
     }
 
     protected void openArtist(Artist artist) {
-        Intent intent = new Intent(ResultSherlockActivity.this, ArtistViewerActivity.class);
+        Intent intent = new Intent(ResultActivity.this, ArtistViewerActivity.class);
         intent.putExtra(ArtistViewerActivity.ARTIST, artist.getName());
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 
     protected void openTag(Tag tag) {
-        Intent intent = new Intent(ResultSherlockActivity.this, TagViewerActivity.class);
+        Intent intent = new Intent(ResultActivity.this, TagViewerActivity.class);
         intent.putExtra(TagViewerActivity.TAG, tag.getName());
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 
     protected void openAlbum(Album album) {
-        Intent intent = new Intent(ResultSherlockActivity.this, AlbumViewerActivity.class);
+        Intent intent = new Intent(ResultActivity.this, AlbumViewerActivity.class);
         intent.putExtra(AlbumViewerActivity.ARTIST, album.getArtist());
         intent.putExtra(AlbumViewerActivity.ALBUM, album.getTitle());
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);

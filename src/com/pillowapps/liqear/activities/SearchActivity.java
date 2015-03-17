@@ -38,10 +38,10 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.AudioTimeline;
-import com.pillowapps.liqear.components.ResultSherlockActivity;
+import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Group;
@@ -83,11 +83,9 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
-public class SearchActivity extends ResultSherlockActivity implements OnItemClickListener {
+public class SearchActivity extends ResultActivity implements OnItemClickListener {
     public static final String SEARCH_MODE = "search_destiny";
     public static final int USERS_COUNT = 20;
-    @SuppressWarnings("rawtypes")
     private QuickSearchArrayAdapter adapter;
     private ProgressBar progressBar;
     private SearchMode aim;
@@ -104,7 +102,6 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
     private String searchQuery;
     private TextView emptyTextView;
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -760,7 +757,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
                     new VkAudioModel().addToUserAudio(track.getAid(), track.getOwnerId(), new VkSimpleCallback<VkResponse>() {
                         @Override
                         public void success(VkResponse data) {
-                            Toast.makeText(LiqearApplication.getAppContext(),
+                            Toast.makeText(LBApplication.getAppContext(),
                                     R.string.added, Toast.LENGTH_SHORT).show();
                         }
 

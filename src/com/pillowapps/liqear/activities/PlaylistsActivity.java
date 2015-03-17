@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.AudioTimeline;
-import com.pillowapps.liqear.components.ResultSherlockActivity;
+import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.entities.Playlist;
@@ -32,9 +32,8 @@ import com.pillowapps.liqear.entities.Track;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaylistsActivity extends ResultSherlockActivity {
+public class PlaylistsActivity extends ResultActivity {
     public static final String AIM = "aim";
-    @SuppressWarnings("rawtypes")
     private PlaylistsArrayAdapter adapter;
     private Bundle extras;
     private Aim aim;
@@ -113,9 +112,6 @@ public class PlaylistsActivity extends ResultSherlockActivity {
         }
     }
 
-    /**
-     * Context menu(Long click on playlist item) items logic.
-     */
     @Override
     public boolean onContextItemSelected(android.view.MenuItem item) {
         AdapterView.AdapterContextMenuInfo info =

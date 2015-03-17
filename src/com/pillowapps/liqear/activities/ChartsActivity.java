@@ -33,19 +33,16 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 public class ChartsActivity extends PagerResultSherlockActivity {
     public static final int MOST_LOVED = 4;
     public static final int TOP_ARTISTS = 3;
     public static final int TOP_TRACKS = 2;
     public static final int HYPED_TRACKS = 1;
     public static final int HYPED_ARTISTS = 0;
-    @SuppressWarnings("rawtypes")
     private ViewPager pager;
     private TitlePageIndicator indicator;
     private LastfmChartModel chartsModel = new LastfmChartModel();
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

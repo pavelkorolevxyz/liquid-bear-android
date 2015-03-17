@@ -10,19 +10,18 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.text.Html;
 import android.widget.RemoteViews;
+
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
-import com.pillowapps.liqear.components.CancellableThread;
-import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.PreferencesManager;
 
 public class FourWidthOneHeightWidget extends AppWidgetProvider {
     private static boolean sEnabled;
-    private static CancellableThread imageTask;
 
     public static void checkEnabled(Context context, AppWidgetManager manager) {
         sEnabled = manager.getAppWidgetIds(new ComponentName(context,

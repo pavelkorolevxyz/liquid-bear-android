@@ -37,7 +37,6 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 public class UserViewerVkActivity extends PagerResultSherlockActivity {
     public static final String USER = "user";
     public static final String GROUP = "group";
@@ -48,7 +47,6 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
     public static final int USER_AUDIO_INDEX = 1;
     public static final int WALL_INDEX = 0;
     public static final String TAB_INDEX = "tab_index";
-    @SuppressWarnings("rawtypes")
     private ViewPager pager;
     private TitlePageIndicator indicator;
     private User user;

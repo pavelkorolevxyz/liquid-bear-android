@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.helpers;
 
-import com.pillowapps.liqear.entities.LastfmResponse;
+import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 

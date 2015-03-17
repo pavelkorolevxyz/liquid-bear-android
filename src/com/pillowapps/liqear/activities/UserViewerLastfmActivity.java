@@ -39,7 +39,6 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
     public static final String USER = "user";
     public static final String YOU_MODE = "you";

@@ -7,7 +7,8 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import com.pillowapps.liqear.LiqearApplication;
+
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 
@@ -39,7 +40,7 @@ public class PlaylistManager {
         long pid = -1;
         final List<Track> trackList = Collections.unmodifiableList(playlist);
         if (trackList != null) {
-            Context context = LiqearApplication.getAppContext();
+            Context context = LBApplication.getAppContext();
             SQLiteDatabase sampleDB = null;
             try {
                 sampleDB = context.openOrCreateDatabase(DATABASE_TITLE, Context.MODE_PRIVATE, null);
@@ -83,7 +84,7 @@ public class PlaylistManager {
     public void removePlaylist(final long pid) {
         new Thread(new Runnable() {
             public void run() {
-                Context context = LiqearApplication.getAppContext();
+                Context context = LBApplication.getAppContext();
                 SQLiteDatabase sampleDB = null;
                 try {
                     sampleDB = context.openOrCreateDatabase(
@@ -117,7 +118,7 @@ public class PlaylistManager {
     public void renamePlaylist(final long pid, final String title) {
         new Thread(new Runnable() {
             public void run() {
-                Context context = LiqearApplication.getAppContext();
+                Context context = LBApplication.getAppContext();
                 SQLiteDatabase sampleDB = null;
                 try {
                     sampleDB = context.openOrCreateDatabase(
@@ -143,7 +144,7 @@ public class PlaylistManager {
 
     public List<Track> getPlaylist(final long pid) {
         List<Track> trackList = new ArrayList<Track>();
-        Context context = LiqearApplication.getAppContext();
+        Context context = LBApplication.getAppContext();
         SQLiteDatabase sampleDB = null;
         try {
             sampleDB = context.openOrCreateDatabase(DATABASE_TITLE,
@@ -176,7 +177,7 @@ public class PlaylistManager {
 
     public List<Playlist> getPlaylists() {
         List<Playlist> playlists = new ArrayList<Playlist>();
-        Context context = LiqearApplication.getAppContext();
+        Context context = LBApplication.getAppContext();
         SQLiteDatabase sampleDB = null;
         try {
             sampleDB = context.openOrCreateDatabase(DATABASE_TITLE,
@@ -212,7 +213,7 @@ public class PlaylistManager {
                 if (trackList == null || trackList.size() <= 0) {
                     return;
                 }
-                Context context = LiqearApplication.getAppContext();
+                Context context = LBApplication.getAppContext();
                 SQLiteDatabase sampleDB = null;
                 try {
                     sampleDB = context.openOrCreateDatabase(DATABASE_TITLE, Context.MODE_PRIVATE,
@@ -257,7 +258,7 @@ public class PlaylistManager {
     public List<Track> loadPlaylist() {
         String table = UNSAVED_PLAYLIST_TABLE;
         List<Track> trackList = new ArrayList<Track>();
-        Context context = LiqearApplication.getAppContext();
+        Context context = LBApplication.getAppContext();
         SQLiteDatabase sampleDB = null;
         try {
             sampleDB = context.openOrCreateDatabase(DATABASE_TITLE,
@@ -302,7 +303,7 @@ public class PlaylistManager {
     public void removeTrack(final long dbId) {
         new Thread(new Runnable() {
             public void run() {
-                Context context = LiqearApplication.getAppContext();
+                Context context = LBApplication.getAppContext();
                 SQLiteDatabase sampleDB = null;
                 try {
                     sampleDB = context.openOrCreateDatabase(
@@ -327,7 +328,7 @@ public class PlaylistManager {
     public void addTrackToScrobble(final String artist, final String title, final String time) {
         new Thread(new Runnable() {
             public void run() {
-                Context context = LiqearApplication.getAppContext();
+                Context context = LBApplication.getAppContext();
 
                 try {
                     String table = SCROBBLE_TABLE;
@@ -379,7 +380,7 @@ public class PlaylistManager {
     public void addTrackToPlaylist(final Track track, final long pid) {
         new Thread(new Runnable() {
             public void run() {
-                Context context = LiqearApplication.getAppContext();
+                Context context = LBApplication.getAppContext();
                 SQLiteDatabase sampleDB = null;
                 try {
                     sampleDB = context.openOrCreateDatabase(
@@ -411,7 +412,7 @@ public class PlaylistManager {
         SharedPreferences.Editor editor = databasePreferences.edit();
         if (databasePreferences.getInt(Constants.DATABASE_VERSION, 0) < DATABASE_VERSION) {
             try {
-                LiqearApplication.getAppContext().deleteDatabase(DATABASE_TITLE);
+                LBApplication.getAppContext().deleteDatabase(DATABASE_TITLE);
                 editor.putInt(Constants.DATABASE_VERSION, DATABASE_VERSION);
                 editor.apply();
             } catch (Exception ignored) {
@@ -420,7 +421,7 @@ public class PlaylistManager {
     }
 
     public Track loadHeadTrackToScrobble() {
-        Context context = LiqearApplication.getAppContext();
+        Context context = LBApplication.getAppContext();
         SQLiteDatabase sampleDB = null;
         try {
             sampleDB = context.openOrCreateDatabase(DATABASE_TITLE,
@@ -453,7 +454,7 @@ public class PlaylistManager {
     }
 
     public void removeHeadTrackToScrobble() {
-        Context context = LiqearApplication.getAppContext();
+        Context context = LBApplication.getAppContext();
         SQLiteDatabase sampleDB = null;
         try {
             sampleDB = context.openOrCreateDatabase(DATABASE_TITLE,

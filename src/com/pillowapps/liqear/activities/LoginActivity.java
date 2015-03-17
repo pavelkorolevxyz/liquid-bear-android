@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,14 +12,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.network.ServiceHelper;
 
-/**
- * Vk authorization activity with webview.
- */
 public class LoginActivity extends TrackedActivity {
     public static final String OAUTH_REQUEST_FORMAT = "http://oauth.vk.com/authorize?"
             + "client_id=%s&"
@@ -33,7 +29,6 @@ public class LoginActivity extends TrackedActivity {
     public static final String RESPONSE = "token";
     private ProgressBar progressBar;
 
-    @SuppressLint("SetJavaScriptEnabled")
     @SuppressWarnings("deprecation")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +38,6 @@ public class LoginActivity extends TrackedActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         webview.clearCache(true);
 
-        //Чтобы получать уведомления об окончании загрузки страницы
         webview.setWebViewClient(new LoginWebViewClient());
 
         CookieSyncManager.createInstance(this);
@@ -83,8 +77,7 @@ public class LoginActivity extends TrackedActivity {
                 hasAccessToken = true;
             }
             if (param.startsWith("user_id")) {
-                userId = Long
-                        .valueOf(param.substring(param.indexOf("=") + 1));
+                userId = Long.valueOf(param.substring(param.indexOf("=") + 1));
                 hasUserId = true;
             }
             if (param.startsWith("secret")) {
@@ -92,7 +85,7 @@ public class LoginActivity extends TrackedActivity {
             }
         }
         if (hasAccessToken && hasUserId) {
-            SharedPreferences preferences = LiqearApplication.getAppContext()
+            SharedPreferences preferences = LBApplication.getAppContext()
                     .getSharedPreferences(AuthorizationInfoManager.VK_PREFERENCES,
                             Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
@@ -106,7 +99,7 @@ public class LoginActivity extends TrackedActivity {
 
     }
 
-    class LoginWebViewClient extends WebViewClient {
+    private class LoginWebViewClient extends WebViewClient {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {

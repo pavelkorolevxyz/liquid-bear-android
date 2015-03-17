@@ -44,7 +44,6 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 public class ArtistViewerActivity extends PagerResultSherlockActivity {
     public static final String ARTIST = "artist";
     public static final int PERSONAL_TOP_INDEX = 2;
@@ -65,7 +64,6 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
     private ProgressBar artistInfoProgressBar;
     private LastfmArtistModel artistModel = new LastfmArtistModel();
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,22 +222,6 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
     private void changeViewPagerItem(int currentItem) {
         pager.setCurrentItem(currentItem);
         indicator.setCurrentItem(currentItem);
-    }
-
-    /**
-     * Context menu items' positions.
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenuInfo menuInfo) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-    }
-
-    @Override
-    public boolean onContextItemSelected(android.view.MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-                .getMenuInfo();
-        return super.onContextItemSelected(item);
     }
 
     @Override

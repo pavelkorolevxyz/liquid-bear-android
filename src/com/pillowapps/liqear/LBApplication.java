@@ -7,21 +7,21 @@ import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.squareup.picasso.Picasso;
 
 import timber.log.Timber;
 
-public class LiqearApplication extends Application {
+public class LBApplication extends Application {
     private static Context context;
 
     public static Context getAppContext() {
-        return LiqearApplication.context;
+        return LBApplication.context;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        LiqearApplication.context = getApplicationContext();
+        LBApplication.context = getApplicationContext();
+        
         if (!BuildConfig.DEBUG) {
             Crashlytics.start(this);
         } else {

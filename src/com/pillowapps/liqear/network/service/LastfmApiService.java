@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.network.service;
 
-import com.pillowapps.liqear.entities.LastfmResponse;
+import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;

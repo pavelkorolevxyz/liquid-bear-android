@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
@@ -54,7 +54,7 @@ public class Utils {
     }
 
     public static boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) LiqearApplication.getAppContext()
+        ConnectivityManager cm = (ConnectivityManager) LBApplication.getAppContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
 
         return cm != null && cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();

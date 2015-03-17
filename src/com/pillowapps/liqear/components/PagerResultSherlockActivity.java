@@ -3,7 +3,6 @@ package com.pillowapps.liqear.components;
 import android.view.View;
 
 import com.pillowapps.liqear.adapters.ListArrayAdapter;
-import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class PagerResultSherlockActivity extends ResultSherlockActivity {
+public class PagerResultSherlockActivity extends ResultActivity {
     private List<ViewerPage> viewers = new ArrayList<ViewerPage>();
 
     protected int viewersCount() {

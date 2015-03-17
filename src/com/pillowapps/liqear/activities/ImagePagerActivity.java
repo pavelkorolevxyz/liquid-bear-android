@@ -64,7 +64,7 @@ public class ImagePagerActivity extends TrackedActivity {
     public static final String PAGE_FORMAT = "[%d/%d] ";
     private static final String STATE_POSITION = "STATE_POSITION";
     private static final String IMAGE_POSITION = "image_position";
-    ViewPager pager;
+    private ViewPager pager;
     private ActionBar actionBar;
     private DisplayImageOptions options = new DisplayImageOptions.Builder()
             .cacheOnDisc()

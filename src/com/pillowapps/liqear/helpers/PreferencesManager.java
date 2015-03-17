@@ -3,7 +3,8 @@ package com.pillowapps.liqear.helpers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import com.pillowapps.liqear.LiqearApplication;
+
+import com.pillowapps.liqear.LBApplication;
 
 public class PreferencesManager {
     private static final String LASTFM_PREFERENCES = "lastfm_preferences";
@@ -41,14 +42,14 @@ public class PreferencesManager {
     public static SharedPreferences getPreferences() {
         if (preferences == null) {
             preferences = PreferenceManager.getDefaultSharedPreferences(
-                    LiqearApplication.getAppContext());
+                    LBApplication.getAppContext());
         }
         return preferences;
     }
 
     public static SharedPreferences getSavePreferences() {
         if (savePreferences == null) {
-            savePreferences = LiqearApplication.getAppContext()
+            savePreferences = LBApplication.getAppContext()
                     .getSharedPreferences(SAVE_PREFERENCES, Context.MODE_PRIVATE);
         }
         return savePreferences;
@@ -56,7 +57,7 @@ public class PreferencesManager {
 
     public static SharedPreferences getAlbumPreferences() {
         if (albumPreferences == null) {
-            albumPreferences = LiqearApplication.getAppContext()
+            albumPreferences = LBApplication.getAppContext()
                     .getSharedPreferences(ALBUM_PREFERENCES, Context.MODE_PRIVATE);
         }
         return albumPreferences;
@@ -64,7 +65,7 @@ public class PreferencesManager {
 
     public static SharedPreferences getTagPreferences() {
         if (tagPreferences == null) {
-            tagPreferences = LiqearApplication.getAppContext()
+            tagPreferences = LBApplication.getAppContext()
                     .getSharedPreferences(TAG_PREFERENCES, Context.MODE_PRIVATE);
         }
         return tagPreferences;
@@ -72,7 +73,7 @@ public class PreferencesManager {
 
     public static SharedPreferences getArtistPreferences() {
         if (artistPreferences == null) {
-            artistPreferences = LiqearApplication.getAppContext()
+            artistPreferences = LBApplication.getAppContext()
                     .getSharedPreferences(ARTIST_PREFERENCES, Context.MODE_PRIVATE);
         }
         return artistPreferences;
@@ -80,7 +81,7 @@ public class PreferencesManager {
 
     public static SharedPreferences getUrlNumberPreferences() {
         if (urlNumberPreferences == null) {
-            urlNumberPreferences = LiqearApplication.getAppContext()
+            urlNumberPreferences = LBApplication.getAppContext()
                     .getSharedPreferences(URL_PREFERENCES, Context.MODE_PRIVATE);
         }
         return urlNumberPreferences;
@@ -88,7 +89,7 @@ public class PreferencesManager {
 
     public static SharedPreferences getEqualizerPreferences() {
         if (equalizerPreferences == null) {
-            equalizerPreferences = LiqearApplication.getAppContext()
+            equalizerPreferences = LBApplication.getAppContext()
                     .getSharedPreferences(EQUALIZER_PREFERENCES, Context.MODE_PRIVATE);
         }
         return equalizerPreferences;
@@ -96,7 +97,7 @@ public class PreferencesManager {
 
     public static SharedPreferences getDatabasePreferences() {
         if (databasePreferences == null) {
-            databasePreferences = LiqearApplication.getAppContext()
+            databasePreferences = LBApplication.getAppContext()
                     .getSharedPreferences(DATABASE_PREFERENCES, Context.MODE_PRIVATE);
         }
         return databasePreferences;
@@ -104,7 +105,7 @@ public class PreferencesManager {
 
     public static SharedPreferences getLyricsNumberPreferences() {
         if (lyricsNumberPreferences == null) {
-            lyricsNumberPreferences = LiqearApplication.getAppContext()
+            lyricsNumberPreferences = LBApplication.getAppContext()
                     .getSharedPreferences(LYRICS_NUMBER_PREFERENCES, Context.MODE_PRIVATE);
         }
         return lyricsNumberPreferences;
@@ -112,14 +113,14 @@ public class PreferencesManager {
 
     public static SharedPreferences getModePreferences() {
         if (modePreferences == null) {
-            modePreferences = LiqearApplication.getAppContext()
+            modePreferences = LBApplication.getAppContext()
                     .getSharedPreferences(MODE_PREFERENCES, Context.MODE_PRIVATE);
         }
         return modePreferences;
     }
     public static SharedPreferences getStartPreferences() {
         if (startPreferences == null) {
-            startPreferences = LiqearApplication.getAppContext()
+            startPreferences = LBApplication.getAppContext()
                     .getSharedPreferences(START_PREFERENCES, Context.MODE_PRIVATE);
         }
         return startPreferences;
