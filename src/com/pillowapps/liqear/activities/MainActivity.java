@@ -488,11 +488,6 @@ public class MainActivity extends SlidingFragmentActivity {
                 startActivity(intent);
             }
             return true;
-            case R.id.donate_button: {
-                Intent myIntent = new Intent(MainActivity.this, DonateActivity.class);
-                startActivity(myIntent);
-            }
-            return true;
             case R.id.timer_button: {
                 LayoutInflater inflater = (LayoutInflater) MainActivity.this
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
