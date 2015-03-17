@@ -6,8 +6,6 @@ import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -101,7 +99,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
 
     private void initViewPager() {
         final LayoutInflater inflater = LayoutInflater.from(this);
-        final List<View> views = new ArrayList<View>();
+        final List<View> views = new ArrayList<>();
         tracksTab = inflater.inflate(R.layout.list_tab, null);
         views.add(tracksTab);
         infoTab = inflater.inflate(R.layout.album_info_layout, null);
@@ -131,22 +129,6 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
 
             }
         });
-    }
-
-    /**
-     * Context menu items' positions.
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenuInfo menuInfo) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-    }
-
-    @Override
-    public boolean onContextItemSelected(android.view.MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-                .getMenuInfo();
-        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -194,7 +176,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
 
     private void fillWithTracklist(List<Track> trackList) {
         if (tracksAdapter == null) {
-            tracksAdapter = new ListArrayAdapter<Track>(
+            tracksAdapter = new ListArrayAdapter<>(
                     AlbumViewerActivity.this, trackList, Track.class, null
             );
             setTracksAdapter(tracksAdapter);
@@ -221,6 +203,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
                         new com.squareup.picasso.Callback() {
                             @Override
                             public void onSuccess() {
+                                albumCoverImageView.setVisibility(View.VISIBLE);
                                 progressBar.setVisibility(View.GONE);
                             }
 
@@ -231,7 +214,10 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
                         });
                 artistTextView.setText(album.getArtistName());
                 titleTextView.setText(album.getTitle());
-                otherTextView.setText(album.getReleaseDate());
+                String releaseDate = album.getReleaseDate();
+                if (releaseDate != null && !releaseDate.isEmpty()) {
+                    otherTextView.setText(releaseDate.substring(0, releaseDate.indexOf(",")).trim());
+                }
                 tracksProgressBar.setVisibility(View.GONE);
             }
 
@@ -244,7 +230,6 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
     }
 
     private class ArtistViewerAdapter extends PagerAdapter {
-
         List<View> views = null;
         private String[] titles = new String[]{
                 AlbumViewerActivity.this.getString(R.string.tracks).toLowerCase(),

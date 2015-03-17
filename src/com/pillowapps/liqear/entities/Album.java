@@ -190,10 +190,8 @@ public class Album implements Parcelable {
 
         Album album = (Album) o;
 
-        if (!artist.equals(album.artist)) return false;
-        if (!title.equals(album.title)) return false;
+        return artist.equals(album.artist) && title.equals(album.title);
 
-        return true;
     }
 
     @Override

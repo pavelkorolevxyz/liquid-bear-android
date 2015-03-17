@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class User implements Serializable {
 
     private enum Gender {
-        MALE, FEMALE, UNKNOWN;
+        MALE, FEMALE, UNKNOWN
     }
 
     @SerializedName("name")

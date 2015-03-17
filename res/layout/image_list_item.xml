@@ -25,7 +25,7 @@
             android:layout_toRightOf="@+id/image_view_list_item"
             android:layout_centerVertical="true" />
 
-        <com.makeramen.RoundedImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/image_view_list_item"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"

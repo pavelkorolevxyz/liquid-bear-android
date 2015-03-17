@@ -51,7 +51,7 @@ public class TagViewerActivity extends PagerResultSherlockActivity {
     private TitlePageIndicator indicator;
     private Tag tag;
     private int page = 1;
-    private LastfmTagModel tagModel = new LastfmTagModel();;
+    private LastfmTagModel tagModel = new LastfmTagModel();
 
     @SuppressWarnings("unchecked")
     @Override

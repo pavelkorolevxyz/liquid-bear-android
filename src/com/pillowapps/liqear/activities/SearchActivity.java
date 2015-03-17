@@ -73,9 +73,8 @@ import com.pillowapps.liqear.models.setlistsfm.SetlistsfmSetlistModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkFriendModel;
 import com.pillowapps.liqear.models.vk.VkGroupModel;
-import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.SetlistfmSimpleCallback;
+import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
 import java.io.File;
@@ -442,7 +441,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
         new VkAudioModel().searchAudio(searchQuery, 0, count, new VkSimpleCallback<List<VkTrack>>() {
             @Override
             public void success(List<VkTrack> data) {
-                fillWithTracklist(data);
+                fillWithVkTracklist(data);
                 adapter.setHighlighted(PreferencesManager.getUrlNumberPreferences()
                         .getInt(getIntent().getStringExtra(Constants.TARGET), 0));
                 progressBar.setVisibility(View.GONE);
@@ -465,7 +464,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
         return new VkSimpleCallback<List<VkTrack>>() {
             @Override
             public void success(List<VkTrack> data) {
-                fillWithTracklist(data);
+                fillWithVkTracklist(data);
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -828,7 +827,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
         progressBar.setVisibility(View.GONE);
     }
 
-    private void fillWithTracklist(List<VkTrack> vkTracks) {
+    private void fillWithVkTracklist(List<VkTrack> vkTracks) {
         List<Track> trackList = Converter.convertVkTrackList(vkTracks);
         if (adapter == null) {
             adapter = new QuickSearchArrayAdapter<>(SearchActivity.this,
@@ -840,8 +839,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
         setAdapter();
     }
 
-    private void fillWithTracklist(ReadyResult result) {
-        List<Track> trackList = (List<Track>) result.getObject();
+    private void fillWithTracklist(List<Track> trackList) {
         if (adapter == null) {
             adapter = new QuickSearchArrayAdapter<Track>(SearchActivity.this,
                     trackList, Track.class);
@@ -878,14 +876,13 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
 
     private void fillWithTags(List<Tag> tags) {
         emptyTextView.setVisibility(tags.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new QuickSearchArrayAdapter<Tag>(this, tags, Tag.class);
+        adapter = new QuickSearchArrayAdapter<>(this, tags, Tag.class);
         setAdapter();
     }
 
-    private void fillWithFolders(ReadyResult result) {
-        List<File> files = (List<File>) result.getObject();
+    private void fillWithFolders(List<File> files) {
         emptyTextView.setVisibility(files.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new QuickSearchArrayAdapter<File>(this, files, File.class);
+        adapter = new QuickSearchArrayAdapter<>(this, files, File.class);
         setAdapter();
     }
 
@@ -962,7 +959,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
                     @Override
                     public void success(List<VkTrack> data) {
                         progressBar.setVisibility(View.GONE);
-                        fillWithTracklist(data);
+                        fillWithVkTracklist(data);
                     }
 
                     @Override
@@ -991,7 +988,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
             @Override
             public void handleMessage(Message msg) {
                 List<Track> result = (List<Track>) msg.obj;
-                fillWithTracklist(new ReadyResult("local_tracks", result));
+                fillWithTracklist(result);
             }
         };
         Thread thread = new Thread(new Runnable() {
@@ -1024,8 +1021,8 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                List<File> result = (List<File>) msg.obj;
-                fillWithFolders(new ReadyResult("local_folders", result));
+                List<File> files = (List<File>) msg.obj;
+                fillWithFolders(files);
             }
         };
         Thread thread = new Thread(new Runnable() {
@@ -1125,7 +1122,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
             @Override
             public void handleMessage(Message msg) {
                 List<Track> result = (List<Track>) msg.obj;
-                fillWithTracklist(new ReadyResult("local_tracks", result));
+                fillWithTracklist(result);
             }
         };
         Thread thread = new Thread(new Runnable() {
@@ -1162,7 +1159,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
             @Override
             public void handleMessage(Message msg) {
                 List<Track> result = (List<Track>) msg.obj;
-                fillWithTracklist(new ReadyResult("local_tracks", result));
+                fillWithTracklist(result);
             }
         };
         Thread thread = new Thread(new Runnable() {
@@ -1200,7 +1197,7 @@ public class SearchActivity extends ResultSherlockActivity implements OnItemClic
             @Override
             public void handleMessage(Message msg) {
                 List<Track> result = (List<Track>) msg.obj;
-                fillWithTracklist(new ReadyResult("local_tracks", result));
+                fillWithTracklist(result);
             }
         };
         Thread thread = new Thread(new Runnable() {

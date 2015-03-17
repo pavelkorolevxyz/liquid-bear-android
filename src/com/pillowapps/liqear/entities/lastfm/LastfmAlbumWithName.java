@@ -4,20 +4,19 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class LastfmAlbum {
-
-    @SerializedName("name")
+public class LastfmAlbumWithName {
+    @SerializedName("title")
     private String title;
     @SerializedName("artist")
     private String artistName;
-    @SerializedName("releasedate")
+    @SerializedName("releaseDate")
     private String releaseDate;
     @SerializedName("image")
     private List<LastfmImage> images;
     @SerializedName("tracks")
     private LastfmTracks tracks;
 
-    public LastfmAlbum() {
+    public LastfmAlbumWithName() {
     }
 
     public void setTitle(String title) {
@@ -62,7 +61,7 @@ public class LastfmAlbum {
 
     @Override
     public String toString() {
-        return "LastfmAlbum{" +
+        return "LastfmAlbumWithName{" +
                 "title='" + title + '\'' +
                 ", artistName='" + artistName + '\'' +
                 ", releaseDate=" + releaseDate +

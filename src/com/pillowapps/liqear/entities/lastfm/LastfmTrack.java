@@ -9,7 +9,7 @@ public class LastfmTrack {
     @SerializedName("artist")
     private LastfmArtist artist;
     @SerializedName("album")
-    private LastfmAlbum album;
+    private LastfmAlbumWithName album;
     @SerializedName("userloved")
     private Boolean loved;
 
@@ -32,7 +32,7 @@ public class LastfmTrack {
         this.artist = artist;
     }
 
-    public LastfmAlbum getAlbum() {
+    public LastfmAlbumWithName getAlbum() {
         return album;
     }
 

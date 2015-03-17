@@ -32,11 +32,8 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
-import com.pillowapps.liqear.network.Params;
-import com.pillowapps.liqear.network.ReadyResult;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
@@ -200,13 +197,6 @@ public class UserViewerLastfmActivity extends PagerResultSherlockActivity {
         });
 
         changeViewPagerItem(defaultIndex);
-    }
-
-    private boolean checkError(ReadyResult result, Params.ApiSource apiSource) {
-        if (!result.isOk()) {
-            Utils.showErrorDialog(result, UserViewerLastfmActivity.this, apiSource);
-        }
-        return !result.isOk();
     }
 
     private void initViewPager() {

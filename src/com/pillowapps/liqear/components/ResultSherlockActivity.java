@@ -12,19 +12,14 @@ import com.pillowapps.liqear.activities.PlaylistsActivity;
 import com.pillowapps.liqear.activities.TagViewerActivity;
 import com.pillowapps.liqear.activities.TrackedActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
-import com.pillowapps.liqear.network.Params;
-import com.pillowapps.liqear.network.ReadyResult;
-import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
-import com.pillowapps.liqear.entities.ErrorResponseLastfm;
-import com.pillowapps.liqear.entities.ErrorResponseVk;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.PreferencesManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,20 +30,6 @@ public class ResultSherlockActivity extends TrackedActivity {
 
     private int getPageSize() {
         return PreferencesManager.getPreferences().getInt("page_size", 50);
-    }
-
-    protected boolean checkForError(ReadyResult result, Params.ApiSource source) {
-        final boolean error = !result.isOk();
-        int errorCode = -1;
-        if (result.getObject() instanceof ErrorResponseLastfm) {
-            errorCode = ((ErrorResponseLastfm) result.getObject()).getError();
-        } else if (result.getObject() instanceof ErrorResponseVk) {
-            errorCode = ((ErrorResponseVk) result.getObject()).getErrorCode();
-        }
-        if (error && errorCode != 0) {
-            Utils.showErrorDialog(result, ResultSherlockActivity.this, source);
-        }
-        return error;
     }
 
     @Override

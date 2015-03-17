@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.activities;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -35,7 +34,6 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.models.portals.AlterportalAlbumModel;
 import com.pillowapps.liqear.models.portals.FunkySoulsAlbumModel;
-import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.callbacks.NewcomersSimpleCallback;
 
 import java.util.ArrayList;
@@ -184,25 +182,6 @@ public class NewcomersActivity extends ResultSherlockActivity {
                 startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
             }
         });
-    }
-
-    private void showException(String error, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getString(R.string.error) + " " + error.substring(error.indexOf(' ') + 1));
-        builder.setMessage(message);
-        builder.setNeutralButton(getResources().getString(android.R.string.ok), null);
-        AlertDialog exceptionDialog = builder.create();
-        exceptionDialog.show();
-    }
-
-    private boolean checkForError(ReadyResult result) {
-        final boolean error = !result.isOk();
-        if (error) {
-            showException(result.getMethod() + " " + result.getErrorCode(),
-                    (String) result.getObject());
-            progressBar.setVisibility(View.GONE);
-        }
-        return error;
     }
 
     private void getNewcomersFunky(int page) {

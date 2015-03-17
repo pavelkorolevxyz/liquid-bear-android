@@ -4,6 +4,6 @@
     <style name="LiquidBearAppTheme" parent="AppTheme.Base21" />
 
     <style name="AppTheme.Base21" parent="AppTheme.Base">
-        <item name="android:navigationBarColor">@color/primary</item>
+        <item name="android:navigationBarColor">@color/primary_text</item>
     </style>
 </resources>

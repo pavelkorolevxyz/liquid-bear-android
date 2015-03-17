@@ -22,8 +22,6 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.AuthActivityAdapter;
-import com.pillowapps.liqear.entities.ErrorResponseLastfm;
-import com.pillowapps.liqear.entities.ErrorResponseVk;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmSession;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
@@ -37,8 +35,6 @@ import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.lastfm.LastfmAuthModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.models.vk.VkUserModel;
-import com.pillowapps.liqear.network.Params;
-import com.pillowapps.liqear.network.ReadyResult;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
@@ -260,20 +256,6 @@ public class AuthActivity extends TrackedActivity {
                         });
             }
         });
-    }
-
-    private boolean checkForError(ReadyResult result, Params.ApiSource source) {
-        final boolean error = !result.isOk();
-        int errorCode = -1;
-        if (result.getObject() instanceof ErrorResponseLastfm) {
-            errorCode = ((ErrorResponseLastfm) result.getObject()).getError();
-        } else if (result.getObject() instanceof ErrorResponseVk) {
-            errorCode = ((ErrorResponseVk) result.getObject()).getErrorCode();
-        }
-        if (error && errorCode != 0) {
-            Utils.showErrorDialog(result, AuthActivity.this, source);
-        }
-        return error;
     }
 
     private void signUpVk() {

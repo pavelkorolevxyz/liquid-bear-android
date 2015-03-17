@@ -87,9 +87,8 @@ public class Artist {
 
         Artist artist = (Artist) o;
 
-        if (!name.equals(artist.name)) return false;
+        return name.equals(artist.name);
 
-        return true;
     }
 
     @Override

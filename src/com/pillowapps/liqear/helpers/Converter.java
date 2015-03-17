@@ -7,6 +7,7 @@ import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
+import com.pillowapps.liqear.entities.lastfm.LastfmAlbumWithName;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtistStruct;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
@@ -64,6 +65,21 @@ public class Converter {
     }
 
     public static Album convertAlbum(LastfmAlbum lastfmAlbum) {
+        if (lastfmAlbum == null) return null;
+        String artist = lastfmAlbum.getArtistName();
+        String name = lastfmAlbum.getTitle();
+
+        Album album = new Album(artist, name);
+        List<LastfmImage> images = lastfmAlbum.getImages();
+        String imageUrl = null;
+        if (images != null && images.size() > 0) {
+            imageUrl = images.get(images.size() - 1).getUrl();
+        }
+        album.setImageUrl(imageUrl);
+        return album;
+    }
+
+    public static Album convertAlbum(LastfmAlbumWithName lastfmAlbum) {
         if (lastfmAlbum == null) return null;
         String artist = lastfmAlbum.getArtistName();
         String name = lastfmAlbum.getTitle();

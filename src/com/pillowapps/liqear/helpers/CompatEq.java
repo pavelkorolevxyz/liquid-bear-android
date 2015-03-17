@@ -16,8 +16,7 @@ public class CompatEq {
      * session.
      */
     public CompatEq(MediaPlayer player) {
-        Equalizer eq = new Equalizer(0, player.getAudioSessionId());
-        mEq = eq;
+        mEq = new Equalizer(0, player.getAudioSessionId());
     }
 
     /**

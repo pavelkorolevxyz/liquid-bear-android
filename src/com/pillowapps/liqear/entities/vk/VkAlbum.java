@@ -3,21 +3,21 @@ package com.pillowapps.liqear.entities.vk;
 import com.google.gson.annotations.SerializedName;
 
 public class VkAlbum {
-    @SerializedName("album_id")
-    private String albumId;
+    @SerializedName("id")
+    private long albumId;
     @SerializedName("owner_id")
-    private String ownerId;
+    private long ownerId;
     @SerializedName("title")
     private String title;
 
     public VkAlbum() {
     }
 
-    public String getAlbumId() {
+    public long getAlbumId() {
         return albumId;
     }
 
-    public String getOwnerId() {
+    public long getOwnerId() {
         return ownerId;
     }
 
