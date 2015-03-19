@@ -29,7 +29,7 @@ import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.ResultSherlockActivity;
+import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
@@ -44,7 +44,7 @@ import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 
 import java.util.List;
 
-public class RecommendationsActivity extends ResultSherlockActivity {
+public class RecommendationsActivity extends ResultActivity {
     private static final int RECOMMENDATIONS_AMOUNT = 20;
     private RecommendationsArrayAdapter<Artist> adapter;
     private ProgressBar progressBar;
@@ -123,7 +123,6 @@ public class RecommendationsActivity extends ResultSherlockActivity {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();

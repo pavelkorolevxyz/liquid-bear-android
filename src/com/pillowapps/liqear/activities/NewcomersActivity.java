@@ -27,7 +27,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.ResultSherlockActivity;
+import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
@@ -40,8 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
-public class NewcomersActivity extends ResultSherlockActivity {
+public class NewcomersActivity extends ResultActivity {
     public static final String MODE = "mode";
     public static final int NEWCOMERS_START_ITEMS = 20;
     private Mode mode;
@@ -58,9 +57,6 @@ public class NewcomersActivity extends ResultSherlockActivity {
     private LoadMoreListView listView;
     private TextView emptyTextView;
 
-    /**
-     * Calls on Sherlock button pressed.
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();

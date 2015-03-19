@@ -31,7 +31,7 @@ import android.text.Html;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.activities.SearchActivity;
@@ -56,7 +56,7 @@ import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkStatusModel;
-import com.pillowapps.liqear.network.CompletionListener;
+import com.pillowapps.liqear.network.callbacks.CompletionCallback;
 import com.pillowapps.liqear.network.callbacks.PassiveCallback;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkPassiveCallback;
@@ -169,7 +169,7 @@ public class MusicPlaybackService extends Service implements
         PowerManager pm = (PowerManager) getApplicationContext()
                 .getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Liqear");
-        WifiManager wifimanager = (WifiManager) LiqearApplication.getAppContext()
+        WifiManager wifimanager = (WifiManager) LBApplication.getAppContext()
                 .getSystemService(Context.WIFI_SERVICE);
         wifiLock = wifimanager.createWifiLock("player_on");
         manager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -186,7 +186,7 @@ public class MusicPlaybackService extends Service implements
         IntentFilter receiverFilter = new IntentFilter(
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY);
         try {
-            LiqearApplication.getAppContext().registerReceiver(headsetReceiver, receiverFilter);
+            LBApplication.getAppContext().registerReceiver(headsetReceiver, receiverFilter);
         } catch (IllegalArgumentException ignored) {
         }
         manager.requestAudioFocus(focusChangeListener, AudioManager.STREAM_MUSIC,
@@ -314,7 +314,7 @@ public class MusicPlaybackService extends Service implements
                         @Override
                         public void success(VkResponse data) {
                             track.setAddedToVk(true);
-                            Toast.makeText(LiqearApplication.getAppContext(),
+                            Toast.makeText(LBApplication.getAppContext(),
                                     R.string.added, Toast.LENGTH_SHORT).show();
                             showTrackInNotification();
                         }
@@ -432,7 +432,7 @@ public class MusicPlaybackService extends Service implements
         } catch (Exception ignored) {
         }
         if (headsetReceiver != null) {
-            LiqearApplication.getAppContext().unregisterReceiver(headsetReceiver);
+            LBApplication.getAppContext().unregisterReceiver(headsetReceiver);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -1316,7 +1316,7 @@ public class MusicPlaybackService extends Service implements
                         intent.setAction(Constants.ACTION_SERVICE);
                         intent.putExtra(Constants.CALLBACK_TYPE, ALBUM_INFO_CALLBACK);
                         AudioTimeline.setCurrentAlbum(album);
-                        new LastfmAlbumModel().getCover(album, new CompletionListener() {
+                        new LastfmAlbumModel().getCover(album, new CompletionCallback() {
                             @Override
                             public void onCompleted() {
                                 showTrackInNotification();

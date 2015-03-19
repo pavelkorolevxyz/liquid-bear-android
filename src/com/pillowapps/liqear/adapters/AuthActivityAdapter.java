@@ -5,15 +5,11 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 
 import java.util.List;
 
-/**
- * Adapter of ViewPager of MainActivity.
- */
-@SuppressWarnings("deprecation")
 public class AuthActivityAdapter extends PagerAdapter {
     public static final int LASTFM_TAB_INDEX = 1;
     public static final int VK_TAB_INDEX = 0;
@@ -22,8 +18,8 @@ public class AuthActivityAdapter extends PagerAdapter {
     private String[] titles = new String[2];
 
     {
-        titles[VK_TAB_INDEX] = LiqearApplication.getAppContext().getString(R.string.vk);
-        titles[LASTFM_TAB_INDEX] = LiqearApplication.getAppContext().getString(R.string.last_fm);
+        titles[VK_TAB_INDEX] = LBApplication.getAppContext().getString(R.string.vk);
+        titles[LASTFM_TAB_INDEX] = LBApplication.getAppContext().getString(R.string.last_fm);
     }
 
     public AuthActivityAdapter(List<View> inViews) {

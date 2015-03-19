@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/libraries/AndroidBillingLibrary/AndroidBillingLibrary.iml" filepath="$PROJECT_DIR$/libraries/AndroidBillingLibrary/AndroidBillingLibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libraries/AppRater/AppRater.iml" filepath="$PROJECT_DIR$/libraries/AppRater/AppRater.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/DragSortListLibrary/DragSortListLibrary.iml" filepath="$PROJECT_DIR$/libraries/DragSortListLibrary/DragSortListLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/LiquidBearAndroid.iml" filepath="$PROJECT_DIR$/LiquidBearAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/NumberPicker/NumberPicker.iml" filepath="$PROJECT_DIR$/libraries/NumberPicker/NumberPicker.iml" />

@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.helpers;
 
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.UpdateAdapterCallback;
 import com.pillowapps.liqear.entities.Category;
@@ -108,17 +108,17 @@ public class ModeItemsHelper {
         Mode prev;
         if (modes.size() > 0) {
             prev = modes.get(0);
-            items.add(new Header(LiqearApplication.getAppContext(), prev.getCategoryTitle()));
-            items.add(new ListItem(LiqearApplication.getAppContext(), prev, callback));
+            items.add(new Header(LBApplication.getAppContext(), prev.getCategoryTitle()));
+            items.add(new ListItem(LBApplication.getAppContext(), prev, callback));
         }
         for (int i = 1; i < modes.size(); i++) {
             prev = modes.get(i - 1);
             Mode current = modes.get(i);
             if (prev.getCategory() != current.getCategory()) {
-                items.add(new Header(LiqearApplication.getAppContext(),
+                items.add(new Header(LBApplication.getAppContext(),
                         current.getCategoryTitle()));
             }
-            items.add(new ListItem(LiqearApplication.getAppContext(), current, callback));
+            items.add(new ListItem(LBApplication.getAppContext(), current, callback));
         }
         return items;
     }

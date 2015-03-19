@@ -37,7 +37,8 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import com.michaelnovakjr.numberpicker.NumberPicker;
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.BuildConfig;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.MainActivityAdapter;
 import com.pillowapps.liqear.adapters.ModeAdapter;
@@ -74,13 +75,15 @@ import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkPassiveCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 
-import org.codechimp.apprater.AppRater;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import fr.nicolaspomepuy.discreetapprate.AppRate;
+import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
+import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
 
 public class MainActivity extends SlidingFragmentActivity {
     public Menu mainMenu;
@@ -117,7 +120,13 @@ public class MainActivity extends SlidingFragmentActivity {
         actionBar.setTitle(R.string.app_name);
         actionBar.setDisplayShowTitleEnabled(true);
 
-        AppRater.app_launched(this);
+        AppRate.with(this)
+                .theme(AppRateTheme.DARK)
+                .debug(BuildConfig.DEBUG)
+                .fromTop(true)
+                .delay(1000)
+                .retryPolicy(RetryPolicy.EXPONENTIAL)
+                .checkAndShow();
 
         if (findViewById(R.id.tablet_layout) != null) {
             playlistItemsAdapter = new PlaylistItemsAdapter(MainActivity.this);
@@ -192,8 +201,6 @@ public class MainActivity extends SlidingFragmentActivity {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         startMusicService();
-
-//        ViewServer.get(this).addWindow(this);
     }
 
     @Override
@@ -259,7 +266,6 @@ public class MainActivity extends SlidingFragmentActivity {
 
     @Override
     protected void onResume() {
-//        ViewServer.get(this).setFocusedWindow(this);
         super.onResume();
         invalidateOptionsMenu();
         if (AudioTimeline.isPlaylistChanged()) {
@@ -319,12 +325,6 @@ public class MainActivity extends SlidingFragmentActivity {
         } else {
             moveTaskToBack(true);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-//        ViewServer.get(this).removeWindow(this);
-        super.onDestroy();
     }
 
     @Override
@@ -488,11 +488,6 @@ public class MainActivity extends SlidingFragmentActivity {
                 startActivity(intent);
             }
             return true;
-            case R.id.donate_button: {
-                Intent myIntent = new Intent(MainActivity.this, DonateActivity.class);
-                startActivity(myIntent);
-            }
-            return true;
             case R.id.timer_button: {
                 LayoutInflater inflater = (LayoutInflater) MainActivity.this
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -579,7 +574,7 @@ public class MainActivity extends SlidingFragmentActivity {
                 boolean visibility = !savePreferences.getBoolean(
                         Constants.SEARCH_PLAYLIST_VISIBILITY, false);
                 savePreferences.edit().putBoolean(
-                        Constants.SEARCH_PLAYLIST_VISIBILITY, visibility).commit();
+                        Constants.SEARCH_PLAYLIST_VISIBILITY, visibility).apply();
                 updateSearchVisibility();
             }
             return true;
@@ -812,7 +807,7 @@ public class MainActivity extends SlidingFragmentActivity {
             new VkAudioModel().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>() {
                 @Override
                 public void success(VkResponse data) {
-                    Toast.makeText(LiqearApplication.getAppContext(),
+                    Toast.makeText(LBApplication.getAppContext(),
                             R.string.added, Toast.LENGTH_SHORT).show();
                 }
 
@@ -917,7 +912,7 @@ public class MainActivity extends SlidingFragmentActivity {
             public void onServiceDisconnected(ComponentName arg0) {
             }
         };
-        Intent intent = new Intent(LiqearApplication.getAppContext(), MusicPlaybackService.class);
+        Intent intent = new Intent(LBApplication.getAppContext(), MusicPlaybackService.class);
         startService(intent);
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
     }

@@ -34,19 +34,10 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 public class TagViewerActivity extends PagerResultSherlockActivity {
     public static final String TAG = "tag";
     public static final int TAG_INFO_INDEX = 1;
     public static final int TRACKS_INDEX = 0;
-    @SuppressWarnings("rawtypes")
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .displayer(new FadeInBitmapDisplayer(500))
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .build();
-    private ImageLoader imageLoader = ImageLoader.getInstance();
     private ViewPager pager;
     private TitlePageIndicator indicator;
     private Tag tag;
@@ -111,22 +102,6 @@ public class TagViewerActivity extends PagerResultSherlockActivity {
         indicator.setViewPager(pager);
         indicator.setTextColor(getResources().getColor(R.color.secondary_text)); indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
         indicator.setFooterColor(getResources().getColor(R.color.accent));
-    }
-
-    /**
-     * Context menu items' positions.
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenuInfo menuInfo) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-    }
-
-    @Override
-    public boolean onContextItemSelected(android.view.MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-                .getMenuInfo();
-        return super.onContextItemSelected(item);
     }
 
     @Override

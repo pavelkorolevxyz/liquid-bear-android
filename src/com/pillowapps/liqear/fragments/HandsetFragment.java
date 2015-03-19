@@ -45,7 +45,7 @@ import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.audio.RepeatMode;
 import com.pillowapps.liqear.audio.ShuffleMode;
-import com.pillowapps.liqear.components.ActivitySwipeDetector;
+import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.components.ModeClickListener;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
@@ -421,8 +421,8 @@ public class HandsetFragment extends Fragment {
                 updateTime();
             }
         });
-        ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(mainActivity);
-        blackView.setOnTouchListener(activitySwipeDetector);
+        SwipeDetector swipeDetector = new SwipeDetector(mainActivity);
+        blackView.setOnTouchListener(swipeDetector);
     }
 
     @Override

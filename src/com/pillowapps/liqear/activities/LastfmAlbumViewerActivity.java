@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.ListArrayAdapter;
-import com.pillowapps.liqear.components.ResultSherlockActivity;
+import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
@@ -38,13 +38,13 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LastfmAlbumViewerActivity extends ResultSherlockActivity {
+public class AlbumViewerActivity extends ResultActivity {
     public static final String ALBUM = "album";
     public static final String ARTIST = "artist";
     public static final int ALBUM_INFO_INDEX = 1;
     public static final int TRACKS_INDEX = 0;
     private ViewPager pager;
-    private ListArrayAdapter tracksAdapter;
+    private ListArrayAdapter<Track> tracksAdapter;
     private ListView tracksListView;
     private ProgressBar tracksProgressBar;
     private View infoTab;
@@ -60,6 +60,8 @@ public class LastfmAlbumViewerActivity extends ResultSherlockActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewer_layout);
+
+
         Bundle extras = getIntent().getExtras();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);

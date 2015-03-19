@@ -2,7 +2,7 @@ package com.pillowapps.liqear.audio;
 
 import android.graphics.Bitmap;
 import android.widget.Toast;
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
@@ -135,7 +135,7 @@ public class AudioTimeline {
         }
         listenings = new int[playlist.size()];
         playlistChanged = true;
-        Toast.makeText(LiqearApplication.getAppContext(), R.string.added,
+        Toast.makeText(LBApplication.getAppContext(), R.string.added,
                 Toast.LENGTH_SHORT).show();
     }
 

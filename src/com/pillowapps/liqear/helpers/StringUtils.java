@@ -8,7 +8,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -43,25 +42,12 @@ public class StringUtils {
         return null;
     }
 
-    public static Map<String, String> map(String... strings) {
-        if (strings.length % 2 != 0)
-            throw new IllegalArgumentException("strings.length % 2 != 0");
-        Map<String, String> mp = new HashMap<String, String>();
-        for (int i = 0; i < strings.length; i += 2) {
-            mp.put(strings[i], strings[i + 1]);
-        }
-        return mp;
-    }
-
     public static String encode(String s) {
-
         try {
             return URLEncoder.encode(s, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            return s;
         }
-
-        return null;
     }
 
     public static String escapeString(String s) {

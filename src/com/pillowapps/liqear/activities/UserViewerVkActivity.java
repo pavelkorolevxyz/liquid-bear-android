@@ -37,7 +37,6 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 public class UserViewerVkActivity extends PagerResultSherlockActivity {
     public static final String USER = "user";
     public static final String GROUP = "group";

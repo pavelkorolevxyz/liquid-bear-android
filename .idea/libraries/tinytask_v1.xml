@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="tinytask-v1">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/build/intermediates/exploded-aar/com.github.inaka/tinytask/v1/classes.jar!/" />
       <root url="file://$PROJECT_DIR$/build/intermediates/exploded-aar/com.github.inaka/tinytask/v1/res" />
+      <root url="jar://$PROJECT_DIR$/build/intermediates/exploded-aar/com.github.inaka/tinytask/v1/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

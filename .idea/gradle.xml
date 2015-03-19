@@ -10,8 +10,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/libraries" />
-            <option value="$PROJECT_DIR$/libraries/AndroidBillingLibrary" />
-            <option value="$PROJECT_DIR$/libraries/AppRater" />
             <option value="$PROJECT_DIR$/libraries/DragSortListLibrary" />
             <option value="$PROJECT_DIR$/libraries/NumberPicker" />
             <option value="$PROJECT_DIR$/libraries/PanningViewLibrary" />

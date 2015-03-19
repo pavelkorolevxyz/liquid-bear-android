@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.models.lastfm;
 
-import com.pillowapps.liqear.entities.LastfmResponse;
+import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTrackRoot;

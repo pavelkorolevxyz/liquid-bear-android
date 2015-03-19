@@ -1,7 +1,6 @@
 package com.pillowapps.liqear.activities;
 
 import android.content.Intent;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -14,21 +13,16 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.google.analytics.tracking.android.EasyTracker;
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
+import com.pillowapps.liqear.helpers.AppUtils;
 
-/**
- * Preferences list activity
- */
 public class PreferencesActivity extends PreferenceActivity {
-    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-//        getActionBar().setDisplayHomeAsUpEnabled(true);
-//        getActionBar().setTitle(R.string.preferences);
 
         LinearLayout root = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
         Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
@@ -65,7 +59,7 @@ public class PreferencesActivity extends PreferenceActivity {
         shakeNext.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                startService(new Intent(LiqearApplication.getAppContext(),
+                startService(new Intent(LBApplication.getAppContext(),
                         MusicPlaybackService.class)
                         .setAction(MusicPlaybackService.CHANGE_SHAKE_PREFERENCE));
                 return true;
@@ -94,7 +88,7 @@ public class PreferencesActivity extends PreferenceActivity {
 
         });
         Preference versionPref = findPreference("version");
-        versionPref.setSummary(getVersion());
+        versionPref.setSummary(AppUtils.getAppVersion());
         Preference thanksPref = findPreference("thanks");
         thanksPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -119,14 +113,6 @@ public class PreferencesActivity extends PreferenceActivity {
     protected void onStop() {
         super.onStop();
         EasyTracker.getInstance(this).activityStop(this);
-    }
-
-    public String getVersion() {
-        try {
-            return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-        } catch (NameNotFoundException e) {
-            return "";
-        }
     }
 
     @Override

@@ -26,6 +26,7 @@ android {
 
     lintOptions {
         abortOnError false
+        disable 'InvalidPackage'
     }
 
     sourceSets {
@@ -71,12 +72,11 @@ dependencies {
     compile 'io.reactivex:rxandroid:0.24.0'
     compile 'com.makeramen:roundedimageview:2.0.0'
     compile 'com.github.inaka:tinytask:v1'
+    compile 'fr.nicolaspomepuy:discreetapprate:2.0.3@aar'
     compile project(':libraries:SlidingMenu')
     compile project(':libraries:PullToRefreshLibrary')
     compile project(':libraries:DragSortListLibrary')
     compile project(':libraries:StickyGridHeaders')
-    compile project(':libraries:AppRater')
-    compile project(':libraries:AndroidBillingLibrary')
     compile project(':libraries:NumberPicker')
     compile project(':libraries:PanningViewLibrary')
     compile project(':libraries:PhotoView')

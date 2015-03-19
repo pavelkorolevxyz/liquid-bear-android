@@ -5,13 +5,13 @@ import android.graphics.Bitmap;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumSearchResultsRoot;
-import com.pillowapps.liqear.network.CompletionListener;
+import com.pillowapps.liqear.network.callbacks.CompletionCallback;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
@@ -64,14 +64,14 @@ public class LastfmAlbumModel {
         });
     }
 
-    public void getCover(final Album album, final CompletionListener listener) {
+    public void getCover(final Album album, final CompletionCallback callback) {
         if (album == null) {
             AudioTimeline.setCurrentAlbumBitmap(null);
-            listener.onCompleted();
+            callback.onCompleted();
             return;
         }
         ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.loadImage(LiqearApplication.getAppContext(),
+        imageLoader.loadImage(LBApplication.getAppContext(),
                 album.getImageUrl(), new ImageLoadingListener() {
                     @Override
                     public void onLoadingStarted() {
@@ -86,7 +86,7 @@ public class LastfmAlbumModel {
                     @Override
                     public void onLoadingComplete(Bitmap bitmap) {
                         AudioTimeline.setCurrentAlbumBitmap(bitmap);
-                        listener.onCompleted();
+                        callback.onCompleted();
                     }
 
                     @Override

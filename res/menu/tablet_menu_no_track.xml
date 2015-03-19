@@ -61,10 +61,6 @@
                   android:title="@string/equalizer"
                   android:icon="@drawable/ic_equalizer_dark"
                   app:showAsAction="always|withText"/>
-            <item android:id="@+id/donate_button"
-                  android:title="@string/donate"
-                  android:icon="@drawable/ic_donate_dark"
-                  app:showAsAction="always|withText"/>
             <item android:id="@+id/timer_button"
                   android:title="@string/timer"
                   android:icon="@drawable/ic_timer_dark"

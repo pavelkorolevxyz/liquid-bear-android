@@ -6,25 +6,21 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pillowapps.liqear.LiqearApplication;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Adapter of ViewPager of MainActivity.
- */
-@SuppressWarnings("deprecation")
 public class MainActivityAdapter extends PagerAdapter {
     public static final int PLAY_TAB_INDEX = 1;
     public static final int PLAYLIST_TAB_INDEX = 0;
     public static final int MODE_TAB_INDEX = 2;
     public static final int COUNT = 3;
     private static final List<String> titles = Arrays.asList(
-            LiqearApplication.getAppContext().getString(R.string.playlist_tab),
-            LiqearApplication.getAppContext().getString(R.string.play_tab),
-            LiqearApplication.getAppContext().getString(R.string.mode_tab)
+            LBApplication.getAppContext().getString(R.string.playlist_tab),
+            LBApplication.getAppContext().getString(R.string.play_tab),
+            LBApplication.getAppContext().getString(R.string.mode_tab)
     );
     private List<View> views = null;
 

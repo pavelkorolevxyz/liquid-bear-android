@@ -17,10 +17,6 @@ import com.pillowapps.liqear.entities.Track;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Adapter of playlist ListView items.
- */
 public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
     private final Context context;
     private List<Track> tracks;
