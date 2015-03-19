@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class LastfmAlbumAdapter extends ArrayAdapter<LastfmAlbum> {
@@ -34,6 +35,15 @@ public class LastfmAlbumAdapter extends ArrayAdapter<LastfmAlbum> {
     @Override
     public LastfmAlbum getItem(int position) {
         return values.get(position);
+    }
+
+    public List<LastfmAlbum> getItems() {
+        return values;
+    }
+
+    @Override
+    public int getCount() {
+        return values.size();
     }
 
     public void addAll(List<LastfmAlbum> values) {
@@ -52,8 +62,8 @@ public class LastfmAlbumAdapter extends ArrayAdapter<LastfmAlbum> {
                 Context.LAYOUT_INFLATER_SERVICE);
         ViewHolder holder;
         if (convertView == null) {
-            holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.image_list_item, null);
+            convertView = inflater.inflate(R.layout.image_list_item, parent, false);
+            holder = new ViewHolder(convertView);
             holder.loadImages = PreferencesManager.getPreferences()
                     .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true);
             convertView.setTag(holder);
@@ -86,5 +96,9 @@ public class LastfmAlbumAdapter extends ArrayAdapter<LastfmAlbum> {
         boolean loadImages;
         @InjectView(R.id.image_view_list_item)
         ImageView imageView;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
     }
 }

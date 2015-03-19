@@ -77,13 +77,13 @@ public class ListArrayAdapter<T> extends ArrayAdapter<T> {
         if (convertView == null) {
             holder = new ViewHolder();
             if (clazz == Track.class) {
-                convertView = inflater.inflate(R.layout.playlist_tab_list_item, null);
+                convertView = inflater.inflate(R.layout.playlist_tab_list_item, parent, false);
                 holder.textView = (TextView) convertView.findViewById(R.id.artist_list_item);
                 holder.secondTextView = (TextView) convertView.findViewById(R.id.title_list_item);
                 holder.positionTextView = (TextView) convertView.findViewById(
                         R.id.position_text_view_list_item);
             } else {
-                convertView = inflater.inflate(R.layout.image_list_item, null);
+                convertView = inflater.inflate(R.layout.image_list_item, parent, false);
                 holder.textView = (TextView) convertView.findViewById(R.id.text_list_item);
                 holder.imageView = (ImageView) convertView.findViewById(R.id.image_view_list_item);
                 holder.loadImages = PreferencesManager.getPreferences()

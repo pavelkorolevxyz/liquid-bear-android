@@ -2,26 +2,21 @@ package com.pillowapps.liqear.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.PagerResultSherlockActivity;
-import com.pillowapps.liqear.components.ViewerPage;
-import com.pillowapps.liqear.entities.Artist;
-import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.adapters.ViewerAdapter;
+import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
+import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
+import com.pillowapps.liqear.components.PagerResultActivity;
+import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Converter;
@@ -33,7 +28,7 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChartsActivity extends PagerResultSherlockActivity {
+public class ChartsActivity extends PagerResultActivity {
     public static final int MOST_LOVED = 4;
     public static final int TOP_ARTISTS = 3;
     public static final int TOP_TRACKS = 2;
@@ -55,154 +50,20 @@ public class ChartsActivity extends PagerResultSherlockActivity {
 
     private void initUi() {
         initViewPager();
-
-        for (int i = 0; i < viewersCount(); i++) {
-            ViewerPage viewer = getViewer(i);
-            switch (i) {
-                case HYPED_ARTISTS:
-                case TOP_ARTISTS:
-                    setOpenArtistListener(viewer);
-                    break;
-                default:
-                    setOpenMainPlaylist(viewer);
-                    setTrackLongClick(viewer);
-                    break;
-            }
-        }
-
-        getViewer(HYPED_ARTISTS).getListView().setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getHypedArtists();
-            }
-        });
-        getViewer(HYPED_TRACKS).getListView().setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getHypedTracks();
-            }
-        });
-        getViewer(TOP_TRACKS).getListView().setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getTopTracks();
-            }
-        });
-        getViewer(TOP_ARTISTS).getListView().setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getTopArtists();
-            }
-        });
-        getViewer(MOST_LOVED).getListView().setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getMostLoved();
-            }
-        });
         int defaultIndex = TOP_TRACKS;
         changeViewPagerItem(defaultIndex);
     }
 
-    private void getMostLoved() {
-        chartsModel.getLovedTracksChart(TRACKS_IN_TOP_COUNT,
-                getViewer(MOST_LOVED).getPage("getMostLoved"), new SimpleCallback<List<LastfmTrack>>() {
-                    @Override
-                    public void success(List<LastfmTrack> lastfmTracks) {
-                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
-                                getViewer(MOST_LOVED));
-                    }
-
-                    @Override
-                    public void failure(String errorMessage) {
-                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
-                    }
-                });
-    }
-
-    private void getTopArtists() {
-        chartsModel.getTopArtists(TRACKS_IN_TOP_COUNT,
-                getViewer(TOP_ARTISTS).getPage("getTopArtists"), new SimpleCallback<List<LastfmArtist>>() {
-                    @Override
-                    public void success(List<LastfmArtist> lastfmArtists) {
-                        fillArtists(Converter.convertArtistList(lastfmArtists),
-                                getViewer(TOP_ARTISTS));
-                    }
-
-                    @Override
-                    public void failure(String errorMessage) {
-                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
-                    }
-                });
-    }
-
-    private void getTopTracks() {
-        chartsModel.getTopTracksChart(TRACKS_IN_TOP_COUNT,
-                getViewer(TOP_TRACKS).getPage("getTracks"), new SimpleCallback<List<LastfmTrack>>() {
-                    @Override
-                    public void success(List<LastfmTrack> lastfmTracks) {
-                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
-                                getViewer(TOP_TRACKS));
-                    }
-
-                    @Override
-                    public void failure(String errorMessage) {
-                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
-                    }
-                });
-    }
-
-    private void getHypedTracks() {
-        chartsModel.getHypedTracks(TRACKS_IN_TOP_COUNT,
-                getViewer(HYPED_TRACKS).getPage("getHypedTracks"), new SimpleCallback<List<LastfmTrack>>() {
-                    @Override
-                    public void success(List<LastfmTrack> lastfmTracks) {
-                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
-                                getViewer(HYPED_TRACKS));
-                    }
-
-                    @Override
-                    public void failure(String errorMessage) {
-                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
-                    }
-                });
-    }
-
-    private void getHypedArtists() {
-        chartsModel.getHypedArtists(TRACKS_IN_TOP_COUNT,
-                getViewer(HYPED_ARTISTS).getPage("getHypedArtists"), new SimpleCallback<List<LastfmArtist>>() {
-                    @Override
-                    public void success(List<LastfmArtist> lastfmArtists) {
-                        fillArtists(Converter.convertArtistList(lastfmArtists),
-                                getViewer(HYPED_ARTISTS));
-                    }
-
-                    @Override
-                    public void failure(String errorMessage) {
-                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
-                    }
-                });
-    }
-
     private void initViewPager() {
-        final LayoutInflater inflater = LayoutInflater.from(this);
-        final List<View> views = new ArrayList<View>();
-        View view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<Artist>(view));
-        view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<Track>(view));
-        view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<Track>(view));
-        view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<Artist>(view));
-        view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<Track>(view));
-        final ChartsAdapter adapter = new ChartsAdapter(views);
+        List<ViewerPage> pages = new ArrayList<>(5);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        pages.add(createHypedArtistsPage(inflater));
+        pages.add(createHypedTracksPage(inflater));
+        pages.add(createTopTracksPage(inflater));
+        pages.add(createTopArtistsPage(inflater));
+        pages.add(createLovedTracksPage(inflater));
+        setViewers(pages);
+        final ViewerAdapter adapter = new ViewerAdapter(pages);
         pager = (ViewPager) findViewById(R.id.viewpager);
         pager.setAdapter(adapter);
         indicator = (TitlePageIndicator) findViewById(R.id.indicator);
@@ -219,25 +80,10 @@ public class ChartsActivity extends PagerResultSherlockActivity {
             @Override
             public void onPageSelected(int index) {
                 invalidateOptionsMenu();
-                if (getViewer(index).adapterClean()) {
-                    getViewer(index).getProgressBar().setVisibility(View.VISIBLE);
-                    switch (index) {
-                        case HYPED_ARTISTS:
-                            getHypedArtists();
-                            break;
-                        case HYPED_TRACKS:
-                            getHypedTracks();
-                            break;
-                        case TOP_TRACKS:
-                            getTopTracks();
-                            break;
-                        case TOP_ARTISTS:
-                            getTopArtists();
-                            break;
-                        case MOST_LOVED:
-                            getMostLoved();
-                            break;
-                    }
+                ViewerPage viewer = getViewer(index);
+                if (viewer.isNotLoaded()) {
+                    viewer.showProgressBar(true);
+                    viewer.onLoadMore();
                 }
             }
 
@@ -247,6 +93,84 @@ public class ChartsActivity extends PagerResultSherlockActivity {
         });
     }
 
+    private ViewerPage createLovedTracksPage(LayoutInflater inflater) {
+        final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.loved_tracks);
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getMostLoved(viewer);
+            }
+        });
+        viewer.setItemClickListener(trackClickListener);
+        viewer.setItemLongClickListener(trackLongClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private ViewerPage createTopArtistsPage(LayoutInflater inflater) {
+        final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.top_artists);
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getTopArtists(viewer);
+            }
+        });
+        viewer.setItemClickListener(artistClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private ViewerPage createTopTracksPage(LayoutInflater inflater) {
+        final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.top_tracks);
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getTopTracks(viewer);
+            }
+        });
+        viewer.setItemClickListener(trackClickListener);
+        viewer.setItemLongClickListener(trackLongClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private LastfmTracksViewerPage createHypedTracksPage(LayoutInflater inflater) {
+        final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.hyped_artists);
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getHypedTracks(viewer);
+            }
+        });
+        viewer.setItemClickListener(trackClickListener);
+        viewer.setItemLongClickListener(trackLongClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private ViewerPage createHypedArtistsPage(LayoutInflater inflater) {
+        final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.hyped_artists);
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getHypedArtists(viewer);
+            }
+        });
+        viewer.setItemClickListener(artistClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
     private void changeViewPagerItem(int currentItem) {
         if (pager.getCurrentItem() == currentItem) {
             indicator.onPageSelected(currentItem);
@@ -254,21 +178,6 @@ public class ChartsActivity extends PagerResultSherlockActivity {
             pager.setCurrentItem(currentItem);
             indicator.setCurrentItem(currentItem);
         }
-    }
-
-    /**
-     * Context menu items' positions.
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-    }
-
-    @Override
-    public boolean onContextItemSelected(android.view.MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-                .getMenuInfo();
-        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -303,80 +212,94 @@ public class ChartsActivity extends PagerResultSherlockActivity {
             }
             return true;
             case R.id.to_playlist: {
-                if (getViewer(pager.getCurrentItem()).adapterClean()) return true;
-                addToMainPlaylist(getViewer(pager.getCurrentItem()).getValues());
+                if (getViewer(pager.getCurrentItem()).isNotLoaded()) return true;
+                List<LastfmTrack> items = getViewer(pager.getCurrentItem()).getItems();
+                addToMainPlaylist(Converter.convertLastfmTrackList(items));
                 Toast.makeText(ChartsActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
             }
             return true;
             case R.id.save_as_playlist: {
-                if (getViewer(pager.getCurrentItem()).adapterClean()) return true;
-                saveAsPlaylist(getViewer(pager.getCurrentItem()).getValues());
+                if (getViewer(pager.getCurrentItem()).isNotLoaded()) return true;
+                List<LastfmTrack> items = getViewer(pager.getCurrentItem()).getItems();
+                saveAsPlaylist(Converter.convertLastfmTrackList(items));
             }
             return true;
         }
         return false;
     }
 
-    private class ChartsAdapter extends PagerAdapter {
-        List<View> views = null;
-        private String[] titles;
+    private void getMostLoved(final LastfmTracksViewerPage viewer) {
+        chartsModel.getLovedTracksChart(TRACKS_IN_TOP_COUNT,
+                viewer.getPage(), new SimpleCallback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks) {
+                        viewer.fill(lastfmTracks);
+                    }
 
-        public ChartsAdapter(List<View> inViews) {
-            views = inViews;
-            titles = new String[]{
-                    getString(R.string.hyped_artists).toLowerCase(),
-                    getString(R.string.hyped_tracks).toLowerCase(),
-                    getString(R.string.top_tracks).toLowerCase(),
-                    getString(R.string.top_artists).toLowerCase(),
-                    getString(R.string.loved_tracks).toLowerCase()};
-        }
+                    @Override
+                    public void failure(String errorMessage) {
+                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
+                    }
+                });
+    }
 
-        public String getTitle(int position) {
-            return titles[position];
-        }
+    private void getTopArtists(final LastfmArtistViewerPage viewer) {
+        chartsModel.getTopArtists(TRACKS_IN_TOP_COUNT,
+                viewer.getPage(), new SimpleCallback<List<LastfmArtist>>() {
+                    @Override
+                    public void success(List<LastfmArtist> lastfmArtists) {
+                        viewer.fill(lastfmArtists);
+                    }
 
-        @Override
-        public int getCount() {
-            return titles.length;
-        }
+                    @Override
+                    public void failure(String errorMessage) {
+                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
+                    }
+                });
+    }
 
-        @Override
-        public Object instantiateItem(View pager, int position) {
-            View v = views.get(position);
-            ((ViewPager) pager).addView(v, 0);
-            return v;
-        }
+    private void getTopTracks(final LastfmTracksViewerPage viewer) {
+        chartsModel.getTopTracksChart(TRACKS_IN_TOP_COUNT,
+                viewer.getPage(), new SimpleCallback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks) {
+                        viewer.fill(lastfmTracks);
+                    }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titles[position];
-        }
+                    @Override
+                    public void failure(String errorMessage) {
+                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
+                    }
+                });
+    }
 
-        @Override
-        public void destroyItem(View pager, int position, Object view) {
-            ((ViewPager) pager).removeView((View) view);
-        }
+    private void getHypedTracks(final LastfmTracksViewerPage viewer) {
+        chartsModel.getHypedTracks(TRACKS_IN_TOP_COUNT,
+                viewer.getPage(), new SimpleCallback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks) {
+                        viewer.fill(lastfmTracks);
+                    }
 
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view.equals(object);
-        }
+                    @Override
+                    public void failure(String errorMessage) {
+                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
+                    }
+                });
+    }
 
-        @Override
-        public void finishUpdate(View view) {
-        }
+    private void getHypedArtists(final LastfmArtistViewerPage viewer) {
+        chartsModel.getHypedArtists(TRACKS_IN_TOP_COUNT,
+                viewer.getPage(), new SimpleCallback<List<LastfmArtist>>() {
+                    @Override
+                    public void success(List<LastfmArtist> lastfmArtists) {
+                        viewer.fill(lastfmArtists);
+                    }
 
-        @Override
-        public void restoreState(Parcelable p, ClassLoader c) {
-        }
-
-        @Override
-        public Parcelable saveState() {
-            return null;
-        }
-
-        @Override
-        public void startUpdate(View view) {
-        }
+                    @Override
+                    public void failure(String errorMessage) {
+                        ErrorNotifier.showError(ChartsActivity.this, errorMessage);
+                    }
+                });
     }
 }

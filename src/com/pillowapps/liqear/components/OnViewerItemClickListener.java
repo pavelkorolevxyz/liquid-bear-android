@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.components;
 
-public interface OnViewerItemClickListener {
-    public void onViewerClicked
+import java.util.List;
+
+public interface OnViewerItemClickListener<T> {
+    public void onViewerClicked(List<T> items, int position);
 }

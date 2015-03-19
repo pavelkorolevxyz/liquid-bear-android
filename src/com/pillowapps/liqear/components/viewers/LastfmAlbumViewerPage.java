@@ -46,15 +46,15 @@ public class LastfmAlbumViewerPage extends ViewerPage<LastfmAlbum> {
         int adapterSize = adapter == null ? 0 : adapter.getCount();
 
         int count = adapterSize + albums.size();
-        boolean listsEmpty = count == 0;
-        showEmptyPlaceholder(listsEmpty);
-        showProgressBar(!listsEmpty);
+        showEmptyPlaceholder(count == 0);
+        showProgressBar(false);
         updateAdapter(albums);
     }
 
     private void updateAdapter(List<LastfmAlbum> albums) {
         if (adapter == null) {
             adapter = new LastfmAlbumAdapter(getContext(), albums);
+            listView.setAdapter(adapter);
         } else {
             adapter.addAll(albums);
             onLoadMoreComplete();

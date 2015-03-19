@@ -13,6 +13,7 @@ import com.pillowapps.liqear.entities.vk.VkTrack;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class VkTracksAdapter extends ArrayAdapter<VkTrack> {
@@ -28,6 +29,15 @@ public class VkTracksAdapter extends ArrayAdapter<VkTrack> {
     @Override
     public VkTrack getItem(int position) {
         return values.get(position);
+    }
+
+    @Override
+    public int getCount() {
+        return values.size();
+    }
+
+    public List<VkTrack> getItems() {
+        return values;
     }
 
     public void addAll(List<VkTrack> values) {
@@ -46,8 +56,8 @@ public class VkTracksAdapter extends ArrayAdapter<VkTrack> {
                 Context.LAYOUT_INFLATER_SERVICE);
         ViewHolder holder;
         if (convertView == null) {
-            holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.playlist_tab_list_item, null);
+            convertView = inflater.inflate(R.layout.playlist_tab_list_item, parent, false);
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -72,5 +82,9 @@ public class VkTracksAdapter extends ArrayAdapter<VkTrack> {
         TextView titleTextView;
         @InjectView(R.id.position_text_view_list_item)
         TextView positionTextView;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
     }
 }

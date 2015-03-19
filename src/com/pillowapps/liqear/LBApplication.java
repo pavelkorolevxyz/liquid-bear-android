@@ -8,6 +8,7 @@ import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class LBApplication extends Application {
@@ -21,7 +22,7 @@ public class LBApplication extends Application {
     public void onCreate() {
         super.onCreate();
         LBApplication.context = getApplicationContext();
-        
+
         if (!BuildConfig.DEBUG) {
             Crashlytics.start(this);
         } else {
@@ -33,5 +34,7 @@ public class LBApplication extends Application {
                         .memoryCache(new LRULimitedMemoryCache(16 * 1024 * 1024))
                         .build();
         ImageLoader.getInstance().init(config);
+
+        ButterKnife.setDebug(true);
     }
 }

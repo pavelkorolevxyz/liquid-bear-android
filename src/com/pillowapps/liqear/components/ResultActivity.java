@@ -1,24 +1,26 @@
 package com.pillowapps.liqear.components;
 
 import android.content.Intent;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.ArtistViewerActivity;
+import com.pillowapps.liqear.activities.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.PlaylistsActivity;
+import com.pillowapps.liqear.activities.SearchActivity;
 import com.pillowapps.liqear.activities.TagViewerActivity;
 import com.pillowapps.liqear.activities.TrackedActivity;
+import com.pillowapps.liqear.activities.UserViewerVkActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.entities.Album;
-import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class ResultActivity extends TrackedActivity {
     public static final String TAB_INDEX = "tab_index";
     public int TRACKS_IN_TOP_COUNT = getPageSize();
 
-    private int getPageSize() {
+    protected int getPageSize() {
         return PreferencesManager.getPreferences().getInt("page_size", 50);
     }
 
@@ -84,6 +86,15 @@ public class ResultActivity extends TrackedActivity {
         AudioTimeline.addToPlaylist(tracks.get(position));
     }
 
+    public void trackLongClick(Track track) {
+        if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+            Toast.makeText(ResultActivity.this, R.string.vk_not_authorized,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AudioTimeline.addToPlaylist(track);
+    }
+
     public void saveAsPlaylist(List<Track> tracks) {
         Intent intent = new Intent(ResultActivity.this,
                 PlaylistsActivity.class);
@@ -92,7 +103,7 @@ public class ResultActivity extends TrackedActivity {
         startActivity(intent);
     }
 
-    protected void openArtist(Artist artist) {
+    protected void openArtist(LastfmArtist artist) {
         Intent intent = new Intent(ResultActivity.this, ArtistViewerActivity.class);
         intent.putExtra(ArtistViewerActivity.ARTIST, artist.getName());
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
@@ -105,61 +116,29 @@ public class ResultActivity extends TrackedActivity {
     }
 
     protected void openAlbum(Album album) {
-<<<<<<< HEAD:src/com/pillowapps/liqear/components/ResultSherlockActivity.java
-        Intent intent = new Intent(ResultSherlockActivity.this, LastfmAlbumViewerActivity.class);
+        Intent intent = new Intent(ResultActivity.this, LastfmAlbumViewerActivity.class);
         intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
         intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
-=======
-        Intent intent = new Intent(ResultActivity.this, AlbumViewerActivity.class);
-        intent.putExtra(AlbumViewerActivity.ARTIST, album.getArtist());
-        intent.putExtra(AlbumViewerActivity.ALBUM, album.getTitle());
->>>>>>> 9ff1e2265dc724f9650825a5804575bc9792445e:src/com/pillowapps/liqear/components/ResultActivity.java
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 
-    protected void setOpenMainPlaylist(final ViewerPage<Track> viewer) {
-        viewer.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                openMainPlaylist(viewer.getValues(), position);
-            }
-        });
+    protected void openVkAlbum(VkAlbum vkAlbum) {
+        Intent searchIntent = new Intent(ResultActivity.this,
+                SearchActivity.class);
+        searchIntent.putExtra("title", vkAlbum.getTitle());
+        UserViewerVkActivity.Mode mode = UserViewerVkActivity.Mode.USER;
+        if (mode == UserViewerVkActivity.Mode.USER) {
+            searchIntent.putExtra("uid", vkAlbum.getOwnerId());
+        } else {
+            searchIntent.putExtra("gid", vkAlbum.getOwnerId());
+        }
+        searchIntent.putExtra("album_id", vkAlbum.getAlbumId());
+        searchIntent.putExtra(SearchActivity.SEARCH_MODE,
+                SearchActivity.SearchMode.VK_ALBUM_TRACKLIST);
+        startActivityForResult(searchIntent, Constants.MAIN_REQUEST_CODE);
     }
 
-    protected void setTrackLongClick(final ViewerPage<Track> viewer) {
-        viewer.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                trackLongClick(viewer.getValues(), i);
-                return true;
-            }
-        });
-    }
-
-    protected void setOpenArtistListener(final ViewerPage<Artist> viewer) {
-        viewer.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                openArtist(viewer.get(position));
-            }
-        });
-    }
-
-    protected void setOpenTagListener(final ViewerPage<Tag> viewer) {
-        viewer.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                openTag(viewer.get(position));
-            }
-        });
-    }
-
-    protected void setOpenAlbumListener(final ViewerPage<Album> viewer) {
-        viewer.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                openAlbum(viewer.get(position));
-            }
-        });
+    protected void showError(String errorMessage) {
+        ErrorNotifier.showError(this, errorMessage);
     }
 }

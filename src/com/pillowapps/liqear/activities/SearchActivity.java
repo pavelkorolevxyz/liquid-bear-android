@@ -59,9 +59,9 @@ import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.entities.vk.VkUser;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.helpers.CollectionUtils;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.SetlistfmUtils;
@@ -392,10 +392,6 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 });
     }
 
-    private void showError(String error) {
-        ErrorNotifier.showError(SearchActivity.this, error);
-    }
-
     private void searchTag(String searchQuery, int limit, int page) {
         new LastfmTagModel().searchTag(searchQuery, limit, page,
                 new SimpleCallback<List<LastfmTag>>() {
@@ -659,9 +655,10 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 int artistLastNumberAll = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
                 int artistsLastNumberMod = artistLastNumberAll % Constants.PRESET_WANTED_COUNT;
                 editor.putInt(Constants.PRESET_LAST_NUMBER, artistLastNumberAll + 1);
-                Artist artist = (Artist) adapter.get(position);
+                LastfmArtist artist = (LastfmArtist) adapter.get(position);
                 editor.putString(Constants.ARTIST_NUMBER + artistsLastNumberMod, artist.getName());
-                editor.putString(Constants.IMAGE + artistsLastNumberMod, artist.getPreviewUrl());
+                editor.putString(Constants.IMAGE + artistsLastNumberMod,
+                        CollectionUtils.last(artist.getImages()).getUrl());
                 editor.apply();
                 openArtist(artist);
             }

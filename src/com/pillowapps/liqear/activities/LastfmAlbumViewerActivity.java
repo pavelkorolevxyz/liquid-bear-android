@@ -38,7 +38,7 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlbumViewerActivity extends ResultActivity {
+public class LastfmAlbumViewerActivity extends ResultActivity {
     public static final String ALBUM = "album";
     public static final String ARTIST = "artist";
     public static final int ALBUM_INFO_INDEX = 1;

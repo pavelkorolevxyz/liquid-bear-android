@@ -2,38 +2,35 @@ package com.pillowapps.liqear.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.PagerResultSherlockActivity;
-import com.pillowapps.liqear.components.ViewerPage;
-import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.adapters.ViewerViewAdapter;
+import com.pillowapps.liqear.components.viewers.LastfmAlbumViewerPage;
+import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
+import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
+import com.pillowapps.liqear.components.PagerResultActivity;
+import com.pillowapps.liqear.components.TextViewerPage;
+import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
@@ -44,25 +41,27 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArtistViewerActivity extends PagerResultSherlockActivity {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
+public class ArtistViewerActivity extends PagerResultActivity {
     public static final String ARTIST = "artist";
     public static final int PERSONAL_TOP_INDEX = 2;
     public static final int TOP_TRACKS_INDEX = 1;
     public static final int ALBUMS_INDEX = 0;
     public int ARTIST_INFO_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 4 : 3;
     public int SIMILAR_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 3 : 2;
-    @SuppressWarnings("rawtypes")
     private ViewPager pager;
     private TitlePageIndicator indicator;
-    private int topTracksPage = 1;
-    private int personalPage = 1;
-    private int similarPage = 1;
     private Artist artist;
     private boolean infoLoaded = false;
-    private TextView artistInfoTextView;
-    private View infoTab;
-    private ProgressBar artistInfoProgressBar;
     private LastfmArtistModel artistModel = new LastfmArtistModel();
+
+    private View infoTab;
+    @InjectView(R.id.progress_bar_scrallable_text_layout)
+    protected ProgressBar artistInfoProgressBar;
+    @InjectView(R.id.text_view_scrollable_text_layout)
+    protected TextView artistInfoTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,103 +77,42 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
 
     private void initUi() {
         initViewPager();
-        getViewer(TOP_TRACKS_INDEX).getListView().setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                openMainPlaylist(getViewer(TOP_TRACKS_INDEX).getValues(), position);
-            }
-        });
-        getViewer(TOP_TRACKS_INDEX).getListView().setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getArtistTopTracks(artist, TRACKS_IN_TOP_COUNT, topTracksPage++);
-            }
-        });
-        getViewer(TOP_TRACKS_INDEX).getListView()
-                .setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        trackLongClick(getViewer(TOP_TRACKS_INDEX).getValues(), i);
-                        return true;
-                    }
-                });
-        changeViewPagerItem(getIntent().getIntExtra(TAB_INDEX, TOP_TRACKS_INDEX));
-
-        OnItemClickListener similarListener = new
-
-                OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                        Artist clickedArtist = (Artist) adapterView.getAdapter().getItem(position);
-                        Intent intent = new Intent(ArtistViewerActivity.this,
-                                ArtistViewerActivity.class);
-                        intent.putExtra(ARTIST, clickedArtist.getName());
-                        startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-                    }
-                };
-        getViewer(SIMILAR_INDEX).getListView().setOnItemClickListener(similarListener);
-        OnItemClickListener albumsListener = new
-
-                OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                        Intent intent = new Intent(ArtistViewerActivity.this,
-                                LastfmAlbumViewerActivity.class);
-                        LastfmAlbum album = (LastfmAlbum) getViewer(ALBUMS_INDEX).get(position);
-                        intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
-                        intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtistName());
-                        startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-                    }
-                };
-        getViewer(ALBUMS_INDEX).getListView().setOnItemClickListener(albumsListener);
-
-        if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-            getViewer(PERSONAL_TOP_INDEX).getListView()
-                    .setOnItemClickListener(new OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view,
-                                                int position, long l) {
-                            openMainPlaylist(getViewer(PERSONAL_TOP_INDEX).getValues(), position);
-                        }
-                    });
-            getViewer(PERSONAL_TOP_INDEX).getListView().setOnItemLongClickListener(
-                    new AdapterView.OnItemLongClickListener() {
-                        @Override
-                        public boolean onItemLongClick(AdapterView<?> adapterView,
-                                                       View view, int i, long l) {
-                            trackLongClick(getViewer(PERSONAL_TOP_INDEX).getValues(), i);
-                            return true;
-                        }
-                    });
-        }
-
-        artistInfoTextView = (TextView) infoTab.findViewById(
-                R.id.text_view_scrollable_text_layout);
+        ButterKnife.inject(this, infoTab);
         artistInfoTextView.setMovementMethod(LinkMovementMethod.getInstance());
-        artistInfoProgressBar = (ProgressBar) infoTab.findViewById(
-                R.id.progress_bar_scrallable_text_layout);
+        int defaultIndex = TOP_TRACKS_INDEX;
+        changeViewPagerItem(defaultIndex);
     }
 
     private void initViewPager() {
-        final LayoutInflater inflater = LayoutInflater.from(this);
-        final List<View> views = new ArrayList<View>();
-        View view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<Album>(view));
-        view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<Track>(view));
+        List<ViewerPage> pages = new ArrayList<>(5);
+        List<View> views = new ArrayList<>(5);
+        List<String> titles = new ArrayList<>(5);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        ViewerPage albumsPage = createAlbumsPage(inflater);
+        views.add(albumsPage.getView());
+        titles.add(albumsPage.getTitle());
+        pages.add(albumsPage);
+        ViewerPage topTracksPage = createTopTracksPage(inflater);
+        views.add(topTracksPage.getView());
+        titles.add(topTracksPage.getTitle());
+        pages.add(topTracksPage);
         if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-            view = inflater.inflate(R.layout.list_tab, null);
-            views.add(view);
-            addViewer(new ViewerPage<Track>(view));
+            ViewerPage personalTopTracksPage = createPersonalTopTracksPage(inflater);
+            views.add(personalTopTracksPage.getView());
+            titles.add(personalTopTracksPage.getTitle());
+            pages.add(personalTopTracksPage);
         }
-        view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<Artist>(view));
-        infoTab = inflater.inflate(R.layout.scrollable_text_layout, null);
+        ViewerPage similarArtistsPage = createSimilarArtistsPage(inflater);
+        views.add(similarArtistsPage.getView());
+        titles.add(similarArtistsPage.getTitle());
+        pages.add(similarArtistsPage);
+        TextViewerPage bioPage = createBioPage(inflater);
+        infoTab = bioPage.getView();
         views.add(infoTab);
-        final ArtistViewerAdapter adapter = new ArtistViewerAdapter(views);
+        titles.add(bioPage.getTitle());
+        setViewers(pages);
+        final ViewerViewAdapter adapter = new ViewerViewAdapter(views, titles);
+
         pager = (ViewPager) findViewById(R.id.viewpager);
         pager.setAdapter(adapter);
         indicator = (TitlePageIndicator) findViewById(R.id.indicator);
@@ -190,33 +128,94 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
 
             @Override
             public void onPageSelected(int index) {
-                ViewerPage viewer = getViewer(index);
-                if (viewer != null && viewer.adapterClean()) {
-                    viewer.getProgressBar().setVisibility(View.VISIBLE);
-                    if (index == ALBUMS_INDEX) {
-                        getArtistAlbums(artist.getName());
-                    } else if (index == TOP_TRACKS_INDEX) {
-                        getArtistTopTracks(artist, TRACKS_IN_TOP_COUNT, topTracksPage++);
-                    } else if (index == PERSONAL_TOP_INDEX
-                            && AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-                        getPersonalTop(artist.getName(), AuthorizationInfoManager.getLastfmName(),
-                                0, personalPage++);
-                    } else if (index == SIMILAR_INDEX) {
-                        getSimilarArtists(artist.getName(), TRACKS_IN_TOP_COUNT, similarPage++);
-                    }
-                } else if (index == ARTIST_INFO_INDEX) {
+                invalidateOptionsMenu();
+                if (index == ARTIST_INFO_INDEX) {
                     if (!infoLoaded) {
-                        artistInfoProgressBar.setVisibility(View.VISIBLE);
                         getArtistInfo(artist.getName(), AuthorizationInfoManager.getLastfmName());
                     }
+                } else {
+                    ViewerPage viewer = getViewer(index);
+                    if (viewer.isNotLoaded()) {
+                        viewer.showProgressBar(true);
+                        viewer.onLoadMore();
+                    }
                 }
-                invalidateOptionsMenu();
             }
 
             @Override
             public void onPageScrollStateChanged(int i) {
             }
         });
+    }
+
+    private TextViewerPage createBioPage(LayoutInflater inflater) {
+        return new TextViewerPage(this,
+                inflater.inflate(R.layout.scrollable_text_layout, null),
+                R.string.artist_info);
+    }
+
+    private ViewerPage createSimilarArtistsPage(LayoutInflater inflater) {
+        final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.similar_artists);
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getSimilarArtists(artist.getName(), getPageSize(), viewer.getPage(), viewer);
+            }
+        });
+        viewer.setItemClickListener(artistClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private ViewerPage createPersonalTopTracksPage(LayoutInflater inflater) {
+        final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                String.format("%s %s", getString(R.string.top).toLowerCase(), AuthorizationInfoManager.getLastfmName())
+        );
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getPersonalTop(artist.getName(), AuthorizationInfoManager.getLastfmName(),
+                        getPageSize(), viewer.getPage(), viewer);
+            }
+        });
+        viewer.setItemClickListener(trackClickListener);
+        viewer.setItemLongClickListener(trackLongClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private ViewerPage createAlbumsPage(LayoutInflater inflater) {
+        final LastfmAlbumViewerPage viewer = new LastfmAlbumViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.albums);
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getArtistAlbums(artist.getName(), viewer);
+            }
+        });
+        viewer.setItemClickListener(albumClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private ViewerPage createTopTracksPage(LayoutInflater inflater) {
+        final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.top_tracks);
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getArtistTopTracks(artist, getPageSize(), viewer.getPage(), viewer);
+            }
+        });
+        viewer.setItemClickListener(trackClickListener);
+        viewer.setItemLongClickListener(trackLongClickListener);
+        addViewer(viewer);
+        return viewer;
     }
 
     private void changeViewPagerItem(int currentItem) {
@@ -255,14 +254,16 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
             }
             return true;
             case R.id.to_playlist: {
-                if (getViewer(pager.getCurrentItem()).adapterClean()) return true;
-                addToMainPlaylist(getViewer(pager.getCurrentItem()).getValues());
+                if (getViewer(pager.getCurrentItem()).isNotLoaded()) return true;
+                List<Track> tracks = Converter.convertLastfmTrackList(getViewer(pager.getCurrentItem()).getItems());
+                addToMainPlaylist(tracks);
                 Toast.makeText(ArtistViewerActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
             }
             return true;
             case R.id.save_as_playlist: {
-                if (getViewer(pager.getCurrentItem()).adapterClean()) return true;
-                saveAsPlaylist(getViewer(pager.getCurrentItem()).getValues());
+                if (getViewer(pager.getCurrentItem()).isNotLoaded()) return true;
+                List<Track> tracks = Converter.convertLastfmTrackList(getViewer(pager.getCurrentItem()).getItems());
+                saveAsPlaylist(tracks);
             }
             return true;
             case R.id.play_discography: {
@@ -271,11 +272,11 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
                             Toast.LENGTH_SHORT).show();
                     break;
                 }
-                if (getViewer(ALBUMS_INDEX).adapterClean()) {
+                if (getViewer(ALBUMS_INDEX).isNotLoaded()) {
                     break;
                 }
-                getViewer(ALBUMS_INDEX).getProgressBar().setVisibility(View.VISIBLE);
-                List<LastfmAlbum> values = getViewer(ALBUMS_INDEX).getValues();
+                getViewer(ALBUMS_INDEX).showProgressBar(true);
+                List<LastfmAlbum> values = getViewer(ALBUMS_INDEX).getItems();
                 new LastfmDiscographyModel().getDiscographyTracks(values, new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> tracks) {
@@ -293,82 +294,68 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
         return false;
     }
 
-    private void getArtistTopTracks(Artist artist, int limit, int page) {
-        final ProgressBar progressBar = getViewer(TOP_TRACKS_INDEX).getProgressBar();
+    private void getArtistTopTracks(Artist artist, int limit, int page, final LastfmTracksViewerPage viewer) {
         artistModel.getArtistTopTracks(artist,
                 limit, page, new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
-                        progressBar.setVisibility(View.GONE);
-                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
-                                getViewer(TOP_TRACKS_INDEX));
+                        viewer.fill(lastfmTracks);
                     }
 
                     @Override
                     public void failure(String errorMessage) {
-                        showError(errorMessage, progressBar);
+                        showError(errorMessage);
                     }
                 });
     }
 
-    private void getArtistAlbums(String artistName) {
-        final ProgressBar progressBar = getViewer(ALBUMS_INDEX).getProgressBar();
+    private void getArtistAlbums(String artistName, final LastfmAlbumViewerPage viewer) {
         artistModel.getArtistAlbums(artistName, new SimpleCallback<List<LastfmAlbum>>() {
             @Override
             public void success(List<LastfmAlbum> albums) {
-                progressBar.setVisibility(View.GONE);
-                fillAlbums(albums, getViewer(ALBUMS_INDEX));
+                viewer.fill(albums);
             }
 
             @Override
             public void failure(String errorMessage) {
-                showError(errorMessage, progressBar);
+                showError(errorMessage);
             }
         });
     }
 
-    private void getPersonalTop(String artist, String username, int limit, int page) {
-        final ProgressBar progressBar = getViewer(PERSONAL_TOP_INDEX).getProgressBar();
+    private void getPersonalTop(String artist, String username, int limit, int page, final LastfmTracksViewerPage viewer) {
         artistModel.getPersonalArtistTop(artist, username, limit, page,
                 new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
-                        fillTracks(Converter.convertLastfmTrackList(lastfmTracks),
-                                getViewer(PERSONAL_TOP_INDEX));
-                        progressBar.setVisibility(View.GONE);
+                        viewer.fill(lastfmTracks);
                     }
 
                     @Override
                     public void failure(String errorMessage) {
-                        showError(errorMessage, progressBar);
+                        showError(errorMessage);
                     }
                 });
     }
 
-    private void showError(String errorMessage, ProgressBar progressBar) {
-        progressBar.setVisibility(View.GONE);
-        ErrorNotifier.showError(ArtistViewerActivity.this, errorMessage);
-    }
-
-    private void getSimilarArtists(String artistName, int limit, int page) {
-        final ProgressBar progressBar = getViewer(SIMILAR_INDEX).getProgressBar();
+    private void getSimilarArtists(String artistName, int limit, int page,
+                                   final LastfmArtistViewerPage viewer) {
         artistModel.getSimilarArtists(artistName, limit, page,
                 new SimpleCallback<List<LastfmArtist>>() {
                     @Override
                     public void success(List<LastfmArtist> lastfmArtists) {
-                        progressBar.setVisibility(View.GONE);
-                        fillArtists(Converter.convertArtistList(lastfmArtists),
-                                getViewer(SIMILAR_INDEX));
+                        viewer.fill(lastfmArtists);
                     }
 
                     @Override
                     public void failure(String errorMessage) {
-                        showError(errorMessage, progressBar);
+                        showError(errorMessage);
                     }
                 });
     }
 
     private void getArtistInfo(String artist, String username) {
+        artistInfoProgressBar.setVisibility(View.VISIBLE);
         artistModel.getArtistInfo(artist, username,
                 new SimpleCallback<LastfmArtist>() {
                     @Override
@@ -387,83 +374,8 @@ public class ArtistViewerActivity extends PagerResultSherlockActivity {
 
                     @Override
                     public void failure(String errorMessage) {
-                        showError(errorMessage, artistInfoProgressBar);
+                        showError(errorMessage);
                     }
                 });
-    }
-
-    private class ArtistViewerAdapter extends PagerAdapter {
-        List<View> views = null;
-        private String[] titles;
-
-        public ArtistViewerAdapter(List<View> inViews) {
-            views = inViews;
-            ArtistViewerActivity context = ArtistViewerActivity.this;
-            if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-                titles = new String[]{
-                        context.getString(R.string.albums).toLowerCase(),
-                        context.getString(R.string.top).toLowerCase(),
-                        context.getString(R.string.top).toLowerCase() + " " + AuthorizationInfoManager.getLastfmName(),
-                        context.getString(R.string.similar).toLowerCase(),
-                        context.getString(R.string.artist_info).toLowerCase()
-                };
-            } else {
-                titles = new String[]{
-                        context.getString(R.string.albums).toLowerCase(),
-                        context.getString(R.string.top).toLowerCase(),
-                        context.getString(R.string.similar).toLowerCase(),
-                        context.getString(R.string.artist_info).toLowerCase(),
-                };
-            }
-        }
-
-        public String getTitle(int position) {
-            return titles[position];
-        }
-
-        @Override
-        public int getCount() {
-            return titles.length;
-        }
-
-        @Override
-        public Object instantiateItem(View pager, int position) {
-            View v = views.get(position);
-            ((ViewPager) pager).addView(v, 0);
-            return v;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titles[position];
-        }
-
-        @Override
-        public void destroyItem(View pager, int position, Object view) {
-            ((ViewPager) pager).removeView((View) view);
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view.equals(object);
-        }
-
-        @Override
-        public void finishUpdate(View view) {
-        }
-
-        @Override
-        public void restoreState(Parcelable p, ClassLoader c) {
-        }
-
-        @Override
-        public Parcelable saveState() {
-            return null;
-        }
-
-        @Override
-        public void startUpdate(View view) {
-        }
-
     }
 }

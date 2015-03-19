@@ -56,15 +56,15 @@ public class VkAlbumViewerPage extends ViewerPage<VkAlbum> {
         int adapterSize = adapter == null ? 0 : adapter.getCount();
 
         int count = adapterSize + albums.size();
-        boolean listsEmpty = count == 0;
-        showEmptyPlaceholder(listsEmpty);
-        showProgressBar(!listsEmpty);
+        showEmptyPlaceholder(count == 0);
+        showProgressBar(false);
         updateAdapter(albums);
     }
 
     private void updateAdapter(List<VkAlbum> albums) {
         if (adapter == null) {
             adapter = new VkAlbumAdapter(getContext(), albums);
+            listView.setAdapter(adapter);
         } else {
             adapter.addAll(albums);
             onLoadMoreComplete();

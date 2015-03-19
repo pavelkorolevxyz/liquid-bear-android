@@ -2,31 +2,26 @@ package com.pillowapps.liqear.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.PagerResultSherlockActivity;
-import com.pillowapps.liqear.components.ViewerPage;
+import com.pillowapps.liqear.adapters.ViewerAdapter;
+import com.pillowapps.liqear.components.PagerResultActivity;
+import com.pillowapps.liqear.components.viewers.ViewerPage;
+import com.pillowapps.liqear.components.viewers.VkAlbumViewerPage;
+import com.pillowapps.liqear.components.viewers.VkTracksViewerPage;
 import com.pillowapps.liqear.entities.Group;
-import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
-import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
@@ -37,7 +32,7 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserViewerVkActivity extends PagerResultSherlockActivity {
+public class UserViewerVkActivity extends PagerResultActivity {
     public static final String USER = "user";
     public static final String GROUP = "group";
     public static final String YOU_MODE = "you";
@@ -56,9 +51,6 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
     private int defaultIndex = USER_AUDIO_INDEX;
     private boolean youMode = false;
     private ActionBar actionBar;
-    private int favoritesPage = 0;
-    private int newsFeedPage = 0;
-    private int albumPage = 0;
     private VkWallModel vkWallModel = new VkWallModel();
     private VkAudioModel vkAudioModel = new VkAudioModel();
 
@@ -84,106 +76,22 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
 
     private void initUi() {
         initViewPager();
-
-        if (youMode) {
-            getViewer(FAVORITES).getListView().setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view,
-                                        int position, long l) {
-                    openMainPlaylist(getViewer(FAVORITES).getValues(), position);
-                }
-            });
-            setTrackLongClick(getViewer(FAVORITES));
-            getViewer(FAVORITES).getListView().setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-                @Override
-                public void onLoadMore() {
-                    getFavoritesTracks();
-                }
-            });
-            getViewer(NEWS_FEED).getListView().setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view,
-                                        int position, long l) {
-                    openMainPlaylist(getViewer(NEWS_FEED).getValues(), position);
-                }
-            });
-            getViewer(NEWS_FEED).getListView().setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-                @Override
-                public void onLoadMore() {
-                    getNewsFeedTracks();
-                }
-            });
-            setTrackLongClick(getViewer(NEWS_FEED));
-        }
-
-        getViewer(USER_AUDIO_INDEX).getListView().setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                openMainPlaylist(getViewer(USER_AUDIO_INDEX).getValues(), position);
-            }
-        });
-        setTrackLongClick(getViewer(USER_AUDIO_INDEX));
-        getViewer(WALL_INDEX).getListView().setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                openMainPlaylist(getViewer(WALL_INDEX).getValues(), position);
-            }
-        });
-        setTrackLongClick(getViewer(WALL_INDEX));
-        getViewer(ALBUM_INDEX).getListView().setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent searchIntent = new Intent(UserViewerVkActivity.this,
-                        SearchActivity.class);
-                VkAlbum vkAlbum = (VkAlbum) getViewer(ALBUM_INDEX).getValues().get(position);
-                searchIntent.putExtra("title", vkAlbum.getTitle());
-                if (mode == Mode.USER) {
-                    searchIntent.putExtra("uid", user.getUid());
-                } else {
-                    searchIntent.putExtra("gid", group.getGid());
-                }
-                searchIntent.putExtra("album_id", vkAlbum.getAlbumId());
-                searchIntent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.VK_ALBUM_TRACKLIST);
-                startActivityForResult(searchIntent, Constants.MAIN_REQUEST_CODE);
-            }
-        });
-        getViewer(WALL_INDEX).getListView().setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getWallTracks();
-            }
-        });
-        getViewer(ALBUM_INDEX).getListView().setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getAlbums();
-            }
-        });
         changeViewPagerItem(defaultIndex);
     }
 
     private void initViewPager() {
-        final LayoutInflater inflater = LayoutInflater.from(this);
-        final List<View> views = new ArrayList<>();
-        View view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<Track>(view));
-        view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<Track>(view));
-        view = inflater.inflate(R.layout.list_tab, null);
-        views.add(view);
-        addViewer(new ViewerPage<VkAlbum>(view));
+        List<ViewerPage> pages = new ArrayList<>(5);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        pages.add(createWallTracksPage(inflater));
+        pages.add(createAudioTracksPage(inflater));
+        pages.add(createAlbumsTracksPage(inflater));
         if (youMode) {
-            view = inflater.inflate(R.layout.list_tab, null);
-            views.add(view);
-            addViewer(new ViewerPage<Track>(view));
-            view = inflater.inflate(R.layout.list_tab, null);
-            views.add(view);
-            addViewer(new ViewerPage<Track>(view));
+            pages.add(createFavoritesArtistsPage(inflater));
+            pages.add(createFeedTracksPage(inflater));
         }
-        final UserViewerAdapter adapter = new UserViewerAdapter(views);
+        setViewers(pages);
+        final ViewerAdapter adapter = new ViewerAdapter(pages);
+
         pager = (ViewPager) findViewById(R.id.viewpager);
         pager.setAdapter(adapter);
         indicator = (TitlePageIndicator) findViewById(R.id.indicator);
@@ -200,25 +108,10 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             @Override
             public void onPageSelected(final int index) {
                 invalidateOptionsMenu();
-                if (getViewer(index).adapterClean()) {
-                    getViewer(index).getProgressBar().setVisibility(View.VISIBLE);
-                    switch (index) {
-                        case WALL_INDEX:
-                            getWallTracks();
-                            break;
-                        case USER_AUDIO_INDEX:
-                            getUserAudio();
-                            break;
-                        case ALBUM_INDEX:
-                            getAlbums();
-                            break;
-                        case FAVORITES:
-                            getFavoritesTracks();
-                            break;
-                        case NEWS_FEED:
-                            getNewsFeedTracks();
-                            break;
-                    }
+                ViewerPage viewer = getViewer(index);
+                if (viewer.isNotLoaded()) {
+                    viewer.showProgressBar(true);
+                    viewer.onLoadMore();
                 }
             }
 
@@ -228,14 +121,97 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
         });
     }
 
-    private void getFavoritesTracks() {
-        if (mode == Mode.USER) {
-            vkWallModel.getVkUserFavoritesAudio(TRACKS_IN_TOP_COUNT,
-                    TRACKS_IN_TOP_COUNT * favoritesPage++, new VkSimpleCallback<List<VkTrack>>() {
-                        @Override
-                        public void success(List<VkTrack> data) {
-                            fillTracks(Converter.convertVkTrackList(data), getViewer(FAVORITES));
+    private ViewerPage createFeedTracksPage(LayoutInflater inflater) {
+        final VkTracksViewerPage viewer = new VkTracksViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.vk_feed
+        );
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getNewsFeedTracks(getPageSize(), viewer.getPage(), viewer);
+            }
+        });
+        viewer.setItemClickListener(vkTrackClickListener);
+        viewer.setItemLongClickListener(vkTrackLongClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
 
+    private ViewerPage createFavoritesArtistsPage(LayoutInflater inflater) {
+        final VkTracksViewerPage viewer = new VkTracksViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.vk_favorites
+        );
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getFavoritesTracks(getPageSize(), viewer.getPage(), viewer);
+            }
+        });
+        viewer.setItemClickListener(vkTrackClickListener);
+        viewer.setItemLongClickListener(vkTrackLongClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private ViewerPage createAlbumsTracksPage(LayoutInflater inflater) {
+        final VkAlbumViewerPage viewer = new VkAlbumViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.vk_albums
+        );
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getAlbums(getPageSize(), viewer.getPage(), viewer);
+            }
+        });
+        viewer.setItemClickListener(vkAlbumClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private ViewerPage createAudioTracksPage(LayoutInflater inflater) {
+        final VkTracksViewerPage viewer = new VkTracksViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.user_audio
+        );
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getUserAudio(getPageSize(), viewer.getPage(), viewer);
+            }
+        });
+        viewer.setItemClickListener(vkTrackClickListener);
+        viewer.setItemLongClickListener(vkTrackLongClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private ViewerPage createWallTracksPage(LayoutInflater inflater) {
+        final VkTracksViewerPage viewer = new VkTracksViewerPage(this,
+                inflater.inflate(R.layout.list_tab, null),
+                R.string.vk_wall
+        );
+        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                getWallTracks(getPageSize(), viewer.getPage(), viewer);
+            }
+        });
+        viewer.setItemClickListener(vkTrackClickListener);
+        viewer.setItemLongClickListener(vkTrackLongClickListener);
+        addViewer(viewer);
+        return viewer;
+    }
+
+    private void getFavoritesTracks(int limit, int page, final VkTracksViewerPage viewer) {
+        if (mode == Mode.USER) {
+            vkWallModel.getVkUserFavoritesAudio(limit,
+                    limit * page, new VkSimpleCallback<List<VkTrack>>() {
+                        @Override
+                        public void success(List<VkTrack> tracks) {
+                            viewer.fill(tracks);
                         }
 
                         @Override
@@ -247,15 +223,15 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
         }
     }
 
-    private void getNewsFeedTracks() {
+    private void getNewsFeedTracks(final int limit, int page, final VkTracksViewerPage viewer) {
         if (mode == Mode.USER) {
-            vkWallModel.getVkNewsFeedTracks(100, 100 * newsFeedPage++,
+            vkWallModel.getVkNewsFeedTracks(limit, limit * page,
                     new VkSimpleCallback<List<VkTrack>>() {
                         @Override
-                        public void success(List<VkTrack> data) {
-                            fillTracks(Converter.convertVkTrackList(data), getViewer(NEWS_FEED));
-                            if (getViewer(NEWS_FEED).getValues().size() < 20) {
-                                getNewsFeedTracks();
+                        public void success(List<VkTrack> tracks) {
+                            viewer.fill(tracks);
+                            if (getViewer(NEWS_FEED).getItems().size() < 20) {
+                                getNewsFeedTracks(limit, viewer.getPage(), viewer);
                             }
                         }
 
@@ -268,11 +244,11 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
         }
     }
 
-    private void getAlbums() {
+    private void getAlbums(int limit, int page, final VkAlbumViewerPage viewer) {
         VkSimpleCallback<List<VkAlbum>> callback = new VkSimpleCallback<List<VkAlbum>>() {
             @Override
-            public void success(List<VkAlbum> data) {
-                fillVkAlbums(data, getViewer(ALBUM_INDEX));
+            public void success(List<VkAlbum> albums) {
+                viewer.fill(albums);
             }
 
             @Override
@@ -281,19 +257,17 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             }
         };
         if (mode == Mode.USER) {
-            vkAudioModel.getUserVkAlbums(user.getUid(),
-                    TRACKS_IN_TOP_COUNT * albumPage++, TRACKS_IN_TOP_COUNT, callback);
+            vkAudioModel.getUserVkAlbums(user.getUid(), limit * page, limit, callback);
         } else {
-            vkAudioModel.getGroupVkAlbums(group.getGid(),
-                    TRACKS_IN_TOP_COUNT * albumPage++, TRACKS_IN_TOP_COUNT, callback);
+            vkAudioModel.getGroupVkAlbums(group.getGid(), limit * page, limit, callback);
         }
     }
 
-    private void getUserAudio() {
+    private void getUserAudio(int limit, int page, final VkTracksViewerPage viewer) {
         VkSimpleCallback<List<VkTrack>> callback = new VkSimpleCallback<List<VkTrack>>() {
             @Override
-            public void success(List<VkTrack> data) {
-                fillTracks(Converter.convertVkTrackList(data), getViewer(USER_AUDIO_INDEX));
+            public void success(List<VkTrack> tracks) {
+                viewer.fill(tracks);
             }
 
             @Override
@@ -302,17 +276,17 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             }
         };
         if (mode == Mode.USER) {
-            vkAudioModel.getVkUserAudio(user.getUid(), 0, 0, callback);
+            vkAudioModel.getVkUserAudio(user.getUid(), limit, page, callback);
         } else {
-            vkAudioModel.getVkGroupAudio(group.getGid(), 0, 0, callback);
+            vkAudioModel.getVkGroupAudio(group.getGid(), limit, page, callback);
         }
     }
 
-    private void getWallTracks() {
+    private void getWallTracks(int limit, int page, final VkTracksViewerPage viewer) {
         VkSimpleCallback<List<VkTrack>> callback = new VkSimpleCallback<List<VkTrack>>() {
             @Override
-            public void success(List<VkTrack> data) {
-                fillTracks(Converter.convertVkTrackList(data), getViewer(WALL_INDEX));
+            public void success(List<VkTrack> tracks) {
+                viewer.fill(tracks);
             }
 
             @Override
@@ -321,11 +295,11 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             }
         };
         if (mode == Mode.USER) {
-            vkWallModel.getVkUserWallAudio(user.getUid(), TRACKS_IN_TOP_COUNT,
-                    TRACKS_IN_TOP_COUNT * wallPage++, callback);
+            vkWallModel.getVkUserWallAudio(user.getUid(), limit,
+                    limit * page, callback);
         } else {
             vkWallModel.getVkGroupWallAudio(group.getGid(), TRACKS_IN_TOP_COUNT,
-                    TRACKS_IN_TOP_COUNT * wallPage++, callback);
+                    limit * page, callback);
         }
     }
 
@@ -373,93 +347,22 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
             }
             return true;
             case R.id.to_playlist: {
-                if (getViewer(currentItem).adapterClean()) return true;
-                addToMainPlaylist(getViewer(currentItem).getValues());
+                if (getViewer(currentItem).isNotLoaded()) return true;
+                addToMainPlaylist(Converter.convertLastfmTrackList(getViewer(currentItem).getItems()));
                 Toast.makeText(UserViewerVkActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
             }
             return true;
             case R.id.save_as_playlist: {
-                if (getViewer(currentItem).adapterClean()) return true;
-                saveAsPlaylist(getViewer(currentItem).getValues());
+                if (getViewer(currentItem).isNotLoaded()) return true;
+                saveAsPlaylist(Converter.convertLastfmTrackList(getViewer(currentItem).getItems()));
             }
             return true;
         }
         return false;
     }
 
-    private enum Mode {
+    public enum Mode {
         USER,
         GROUP
-    }
-
-    private class UserViewerAdapter extends PagerAdapter {
-
-        List<View> views = null;
-        private String[] titles;
-
-        public UserViewerAdapter(List<View> inViews) {
-            views = inViews;
-            if (inViews.size() == 5) {
-                titles = new String[]{
-                        getString(R.string.vk_wall),
-                        getString(R.string.audio),
-                        getString(R.string.vk_albums),
-                        getString(R.string.vk_favorites),
-                        getString(R.string.vk_feed)};
-            } else {
-                titles = new String[]{
-                        getString(R.string.vk_wall),
-                        getString(R.string.audio),
-                        getString(R.string.vk_albums)};
-            }
-        }
-
-        public String getTitle(int position) {
-            return titles[position];
-        }
-
-        @Override
-        public int getCount() {
-            return titles.length;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup pager, int position) {
-            View v = views.get(position);
-            pager.addView(v, 0);
-            return v;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titles[position];
-        }
-
-        @Override
-        public void destroyItem(View pager, int position, Object view) {
-            ((ViewPager) pager).removeView((View) view);
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view.equals(object);
-        }
-
-        @Override
-        public void finishUpdate(View view) {
-        }
-
-        @Override
-        public void restoreState(Parcelable p, ClassLoader c) {
-        }
-
-        @Override
-        public Parcelable saveState() {
-            return null;
-        }
-
-        @Override
-        public void startUpdate(View view) {
-        }
     }
 }

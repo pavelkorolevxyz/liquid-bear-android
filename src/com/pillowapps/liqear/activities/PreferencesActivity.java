@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.google.analytics.tracking.android.EasyTracker;
+import com.pillowapps.liqear.BuildConfig;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
@@ -103,7 +104,7 @@ public class PreferencesActivity extends PreferenceActivity {
 
     @Override
     protected void onStart() {
-        if (getResources().getBoolean(R.bool.analytics_enabled)) {
+        if (BuildConfig.DEBUG) {
             EasyTracker.getInstance(this).activityStart(this);
         }
         super.onStart();

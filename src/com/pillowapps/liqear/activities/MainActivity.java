@@ -81,6 +81,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import fr.nicolaspomepuy.discreetapprate.AppRate;
 import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
 import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
@@ -92,7 +94,8 @@ public class MainActivity extends SlidingFragmentActivity {
     private MusicPlaybackService musicPlaybackService;
     private ActivityResult activityResult;
     private PlaylistItemsAdapter playlistItemsAdapter;
-    private ProgressBar progressBar;
+    @InjectView(R.id.progressBar)
+    protected ProgressBar progressBar;
     private TabletFragment tabletFragment;
     private PlaybackControlFragment playbackControlFragment;
     private ModeAdapter modeAdapter;
@@ -199,13 +202,13 @@ public class MainActivity extends SlidingFragmentActivity {
             }
         }
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        ButterKnife.inject(this);
         startMusicService();
     }
 
     @Override
     protected void onStart() {
-        if (getResources().getBoolean(R.bool.analytics_enabled)) {
+        if (!BuildConfig.DEBUG) {
             EasyTracker.getInstance(this).activityStart(this);
         }
         super.onStart();

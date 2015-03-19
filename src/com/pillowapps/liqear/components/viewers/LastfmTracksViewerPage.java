@@ -56,15 +56,15 @@ public class LastfmTracksViewerPage extends ViewerPage<LastfmTrack> {
         int adapterSize = adapter == null ? 0 : adapter.getCount();
 
         int count = adapterSize + tracks.size();
-        boolean listsEmpty = count == 0;
-        showEmptyPlaceholder(listsEmpty);
-        showProgressBar(!listsEmpty);
+        showEmptyPlaceholder(count == 0);
+        showProgressBar(false);
         updateAdapter(tracks);
     }
 
     private void updateAdapter(List<LastfmTrack> tracks) {
         if (adapter == null) {
             adapter = new LastfmTracksAdapter(getContext(), tracks);
+            listView.setAdapter(adapter);
         } else {
             adapter.addAll(tracks);
             onLoadMoreComplete();

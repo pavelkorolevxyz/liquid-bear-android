@@ -16,6 +16,7 @@ import com.pillowapps.liqear.helpers.PreferencesManager;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class LastfmTagAdapter extends ArrayAdapter<LastfmTag> {
@@ -31,6 +32,15 @@ public class LastfmTagAdapter extends ArrayAdapter<LastfmTag> {
     @Override
     public LastfmTag getItem(int position) {
         return values.get(position);
+    }
+
+    @Override
+    public int getCount() {
+        return values.size();
+    }
+
+    public List<LastfmTag> getItems() {
+        return values;
     }
 
     public void addAll(List<LastfmTag> values) {
@@ -49,8 +59,8 @@ public class LastfmTagAdapter extends ArrayAdapter<LastfmTag> {
                 Context.LAYOUT_INFLATER_SERVICE);
         ViewHolder holder;
         if (convertView == null) {
-            holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.image_list_item, null);
+            convertView = inflater.inflate(R.layout.image_list_item, parent, false);
+            holder = new ViewHolder(convertView);
             holder.loadImages = PreferencesManager.getPreferences()
                     .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true);
             convertView.setTag(holder);
@@ -75,5 +85,9 @@ public class LastfmTagAdapter extends ArrayAdapter<LastfmTag> {
         boolean loadImages;
         @InjectView(R.id.image_view_list_item)
         ImageView imageView;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
     }
 }

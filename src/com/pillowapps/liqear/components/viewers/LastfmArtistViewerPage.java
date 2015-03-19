@@ -50,15 +50,15 @@ public class LastfmArtistViewerPage extends ViewerPage<LastfmArtist> {
         int adapterSize = adapter == null ? 0 : adapter.getCount();
 
         int count = adapterSize + artists.size();
-        boolean listsEmpty = count == 0;
-        showEmptyPlaceholder(listsEmpty);
-        showProgressBar(!listsEmpty);
+        showEmptyPlaceholder(count == 0);
+        showProgressBar(false);
         updateAdapter(artists);
     }
 
     private void updateAdapter(List<LastfmArtist> artists) {
         if (adapter == null) {
             adapter = new LastfmArtistAdapter(getContext(), artists);
+            listView.setAdapter(adapter);
         } else {
             adapter.addAll(artists);
             onLoadMoreComplete();

@@ -5,32 +5,35 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pillowapps.liqear.components.ViewerPage;
-
 import java.util.List;
 
 public class ViewerViewAdapter extends PagerAdapter {
-    private List<ViewerPage> pages;
+    private List<View> views;
+    private List<String> titles;
 
-    public ViewerViewAdapter(List<ViewerPage> pages) {
-        this.pages = pages;
+    public ViewerViewAdapter(List<View> views, List<String> titles) {
+        if (views.size() != titles.size()) {
+            throw new RuntimeException("Views and titles size must be equal");
+        }
+        this.views = views;
+        this.titles = titles;
     }
 
     @Override
     public int getCount() {
-        return pages.size();
+        return views.size();
     }
 
     @Override
     public Object instantiateItem(ViewGroup pager, int position) {
-        View v = pages.get(position).getView();
+        View v = views.get(position);
         pager.addView(v, 0);
         return v;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return pages.get(position).getTitle().toUpperCase();
+        return titles.get(position);
     }
 
     @Override

@@ -17,6 +17,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrackArtistStruct;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
 import com.pillowapps.liqear.entities.setlistfm.SetlistfmTrack;
+import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkGroup;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.entities.vk.VkUser;
@@ -32,7 +33,7 @@ public class Converter {
         return new Track(artist, title);
     }
 
-    private static Track convertTrack(VkTrack vkTrack) {
+    public static Track convertVkTrack(VkTrack vkTrack) {
         String artist = vkTrack.getArtist();
         String title = vkTrack.getTitle();
         return new Track(artist, title);
@@ -106,7 +107,7 @@ public class Converter {
     public static List<Track> convertVkTrackList(List<VkTrack> vkTracks) {
         List<Track> tracks = new ArrayList<>();
         for (VkTrack lastfmTrack : vkTracks) {
-            Track track = convertTrack(lastfmTrack);
+            Track track = convertVkTrack(lastfmTrack);
             tracks.add(track);
         }
         return tracks;
@@ -228,5 +229,11 @@ public class Converter {
         lastfmAlbum.setImages(topAlbum.getImages());
         lastfmAlbum.setReleaseDate(topAlbum.getReleaseDate());
         return lastfmAlbum;
+    }
+
+    public static Album convertVkAlbum(VkAlbum vkAlbum) {
+        Album album = new Album();
+        album.setTitle(vkAlbum.getTitle());
+        return album;
     }
 }
