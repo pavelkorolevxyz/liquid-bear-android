@@ -19,9 +19,9 @@ import android.widget.Toast;
 import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.ViewerAdapter;
+import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
-import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.SpinnerLastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.SpinnerLastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
@@ -57,6 +57,8 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
     private String topArtistsPeriod;
     private String topTracksPeriod;
     private LastfmUserModel userModel = new LastfmUserModel();
+    private int savedTopTrackPosition;
+    private int savedTopArtistPeriod;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -86,9 +88,9 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         topTracksSpinner.setAdapter(adapter);
 
-        int savedTopTrackPeriod = PreferencesManager.getSavePreferences().getInt(Constants.TIME_TOP_TRACKS, 0);
-        topTracksPeriod = Constants.PERIODS_ARRAY[savedTopTrackPeriod];
-        topTracksSpinner.setSelection(savedTopTrackPeriod);
+        savedTopTrackPosition = PreferencesManager.getSavePreferences().getInt(Constants.TIME_TOP_TRACKS, 0);
+        topTracksPeriod = Constants.PERIODS_ARRAY[savedTopTrackPosition];
+        topTracksSpinner.setSelection(savedTopTrackPosition);
 
         topTracksSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -102,13 +104,14 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
                 SharedPreferences savePreferences = PreferencesManager.getSavePreferences();
                 SharedPreferences.Editor editor = savePreferences.edit();
                 editor.putInt(Constants.TIME_TOP_TRACKS, itemPosition).apply();
-                if (topTracksViewer.isNotLoaded() || !topTracksPeriod.equals(topTracksViewer.getPeriod())) {
+                if (topTracksViewer.isNotLoaded() || itemPosition != savedTopTrackPosition) {
                     if (!topTracksViewer.isNotLoaded()) {
                         topTracksViewer.clear();
                     }
                     LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(TOP_TRACKS_INDEX);
-                    getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), viewer);
+                    getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), true, viewer);
                 }
+                savedTopTrackPosition = itemPosition;
             }
 
             @Override
@@ -123,7 +126,7 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         topArtistsSpinner.setAdapter(mSpinnerAdapter);
 
-        int savedTopArtistPeriod = PreferencesManager.getSavePreferences().getInt(Constants.TIME_TOP_ARTISTS, 0);
+        savedTopArtistPeriod = PreferencesManager.getSavePreferences().getInt(Constants.TIME_TOP_ARTISTS, 0);
         topArtistsPeriod = Constants.PERIODS_ARRAY[savedTopArtistPeriod];
         topArtistsSpinner.setSelection(savedTopArtistPeriod);
 
@@ -138,13 +141,14 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
                 topArtistsPeriod = Constants.PERIODS_ARRAY[itemPosition];
                 SharedPreferences.Editor editor = PreferencesManager.getSavePreferences().edit();
                 editor.putInt(Constants.TIME_TOP_ARTISTS, itemPosition).apply();
-                if (artistsViewer.isNotLoaded() || !topArtistsPeriod.equals(artistsViewer.getPeriod())) {
+                if (artistsViewer.isNotLoaded() || itemPosition != savedTopArtistPeriod) {
                     if (!artistsViewer.isNotLoaded()) {
                         artistsViewer.clear();
                     }
                     LastfmArtistViewerPage viewer = (LastfmArtistViewerPage) getViewer(TOP_ARTISTS_INDEX);
-                    getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), viewer);
+                    getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), true, viewer);
                 }
+                savedTopArtistPeriod = itemPosition;
             }
 
             @Override
@@ -219,7 +223,7 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), viewer);
+                getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), false, viewer);
             }
         });
         viewer.setItemClickListener(artistClickListener);
@@ -235,7 +239,7 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), viewer);
+                getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), false, viewer);
             }
         });
         viewer.setItemClickListener(trackClickListener);
@@ -261,8 +265,8 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         return viewer;
     }
 
-    private void getTopArtists(String period, int limit, int page, final LastfmArtistViewerPage viewer) {
-        if (!viewer.isNotLoaded()) {
+    private void getTopArtists(String period, int limit, int page, boolean force, final LastfmArtistViewerPage viewer) {
+        if (!viewer.isNotLoaded() && !force) {
             return;
         } else {
             viewer.showProgressBar(true);
@@ -301,8 +305,8 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
                 });
     }
 
-    private void getTopTracks(String period, int limit, int page, final LastfmTracksViewerPage viewer) {
-        if (!viewer.isNotLoaded()) {
+    private void getTopTracks(final String period, int limit, int page, boolean force, final LastfmTracksViewerPage viewer) {
+        if (!viewer.isNotLoaded() && !force) {
             return;
         }
         userModel.getUserTopTracks(user.getName(), period,

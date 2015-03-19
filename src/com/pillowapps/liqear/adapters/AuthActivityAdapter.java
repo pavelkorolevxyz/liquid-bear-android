@@ -2,8 +2,8 @@ package com.pillowapps.liqear.adapters;
 
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
@@ -36,15 +36,15 @@ public class AuthActivityAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(View pager, int position) {
+    public Object instantiateItem(ViewGroup pager, int position) {
         View v = views.get(position);
-        ((ViewPager) pager).addView(v, 0);
+        pager.addView(v, 0);
         return v;
     }
 
     @Override
-    public void destroyItem(View pager, int position, Object view) {
-        ((ViewPager) pager).removeView((View) view);
+    public void destroyItem(ViewGroup pager, int position, Object view) {
+        pager.removeView((View) view);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class AuthActivityAdapter extends PagerAdapter {
     }
 
     @Override
-    public void finishUpdate(View view) {
+    public void finishUpdate(ViewGroup view) {
     }
 
     @Override
@@ -66,7 +66,7 @@ public class AuthActivityAdapter extends PagerAdapter {
     }
 
     @Override
-    public void startUpdate(View view) {
+    public void startUpdate(ViewGroup view) {
     }
 
 }
