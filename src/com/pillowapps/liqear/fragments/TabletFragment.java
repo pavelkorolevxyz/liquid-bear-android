@@ -29,7 +29,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.AlbumViewerActivity;
+import com.pillowapps.liqear.activities.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.ArtistViewerActivity;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
@@ -139,11 +139,11 @@ public class TabletFragment extends Fragment {
                 View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(mainActivity, AlbumViewerActivity.class);
+                        Intent intent = new Intent(mainActivity, LastfmAlbumViewerActivity.class);
                         Album album = AudioTimeline.getAlbum();
                         if (album == null) return;
-                        intent.putExtra(AlbumViewerActivity.ALBUM, album.getTitle());
-                        intent.putExtra(AlbumViewerActivity.ARTIST, album.getArtist());
+                        intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
+                        intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
                         mainActivity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                     }
                 };

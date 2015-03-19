@@ -38,14 +38,13 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
-public class AlbumViewerActivity extends ResultSherlockActivity {
+public class LastfmAlbumViewerActivity extends ResultSherlockActivity {
     public static final String ALBUM = "album";
     public static final String ARTIST = "artist";
     public static final int ALBUM_INFO_INDEX = 1;
     public static final int TRACKS_INDEX = 0;
     private ViewPager pager;
-    private ListArrayAdapter<Track> tracksAdapter;
+    private ListArrayAdapter tracksAdapter;
     private ListView tracksListView;
     private ProgressBar tracksProgressBar;
     private View infoTab;
@@ -149,7 +148,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
         switch (itemId) {
             case android.R.id.home: {
                 finish();
-                Intent intent = new Intent(AlbumViewerActivity.this, MainActivity.class);
+                Intent intent = new Intent(LastfmAlbumViewerActivity.this, MainActivity.class);
                 intent.setAction(Intent.ACTION_MAIN);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -158,7 +157,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
             case R.id.to_playlist: {
                 if (tracksAdapter == null) return true;
                 addToMainPlaylist(tracksAdapter.getValues());
-                Toast.makeText(AlbumViewerActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
+                Toast.makeText(LastfmAlbumViewerActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
             }
             return true;
             case R.id.save_as_playlist: {
@@ -177,7 +176,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
     private void fillWithTracklist(List<Track> trackList) {
         if (tracksAdapter == null) {
             tracksAdapter = new ListArrayAdapter<>(
-                    AlbumViewerActivity.this, trackList, Track.class, null
+                    LastfmAlbumViewerActivity.this, trackList, Track.class, null
             );
             setTracksAdapter(tracksAdapter);
         } else {
@@ -199,7 +198,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
                 if (images != null) {
                     imageUrl = images.get(images.size() - 1).getUrl();
                 }
-                Picasso.with(AlbumViewerActivity.this).load(imageUrl).into(albumCoverImageView,
+                Picasso.with(LastfmAlbumViewerActivity.this).load(imageUrl).into(albumCoverImageView,
                         new com.squareup.picasso.Callback() {
                             @Override
                             public void onSuccess() {
@@ -224,7 +223,7 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
             @Override
             public void failure(String errorMessage) {
                 tracksProgressBar.setVisibility(View.GONE);
-                ErrorNotifier.showError(AlbumViewerActivity.this, errorMessage);
+                ErrorNotifier.showError(LastfmAlbumViewerActivity.this, errorMessage);
             }
         });
     }
@@ -232,8 +231,8 @@ public class AlbumViewerActivity extends ResultSherlockActivity {
     private class ArtistViewerAdapter extends PagerAdapter {
         List<View> views = null;
         private String[] titles = new String[]{
-                AlbumViewerActivity.this.getString(R.string.tracks).toLowerCase(),
-                AlbumViewerActivity.this.getString(R.string.album_info).toLowerCase(),
+                LastfmAlbumViewerActivity.this.getString(R.string.tracks).toLowerCase(),
+                LastfmAlbumViewerActivity.this.getString(R.string.album_info).toLowerCase(),
         };
 
         public ArtistViewerAdapter(List<View> inViews) {

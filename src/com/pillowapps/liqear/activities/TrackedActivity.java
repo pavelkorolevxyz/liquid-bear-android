@@ -4,17 +4,17 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import com.google.analytics.tracking.android.EasyTracker;
-import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.BuildConfig;
 
 public class TrackedActivity extends ActionBarActivity {
 
-    protected void onCreate(Bundle savedInstanceState, String tag) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onStart() {
-        if (getResources().getBoolean(R.bool.analytics_enabled)) {
+        if (!BuildConfig.DEBUG) {
             EasyTracker.getInstance(this).activityStart(this);
         }
         super.onStart();

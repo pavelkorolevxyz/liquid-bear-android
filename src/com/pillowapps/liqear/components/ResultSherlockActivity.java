@@ -6,7 +6,7 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.AlbumViewerActivity;
+import com.pillowapps.liqear.activities.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.ArtistViewerActivity;
 import com.pillowapps.liqear.activities.PlaylistsActivity;
 import com.pillowapps.liqear.activities.TagViewerActivity;
@@ -105,9 +105,9 @@ public class ResultSherlockActivity extends TrackedActivity {
     }
 
     protected void openAlbum(Album album) {
-        Intent intent = new Intent(ResultSherlockActivity.this, AlbumViewerActivity.class);
-        intent.putExtra(AlbumViewerActivity.ARTIST, album.getArtist());
-        intent.putExtra(AlbumViewerActivity.ALBUM, album.getTitle());
+        Intent intent = new Intent(ResultSherlockActivity.this, LastfmAlbumViewerActivity.class);
+        intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
+        intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 

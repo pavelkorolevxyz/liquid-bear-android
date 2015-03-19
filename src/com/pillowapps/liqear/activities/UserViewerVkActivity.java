@@ -48,7 +48,6 @@ public class UserViewerVkActivity extends PagerResultSherlockActivity {
     public static final int USER_AUDIO_INDEX = 1;
     public static final int WALL_INDEX = 0;
     public static final String TAB_INDEX = "tab_index";
-    @SuppressWarnings("rawtypes")
     private ViewPager pager;
     private TitlePageIndicator indicator;
     private User user;

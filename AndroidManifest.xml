@@ -54,7 +54,7 @@
             android:name=".activities.ArtistViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.AlbumViewerActivity"
+            android:name=".activities.LastfmAlbumViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.ImagePagerActivity"
