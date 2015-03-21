@@ -8,14 +8,14 @@ import android.widget.Toast;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.ChartsActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmChartsViewerActivity;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.activities.NewcomersActivity;
 import com.pillowapps.liqear.activities.RecommendationsActivity;
 import com.pillowapps.liqear.activities.SearchActivity;
 import com.pillowapps.liqear.activities.SetlistsActivity;
-import com.pillowapps.liqear.activities.UserViewerLastfmActivity;
-import com.pillowapps.liqear.activities.UserViewerVkActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmUserViewerActivity;
+import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.entities.Category;
 import com.pillowapps.liqear.entities.ListItem;
 import com.pillowapps.liqear.entities.Mode;
@@ -64,37 +64,37 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
         }
         switch (mode.getModeEnum()) {
             case LOVED: {
-                Intent intent = new Intent(activity, UserViewerLastfmActivity.class);
-                intent.putExtra(UserViewerLastfmActivity.USER,
+                Intent intent = new Intent(activity, LastfmUserViewerActivity.class);
+                intent.putExtra(LastfmUserViewerActivity.USER,
                         new User(AuthorizationInfoManager.getLastfmName()));
-                intent.putExtra(UserViewerLastfmActivity.TAB_INDEX,
-                        UserViewerLastfmActivity.LOVED_INDEX);
+                intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
+                        LastfmUserViewerActivity.LOVED_INDEX);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] User Loved");
             }
             break;
             case TOP_TRACKS: {
-                Intent intent = new Intent(activity, UserViewerLastfmActivity.class);
-                intent.putExtra(UserViewerLastfmActivity.USER,
+                Intent intent = new Intent(activity, LastfmUserViewerActivity.class);
+                intent.putExtra(LastfmUserViewerActivity.USER,
                         new User(AuthorizationInfoManager.getLastfmName()));
-                intent.putExtra(UserViewerLastfmActivity.TAB_INDEX,
-                        UserViewerLastfmActivity.TOP_TRACKS_INDEX);
+                intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
+                        LastfmUserViewerActivity.TOP_TRACKS_INDEX);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Top Tracks");
             }
             break;
             case TOP_ARTISTS: {
-                Intent intent = new Intent(activity, UserViewerLastfmActivity.class);
-                intent.putExtra(UserViewerLastfmActivity.USER,
+                Intent intent = new Intent(activity, LastfmUserViewerActivity.class);
+                intent.putExtra(LastfmUserViewerActivity.USER,
                         new User(AuthorizationInfoManager.getLastfmName()));
-                intent.putExtra(UserViewerLastfmActivity.TAB_INDEX,
-                        UserViewerLastfmActivity.TOP_ARTISTS_INDEX);
+                intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
+                        LastfmUserViewerActivity.TOP_ARTISTS_INDEX);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Top Artists");
             }
             break;
             case CHARTS: {
-                Intent intent = new Intent(activity, ChartsActivity.class);
+                Intent intent = new Intent(activity, LastfmChartsViewerActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Charts");
             }
@@ -156,23 +156,23 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case RECENT_LAST: {
-                Intent intent = new Intent(activity, UserViewerLastfmActivity.class);
-                intent.putExtra(UserViewerLastfmActivity.USER,
+                Intent intent = new Intent(activity, LastfmUserViewerActivity.class);
+                intent.putExtra(LastfmUserViewerActivity.USER,
                         new User(AuthorizationInfoManager.getLastfmName()));
-                intent.putExtra(UserViewerLastfmActivity.TAB_INDEX,
-                        UserViewerLastfmActivity.RECENT_INDEX);
+                intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
+                        LastfmUserViewerActivity.RECENT_INDEX);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Recent");
             }
             break;
             case USER_AUDIO_VK: {
-                Intent intent = new Intent(activity, UserViewerVkActivity.class);
-                intent.putExtra(UserViewerVkActivity.USER,
+                Intent intent = new Intent(activity, VkUserViewerActivity.class);
+                intent.putExtra(VkUserViewerActivity.USER,
                         new User(AuthorizationInfoManager.getVkName(),
                                 AuthorizationInfoManager.getVkUserId()));
-                intent.putExtra(UserViewerVkActivity.TAB_INDEX,
-                        UserViewerVkActivity.USER_AUDIO_INDEX);
-                intent.putExtra(UserViewerVkActivity.YOU_MODE, true);
+                intent.putExtra(VkUserViewerActivity.TAB_INDEX,
+                        VkUserViewerActivity.USER_AUDIO_INDEX);
+                intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] User Audio");
             }
@@ -202,12 +202,12 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case ALBUMS_VK: {
-                Intent intent = new Intent(activity, UserViewerVkActivity.class);
-                intent.putExtra(UserViewerVkActivity.USER,
+                Intent intent = new Intent(activity, VkUserViewerActivity.class);
+                intent.putExtra(VkUserViewerActivity.USER,
                         new User(AuthorizationInfoManager.getVkName(),
                                 AuthorizationInfoManager.getVkUserId()));
-                intent.putExtra(UserViewerVkActivity.TAB_INDEX, UserViewerVkActivity.ALBUM_INDEX);
-                intent.putExtra(UserViewerVkActivity.YOU_MODE, true);
+                intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.ALBUM_INDEX);
+                intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Albums");
             }
@@ -221,34 +221,34 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case WALL_VK: {
-                Intent intent = new Intent(activity, UserViewerVkActivity.class);
-                intent.putExtra(UserViewerVkActivity.USER,
+                Intent intent = new Intent(activity, VkUserViewerActivity.class);
+                intent.putExtra(VkUserViewerActivity.USER,
                         new User(AuthorizationInfoManager.getVkName(),
                                 AuthorizationInfoManager.getVkUserId()));
-                intent.putExtra(UserViewerVkActivity.TAB_INDEX, UserViewerVkActivity.WALL_INDEX);
-                intent.putExtra(UserViewerVkActivity.YOU_MODE, true);
+                intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.WALL_INDEX);
+                intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Wall");
             }
             break;
             case FAVORITES_VK: {
-                Intent intent = new Intent(activity, UserViewerVkActivity.class);
-                intent.putExtra(UserViewerVkActivity.USER,
+                Intent intent = new Intent(activity, VkUserViewerActivity.class);
+                intent.putExtra(VkUserViewerActivity.USER,
                         new User(AuthorizationInfoManager.getVkName(),
                                 AuthorizationInfoManager.getVkUserId()));
-                intent.putExtra(UserViewerVkActivity.TAB_INDEX, UserViewerVkActivity.FAVORITES);
-                intent.putExtra(UserViewerVkActivity.YOU_MODE, true);
+                intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.FAVORITES);
+                intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Favorites");
             }
             break;
             case FEED_VK: {
-                Intent intent = new Intent(activity, UserViewerVkActivity.class);
-                intent.putExtra(UserViewerVkActivity.USER,
+                Intent intent = new Intent(activity, VkUserViewerActivity.class);
+                intent.putExtra(VkUserViewerActivity.USER,
                         new User(AuthorizationInfoManager.getVkName(),
                                 AuthorizationInfoManager.getVkUserId()));
-                intent.putExtra(UserViewerVkActivity.TAB_INDEX, UserViewerVkActivity.NEWS_FEED);
-                intent.putExtra(UserViewerVkActivity.YOU_MODE, true);
+                intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.NEWS_FEED);
+                intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Feed");
             }

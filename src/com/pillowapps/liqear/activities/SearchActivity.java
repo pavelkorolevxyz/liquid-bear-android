@@ -40,6 +40,9 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmUserViewerActivity;
+import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
@@ -156,11 +159,11 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                     public void onClick(View v) {
                         progressBar.setVisibility(View.VISIBLE);
                         Intent intent = new Intent(SearchActivity.this,
-                                UserViewerLastfmActivity.class);
-                        intent.putExtra(UserViewerLastfmActivity.USER,
+                                LastfmUserViewerActivity.class);
+                        intent.putExtra(LastfmUserViewerActivity.USER,
                                 new User(editText.getText().toString()));
-                        intent.putExtra(UserViewerLastfmActivity.TAB_INDEX,
-                                UserViewerLastfmActivity.LOVED_INDEX);
+                        intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
+                                LastfmUserViewerActivity.LOVED_INDEX);
                         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                     }
                 });
@@ -582,10 +585,10 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
             switch (item.getItemId()) {
                 case 0:
                     Intent intent = new Intent(SearchActivity.this,
-                            ArtistViewerActivity.class);
-                    intent.putExtra(ArtistViewerActivity.ARTIST,
+                            LastfmArtistViewerActivity.class);
+                    intent.putExtra(LastfmArtistViewerActivity.ARTIST,
                             ((Artist) adapter.getItem(info.position)).getName());
-                    intent.putExtra(ArtistViewerActivity.TAB_INDEX,
+                    intent.putExtra(LastfmArtistViewerActivity.TAB_INDEX,
                             AuthorizationInfoManager.isAuthorizedOnLastfm() ? 3 : 2);
                     startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                     break;
@@ -698,26 +701,26 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
             case LASTFM_FRIENDS:
             case NEIGHBOURS: {
                 Intent intent = new Intent(SearchActivity.this,
-                        UserViewerLastfmActivity.class);
-                intent.putExtra(UserViewerLastfmActivity.USER, (User) adapter.get(position));
-                intent.putExtra(UserViewerLastfmActivity.TAB_INDEX,
-                        UserViewerLastfmActivity.LOVED_INDEX);
+                        LastfmUserViewerActivity.class);
+                intent.putExtra(LastfmUserViewerActivity.USER, (User) adapter.get(position));
+                intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
+                        LastfmUserViewerActivity.LOVED_INDEX);
                 startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
             }
             break;
             case GROUP: {
                 Group group = (Group) adapter.getValues().get(position);
                 Intent userViewerIntent = new Intent(SearchActivity.this,
-                        UserViewerVkActivity.class);
-                userViewerIntent.putExtra(UserViewerVkActivity.GROUP, group);
+                        VkUserViewerActivity.class);
+                userViewerIntent.putExtra(VkUserViewerActivity.GROUP, group);
                 startActivityForResult(userViewerIntent, Constants.MAIN_REQUEST_CODE);
             }
             break;
             case VK_FRIENDS: {
                 User user = (User) adapter.getValues().get(position);
                 Intent userViewerIntent = new Intent(SearchActivity.this,
-                        UserViewerVkActivity.class);
-                userViewerIntent.putExtra(UserViewerVkActivity.USER, user);
+                        VkUserViewerActivity.class);
+                userViewerIntent.putExtra(VkUserViewerActivity.USER, user);
                 startActivityForResult(userViewerIntent, Constants.MAIN_REQUEST_CODE);
             }
             break;

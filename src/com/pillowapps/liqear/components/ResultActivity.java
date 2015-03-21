@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.ArtistViewerActivity;
-import com.pillowapps.liqear.activities.LastfmAlbumViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.PlaylistsActivity;
 import com.pillowapps.liqear.activities.SearchActivity;
-import com.pillowapps.liqear.activities.TagViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmTagViewerActivity;
 import com.pillowapps.liqear.activities.TrackedActivity;
-import com.pillowapps.liqear.activities.UserViewerVkActivity;
+import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
@@ -104,14 +104,14 @@ public class ResultActivity extends TrackedActivity {
     }
 
     protected void openArtist(LastfmArtist artist) {
-        Intent intent = new Intent(ResultActivity.this, ArtistViewerActivity.class);
-        intent.putExtra(ArtistViewerActivity.ARTIST, artist.getName());
+        Intent intent = new Intent(ResultActivity.this, LastfmArtistViewerActivity.class);
+        intent.putExtra(LastfmArtistViewerActivity.ARTIST, artist.getName());
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 
     protected void openTag(Tag tag) {
-        Intent intent = new Intent(ResultActivity.this, TagViewerActivity.class);
-        intent.putExtra(TagViewerActivity.TAG, tag.getName());
+        Intent intent = new Intent(ResultActivity.this, LastfmTagViewerActivity.class);
+        intent.putExtra(LastfmTagViewerActivity.TAG, tag.getName());
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 
@@ -126,8 +126,8 @@ public class ResultActivity extends TrackedActivity {
         Intent searchIntent = new Intent(ResultActivity.this,
                 SearchActivity.class);
         searchIntent.putExtra("title", vkAlbum.getTitle());
-        UserViewerVkActivity.Mode mode = UserViewerVkActivity.Mode.USER;
-        if (mode == UserViewerVkActivity.Mode.USER) {
+        VkUserViewerActivity.Mode mode = VkUserViewerActivity.Mode.USER;
+        if (mode == VkUserViewerActivity.Mode.USER) {
             searchIntent.putExtra("uid", vkAlbum.getOwnerId());
         } else {
             searchIntent.putExtra("gid", vkAlbum.getOwnerId());

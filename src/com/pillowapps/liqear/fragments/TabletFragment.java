@@ -29,8 +29,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.LastfmAlbumViewerActivity;
-import com.pillowapps.liqear.activities.ArtistViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
@@ -126,8 +126,8 @@ public class TabletFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!AudioTimeline.hasCurrentTrack()) return;
-                Intent artistInfoIntent = new Intent(mainActivity, ArtistViewerActivity.class);
-                artistInfoIntent.putExtra(ArtistViewerActivity.ARTIST,
+                Intent artistInfoIntent = new Intent(mainActivity, LastfmArtistViewerActivity.class);
+                artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST,
                         AudioTimeline.getCurrentTrack().getArtist());
                 mainActivity.startActivityForResult(artistInfoIntent,
                         Constants.MAIN_REQUEST_CODE);

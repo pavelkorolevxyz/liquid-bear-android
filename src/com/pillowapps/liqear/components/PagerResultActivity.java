@@ -1,5 +1,9 @@
 package com.pillowapps.liqear.components;
 
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+
+import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
@@ -7,11 +11,19 @@ import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.Converter;
+import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class PagerResultActivity extends ResultActivity {
+    @InjectView(R.id.viewpager)
+    protected ViewPager pager;
+    @InjectView(R.id.indicator)
+    protected TitlePageIndicator indicator;
     private List<ViewerPage> viewers = new ArrayList<>();
 
     public OnViewerItemClickListener<LastfmTrack> trackClickListener = new OnViewerItemClickListener<LastfmTrack>() {
@@ -79,5 +91,15 @@ public class PagerResultActivity extends ResultActivity {
 
     protected void setViewers(List<ViewerPage> viewers) {
         this.viewers = viewers;
+    }
+
+    protected void injectViewPager(PagerAdapter adapter) {
+        ButterKnife.inject(this);
+        pager.setAdapter(adapter);
+        indicator.setOnClickListener(null);
+        indicator.setViewPager(pager);
+        indicator.setTextColor(getResources().getColor(R.color.secondary_text));
+        indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
+        indicator.setFooterColor(getResources().getColor(R.color.accent));
     }
 }

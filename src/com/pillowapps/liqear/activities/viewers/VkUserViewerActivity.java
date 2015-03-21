@@ -1,19 +1,21 @@
-package com.pillowapps.liqear.activities;
+package com.pillowapps.liqear.activities.viewers;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerAdapter;
 import com.pillowapps.liqear.components.PagerResultActivity;
+import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.components.viewers.VkAlbumViewerPage;
 import com.pillowapps.liqear.components.viewers.VkTracksViewerPage;
@@ -27,12 +29,11 @@ import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
-import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserViewerVkActivity extends PagerResultActivity {
+public class VkUserViewerActivity extends PagerResultActivity {
     public static final String USER = "user";
     public static final String GROUP = "group";
     public static final String YOU_MODE = "you";
@@ -42,15 +43,12 @@ public class UserViewerVkActivity extends PagerResultActivity {
     public static final int USER_AUDIO_INDEX = 1;
     public static final int WALL_INDEX = 0;
     public static final String TAB_INDEX = "tab_index";
-    private ViewPager pager;
-    private TitlePageIndicator indicator;
+    public static final int PAGES_NUMBER = 5;
     private User user;
-    private int wallPage = 0;
     private Group group;
     private Mode mode = Mode.USER;
     private int defaultIndex = USER_AUDIO_INDEX;
-    private boolean youMode = false;
-    private ActionBar actionBar;
+    private boolean you = false;
     private VkWallModel vkWallModel = new VkWallModel();
     private VkAudioModel vkAudioModel = new VkAudioModel();
 
@@ -61,9 +59,9 @@ public class UserViewerVkActivity extends PagerResultActivity {
         Bundle extras = getIntent().getExtras();
         user = (User) extras.getSerializable(USER);
         defaultIndex = extras.getInt(TAB_INDEX);
-        actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        youMode = extras.getBoolean(YOU_MODE, false);
+        you = extras.getBoolean(YOU_MODE, false);
         if (user == null) {
             mode = Mode.GROUP;
             group = (Group) extras.getSerializable(GROUP);
@@ -80,26 +78,17 @@ public class UserViewerVkActivity extends PagerResultActivity {
     }
 
     private void initViewPager() {
-        List<ViewerPage> pages = new ArrayList<>(5);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        pages.add(createWallTracksPage(inflater));
-        pages.add(createAudioTracksPage(inflater));
-        pages.add(createAlbumsTracksPage(inflater));
-        if (youMode) {
-            pages.add(createFavoritesArtistsPage(inflater));
-            pages.add(createFeedTracksPage(inflater));
+        List<ViewerPage> pages = new ArrayList<>(PAGES_NUMBER);
+        pages.add(createWallTracksPage());
+        pages.add(createAudioTracksPage());
+        pages.add(createAlbumsTracksPage());
+        if (you) {
+            pages.add(createFavoritesArtistsPage());
+            pages.add(createFeedTracksPage());
         }
         setViewers(pages);
         final ViewerAdapter adapter = new ViewerAdapter(pages);
-
-        pager = (ViewPager) findViewById(R.id.viewpager);
-        pager.setAdapter(adapter);
-        indicator = (TitlePageIndicator) findViewById(R.id.indicator);
-        indicator.setOnClickListener(null);
-        indicator.setViewPager(pager);
-        indicator.setTextColor(getResources().getColor(R.color.secondary_text));
-        indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
-        indicator.setFooterColor(getResources().getColor(R.color.accent));
+        injectViewPager(adapter);
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
@@ -121,9 +110,9 @@ public class UserViewerVkActivity extends PagerResultActivity {
         });
     }
 
-    private ViewerPage createFeedTracksPage(LayoutInflater inflater) {
+    private ViewerPage createFeedTracksPage() {
         final VkTracksViewerPage viewer = new VkTracksViewerPage(this,
-                inflater.inflate(R.layout.list_tab, null),
+                View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_feed
         );
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
@@ -138,9 +127,9 @@ public class UserViewerVkActivity extends PagerResultActivity {
         return viewer;
     }
 
-    private ViewerPage createFavoritesArtistsPage(LayoutInflater inflater) {
+    private ViewerPage createFavoritesArtistsPage() {
         final VkTracksViewerPage viewer = new VkTracksViewerPage(this,
-                inflater.inflate(R.layout.list_tab, null),
+                View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_favorites
         );
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
@@ -155,9 +144,9 @@ public class UserViewerVkActivity extends PagerResultActivity {
         return viewer;
     }
 
-    private ViewerPage createAlbumsTracksPage(LayoutInflater inflater) {
+    private ViewerPage createAlbumsTracksPage() {
         final VkAlbumViewerPage viewer = new VkAlbumViewerPage(this,
-                inflater.inflate(R.layout.list_tab, null),
+                View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_albums
         );
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
@@ -171,9 +160,9 @@ public class UserViewerVkActivity extends PagerResultActivity {
         return viewer;
     }
 
-    private ViewerPage createAudioTracksPage(LayoutInflater inflater) {
+    private ViewerPage createAudioTracksPage() {
         final VkTracksViewerPage viewer = new VkTracksViewerPage(this,
-                inflater.inflate(R.layout.list_tab, null),
+                View.inflate(this, R.layout.list_tab, null),
                 R.string.user_audio
         );
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
@@ -188,9 +177,9 @@ public class UserViewerVkActivity extends PagerResultActivity {
         return viewer;
     }
 
-    private ViewerPage createWallTracksPage(LayoutInflater inflater) {
+    private ViewerPage createWallTracksPage() {
         final VkTracksViewerPage viewer = new VkTracksViewerPage(this,
-                inflater.inflate(R.layout.list_tab, null),
+                View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_wall
         );
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
@@ -216,7 +205,7 @@ public class UserViewerVkActivity extends PagerResultActivity {
 
                         @Override
                         public void failure(VkError error) {
-                            ErrorNotifier.showError(UserViewerVkActivity.this, error.getErrorMessage());
+                            ErrorNotifier.showError(VkUserViewerActivity.this, error.getErrorMessage());
 
                         }
                     });
@@ -237,7 +226,7 @@ public class UserViewerVkActivity extends PagerResultActivity {
 
                         @Override
                         public void failure(VkError error) {
-                            ErrorNotifier.showError(UserViewerVkActivity.this, error.getErrorMessage());
+                            ErrorNotifier.showError(VkUserViewerActivity.this, error.getErrorMessage());
 
                         }
                     });
@@ -272,7 +261,7 @@ public class UserViewerVkActivity extends PagerResultActivity {
 
             @Override
             public void failure(VkError error) {
-                ErrorNotifier.showError(UserViewerVkActivity.this, error.getErrorMessage());
+                ErrorNotifier.showError(VkUserViewerActivity.this, error.getErrorMessage());
             }
         };
         if (mode == Mode.USER) {
@@ -291,7 +280,7 @@ public class UserViewerVkActivity extends PagerResultActivity {
 
             @Override
             public void failure(VkError error) {
-                ErrorNotifier.showError(UserViewerVkActivity.this, error.getErrorMessage());
+                ErrorNotifier.showError(VkUserViewerActivity.this, error.getErrorMessage());
             }
         };
         if (mode == Mode.USER) {
@@ -321,7 +310,6 @@ public class UserViewerVkActivity extends PagerResultActivity {
             case USER_AUDIO_INDEX:
             case FAVORITES:
             case NEWS_FEED: {
-                actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                 inflater.inflate(R.menu.to_playlist_menu, menu);
             }
             break;
@@ -340,21 +328,23 @@ public class UserViewerVkActivity extends PagerResultActivity {
         switch (itemId) {
             case android.R.id.home: {
                 finish();
-                Intent intent = new Intent(UserViewerVkActivity.this, MainActivity.class);
+                Intent intent = new Intent(VkUserViewerActivity.this, MainActivity.class);
                 intent.setAction(Intent.ACTION_MAIN);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
             return true;
             case R.id.to_playlist: {
-                if (getViewer(currentItem).isNotLoaded()) return true;
-                addToMainPlaylist(Converter.convertLastfmTrackList(getViewer(currentItem).getItems()));
-                Toast.makeText(UserViewerVkActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
+                LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(currentItem);
+                if (viewer.isNotLoaded()) return true;
+                addToMainPlaylist(Converter.convertLastfmTrackList(viewer.getItems()));
+                Toast.makeText(VkUserViewerActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
             }
             return true;
             case R.id.save_as_playlist: {
-                if (getViewer(currentItem).isNotLoaded()) return true;
-                saveAsPlaylist(Converter.convertLastfmTrackList(getViewer(currentItem).getItems()));
+                LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(currentItem);
+                if (viewer.isNotLoaded()) return true;
+                saveAsPlaylist(Converter.convertLastfmTrackList(viewer.getItems()));
             }
             return true;
         }

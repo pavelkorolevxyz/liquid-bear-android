@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.view.MenuCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
@@ -29,6 +29,7 @@ import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
@@ -107,8 +108,8 @@ public class RecommendationsActivity extends ResultActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent artistInfoIntent = new Intent(RecommendationsActivity.this,
-                        ArtistViewerActivity.class);
-                artistInfoIntent.putExtra(ArtistViewerActivity.ARTIST, adapter.get(i).getName());
+                        LastfmArtistViewerActivity.class);
+                artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, adapter.get(i).getName());
                 startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
             }
         };
@@ -119,7 +120,7 @@ public class RecommendationsActivity extends ResultActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem item = menu.add(getResources().getString(R.string.compilation));
-        MenuCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        MenuItemCompat.setShowAsAction(item, 0);
         return true;
     }
 

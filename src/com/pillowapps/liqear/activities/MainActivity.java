@@ -40,6 +40,7 @@ import com.michaelnovakjr.numberpicker.NumberPicker;
 import com.pillowapps.liqear.BuildConfig;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.MainActivityAdapter;
 import com.pillowapps.liqear.adapters.ModeAdapter;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
@@ -358,8 +359,8 @@ public class MainActivity extends SlidingFragmentActivity {
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                Intent intent = new Intent(MainActivity.this, ArtistViewerActivity.class);
-                intent.putExtra(ArtistViewerActivity.ARTIST, currentTrack.getArtist());
+                Intent intent = new Intent(MainActivity.this, LastfmArtistViewerActivity.class);
+                intent.putExtra(LastfmArtistViewerActivity.ARTIST, currentTrack.getArtist());
                 startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
             }
             return true;
@@ -952,8 +953,8 @@ public class MainActivity extends SlidingFragmentActivity {
                             getString(R.string.vk_not_authorized), Toast.LENGTH_SHORT).show();
                 } else {
                     Intent artistInfoIntent = new Intent(MainActivity.this,
-                            ArtistViewerActivity.class);
-                    artistInfoIntent.putExtra(ArtistViewerActivity.ARTIST, track.getArtist());
+                            LastfmArtistViewerActivity.class);
+                    artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, track.getArtist());
                     startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
                 }
                 break;

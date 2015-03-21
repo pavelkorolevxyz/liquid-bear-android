@@ -39,22 +39,22 @@
             android:name=".activities.LoginActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.UserViewerVkActivity"
+            android:name=".activities.viewers.VkUserViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.UserViewerLastfmActivity"
+            android:name=".activities.viewers.LastfmUserViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.ChartsActivity"
+            android:name=".activities.viewers.LastfmChartsViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.SearchActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.ArtistViewerActivity"
+            android:name=".activities.viewers.LastfmArtistViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.LastfmAlbumViewerActivity"
+            android:name=".activities.viewers.LastfmAlbumViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.ImagePagerActivity"
@@ -73,7 +73,7 @@
             android:name=".activities.RecommendationsActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.TagViewerActivity"
+            android:name=".activities.viewers.LastfmTagViewerActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.PlaylistsActivity"

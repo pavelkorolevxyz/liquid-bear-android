@@ -1,10 +1,9 @@
-package com.pillowapps.liqear.activities;
+package com.pillowapps.liqear.activities.viewers;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 
 import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerViewAdapter;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.TextViewerPage;
@@ -29,7 +29,6 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.squareup.picasso.Picasso;
-import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +39,8 @@ import butterknife.InjectView;
 public class LastfmAlbumViewerActivity extends PagerResultActivity {
     public static final String ALBUM = "album";
     public static final String ARTIST = "artist";
-    public static final int ALBUM_INFO_INDEX = 1;
     public static final int TRACKS_INDEX = 0;
+    public static final int PAGES_NUMBER = 5;
     private ViewPager pager;
 
     private View infoTab;
@@ -87,29 +86,20 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
     }
 
     private void initViewPager() {
-        List<ViewerPage> pages = new ArrayList<>(5);
-        List<View> views = new ArrayList<>(5);
-        List<String> titles = new ArrayList<>(5);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        ViewerPage albumsPage = createTracksPage(inflater);
+        List<ViewerPage> pages = new ArrayList<>(PAGES_NUMBER);
+        List<View> views = new ArrayList<>(PAGES_NUMBER);
+        List<String> titles = new ArrayList<>(PAGES_NUMBER);
+        ViewerPage albumsPage = createTracksPage();
         views.add(albumsPage.getView());
         titles.add(albumsPage.getTitle());
         pages.add(albumsPage);
-        TextViewerPage albumInfoPage = createAlbumInfoPage(inflater);
+        TextViewerPage albumInfoPage = createAlbumInfoPage();
         infoTab = albumInfoPage.getView();
         views.add(infoTab);
         titles.add(albumInfoPage.getTitle());
         setViewers(pages);
         final ViewerViewAdapter adapter = new ViewerViewAdapter(views, titles);
-
-        pager = (ViewPager) findViewById(R.id.viewpager);
-        pager.setAdapter(adapter);
-        TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
-        indicator.setOnClickListener(null);
-        indicator.setViewPager(pager);
-        indicator.setTextColor(getResources().getColor(R.color.secondary_text));
-        indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
-        indicator.setFooterColor(getResources().getColor(R.color.accent));
+        injectViewPager(adapter);
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
@@ -128,15 +118,15 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
         });
     }
 
-    private TextViewerPage createAlbumInfoPage(LayoutInflater inflater) {
+    private TextViewerPage createAlbumInfoPage() {
         return new TextViewerPage(this,
-                inflater.inflate(R.layout.album_info_layout, null),
+                View.inflate(this, R.layout.album_info_layout, null),
                 R.string.album_info);
     }
 
-    private ViewerPage createTracksPage(LayoutInflater inflater) {
+    private ViewerPage createTracksPage() {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
-                inflater.inflate(R.layout.list_tab, null),
+                View.inflate(this, R.layout.list_tab, null),
                 R.string.top_tracks);
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
             @Override

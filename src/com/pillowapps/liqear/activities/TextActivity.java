@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.activities;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,14 +7,12 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -50,7 +47,6 @@ public class TextActivity extends ResultActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scrollable_text_layout);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         textView = (TextView) findViewById(R.id.text_view_scrollable_text_layout);
@@ -182,24 +178,12 @@ public class TextActivity extends ResultActivity {
                 break;
             case ARTIST_INFO:
                 MenuItem item = menu.add(getResources().getString(R.string.search_google));
-                item.setIcon(getResources().getDrawable(android.R.drawable.ic_menu_search));
-                MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                item.setIcon(getResources().getDrawable(android.R.drawable.ic_menu_search, null));
                 break;
             default:
                 break;
         }
         return super.onCreateOptionsMenu(menu);
-    }
-
-    private void showException(String error, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getString(R.string.error) + " "
-                + error.substring(error.indexOf(' ') + 1));
-        builder.setMessage(message);
-        builder.setNeutralButton(getResources().getString(android.R.string.ok),
-                null);
-        AlertDialog exceptionDialog = builder.create();
-        exceptionDialog.show();
     }
 
     private void getArtistInfo(String artist, String username) {

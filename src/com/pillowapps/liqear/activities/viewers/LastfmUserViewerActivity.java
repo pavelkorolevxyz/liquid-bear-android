@@ -1,11 +1,10 @@
-package com.pillowapps.liqear.activities;
+package com.pillowapps.liqear.activities.viewers;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 
 import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerAdapter;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
@@ -33,34 +33,26 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
-import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserViewerLastfmActivity extends PagerResultActivity {
+public class LastfmUserViewerActivity extends PagerResultActivity {
     public static final String USER = "user";
-    public static final String YOU_MODE = "you";
     public static final int RECENT_INDEX = 3;
     public static final int TOP_ARTISTS_INDEX = 2;
     public static final int TOP_TRACKS_INDEX = 1;
     public static final int LOVED_INDEX = 0;
     public static final String TAB_INDEX = "tab_index";
-    private static final int PAGES_LENGTH = RECENT_INDEX + 1;
-    private ViewPager pager;
-    private TitlePageIndicator indicator;
+    public static final int PAGES_NUMBER = 5;
     private User user;
-    private Mode mode = Mode.USER;
     private int defaultIndex = TOP_TRACKS_INDEX;
-    private boolean youMode = false;
-    private ActionBar actionBar;
     private String topArtistsPeriod;
     private String topTracksPeriod;
     private LastfmUserModel userModel = new LastfmUserModel();
     private int savedTopTrackPosition;
     private int savedTopArtistPeriod;
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +60,7 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         Bundle extras = getIntent().getExtras();
         user = (User) extras.getSerializable(USER);
         defaultIndex = extras.getInt(TAB_INDEX);
-        youMode = extras.getBoolean(YOU_MODE, false);
-        actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         if (user != null) {
             actionBar.setTitle(user.getName());
@@ -161,23 +152,14 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
     }
 
     private void initViewPager() {
-        List<ViewerPage> pages = new ArrayList<>(5);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        pages.add(createLovedTracksPage(inflater));
-        pages.add(createTopTracksPage(inflater));
-        pages.add(createTopArtistsPage(inflater));
-        pages.add(createRecentTracksPage(inflater));
+        List<ViewerPage> pages = new ArrayList<>(PAGES_NUMBER);
+        pages.add(createLovedTracksPage());
+        pages.add(createTopTracksPage());
+        pages.add(createTopArtistsPage());
+        pages.add(createRecentTracksPage());
         setViewers(pages);
         final ViewerAdapter adapter = new ViewerAdapter(pages);
-        pager = (ViewPager) findViewById(R.id.viewpager);
-        pager.setAdapter(adapter);
-
-        indicator = (TitlePageIndicator) findViewById(R.id.indicator);
-        indicator.setOnClickListener(null);
-        indicator.setViewPager(pager);
-        indicator.setTextColor(getResources().getColor(R.color.secondary_text));
-        indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
-        indicator.setFooterColor(getResources().getColor(R.color.accent));
+        injectViewPager(adapter);
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
@@ -199,9 +181,9 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         });
     }
 
-    private ViewerPage createRecentTracksPage(LayoutInflater inflater) {
+    private ViewerPage createRecentTracksPage() {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
-                inflater.inflate(R.layout.list_tab, null),
+                View.inflate(this, R.layout.list_tab, null),
                 R.string.recent
         );
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
@@ -216,9 +198,9 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         return viewer;
     }
 
-    private ViewerPage createTopArtistsPage(LayoutInflater inflater) {
+    private ViewerPage createTopArtistsPage() {
         final SpinnerLastfmArtistViewerPage viewer = new SpinnerLastfmArtistViewerPage(this,
-                inflater.inflate(R.layout.list_spinner_tab, null),
+                View.inflate(this, R.layout.list_spinner_tab, null),
                 R.string.top_artists);
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
             @Override
@@ -231,9 +213,9 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         return viewer;
     }
 
-    private ViewerPage createTopTracksPage(LayoutInflater inflater) {
+    private ViewerPage createTopTracksPage() {
         final SpinnerLastfmTracksViewerPage viewer = new SpinnerLastfmTracksViewerPage(this,
-                inflater.inflate(R.layout.list_spinner_tab, null),
+                View.inflate(this, R.layout.list_spinner_tab, null),
                 R.string.top_tracks
         );
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
@@ -248,9 +230,9 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         return viewer;
     }
 
-    private ViewerPage createLovedTracksPage(LayoutInflater inflater) {
+    private ViewerPage createLovedTracksPage() {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
-                inflater.inflate(R.layout.list_tab, null),
+                View.inflate(this, R.layout.list_tab, null),
                 R.string.loved_tracks
         );
         viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
@@ -360,7 +342,7 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         switch (itemId) {
             case android.R.id.home: {
                 finish();
-                Intent intent = new Intent(UserViewerLastfmActivity.this, MainActivity.class);
+                Intent intent = new Intent(LastfmUserViewerActivity.this, MainActivity.class);
                 intent.setAction(Intent.ACTION_MAIN);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -373,15 +355,15 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
             }
             return true;
             case R.id.to_playlist: {
-                ViewerPage viewer = getViewer(pager.getCurrentItem());
+                LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(pager.getCurrentItem());
                 if (viewer.isNotLoaded()) return true;
                 addToMainPlaylist(Converter.convertLastfmTrackList(viewer.getItems()));
-                Toast.makeText(UserViewerLastfmActivity.this, R.string.added,
+                Toast.makeText(LastfmUserViewerActivity.this, R.string.added,
                         Toast.LENGTH_SHORT).show();
             }
             return true;
             case R.id.save_as_playlist: {
-                ViewerPage viewer = getViewer(pager.getCurrentItem());
+                LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(pager.getCurrentItem());
                 if (viewer.isNotLoaded()) return true;
                 saveAsPlaylist(Converter.convertLastfmTrackList(viewer.getItems()));
             }
@@ -396,12 +378,10 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
         final int index = pager.getCurrentItem();
         switch (index) {
             case LOVED_INDEX: {
-                actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                 inflater.inflate(R.menu.load_all_menu, menu);
             }
             break;
             case TOP_TRACKS_INDEX: {
-                actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                 inflater.inflate(R.menu.to_playlist_menu, menu);
             }
             break;
@@ -410,15 +390,9 @@ public class UserViewerLastfmActivity extends PagerResultActivity {
             }
             break;
             case RECENT_INDEX:
-                actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                 inflater.inflate(R.menu.to_playlist_menu, menu);
                 break;
         }
         return super.onCreateOptionsMenu(menu);
-    }
-
-    private enum Mode {
-        USER,
-        GROUP
     }
 }

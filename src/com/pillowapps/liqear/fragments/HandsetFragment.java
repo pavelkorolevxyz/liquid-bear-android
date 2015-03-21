@@ -35,8 +35,8 @@ import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.LastfmAlbumViewerActivity;
-import com.pillowapps.liqear.activities.ArtistViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.MainActivityAdapter;
 import com.pillowapps.liqear.adapters.ModeAdapter;
@@ -341,8 +341,8 @@ public class HandsetFragment extends Fragment {
             public void onClick(View v) {
                 if (!AudioTimeline.hasCurrentTrack()) return;
                 Intent artistInfoIntent = new Intent(mainActivity,
-                        ArtistViewerActivity.class);
-                artistInfoIntent.putExtra(ArtistViewerActivity.ARTIST,
+                        LastfmArtistViewerActivity.class);
+                artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST,
                         AudioTimeline.getCurrentTrack().getArtist());
                 mainActivity.startActivityForResult(artistInfoIntent,
                         Constants.MAIN_REQUEST_CODE);

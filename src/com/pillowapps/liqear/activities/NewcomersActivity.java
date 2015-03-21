@@ -112,8 +112,7 @@ public class NewcomersActivity extends ResultActivity {
                 item = menu.add(getResources().getString(R.string.alterportal));
                 break;
         }
-        MenuItemCompat.setShowAsAction(item,
-                MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        MenuItemCompat.setShowAsAction(item, 0);
         return true;
     }
 
