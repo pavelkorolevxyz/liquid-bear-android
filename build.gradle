@@ -44,6 +44,9 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
+        packagingOptions {
+            exclude 'META-INF/services/javax.annotation.processing.Processor'
+        }
     }
 
     buildTypes {
@@ -85,4 +88,5 @@ dependencies {
     compile files('libs/httpmime-4.3.jar')
     compile files('libs/jsoup-1.7.2.jar')
     compile files('libs/libGoogleAnalyticsServices.jar')
+    compile files('libs/realm-0.80.0.jar')
 }

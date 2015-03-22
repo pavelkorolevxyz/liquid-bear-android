@@ -8,6 +8,9 @@ import android.media.AudioManager;
 import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
+
+import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
+import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
 import com.pillowapps.liqear.helpers.CompatFroyo;
 
 public class MediaButtonReceiver extends BroadcastReceiver {

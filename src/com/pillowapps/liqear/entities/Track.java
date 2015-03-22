@@ -3,9 +3,6 @@ package com.pillowapps.liqear.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class Track implements Parcelable {
     public static final Parcelable.Creator<Track> CREATOR = new Parcelable.Creator<Track>() {
         public Track createFromParcel(Parcel in) {
@@ -147,46 +144,6 @@ public class Track implements Parcelable {
         return String.format("%s - %s", artist, title);
     }
 
-    public int getPercentageChange() {
-        return percentageChange;
-    }
-
-    public void setPercentageChange(int percentageChange) {
-        this.percentageChange = percentageChange;
-    }
-
-    public int getLoves() {
-        return loves;
-    }
-
-    public void setLoves(int loves) {
-        this.loves = loves;
-    }
-
-    public int getListeners() {
-        return listeners;
-    }
-
-    public void setListeners(int listeners) {
-        this.listeners = listeners;
-    }
-
-    public long getPlayCount() {
-        return playCount;
-    }
-
-    public void setPlayCount(long playCount) {
-        this.playCount = playCount;
-    }
-
-    public long getUserPlayCount() {
-        return userPlayCount;
-    }
-
-    public void setUserPlayCount(long userPlayCount) {
-        this.userPlayCount = userPlayCount;
-    }
-
     public long getOwnerId() {
         return ownerId;
     }
@@ -235,11 +192,6 @@ public class Track implements Parcelable {
         this.url = url;
     }
 
-    public String getDurationString() {
-        SimpleDateFormat format = new SimpleDateFormat("m:ss");
-        return format.format(new Date(duration * 1000));
-    }
-
     public boolean isLoved() {
         return loved;
     }
@@ -260,20 +212,8 @@ public class Track implements Parcelable {
         return dbId;
     }
 
-    public void setDbId(long dbId) {
-        this.dbId = dbId;
-    }
-
-    public boolean isLive() {
-        return live;
-    }
-
     public boolean isLocal() {
         return local;
-    }
-
-    private String trim(String s) {
-        return s.replaceAll("[^\\w\\d\\[\\]\\(\\)\\{\\}\\s/]", "").toLowerCase();
     }
 
     public boolean hasAudioString() {

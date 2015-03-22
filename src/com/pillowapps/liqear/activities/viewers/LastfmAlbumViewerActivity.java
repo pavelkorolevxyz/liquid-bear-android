@@ -79,11 +79,6 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
         initViewPager();
 
         ButterKnife.inject(this, infoTab);
-        albumCoverImageView = (ImageView) infoTab.findViewById(R.id.album_cover_image_view);
-        progressBar = (ProgressBar) infoTab.findViewById(R.id.progressBar);
-        artistTextView = (TextView) infoTab.findViewById(R.id.artist_text_view);
-        titleTextView = (TextView) infoTab.findViewById(R.id.title_text_view);
-        otherTextView = (TextView) infoTab.findViewById(R.id.other_text_view);
     }
 
     private void initViewPager() {

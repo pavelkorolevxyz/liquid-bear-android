@@ -1,9 +1,11 @@
-package com.pillowapps.liqear.audio;
+package com.pillowapps.liqear.audio.deprecated;
 
 import android.graphics.Bitmap;
 import android.widget.Toast;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.entities.RepeatMode;
+import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.entities.Album;

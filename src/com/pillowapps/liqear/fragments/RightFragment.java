@@ -17,7 +17,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.audio.AudioTimeline;
+import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.entities.Album;

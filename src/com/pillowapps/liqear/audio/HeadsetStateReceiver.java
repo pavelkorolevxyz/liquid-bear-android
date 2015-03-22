@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 
+import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
+import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
 import com.pillowapps.liqear.helpers.Constants;
 
 public class HeadsetStateReceiver extends BroadcastReceiver {

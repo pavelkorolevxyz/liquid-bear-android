@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.audio.AudioTimeline;
+import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistManager;

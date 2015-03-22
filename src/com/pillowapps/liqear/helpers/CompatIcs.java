@@ -17,7 +17,7 @@ import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
-import com.pillowapps.liqear.audio.AudioTimeline;
+import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.audio.MediaButtonReceiver;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;

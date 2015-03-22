@@ -11,7 +11,7 @@ import com.pillowapps.liqear.activities.SearchActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmTagViewerActivity;
 import com.pillowapps.liqear.activities.TrackedActivity;
 import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
-import com.pillowapps.liqear.audio.AudioTimeline;
+import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
 import com.pillowapps.liqear.entities.Tag;

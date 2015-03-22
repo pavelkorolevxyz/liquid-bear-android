@@ -2,7 +2,7 @@ package com.pillowapps.liqear.models.lastfm;
 
 import android.graphics.Bitmap;
 
-import com.pillowapps.liqear.audio.AudioTimeline;
+import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;

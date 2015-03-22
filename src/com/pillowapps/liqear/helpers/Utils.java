@@ -8,7 +8,7 @@ import android.net.ConnectivityManager;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.audio.AudioTimeline;
+import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.entities.Track;
 
 import java.text.SimpleDateFormat;

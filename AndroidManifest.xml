@@ -139,7 +139,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".audio.MusicPlaybackService" />
+        <service android:name=".audio.deprecated.MusicPlaybackService" />
         <service android:name="net.robotmedia.billing.BillingService" />
 
         <receiver android:name="net.robotmedia.billing.BillingReceiver">

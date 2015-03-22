@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.audio;
+package com.pillowapps.liqear.audio.deprecated;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -35,6 +35,11 @@ import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.activities.SearchActivity;
+import com.pillowapps.liqear.audio.EqualizerManager;
+import com.pillowapps.liqear.audio.HeadsetStateReceiver;
+import com.pillowapps.liqear.audio.MediaButtonReceiver;
+import com.pillowapps.liqear.entities.RepeatMode;
+import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
@@ -70,7 +75,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-@SuppressWarnings("unchecked")
 public class MusicPlaybackService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener,
@@ -243,125 +247,140 @@ public class MusicPlaybackService extends Service implements
         super.onStartCommand(intent, flags, startId);
         if (intent != null) {
             String action = intent.getAction();
-            if (ACTION_TOGGLE_PLAYBACK_NOTIFICATION.equals(action)) {
-                setPlayOnPrepared(true);
-                if (hasDataSource) {
-                    playPause();
-                } else {
-                    AudioTimeline.setPlaying(true);
-                    List<Track> tracks = PlaylistManager.getInstance().loadPlaylist();
-                    AudioTimeline.setPlaylist(tracks);
-                    tracks = AudioTimeline.getPlaylist();
-                    SharedPreferences preferences = PreferencesManager.getPreferences();
-                    String artist = preferences.getString(Constants.ARTIST, "");
-                    String title = preferences.getString(Constants.TITLE, "");
-                    int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                    int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
-
-                    boolean currentFits = currentIndex < tracks.size();
-                    if (!currentFits) currentIndex = 0;
-                    if (currentIndex == 0 && tracks.size() == 0) return START_STICKY;
-                    Track currentTrack = tracks.get(currentIndex);
-                    boolean tracksEquals = currentFits
-                            && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                            + currentTrack.getTitle());
-                    if (!tracksEquals) {
-                        currentIndex = 0;
-                        position = 0;
-                    }
-                    AudioTimeline.setCurrentIndex(currentIndex);
-                    if (currentIndex > AudioTimeline.getPlaylist().size()) {
-                        position = 0;
-                    }
-                    if (!PreferencesManager.getPreferences()
-                            .getBoolean("continue_from_position", true)) {
-                        position = 0;
-                    }
-
-                    AudioTimeline.setCurrentPosition(position);
-                    if (AudioTimeline.getPlaylist().size() != 0
-                            && AudioTimeline.hasCurrentTrack()) {
-                        play(true);
-                    }
-                }
-            } else if (ACTION_CLOSE.equals(action)) {
-                exit();
-            } else if (ACTION_NEXT.equals(action)) {
-                next();
-            } else if (ACTION_PREV.equals(action)) {
-                prev();
-            } else if (ACTION_SHUFFLE.equals(action)) {
-                AudioTimeline.toggleShuffle();
-                updateWidgets();
-            } else if (ACTION_REPEAT.equals(action)) {
-                AudioTimeline.toggleRepeat();
-                updateWidgets();
-            } else if (ACTION_ADD_TO_VK.equals(action)) {
-                Track track = AudioTimeline.getCurrentTrack();
-                if (track != null) {
-                    Intent searchVkIntent = new Intent(getBaseContext(),
-                            SearchActivity.class);
-                    searchVkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    searchVkIntent.putExtra(SearchActivity.SEARCH_MODE,
-                            SearchActivity.SearchMode.AUDIO_SEARCH_RESULT_ADD_VK);
-                    searchVkIntent.putExtra(Constants.TARGET, track.getNotation());
-                    getApplication().startActivity(searchVkIntent);
-                }
-            } else if (ACTION_ADD_TO_VK_FAST.equals(action)) {
-                final Track track = AudioTimeline.getCurrentTrack();
-                if (track != null) {
-                    new VkAudioModel().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>() {
-                        @Override
-                        public void success(VkResponse data) {
-                            track.setAddedToVk(true);
-                            Toast.makeText(LBApplication.getAppContext(),
-                                    R.string.added, Toast.LENGTH_SHORT).show();
-                            showTrackInNotification();
-                        }
-
-                        @Override
-                        public void failure(VkError error) {
-
-                        }
-                    });
-                }
-            } else if (ACTION_LOVE.equals(action)) {
-                final Track track = AudioTimeline.getCurrentTrack();
-                if (track != null) {
-                    if (!track.isLoved()) {
-                        new LastfmTrackModel().love(track, new SimpleCallback<Object>() {
-                            @Override
-                            public void success(Object o) {
-                                track.setLoved(true);
-                                updateWidgets();
-                                showTrackInNotification();
-                            }
-
-                            @Override
-                            public void failure(String error) {
-                            }
-                        });
+            if (action == null) return START_STICKY;
+            switch (action) {
+                case ACTION_TOGGLE_PLAYBACK_NOTIFICATION:
+                    setPlayOnPrepared(true);
+                    if (hasDataSource) {
+                        playPause();
                     } else {
-                        new LastfmTrackModel().unlove(track, new SimpleCallback<Object>() {
+                        AudioTimeline.setPlaying(true);
+                        List<Track> tracks = PlaylistManager.getInstance().loadPlaylist();
+                        AudioTimeline.setPlaylist(tracks);
+                        tracks = AudioTimeline.getPlaylist();
+                        SharedPreferences preferences = PreferencesManager.getPreferences();
+                        String artist = preferences.getString(Constants.ARTIST, "");
+                        String title = preferences.getString(Constants.TITLE, "");
+                        int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                        int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+
+                        boolean currentFits = currentIndex < tracks.size();
+                        if (!currentFits) currentIndex = 0;
+                        if (currentIndex == 0 && tracks.size() == 0) return START_STICKY;
+                        Track currentTrack = tracks.get(currentIndex);
+                        boolean tracksEquals = currentFits
+                                && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                                + currentTrack.getTitle());
+                        if (!tracksEquals) {
+                            currentIndex = 0;
+                            position = 0;
+                        }
+                        AudioTimeline.setCurrentIndex(currentIndex);
+                        if (currentIndex > AudioTimeline.getPlaylist().size()) {
+                            position = 0;
+                        }
+                        if (!PreferencesManager.getPreferences()
+                                .getBoolean("continue_from_position", true)) {
+                            position = 0;
+                        }
+
+                        AudioTimeline.setCurrentPosition(position);
+                        if (AudioTimeline.getPlaylist().size() != 0
+                                && AudioTimeline.hasCurrentTrack()) {
+                            play(true);
+                        }
+                    }
+                    break;
+                case ACTION_CLOSE:
+                    exit();
+                    break;
+                case ACTION_NEXT:
+                    next();
+                    break;
+                case ACTION_PREV:
+                    prev();
+                    break;
+                case ACTION_SHUFFLE:
+                    AudioTimeline.toggleShuffle();
+                    updateWidgets();
+                    break;
+                case ACTION_REPEAT:
+                    AudioTimeline.toggleRepeat();
+                    updateWidgets();
+                    break;
+                case ACTION_ADD_TO_VK: {
+                    Track track = AudioTimeline.getCurrentTrack();
+                    if (track != null) {
+                        Intent searchVkIntent = new Intent(getBaseContext(),
+                                SearchActivity.class);
+                        searchVkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        searchVkIntent.putExtra(SearchActivity.SEARCH_MODE,
+                                SearchActivity.SearchMode.AUDIO_SEARCH_RESULT_ADD_VK);
+                        searchVkIntent.putExtra(Constants.TARGET, track.getNotation());
+                        getApplication().startActivity(searchVkIntent);
+                    }
+                    break;
+                }
+                case ACTION_ADD_TO_VK_FAST: {
+                    final Track track = AudioTimeline.getCurrentTrack();
+                    if (track != null) {
+                        new VkAudioModel().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>() {
                             @Override
-                            public void success(Object o) {
-                                track.setLoved(false);
-                                updateWidgets();
+                            public void success(VkResponse data) {
+                                track.setAddedToVk(true);
+                                Toast.makeText(LBApplication.getAppContext(),
+                                        R.string.added, Toast.LENGTH_SHORT).show();
                                 showTrackInNotification();
                             }
 
                             @Override
-                            public void failure(String error) {
+                            public void failure(VkError error) {
+
                             }
                         });
                     }
+                    break;
                 }
-            } else if (CHANGE_SHAKE_PREFERENCE.equals(action)) {
-                if (PreferencesManager.getPreferences().getBoolean("shake_next", false)) {
-                    initShakeDetector();
-                } else {
-                    destroyShake();
+                case ACTION_LOVE: {
+                    final Track track = AudioTimeline.getCurrentTrack();
+                    if (track != null) {
+                        if (!track.isLoved()) {
+                            new LastfmTrackModel().love(track, new SimpleCallback<Object>() {
+                                @Override
+                                public void success(Object o) {
+                                    track.setLoved(true);
+                                    updateWidgets();
+                                    showTrackInNotification();
+                                }
+
+                                @Override
+                                public void failure(String error) {
+                                }
+                            });
+                        } else {
+                            new LastfmTrackModel().unlove(track, new SimpleCallback<Object>() {
+                                @Override
+                                public void success(Object o) {
+                                    track.setLoved(false);
+                                    updateWidgets();
+                                    showTrackInNotification();
+                                }
+
+                                @Override
+                                public void failure(String error) {
+                                }
+                            });
+                        }
+                    }
+                    break;
                 }
+                case CHANGE_SHAKE_PREFERENCE:
+                    if (PreferencesManager.getPreferences().getBoolean("shake_next", false)) {
+                        initShakeDetector();
+                    } else {
+                        destroyShake();
+                    }
+                    break;
             }
         }
 
@@ -700,7 +719,6 @@ public class MusicPlaybackService extends Service implements
         }
     }
 
-    @SuppressWarnings("deprecation")
     public void showTrackInNotification() {
         updateWidgets();
         if (AudioTimeline.getCurrentIndex() >= AudioTimeline.getPlaylist().size()) return;

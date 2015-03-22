@@ -16,7 +16,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.pillowapps.liqear.BuildConfig;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.audio.MusicPlaybackService;
+import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
 import com.pillowapps.liqear.helpers.AppUtils;
 
 public class PreferencesActivity extends PreferenceActivity {

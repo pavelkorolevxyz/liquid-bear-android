@@ -44,4 +44,9 @@ public class Playlist {
     public void setPid(long pid) {
         this.pid = pid;
     }
+
+    public int size() {
+        if (tracks == null) return 0;
+        return tracks.size();
+    }
 }

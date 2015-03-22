@@ -3,6 +3,7 @@ package com.pillowapps.liqear.audio;
 import android.content.SharedPreferences;
 import android.media.audiofx.BassBoost;
 
+import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.helpers.CompatEq;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
