@@ -30,14 +30,12 @@ import android.widget.TextView;
 import com.mobeta.android.dslv.DragSortListView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
-import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.MainActivityAdapter;
 import com.pillowapps.liqear.adapters.ModeAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
@@ -45,8 +43,8 @@ import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MusicPlaybackService;
 import com.pillowapps.liqear.audio.RepeatMode;
 import com.pillowapps.liqear.audio.ShuffleMode;
-import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.components.ModeClickListener;
+import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
@@ -54,6 +52,8 @@ import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.ImageModel;
+import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -542,15 +542,15 @@ public class HandsetFragment extends Fragment {
         }
         if (PreferencesManager.getPreferences()
                 .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-            imageLoader.displayImage(AudioTimeline.getImageUrl(),
-                    artistImageView, options, new ImageLoadingListener() {
+            new ImageModel().loadImage(AudioTimeline.getImageUrl(),
+                    artistImageView, new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted() {
 
                         }
 
                         @Override
-                        public void onLoadingFailed(FailReason failReason) {
+                        public void onLoadingFailed(String message) {
 
                         }
 
@@ -705,28 +705,27 @@ public class HandsetFragment extends Fragment {
                             Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
                         String imageUrl = intent.getStringExtra(Constants.IMAGE_URL);
                         AudioTimeline.setImageUrl(imageUrl);
-                        imageLoader.displayImage(imageUrl, artistImageView, options,
-                                new ImageLoadingListener() {
-                                    @Override
-                                    public void onLoadingStarted() {
+                        new ImageModel().loadImage(imageUrl, artistImageView, new ImageLoadingListener() {
+                            @Override
+                            public void onLoadingStarted() {
 
-                                    }
+                            }
 
-                                    @Override
-                                    public void onLoadingFailed(FailReason failReason) {
+                            @Override
+                            public void onLoadingFailed(String message) {
 
-                                    }
+                            }
 
-                                    @Override
-                                    public void onLoadingComplete(Bitmap bitmap) {
-                                        updatePaletteWithBitmap(bitmap);
-                                    }
+                            @Override
+                            public void onLoadingComplete(Bitmap bitmap) {
+                                updatePaletteWithBitmap(bitmap);
+                            }
 
-                                    @Override
-                                    public void onLoadingCancelled() {
+                            @Override
+                            public void onLoadingCancelled() {
 
-                                    }
-                                });
+                            }
+                        });
                     }
                     break;
                 case MusicPlaybackService.NO_URL_CALLBACK:

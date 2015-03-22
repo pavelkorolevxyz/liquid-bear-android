@@ -2,17 +2,15 @@ package com.pillowapps.liqear.models.lastfm;
 
 import android.graphics.Bitmap;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumSearchResultsRoot;
-import com.pillowapps.liqear.network.callbacks.CompletionCallback;
+import com.pillowapps.liqear.models.ImageModel;
+import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.pillowapps.liqear.network.ServiceHelper;
+import com.pillowapps.liqear.network.callbacks.CompletionCallback;
 import com.pillowapps.liqear.network.callbacks.LastfmCallback;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.service.LastfmApiService;
@@ -70,30 +68,28 @@ public class LastfmAlbumModel {
             callback.onCompleted();
             return;
         }
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.loadImage(LBApplication.getAppContext(),
-                album.getImageUrl(), new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted() {
+        new ImageModel().loadImage(album.getImageUrl(), new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted() {
 
-                    }
+            }
 
-                    @Override
-                    public void onLoadingFailed(FailReason failReason) {
+            @Override
+            public void onLoadingFailed(String message) {
 
-                    }
+            }
 
-                    @Override
-                    public void onLoadingComplete(Bitmap bitmap) {
-                        AudioTimeline.setCurrentAlbumBitmap(bitmap);
-                        callback.onCompleted();
-                    }
+            @Override
+            public void onLoadingComplete(Bitmap bitmap) {
+                AudioTimeline.setCurrentAlbumBitmap(bitmap);
+                callback.onCompleted();
+            }
 
-                    @Override
-                    public void onLoadingCancelled() {
+            @Override
+            public void onLoadingCancelled() {
 
-                    }
-                });
+            }
+        });
     }
 
 }

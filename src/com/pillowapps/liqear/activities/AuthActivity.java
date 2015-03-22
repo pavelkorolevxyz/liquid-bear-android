@@ -2,11 +2,9 @@ package com.pillowapps.liqear.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,10 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.AuthActivityAdapter;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
@@ -32,6 +26,7 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAuthModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.models.vk.VkUserModel;
@@ -48,7 +43,6 @@ public class AuthActivity extends TrackedActivity {
     private View vkTab;
     private ViewPager pager;
     private View lastfmTab;
-    private TitlePageIndicator indicator;
     private Button authorizeVkButton;
     private Button authorizeLastfmButton;
     private EditText loginLastfmEditText;
@@ -59,17 +53,12 @@ public class AuthActivity extends TrackedActivity {
     private TextView lastfmNameTextView;
     private ImageView avatarVkImageView;
     private ImageView avatarLastfmImageView;
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .displayer(new FadeInBitmapDisplayer(500))
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .build();
-    private ImageLoader imageLoader = ImageLoader.getInstance();
+
     private boolean firstStart;
     private TextView errorVkTextView;
     private TextView errorLastfmTextView;
     private LastfmAuthModel authModel = new LastfmAuthModel();
+    private ImageModel imageModel = new ImageModel();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +90,7 @@ public class AuthActivity extends TrackedActivity {
 
     private void showSaves() {
         if (AuthorizationInfoManager.isAuthorizedOnVk()) {
-            imageLoader.displayImage(AuthorizationInfoManager.getVkAvatar(),
-                    avatarVkImageView, options);
+            imageModel.loadImage(AuthorizationInfoManager.getVkAvatar(), avatarVkImageView);
             vkNameTextView.setText(AuthorizationInfoManager.getVkName());
             authVkPanel.setVisibility(View.VISIBLE);
         }
@@ -110,22 +98,20 @@ public class AuthActivity extends TrackedActivity {
             lastfmNameTextView.setText(AuthorizationInfoManager.getLastfmName());
             loginLastfmEditText.setText(AuthorizationInfoManager.getLastfmName());
             authLastfmPanel.setVisibility(View.VISIBLE);
-            imageLoader.displayImage(AuthorizationInfoManager.getLastfmAvatar(),
-                    avatarLastfmImageView, options);
+            imageModel.loadImage(AuthorizationInfoManager.getLastfmAvatar(), avatarLastfmImageView);
         }
     }
 
     private void initViewPager() {
-        final LayoutInflater inflater = LayoutInflater.from(this);
-        final List<View> views = new ArrayList<View>();
-        vkTab = inflater.inflate(R.layout.auth_vk_layout, null);
+        final List<View> views = new ArrayList<>();
+        vkTab = View.inflate(this, R.layout.auth_vk_layout, null);
         views.add(vkTab);
-        lastfmTab = inflater.inflate(R.layout.auth_lastfm_layout, null);
+        lastfmTab = View.inflate(this, R.layout.auth_lastfm_layout, null);
         views.add(lastfmTab);
         pager = (ViewPager) findViewById(R.id.pager);
         AuthActivityAdapter adapter = new AuthActivityAdapter(views);
         pager.setAdapter(adapter);
-        indicator = (TitlePageIndicator) findViewById(R.id.indicator);
+        TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
         indicator.setCurrentItem(0);
         indicator.setFooterColor(getResources().getColor(R.color.accent));
@@ -173,7 +159,7 @@ public class AuthActivity extends TrackedActivity {
                         public void success(VkUser vkUser) {
                             authVkPanel.setVisibility(View.VISIBLE);
                             AuthorizationInfoManager.setVkAvatar(vkUser.getPhotoMedium());
-                            imageLoader.displayImage(vkUser.getPhotoMedium(), avatarVkImageView, options);
+                            imageModel.loadImage(vkUser.getPhotoMedium(), avatarVkImageView);
                             vkNameTextView.setText(vkUser.getName());
                             AuthorizationInfoManager.setVkName(vkUser.getName());
                             invalidateOptionsMenu();
@@ -233,8 +219,7 @@ public class AuthActivity extends TrackedActivity {
                                         List<LastfmImage> images = user.getImages();
                                         String url = images.get(images.size() - 1).getUrl();
                                         AuthorizationInfoManager.setLastfmAvatar(url);
-                                        imageLoader.displayImage(url,
-                                                avatarLastfmImageView, options);
+                                        imageModel.loadImage(url, avatarLastfmImageView);
                                     }
 
                                     @Override

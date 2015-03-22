@@ -1,6 +1,7 @@
 package com.pillowapps.liqear.activities.viewers;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -26,9 +27,10 @@ import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
+import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,6 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
     public static final String ARTIST = "artist";
     public static final int TRACKS_INDEX = 0;
     public static final int PAGES_NUMBER = 5;
-    private ViewPager pager;
 
     private View infoTab;
     @InjectView(R.id.album_cover_image_view)
@@ -191,19 +192,28 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
                 if (images != null) {
                     imageUrl = images.get(images.size() - 1).getUrl();
                 }
-                Picasso.with(LastfmAlbumViewerActivity.this).load(imageUrl).into(albumCoverImageView,
-                        new com.squareup.picasso.Callback() {
-                            @Override
-                            public void onSuccess() {
-                                albumCoverImageView.setVisibility(View.VISIBLE);
-                                progressBar.setVisibility(View.GONE);
-                            }
+                new ImageModel().loadImage(imageUrl, albumCoverImageView, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted() {
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
 
-                            @Override
-                            public void onError() {
-                                progressBar.setVisibility(View.GONE);
-                            }
-                        });
+                    @Override
+                    public void onLoadingFailed(String message) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onLoadingComplete(Bitmap bitmap) {
+                        albumCoverImageView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onLoadingCancelled() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
                 artistTextView.setText(album.getArtistName());
                 titleTextView.setText(album.getTitle());
                 String releaseDate = album.getReleaseDate();

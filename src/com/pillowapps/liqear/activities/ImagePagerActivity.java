@@ -32,19 +32,16 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
-import com.nostra13.universalimageloader.core.download.URLConnectionImageDownloader;
-import com.nostra13.universalimageloader.utils.FileUtils;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.TouchImageView;
+import com.pillowapps.liqear.helpers.FileUtils;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
+import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 
 import java.io.File;
@@ -53,8 +50,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,25 +61,19 @@ public class ImagePagerActivity extends TrackedActivity {
     private static final String IMAGE_POSITION = "image_position";
     private ViewPager pager;
     private ActionBar actionBar;
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .displayer(new FadeInBitmapDisplayer(300))
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .build();
-    private ImageLoader imageLoader = ImageLoader.getInstance();
     private List<String> imageUrls;
     private String artist;
     private boolean loading = false;
     private int page = 1;
     private ImagePagerActivity.ImagePagerAdapter adapter;
+    private ImageModel imageModel = new ImageModel();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_image_pager);
 
         Bundle bundle = getIntent().getExtras();
-        imageUrls = new ArrayList<String>();
+        imageUrls = new ArrayList<>();
         int pagerPosition = bundle.getInt(IMAGE_POSITION, 0);
 
         if (savedInstanceState != null) {
@@ -157,20 +146,20 @@ public class ImagePagerActivity extends TrackedActivity {
 
                 InputStream sourceStream = null;
                 OutputStream targetStream = null;
-                File cachedImage = ImageLoader.getInstance().getDiscCache().get(imageUrl);
+                File cachedImage = ImageLoader.getInstance().getDiskCache().get(imageUrl);
                 try {
                     if (cachedImage.exists()) { // if image was cached by UIL
                         sourceStream = new FileInputStream(cachedImage);
                     } else { // otherwise - download image
-                        ImageDownloader downloader = new URLConnectionImageDownloader();
-                        sourceStream = downloader.getStream(new URI(imageUrl));
+                        ImageDownloader downloader = new BaseImageDownloader(ImagePagerActivity.this);
+                        sourceStream = downloader.getStream(imageUrl, null);
                     }
 
                     targetStream = new FileOutputStream(fileForImage);
                     FileUtils.copyStream(sourceStream, targetStream);
-                    Toast.makeText(ImagePagerActivity.this, getString(R.string.saved) + " "
-                            + fileForImage.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-                } catch (IOException | URISyntaxException e) {
+                    Toast.makeText(ImagePagerActivity.this, getString(R.string.saved),
+                            Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
                     if (targetStream != null) {
@@ -201,10 +190,10 @@ public class ImagePagerActivity extends TrackedActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void getImages(final int i) {
+    private void getImages(final int page) {
         loading = true;
         Toast.makeText(this, R.string.wait, Toast.LENGTH_SHORT).show();
-        new LastfmArtistModel().getArtistImages(artist, page++, new SimpleCallback<List<String>>() {
+        new LastfmArtistModel().getArtistImages(artist, this.page++, new SimpleCallback<List<String>>() {
             @Override
             public void success(List<String> images) {
                 if (images == null) return;
@@ -214,7 +203,7 @@ public class ImagePagerActivity extends TrackedActivity {
                     imageUrls.addAll(images);
                 }
                 adapter.notifyDataSetChanged();
-                actionBar.setTitle(String.format(PAGE_FORMAT, i + 1, imageUrls.size()) + artist);
+                actionBar.setTitle(String.format(PAGE_FORMAT, page + 1, imageUrls.size()) + artist);
             }
 
             @Override
@@ -255,45 +244,28 @@ public class ImagePagerActivity extends TrackedActivity {
             TouchImageView imageView = (TouchImageView) imageLayout.findViewById(R.id.image);
             final ProgressBar spinner = (ProgressBar) imageLayout.findViewById(R.id.loading);
 
-            imageLoader.displayImage(images.get(position), imageView, options,
-                    new ImageLoadingListener() {
-                        @Override
-                        public void onLoadingStarted() {
-                            spinner.setVisibility(View.VISIBLE);
-                        }
+            imageModel.loadImage(images.get(position), imageView, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted() {
+                    spinner.setVisibility(View.VISIBLE);
+                }
 
-                        @Override
-                        public void onLoadingFailed(FailReason failReason) {
-                            String message = null;
-                            switch (failReason) {
-                                case IO_ERROR:
-                                    message = "Input/Output error";
-                                    break;
-                                case OUT_OF_MEMORY:
-                                    message = "Out Of Memory error";
-                                    break;
-                                case UNKNOWN:
-                                    message = "Unknown error";
-                                    break;
-                                default:
-                                    break;
-                            }
-                            Toast.makeText(ImagePagerActivity.this, message, Toast.LENGTH_SHORT).show();
+                @Override
+                public void onLoadingFailed(String message) {
+                    Toast.makeText(ImagePagerActivity.this, message, Toast.LENGTH_SHORT).show();
+                    spinner.setVisibility(View.GONE);
+                }
 
-                            spinner.setVisibility(View.GONE);
-                        }
+                @Override
+                public void onLoadingComplete(Bitmap bitmap) {
+                    spinner.setVisibility(View.GONE);
+                }
 
-                        @Override
-                        public void onLoadingComplete(Bitmap bitmap) {
-                            spinner.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onLoadingCancelled() {
-                            spinner.setVisibility(View.GONE);
-                        }
-                    });
-
+                @Override
+                public void onLoadingCancelled() {
+                    spinner.setVisibility(View.GONE);
+                }
+            });
             view.addView(imageLayout, 0);
             return imageLayout;
         }
@@ -313,7 +285,7 @@ public class ImagePagerActivity extends TrackedActivity {
         }
 
         @Override
-        public void startUpdate(View container) {
+        public void startUpdate(ViewGroup container) {
         }
     }
 }

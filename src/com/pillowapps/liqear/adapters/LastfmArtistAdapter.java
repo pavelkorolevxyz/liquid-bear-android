@@ -15,7 +15,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.helpers.CollectionUtils;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.squareup.picasso.Picasso;
+import com.pillowapps.liqear.models.ImageModel;
 
 import java.util.List;
 
@@ -76,9 +76,7 @@ public class LastfmArtistAdapter extends ArrayAdapter<LastfmArtist> {
 
         if (holder.loadImages) {
             List<LastfmImage> images = artist.getImages();
-            Picasso.with(context)
-                    .load(CollectionUtils.last(images).getUrl())
-                    .into(holder.imageView);
+            new ImageModel().loadImage(CollectionUtils.last(images).getUrl(), holder.imageView);
         } else {
             holder.imageView.setVisibility(View.GONE);
         }

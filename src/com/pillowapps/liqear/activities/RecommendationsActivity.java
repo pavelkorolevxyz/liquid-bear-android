@@ -24,8 +24,6 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
@@ -39,8 +37,10 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmRecommendationsModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
+import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 
 import java.util.List;
@@ -229,7 +229,7 @@ public class RecommendationsActivity extends ResultActivity {
             Artist artist = (Artist) values.get(position);
             if (gridMode) {
                 if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.image_text_tile, null);
+                    convertView = View.inflate(RecommendationsActivity.this, R.layout.image_text_tile, null);
                     holder = new ViewHolder();
                     holder.text = (TextView) convertView.findViewById(R.id.text_tile_list_item);
                     holder.image = (ImageView) convertView.findViewById(R.id.image_tile_list_item);
@@ -243,37 +243,36 @@ public class RecommendationsActivity extends ResultActivity {
                 holder.text.setText(artist.getName());
                 holder.text.setBackgroundColor(getResources().getColor(R.color.accent));
                 if (holder.loadImages) {
-                    imageLoader.displayImage(artist.getPreviewUrl(), holder.image, options,
-                            new ImageLoadingListener() {
-                                @Override
-                                public void onLoadingStarted() {
+                    new ImageModel().loadImage(artist.getPreviewUrl(), holder.image, new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted() {
 
-                                }
+                        }
 
-                                @Override
-                                public void onLoadingFailed(FailReason failReason) {
+                        @Override
+                        public void onLoadingFailed(String message) {
 
-                                }
+                        }
 
-                                @Override
-                                public void onLoadingComplete(Bitmap bitmap) {
-                                    Palette.generateAsync(bitmap,
-                                            new Palette.PaletteAsyncListener() {
-                                                @Override
-                                                public void onGenerated(Palette palette) {
-                                                    Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-                                                    if (vibrantSwatch == null) return;
-                                                    holder.text.setBackgroundColor(
-                                                            vibrantSwatch.getRgb());
-                                                }
-                                            });
-                                }
+                        @Override
+                        public void onLoadingComplete(Bitmap bitmap) {
+                            Palette.generateAsync(bitmap,
+                                    new Palette.PaletteAsyncListener() {
+                                        @Override
+                                        public void onGenerated(Palette palette) {
+                                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                                            if (vibrantSwatch == null) return;
+                                            holder.text.setBackgroundColor(
+                                                    vibrantSwatch.getRgb());
+                                        }
+                                    });
+                        }
 
-                                @Override
-                                public void onLoadingCancelled() {
+                        @Override
+                        public void onLoadingCancelled() {
 
-                                }
-                            });
+                        }
+                    });
                 } else {
                     holder.image.setVisibility(View.GONE);
                 }

@@ -27,8 +27,8 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
     public PlaylistItemsAdapter(Context context) {
         super(context, R.layout.playlist_tab_list_item);
         this.context = context;
-        this.tracks = new ArrayList<Track>();
-        this.original = new ArrayList<Track>();
+        this.tracks = new ArrayList<>();
+        this.original = new ArrayList<>();
     }
 
     public boolean isEditMode() {
@@ -50,22 +50,12 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         this.original.clear();
         this.tracks.addAll(tracks);
         this.original.addAll(tracks);
-        notifyDataSetChanged("setValues");
     }
 
     @Override
     public Track getItem(int position) {
         if (position >= tracks.size()) return null;
         return tracks.get(position);
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        notifyDataSetChanged("outside");
-    }
-
-    private void notifyDataSetChanged(String from) {
-        super.notifyDataSetChanged();
     }
 
     @Override
@@ -82,7 +72,7 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.playlist_tab_list_item, null);
+            convertView = inflater.inflate(R.layout.playlist_tab_list_item, parent, false);
             holder = new ViewHolder();
             holder.artistTextView = (TextView) convertView.findViewById(R.id.artist_list_item);
             holder.titleTextView = (TextView) convertView.findViewById(R.id.title_list_item);
@@ -99,20 +89,15 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         }
         convertView.setLayoutParams(new AbsListView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        holder.layout.setBackgroundDrawable(position % 2 == 0 ?
-                context.getResources().getDrawable(R.drawable.list_item_background) :
-                context.getResources().getDrawable(R.drawable.list_item_background_tinted));
+        holder.layout.setBackgroundResource(position % 2 == 0 ?
+                R.drawable.list_item_background : R.drawable.list_item_background_tinted);
 
         holder.positionTextView.setText(String.valueOf(currentTrack.getRealPosition() + 1));
         holder.artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
         holder.titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
 
-        if (!AudioTimeline.isStillLastPlaylist()
-                && AudioTimeline.getCurrentIndex() == realPosition) {
-            holder.playImageView.setVisibility(View.VISIBLE);
-        } else {
-            holder.playImageView.setVisibility(View.INVISIBLE);
-        }
+        holder.playImageView.setVisibility(!AudioTimeline.isStillLastPlaylist()
+                && AudioTimeline.getCurrentIndex() == realPosition ? View.VISIBLE : View.INVISIBLE);
 
         int queueIndex = AudioTimeline.getQueue().indexOf(realPosition);
         holder.queueTextView.setText(queueIndex++ != -1 ? String.format("(%d)", queueIndex) : "");
@@ -147,8 +132,8 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         protected FilterResults performFiltering(CharSequence constraint) {
             constraint = constraint.toString().toLowerCase();
             FilterResults result = new FilterResults();
-            if (constraint != null && constraint.length() > 0) {
-                List<Track> founded = new ArrayList<Track>();
+            if (constraint.length() > 0) {
+                List<Track> founded = new ArrayList<>();
                 for (Track t : original) {
                     if (t == null) {
                         break;
@@ -182,13 +167,12 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
             return result;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             tracks.clear();
             List<Track> values = (List<Track>) filterResults.values;
             tracks.addAll(values);
-            notifyDataSetChanged("filter");
+            notifyDataSetChanged();
         }
     }
 }

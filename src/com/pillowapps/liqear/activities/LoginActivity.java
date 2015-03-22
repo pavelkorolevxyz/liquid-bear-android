@@ -29,7 +29,6 @@ public class LoginActivity extends TrackedActivity {
     public static final String RESPONSE = "token";
     private ProgressBar progressBar;
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

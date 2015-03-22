@@ -15,8 +15,8 @@ import android.text.Html;
 
 import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
-import com.nostra13.universalimageloader.core.download.URLConnectionImageDownloader;
 import com.pillowapps.liqear.audio.AudioTimeline;
 import com.pillowapps.liqear.audio.MediaButtonReceiver;
 import com.pillowapps.liqear.entities.Album;
@@ -24,11 +24,8 @@ import com.pillowapps.liqear.entities.Track;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class CompatIcs {
@@ -53,7 +50,7 @@ public class CompatIcs {
         sRemote = remote;
     }
 
-    public static void updateRemote(Context context, final Track track) {
+    public static void updateRemote(final Context context, final Track track) {
         final RemoteControlClient remote = sRemote;
         if (remote == null || track == null) {
             return;
@@ -97,17 +94,13 @@ public class CompatIcs {
                             bitmap = BitmapFactory.decodeStream(sourceStream);
                         } else if (PreferencesManager.getPreferences().getBoolean(
                                 Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                            ImageDownloader downloader = new URLConnectionImageDownloader();
-                            sourceStream = downloader.getStream(new URI(imageUrl));
+                            ImageDownloader downloader = new BaseImageDownloader(context);
+                            sourceStream = downloader.getStream(imageUrl, null);
                             bitmap = BitmapFactory.decodeStream(sourceStream);
                         }
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    } finally {
+                    }finally {
                         if (sourceStream != null) {
                             try {
                                 sourceStream.close();
