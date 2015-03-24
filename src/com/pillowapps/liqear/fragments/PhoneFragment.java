@@ -28,24 +28,22 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.mobeta.android.dslv.DragSortListView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
-import com.pillowapps.liqear.adapters.MainActivityAdapter;
 import com.pillowapps.liqear.adapters.ModeAdapter;
+import com.pillowapps.liqear.adapters.PhoneFragmentAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
-import com.pillowapps.liqear.entities.RepeatMode;
-import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.components.ModeClickListener;
 import com.pillowapps.liqear.components.SwipeDetector;
+import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.RepeatMode;
+import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
@@ -60,14 +58,14 @@ import com.viewpagerindicator.UnderlinePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HandsetFragment extends Fragment {
+public class PhoneFragment extends Fragment {
     private ServiceBroadcastReceiver receiver;
     private ViewPager pager;
     private View playlistTab;
     private View playbackTab;
     private View modeTab;
     private StickyGridHeadersGridView modeGridView;
-    private DragSortListView listView;
+    private DragSortListView playlistsListView;
     private TextView artistTextView;
     private TextView titleTextView;
     private ImageButton playPauseButton;
@@ -80,13 +78,6 @@ public class HandsetFragment extends Fragment {
     private ImageButton repeatButton;
     private TextView timePlateTextView;
     private ImageView artistImageView;
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .displayer(new FadeInBitmapDisplayer(Constants.MAIN_FADE_DURATION))
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .build();
-    private ImageLoader imageLoader = ImageLoader.getInstance();
     private ImageView albumImageView;
     private TextView albumTextView;
     private View blackView;
@@ -99,9 +90,8 @@ public class HandsetFragment extends Fragment {
     private ViewGroup backLayout;
     private ViewGroup bottomControlsLayout;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.handset_fragment_layout, null);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.handset_fragment_layout, container, false);
         mainActivity = (MainActivity) getActivity();
         initUi(v);
         initListeners();
@@ -110,23 +100,21 @@ public class HandsetFragment extends Fragment {
     }
 
     private void initViewPager(View v) {
-        final LayoutInflater inflater = LayoutInflater.from(mainActivity);
-        final List<View> views = new ArrayList<>();
-        playlistTab = inflater.inflate(R.layout.playlist_tab, null);
-        views.add(playlistTab);
-        playbackTab = inflater.inflate(R.layout.play_tab, null);
-        views.add(playbackTab);
-        modeTab = inflater.inflate(R.layout.mode_tab, null);
-        views.add(modeTab);
+        final List<ViewPage> pages = new ArrayList<>();
+        playlistTab = View.inflate(mainActivity, R.layout.playlist_tab, null);
+        playbackTab = View.inflate(mainActivity, R.layout.play_tab, null);
+        modeTab = View.inflate(mainActivity, R.layout.mode_tab, null);
+        pages.add(new ViewPage(mainActivity, playlistTab, R.string.playlist_tab));
+        pages.add(new ViewPage(mainActivity, playbackTab, R.string.play_tab));
+        pages.add(new ViewPage(mainActivity, modeTab, R.string.mode_tab));
         pager = (ViewPager) v.findViewById(R.id.viewpager);
-        pager.setAdapter(new MainActivityAdapter(views));
-        pager.setOffscreenPageLimit(views.size());
-        indicator = (UnderlinePageIndicator) v.findViewById(R.id.indicator);
+        pager.setOffscreenPageLimit(pages.size());
+        pager.setAdapter(new PhoneFragmentAdapter(pages));
 
+        indicator = (UnderlinePageIndicator) v.findViewById(R.id.indicator);
         indicator.setSelectedColor(getResources().getColor(R.color.accent));
         indicator.setOnClickListener(null);
         indicator.setViewPager(pager);
-        changeViewPagerItem(1);
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
@@ -135,7 +123,8 @@ public class HandsetFragment extends Fragment {
             @Override
             public void onPageSelected(int index) {
                 mainActivity.invalidateOptionsMenu();
-                if (index == 0 || index == 2) {
+                if (index == PhoneFragmentAdapter.PLAYLIST_TAB_INDEX
+                        || index == PhoneFragmentAdapter.MODE_TAB_INDEX) {
                     SharedPreferences startPreferences = PreferencesManager.getStartPreferences();
                     boolean tutorialEnabled = !startPreferences
                             .getBoolean(Constants.TUTORIAL_DISABLED, false);
@@ -167,129 +156,117 @@ public class HandsetFragment extends Fragment {
 
     private void initUi(View v) {
         initViewPager(v);
-        modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
+        changeViewPagerItem(PhoneFragmentAdapter.PLAY_TAB_INDEX);
+
         mainActivity.init();
 
-        modeGridView.setAdapter(mainActivity.getModeAdapter());
+        initModeTab();
+        initPlaylistsTab();
+        initPlaybackTab();
 
-        listView = (DragSortListView) playlistTab.findViewById(
-                R.id.playlist_list_view_playlist_tab);
-        listView.setAdapter(mainActivity.getPlaylistItemsAdapter());
-        searchPlaylistEditText = (EditText) playlistTab.findViewById(
-                R.id.search_edit_text_playlist_tab);
-        searchPlaylistEditText.setVisibility(PreferencesManager.getSavePreferences()
-                .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ? View.VISIBLE : View.GONE);
-        clearEditTextButton = (ImageButton) playlistTab.findViewById(
-                R.id.clear_edit_text_button_playlist_tab);
-
-        artistTextView = (TextView) playbackTab.findViewById(R.id.artist_text_view_playback_tab);
-        titleTextView = (TextView) playbackTab.findViewById(R.id.title_text_view_playback_tab);
-        playPauseButton = (ImageButton) playbackTab.findViewById(
-                R.id.play_pause_button_playback_tab);
-        backLayout = (ViewGroup) playbackTab.findViewById(R.id.back_layout);
-        bottomControlsLayout = (ViewGroup) playbackTab.findViewById(R.id.bottom_controls_layout);
-
-        seekBar = (SeekBar) playbackTab.findViewById(R.id.seek_bar_playback_tab);
-        timeTextView = (TextView) playbackTab.findViewById(
-                R.id.time_text_view_playback_tab);
-        timeDurationTextView = (TextView) playbackTab.findViewById(
-                R.id.time_inverted_text_view_playback_tab);
-        nextButton = (ImageButton) playbackTab.findViewById(
-                R.id.next_button_playback_tab);
-        prevButton = (ImageButton) playbackTab.findViewById(
-                R.id.prev_button_playback_tab);
-        shuffleButton = (ImageButton) playbackTab.findViewById(
-                R.id.shuffle_button_playback_tab);
-        repeatButton = (ImageButton) playbackTab.findViewById(
-                R.id.repeat_button_playback_tab);
-        artistImageView = (ImageView) playbackTab.findViewById(
-                R.id.artist_image_view_headset);
-        artistImageView.setImageResource(R.drawable.artist_placeholder);
-        timePlateTextView = (TextView) playbackTab.findViewById(
-                R.id.time_plate_text_view_playback_tab);
-        albumImageView = (ImageView) playbackTab.findViewById(
-                R.id.album_cover_image_view);
-        albumTextView = (TextView) playbackTab.findViewById(
-                R.id.album_title_text_view);
-        blackView = playbackTab.findViewById(R.id.view);
-
-        // Tutorial
         boolean tutorialEnabled = !PreferencesManager.getStartPreferences()
                 .getBoolean(Constants.TUTORIAL_DISABLED, false);
         if (tutorialEnabled) {
-            ImageView swipeLeftImageView = (ImageView) playbackTab.findViewById(R.id.swipe_left_image_view);
-            ImageView swipeRightImageView = (ImageView) playbackTab.findViewById(R.id.swipe_right_image_view);
-            tutorialLayout = playbackTab.findViewById(R.id.tutorial_layout);
-            tutorialLayout.setVisibility(View.VISIBLE);
-            tutorialBlinkAnimation = AnimationUtils.loadAnimation(mainActivity,
-                    R.anim.blink_animation);
-            swipeLeftImageView.startAnimation(tutorialBlinkAnimation);
-            swipeRightImageView.startAnimation(tutorialBlinkAnimation);
+            showTutorial();
         }
+    }
 
+    private void initPlaylistsTab() {
+        playlistsListView = (DragSortListView) playlistTab.findViewById(R.id.playlist_list_view_playlist_tab);
+        playlistsListView.setAdapter(mainActivity.getPlaylistItemsAdapter());
+        searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
+        searchPlaylistEditText.setVisibility(PreferencesManager.getSavePreferences()
+                .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ? View.VISIBLE : View.GONE);
+        clearEditTextButton = (ImageButton) playlistTab.findViewById(R.id.clear_edit_text_button_playlist_tab);
+    }
+
+    private void initPlaybackTab() {
+        artistTextView = (TextView) playbackTab.findViewById(R.id.artist_text_view_playback_tab);
+        titleTextView = (TextView) playbackTab.findViewById(R.id.title_text_view_playback_tab);
+        playPauseButton = (ImageButton) playbackTab.findViewById(R.id.play_pause_button_playback_tab);
+        backLayout = (ViewGroup) playbackTab.findViewById(R.id.back_layout);
+        bottomControlsLayout = (ViewGroup) playbackTab.findViewById(R.id.bottom_controls_layout);
+        seekBar = (SeekBar) playbackTab.findViewById(R.id.seek_bar_playback_tab);
+        timeTextView = (TextView) playbackTab.findViewById(R.id.time_text_view_playback_tab);
+        timeDurationTextView = (TextView) playbackTab.findViewById(R.id.time_inverted_text_view_playback_tab);
+        nextButton = (ImageButton) playbackTab.findViewById(R.id.next_button_playback_tab);
+        prevButton = (ImageButton) playbackTab.findViewById(R.id.prev_button_playback_tab);
+        shuffleButton = (ImageButton) playbackTab.findViewById(R.id.shuffle_button_playback_tab);
+        repeatButton = (ImageButton) playbackTab.findViewById(R.id.repeat_button_playback_tab);
+        artistImageView = (ImageView) playbackTab.findViewById(R.id.artist_image_view_headset);
+        artistImageView.setImageResource(R.drawable.artist_placeholder);
+        timePlateTextView = (TextView) playbackTab.findViewById(R.id.time_plate_text_view_playback_tab);
+        albumImageView = (ImageView) playbackTab.findViewById(R.id.album_cover_image_view);
+        albumTextView = (TextView) playbackTab.findViewById(R.id.album_title_text_view);
+        blackView = playbackTab.findViewById(R.id.view);
+    }
+
+    private void initModeTab() {
+        modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
+
+        modeGridView.setOnItemClickListener(new ModeClickListener(mainActivity));
+        modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
+    }
+
+    private void showTutorial() {
+        ImageView swipeLeftImageView = (ImageView) playbackTab.findViewById(R.id.swipe_left_image_view);
+        ImageView swipeRightImageView = (ImageView) playbackTab.findViewById(R.id.swipe_right_image_view);
+        tutorialLayout = playbackTab.findViewById(R.id.tutorial_layout);
+        tutorialLayout.setVisibility(View.VISIBLE);
+        tutorialBlinkAnimation = AnimationUtils.loadAnimation(mainActivity, R.anim.blink_animation);
+        swipeLeftImageView.startAnimation(tutorialBlinkAnimation);
+        swipeRightImageView.startAnimation(tutorialBlinkAnimation);
     }
 
     private void initListeners() {
-        modeGridView.setOnItemClickListener(new ModeClickListener(mainActivity));
-        modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
-        listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+        playlistsListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                if (v.getId() == R.id.playlist_list_view_playlist_tab) {
-                    AdapterView.AdapterContextMenuInfo info =
-                            (AdapterView.AdapterContextMenuInfo) menuInfo;
-                    menu.setHeaderTitle(((Track) listView.getAdapter()
-                            .getItem(info.position)).getTitle());
-                    String[] menuItems = getResources().getStringArray(R.array.playlist_item_menu);
-                    for (int i = 0; i < menuItems.length; i++) {
-                        menu.add(android.view.Menu.NONE, i, i, menuItems[i]);
-                    }
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+                menu.setHeaderTitle(mainActivity.getPlaylistItemsAdapter().getItem(info.position).getTitle());
+                String[] menuItems = getResources().getStringArray(R.array.playlist_item_menu);
+                for (int i = 0; i < menuItems.length; i++) {
+                    menu.add(android.view.Menu.NONE, i, i, menuItems[i]);
                 }
             }
         });
-        listView.setClickable(true);
-        listView.setFocusable(true);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        playlistsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                List<Track> playlist = AudioTimeline.getPlaylist();
-                if (playlist.size() <= position) return;
-                Track item = mainActivity.getPlaylistItemsAdapter().getItem(position);
-                if (item == null) return;
-                int realPosition = item.getRealPosition();
-                Track track = playlist.get(realPosition);
+                Track track = mainActivity.getPlaylistItemsAdapter().getItem(position);
                 if (mainActivity.getPlaylistItemsAdapter().isEditMode()) {
                     mainActivity.showRenameDialog(track, position);
                 } else {
-                    artistTextView.setText(Html.fromHtml(track.getArtist()));
-                    titleTextView.setText(Html.fromHtml(track.getTitle()));
+                    artistTextView.setText(track.getArtist());
+                    titleTextView.setText(track.getTitle());
                     playPauseButton.setImageResource(R.drawable.pause_button_states);
                     mainActivity.getMusicPlaybackService().setPlayOnPrepared(true);
                     mainActivity.getMusicPlaybackService().play(track.getRealPosition());
                 }
             }
         });
-        listView.setRemoveListener(new DragSortListView.RemoveListener() {
+        playlistsListView.setRemoveListener(new DragSortListView.RemoveListener() {
             @Override
             public void remove(int which) {
                 mainActivity.removeTrack(which);
             }
         });
-        listView.setDropListener(new DragSortListView.DropListener() {
+        playlistsListView.setDropListener(new DragSortListView.DropListener() {
             @Override
             public void drop(int from, int to) {
                 if (from == to) return;
-                List<Track> playlist = AudioTimeline.getPlaylist();
-                int currentIndex = AudioTimeline.getCurrentIndex();
+                Timeline timeline = Timeline.getInstance();
+                List<Track> playlist = timeline.getPlaylistTracks();
+                int currentIndex = timeline.getIndex();
                 if (from == currentIndex) {
-                    AudioTimeline.setCurrentIndex(to);
+                    timeline.setIndex(to);
                 } else if (from < to && currentIndex < to && currentIndex > from) {
-                    AudioTimeline.setCurrentIndex(currentIndex - 1);
+                    timeline.setIndex(currentIndex - 1);
                 } else if (from > to && currentIndex < from && currentIndex > to) {
-                    AudioTimeline.setCurrentIndex(currentIndex + 1);
+                    timeline.setIndex(currentIndex + 1);
                 } else if (to == currentIndex && currentIndex > from) {
-                    AudioTimeline.setCurrentIndex(currentIndex - 1);
+                    timeline.setIndex(currentIndex - 1);
                 } else if (to == currentIndex && currentIndex < from) {
-                    AudioTimeline.setCurrentIndex(currentIndex + 1);
+                    timeline.setIndex(currentIndex + 1);
                 }
                 Track item = playlist.get(from);
                 playlist.remove(from);
@@ -323,14 +300,14 @@ public class HandsetFragment extends Fragment {
 
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AudioTimeline.toggleShuffle();
+                Timeline.getInstance().toggleShuffle();
                 shuffleButton.setImageResource(Utils.getShuffleButtonImage());
                 mainActivity.getMusicPlaybackService().updateWidgets();
             }
         });
         repeatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AudioTimeline.toggleRepeat();
+                Timeline.getInstance().toggleRepeat();
                 repeatButton.setImageResource(Utils.getRepeatButtonImage());
                 mainActivity.getMusicPlaybackService().updateWidgets();
             }
@@ -395,19 +372,17 @@ public class HandsetFragment extends Fragment {
             }
         });
 
-        View.OnClickListener albumClickListener = new
-
-                View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(mainActivity, LastfmAlbumViewerActivity.class);
-                        Album album = AudioTimeline.getAlbum();
-                        if (album == null) return;
-                        intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
-                        intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
-                        mainActivity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-                    }
-                };
+        View.OnClickListener albumClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mainActivity, LastfmAlbumViewerActivity.class);
+                Album album = AudioTimeline.getAlbum();
+                if (album == null) return;
+                intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
+                intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
+                mainActivity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+            }
+        };
         albumImageView.setOnClickListener(albumClickListener);
         albumTextView.setOnClickListener(albumClickListener);
         timeTextView.setOnClickListener(new View.OnClickListener() {
@@ -574,7 +549,7 @@ public class HandsetFragment extends Fragment {
                 albumImageView.setVisibility(View.GONE);
             } else {
                 albumImageView.setVisibility(View.VISIBLE);
-                imageLoader.displayImage(imageUrl, albumImageView, options);
+                new ImageModel().loadImage(imageUrl, albumImageView);
             }
             String albumTitle = album.getTitle();
             if (albumTitle == null) {
@@ -614,7 +589,7 @@ public class HandsetFragment extends Fragment {
     }
 
     public ListView getPlaylistListView() {
-        return listView;
+        return playlistsListView;
     }
 
     public void stopMusicService() {
@@ -634,7 +609,6 @@ public class HandsetFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }
     }
-
 
     public void clearFilter() {
         searchPlaylistEditText.setText("");
@@ -659,8 +633,8 @@ public class HandsetFragment extends Fragment {
                     if (track == null) return;
                     if (PreferencesManager.getPreferences()
                             .getBoolean("scroll_to_current", false)) {
-                        listView.requestFocusFromTouch();
-                        listView.setSelection(AudioTimeline.getCurrentIndex());
+                        playlistsListView.requestFocusFromTouch();
+                        playlistsListView.setSelection(AudioTimeline.getCurrentIndex());
                     }
                     AudioTimeline.setCurrentAlbum(null);
                     track.setCurrent(true);
@@ -742,8 +716,7 @@ public class HandsetFragment extends Fragment {
                             albumImageView.setVisibility(View.GONE);
                         } else {
                             albumImageView.setVisibility(View.VISIBLE);
-                            imageLoader.displayImage(imageUrl, albumImageView,
-                                    options);
+                            new ImageModel().loadImage(imageUrl, albumImageView);
 
                         }
                         String title = album.getTitle();

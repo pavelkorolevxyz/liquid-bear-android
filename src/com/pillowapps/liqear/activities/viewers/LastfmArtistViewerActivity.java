@@ -20,7 +20,7 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerViewAdapter;
 import com.pillowapps.liqear.components.PagerResultActivity;
-import com.pillowapps.liqear.components.TextViewerPage;
+import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.components.viewers.LastfmAlbumViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
@@ -103,7 +103,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         views.add(similarArtistsPage.getView());
         titles.add(similarArtistsPage.getTitle());
         pages.add(similarArtistsPage);
-        TextViewerPage bioPage = createBioPage();
+        ViewPage bioPage = createBioPage();
         infoTab = bioPage.getView();
         views.add(infoTab);
         titles.add(bioPage.getTitle());
@@ -138,8 +138,8 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         });
     }
 
-    private TextViewerPage createBioPage() {
-        return new TextViewerPage(this,
+    private ViewPage createBioPage() {
+        return new ViewPage(this,
                 View.inflate(this, R.layout.scrollable_text_layout, null),
                 R.string.artist_info);
     }

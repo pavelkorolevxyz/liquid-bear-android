@@ -7,22 +7,22 @@ import com.pillowapps.liqear.LBApplication;
 
 import butterknife.ButterKnife;
 
-public class TextViewerPage {
+public class ViewPage {
     private Context context;
     private View view;
     private String title;
 
-    public TextViewerPage(Context context,
-                          View view,
-                          String title) {
+    public ViewPage(Context context,
+                    View view,
+                    String title) {
         this.context = context;
         this.view = view;
         this.title = title;
     }
 
-    public TextViewerPage(Context context,
-                          View view,
-                          int titleRes) {
+    public ViewPage(Context context,
+                    View view,
+                    int titleRes) {
         this.context = context;
         this.view = view;
         this.title = LBApplication.getAppContext().getString(titleRes);

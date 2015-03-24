@@ -2,52 +2,43 @@ package com.pillowapps.liqear.adapters;
 
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pillowapps.liqear.LBApplication;
-import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.components.ViewPage;
 
-import java.util.Arrays;
 import java.util.List;
 
-public class MainActivityAdapter extends PagerAdapter {
+public class PhoneFragmentAdapter extends PagerAdapter {
     public static final int PLAY_TAB_INDEX = 1;
     public static final int PLAYLIST_TAB_INDEX = 0;
     public static final int MODE_TAB_INDEX = 2;
-    public static final int COUNT = 3;
-    private static final List<String> titles = Arrays.asList(
-            LBApplication.getAppContext().getString(R.string.playlist_tab),
-            LBApplication.getAppContext().getString(R.string.play_tab),
-            LBApplication.getAppContext().getString(R.string.mode_tab)
-    );
-    private List<View> views = null;
+    private List<ViewPage> pages;
 
 
-    public MainActivityAdapter(List<View> inViews) {
-        views = inViews;
+    public PhoneFragmentAdapter(List<ViewPage> pages) {
+        this.pages = pages;
     }
 
     public String getTitle(int position) {
-        return titles.get(position);
+        return pages.get(position).getTitle();
     }
 
     @Override
     public int getCount() {
-        return COUNT;
+        return pages.size();
     }
 
     @Override
     public Object instantiateItem(ViewGroup pager, int position) {
-        View v = views.get(position);
+        View v = pages.get(position).getView();
         pager.addView(v, 0);
         return v;
     }
 
     @Override
-    public void destroyItem(View pager, int position, Object view) {
-        ((ViewPager) pager).removeView((View) view);
+    public void destroyItem(ViewGroup pager, int position, Object view) {
+        pager.removeView((View) view);
     }
 
     @Override
@@ -56,7 +47,7 @@ public class MainActivityAdapter extends PagerAdapter {
     }
 
     @Override
-    public void finishUpdate(View view) {
+    public void finishUpdate(ViewGroup view) {
     }
 
     @Override
@@ -73,7 +64,7 @@ public class MainActivityAdapter extends PagerAdapter {
     }
 
     @Override
-    public void startUpdate(View view) {
+    public void startUpdate(ViewGroup view) {
     }
 
 

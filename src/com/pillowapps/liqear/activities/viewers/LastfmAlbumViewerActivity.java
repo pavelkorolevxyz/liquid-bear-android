@@ -19,7 +19,7 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerViewAdapter;
 import com.pillowapps.liqear.components.PagerResultActivity;
-import com.pillowapps.liqear.components.TextViewerPage;
+import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.entities.Album;
@@ -89,7 +89,7 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
         views.add(albumsPage.getView());
         titles.add(albumsPage.getTitle());
         pages.add(albumsPage);
-        TextViewerPage albumInfoPage = createAlbumInfoPage();
+        ViewPage albumInfoPage = createAlbumInfoPage();
         infoTab = albumInfoPage.getView();
         views.add(infoTab);
         titles.add(albumInfoPage.getTitle());
@@ -114,8 +114,8 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
         });
     }
 
-    private TextViewerPage createAlbumInfoPage() {
-        return new TextViewerPage(this,
+    private ViewPage createAlbumInfoPage() {
+        return new ViewPage(this,
                 View.inflate(this, R.layout.album_info_layout, null),
                 R.string.album_info);
     }

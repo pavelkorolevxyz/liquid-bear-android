@@ -11,7 +11,7 @@
 
     <fragment
             android:id="@+id/handset_fragment"
-            android:name="com.pillowapps.liqear.fragments.HandsetFragment"
+            android:name="com.pillowapps.liqear.fragments.PhoneFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout="@layout/handset_fragment_layout">

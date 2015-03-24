@@ -8,11 +8,12 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
 public class Timeline {
-    private Timeline instance;
+    private static Timeline instance;
 
     private Playlist currentPlaylist;
     private int index = 0;
@@ -21,8 +22,8 @@ public class Timeline {
     private int[] listeningsCount;
     private int maxListeningsCount;
 
-    private static LinkedList<Integer> queueIndexes = new LinkedList<>();
-    private static Stack<Integer> previousTracksIndexes = new Stack<>();
+    private LinkedList<Integer> queueIndexes = new LinkedList<>();
+    private Stack<Integer> previousTracksIndexes = new Stack<>();
     private ShuffleMode shuffleMode = PreferencesManager.getPreferences()
             .getBoolean(Constants.SHUFFLE_MODE_ON, false)
             ? ShuffleMode.SHUFFLE
@@ -36,7 +37,7 @@ public class Timeline {
     private Timeline() {
     }
 
-    public Timeline getInstance() {
+    public static Timeline getInstance() {
         if (instance == null) instance = new Timeline();
         return instance;
     }
@@ -103,5 +104,17 @@ public class Timeline {
             }
         }
         return randomIndex;
+    }
+
+    public List<Track> getPlaylistTracks() {
+        return currentPlaylist.getTracks();
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

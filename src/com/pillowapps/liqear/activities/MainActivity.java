@@ -24,7 +24,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,9 +40,9 @@ import com.pillowapps.liqear.BuildConfig;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
-import com.pillowapps.liqear.adapters.MainActivityAdapter;
 import com.pillowapps.liqear.adapters.ModeAdapter;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
+import com.pillowapps.liqear.adapters.PhoneFragmentAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
@@ -55,8 +54,8 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
-import com.pillowapps.liqear.fragments.HandsetFragment;
 import com.pillowapps.liqear.fragments.ModeListFragment;
+import com.pillowapps.liqear.fragments.PhoneFragment;
 import com.pillowapps.liqear.fragments.PlaybackControlFragment;
 import com.pillowapps.liqear.fragments.RightFragment;
 import com.pillowapps.liqear.fragments.TabletFragment;
@@ -90,7 +89,7 @@ import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
 
 public class MainActivity extends SlidingFragmentActivity {
     public Menu mainMenu;
-    private HandsetFragment handsetFragment;
+    private PhoneFragment phoneFragment;
     private ServiceConnection serviceConnection;
     private MusicPlaybackService musicPlaybackService;
     private ActivityResult activityResult;
@@ -109,7 +108,6 @@ public class MainActivity extends SlidingFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         configureInitialSettings();
-        supportRequestWindowFeature(Window.FEATURE_ACTION_BAR);
         if ((!AuthorizationInfoManager.isAuthorizedOnVk()
                 || !AuthorizationInfoManager.isAuthorizedOnLastfm())
                 && !AuthorizationInfoManager.isAuthSkipped()) {
@@ -178,7 +176,7 @@ public class MainActivity extends SlidingFragmentActivity {
             sm.setBehindScrollScale(0.25f);
             sm.setFadeDegree(0.25f);
         } else {
-            handsetFragment = (HandsetFragment) getSupportFragmentManager()
+            phoneFragment = (PhoneFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.handset_fragment);
             View v = new View(this);
             setBehindContentView(v);
@@ -251,7 +249,7 @@ public class MainActivity extends SlidingFragmentActivity {
     }
 
     private boolean isTablet() {
-        return handsetFragment == null && tabletFragment != null;
+        return phoneFragment == null && tabletFragment != null;
     }
 
     private void configureInitialSettings() {
@@ -591,7 +589,7 @@ public class MainActivity extends SlidingFragmentActivity {
         if (isTablet()) {
             tabletFragment.updateSearchVisibility();
         } else {
-            handsetFragment.updateSearchVisibility();
+            phoneFragment.updateSearchVisibility();
         }
     }
 
@@ -693,7 +691,7 @@ public class MainActivity extends SlidingFragmentActivity {
             }
             PlaylistManager.getInstance().saveUnsavedPlaylist(AudioTimeline.getPlaylist());
         }
-        if (!isTablet()) handsetFragment.changeViewPagerItem(0);
+        if (!isTablet()) phoneFragment.changeViewPagerItem(0);
     }
 
     private void sortByArtist() {
@@ -725,7 +723,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
     private void fixateSearchResult() {
         if (playlistItemsAdapter == null) return;
-        AudioTimeline.setPlaylist(new ArrayList<Track>(playlistItemsAdapter.getValues()));
+        AudioTimeline.setPlaylist(new ArrayList<>(playlistItemsAdapter.getValues()));
         updateAdapter();
         clearSearch();
         AudioTimeline.clearPreviousList();
@@ -736,7 +734,7 @@ public class MainActivity extends SlidingFragmentActivity {
         if (isTablet()) {
             tabletFragment.clearFilter();
         } else {
-            handsetFragment.clearFilter();
+            phoneFragment.clearFilter();
         }
     }
 
@@ -747,7 +745,7 @@ public class MainActivity extends SlidingFragmentActivity {
                 case PLAY_TRACKS: {
                     if (playlistItemsAdapter.isEditMode()) playlistItemsAdapter.setEditMode(false);
                     int positionToPlay = data.getIntExtra(Constants.POSITION_TO_PLAY, 0);
-                    if (!isTablet()) handsetFragment.changeViewPagerItem(0);
+                    if (!isTablet()) phoneFragment.changeViewPagerItem(0);
                     updateAdapter();
                     changePlaylist(positionToPlay, true);
                 }
@@ -845,8 +843,8 @@ public class MainActivity extends SlidingFragmentActivity {
             }
             inflater.inflate(menuLayout, menu);
         } else {
-            switch (handsetFragment.getCurrentItem()) {
-                case MainActivityAdapter.PLAY_TAB_INDEX: {
+            switch (phoneFragment.getCurrentItem()) {
+                case PhoneFragmentAdapter.PLAY_TAB_INDEX: {
                     int menuLayout = R.menu.menu_play_tab_no_current_track;
                     if (AudioTimeline.hasCurrentTrack()) {
                         menuLayout = R.menu.menu_play_tab;
@@ -857,10 +855,10 @@ public class MainActivity extends SlidingFragmentActivity {
                     inflater.inflate(menuLayout, menu);
                 }
                 break;
-                case MainActivityAdapter.PLAYLIST_TAB_INDEX:
+                case PhoneFragmentAdapter.PLAYLIST_TAB_INDEX:
                     inflater.inflate(R.menu.menu_playlist_tab, menu);
                     break;
-                case MainActivityAdapter.MODE_TAB_INDEX:
+                case PhoneFragmentAdapter.MODE_TAB_INDEX:
                     inflater.inflate(R.menu.menu_mode_tab, menu);
                     break;
                 default:
@@ -896,7 +894,7 @@ public class MainActivity extends SlidingFragmentActivity {
                 if (isTablet()) {
                     tabletFragment.setServiceConnected();
                 } else {
-                    handsetFragment.setServiceConnected();
+                    phoneFragment.setServiceConnected();
                 }
                 setVolumeControlStream(AudioManager.STREAM_MUSIC);
                 if (AudioTimeline.isStateActive()) musicPlaybackService.showTrackInNotification();
@@ -1004,7 +1002,7 @@ public class MainActivity extends SlidingFragmentActivity {
         if (isTablet()) {
             listView = tabletFragment.getPlaylistListView();
         } else {
-            listView = handsetFragment.getPlaylistListView();
+            listView = phoneFragment.getPlaylistListView();
         }
         return listView;
     }
@@ -1033,7 +1031,7 @@ public class MainActivity extends SlidingFragmentActivity {
         if (isTablet()) {
             tabletFragment.stopMusicService();
         } else {
-            handsetFragment.stopMusicService();
+            phoneFragment.stopMusicService();
         }
         stopService(intent);
     }
@@ -1122,7 +1120,7 @@ public class MainActivity extends SlidingFragmentActivity {
         } else {
             switch (keycode) {
                 case KeyEvent.KEYCODE_MENU: {
-                    switch (handsetFragment.getCurrentItem()) {
+                    switch (phoneFragment.getCurrentItem()) {
                         case 0:
                             mainMenu.performIdentifierAction(R.id.root_menu, 0);
                             break;
@@ -1152,7 +1150,7 @@ public class MainActivity extends SlidingFragmentActivity {
                     public void success(List<LastfmTrack> tracks) {
                         int positionToPlay = 0;
                         List<Track> trackList = Converter.convertLastfmTrackList(tracks);
-                        if (!isTablet()) handsetFragment.changeViewPagerItem(0);
+                        if (!isTablet()) phoneFragment.changeViewPagerItem(0);
                         AudioTimeline.setPlaylist(trackList);
                         updateAdapter();
                         changePlaylist(positionToPlay, true);
@@ -1176,7 +1174,7 @@ public class MainActivity extends SlidingFragmentActivity {
                     public void success(List<LastfmTrack> tracks) {
                         int positionToPlay = 0;
                         List<Track> trackList = Converter.convertLastfmTrackList(tracks);
-                        if (!isTablet()) handsetFragment.changeViewPagerItem(0);
+                        if (!isTablet()) phoneFragment.changeViewPagerItem(0);
                         AudioTimeline.setPlaylist(trackList);
                         updateAdapter();
                         changePlaylist(positionToPlay, true);
