@@ -762,8 +762,8 @@ public class MusicPlaybackService extends Service implements
         mBuilder.setContent(contentView);
         Intent notificationIntent = new Intent(this, MainActivity.class);
 
-        int playButton = AudioTimeline.isPlaying() ? R.drawable.pause_button_states :
-                R.drawable.play_button_states;
+        int playButton = AudioTimeline.isPlaying() ? R.drawable.pause_button :
+                R.drawable.play_button;
         contentView.setImageViewResource(R.id.play_pause, playButton);
 
         ComponentName service = new ComponentName(this, MusicPlaybackService.class);

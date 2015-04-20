@@ -44,6 +44,7 @@ import com.pillowapps.liqear.adapters.ModeAdapter;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
 import com.pillowapps.liqear.adapters.PhoneFragmentAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
+import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
 import com.pillowapps.liqear.components.ActivityResult;
@@ -92,6 +93,7 @@ public class MainActivity extends SlidingFragmentActivity {
     private PhoneFragment phoneFragment;
     private ServiceConnection serviceConnection;
     private MusicPlaybackService musicPlaybackService;
+    private MusicService musicService;
     private ActivityResult activityResult;
     private PlaylistItemsAdapter playlistItemsAdapter;
     @InjectView(R.id.progressBar)
@@ -1195,6 +1197,10 @@ public class MainActivity extends SlidingFragmentActivity {
 
     public MusicPlaybackService getMusicPlaybackService() {
         return musicPlaybackService;
+    }
+
+    public MusicService getMusicService() {
+        return musicService;
     }
 
     public ModeAdapter getModeAdapter() {

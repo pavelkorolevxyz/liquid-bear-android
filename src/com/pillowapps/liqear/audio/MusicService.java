@@ -9,4 +9,12 @@ public class MusicService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+    public int getCurrentPosition() {
+        return 0;
+    }
+
+    public int getCurrentBuffer() {
+        return 0;
+    }
 }

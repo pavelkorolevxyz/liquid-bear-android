@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.entities.Track;
 
@@ -17,7 +18,7 @@ import java.util.Date;
 public class Utils {
 
     public static int getShuffleButtonImage() {
-        switch (AudioTimeline.getShuffleMode()) {
+        switch (Timeline.getInstance().getShuffleMode()) {
             case SHUFFLE:
                 return R.drawable.ic_shuffle_active;
             case DEFAULT:
@@ -29,7 +30,7 @@ public class Utils {
     }
 
     public static int getRepeatButtonImage() {
-        switch (AudioTimeline.getRepeatMode()) {
+        switch (Timeline.getInstance().getRepeatMode()) {
             case REPEAT_PLAYLIST:
                 return R.drawable.ic_repeat;
             case REPEAT:

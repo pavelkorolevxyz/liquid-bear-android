@@ -7,12 +7,15 @@ import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class LBApplication extends Application {
     private static Context context;
+    public static final Bus bus = new Bus(ThreadEnforcer.ANY);
 
     public static Context getAppContext() {
         return LBApplication.context;

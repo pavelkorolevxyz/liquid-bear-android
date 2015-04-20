@@ -53,7 +53,7 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
 
-        int playButton = playing ? R.drawable.pause_button_states : R.drawable.play_button_states;
+        int playButton = playing ? R.drawable.pause_button : R.drawable.play_button;
         views.setInt(R.id.play_pause, "setImageResource", playButton);
 
         ComponentName service = new ComponentName(context, MusicPlaybackService.class);

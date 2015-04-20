@@ -54,7 +54,7 @@ public class FourWidthThreeHeightWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.artist, Html.fromHtml(artist));
         views.setTextViewText(R.id.title, Html.fromHtml(title));
 
-        int playButton = playing ? R.drawable.pause_button_states : R.drawable.play_button_states;
+        int playButton = playing ? R.drawable.pause_button : R.drawable.play_button;
         views.setInt(R.id.play_pause, "setImageResource", playButton);
 
         int shuffleButton = Utils.getShuffleButtonImage();

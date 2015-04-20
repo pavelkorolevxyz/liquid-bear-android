@@ -1,7 +1,5 @@
 package com.pillowapps.liqear.fragments;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -28,6 +26,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.mobeta.android.dslv.DragSortListView;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
@@ -36,22 +35,36 @@ import com.pillowapps.liqear.adapters.ModeAdapter;
 import com.pillowapps.liqear.adapters.PhoneFragmentAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
-import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
 import com.pillowapps.liqear.components.ModeClickListener;
 import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.entities.Album;
-import com.pillowapps.liqear.entities.RepeatMode;
-import com.pillowapps.liqear.entities.ShuffleMode;
+import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.events.AlbumInfoEvent;
+import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
+import com.pillowapps.liqear.entities.events.BufferizationEvent;
+import com.pillowapps.liqear.entities.events.ExitEvent;
+import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
+import com.pillowapps.liqear.entities.events.PauseEvent;
+import com.pillowapps.liqear.entities.events.PlayEvent;
+import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
+import com.pillowapps.liqear.entities.events.PreparedEvent;
+import com.pillowapps.liqear.entities.events.ShowProgressEvent;
+import com.pillowapps.liqear.entities.events.TimeEvent;
+import com.pillowapps.liqear.entities.events.TrackInfoEvent;
+import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.ImageModel;
+import com.pillowapps.liqear.models.PlayingState;
+import com.pillowapps.liqear.models.PlaylistModel;
+import com.pillowapps.liqear.models.Tutorial;
 import com.pillowapps.liqear.network.ImageLoadingListener;
+import com.squareup.otto.Subscribe;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -59,12 +72,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PhoneFragment extends Fragment {
-    private ServiceBroadcastReceiver receiver;
     private ViewPager pager;
     private View playlistTab;
     private View playbackTab;
     private View modeTab;
-    private StickyGridHeadersGridView modeGridView;
     private DragSortListView playlistsListView;
     private TextView artistTextView;
     private TextView titleTextView;
@@ -90,13 +101,23 @@ public class PhoneFragment extends Fragment {
     private ViewGroup backLayout;
     private ViewGroup bottomControlsLayout;
 
+    private Tutorial tutorial = new Tutorial();
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.handset_fragment_layout, container, false);
         mainActivity = (MainActivity) getActivity();
         initUi(v);
         initListeners();
         restorePreviousState();
+
+        LBApplication.bus.register(this);
         return v;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LBApplication.bus.unregister(this);
     }
 
     private void initViewPager(View v) {
@@ -123,17 +144,11 @@ public class PhoneFragment extends Fragment {
             @Override
             public void onPageSelected(int index) {
                 mainActivity.invalidateOptionsMenu();
-                if (index == PhoneFragmentAdapter.PLAYLIST_TAB_INDEX
-                        || index == PhoneFragmentAdapter.MODE_TAB_INDEX) {
-                    SharedPreferences startPreferences = PreferencesManager.getStartPreferences();
-                    boolean tutorialEnabled = !startPreferences
-                            .getBoolean(Constants.TUTORIAL_DISABLED, false);
-                    if (tutorialEnabled && tutorialBlinkAnimation != null) {
+                if (index != PhoneFragmentAdapter.PLAY_TAB_INDEX) {
+                    if (tutorial.isEnabled() && tutorialBlinkAnimation != null) {
                         tutorialBlinkAnimation.cancel();
                         tutorialLayout.setVisibility(View.GONE);
                     }
-                    SharedPreferences.Editor editor = startPreferences.edit();
-                    editor.putBoolean(Constants.TUTORIAL_DISABLED, true).apply();
                 }
             }
 
@@ -142,16 +157,6 @@ public class PhoneFragment extends Fragment {
 
             }
         });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     private void initUi(View v) {
@@ -164,9 +169,7 @@ public class PhoneFragment extends Fragment {
         initPlaylistsTab();
         initPlaybackTab();
 
-        boolean tutorialEnabled = !PreferencesManager.getStartPreferences()
-                .getBoolean(Constants.TUTORIAL_DISABLED, false);
-        if (tutorialEnabled) {
+        if (tutorial.isEnabled()) {
             showTutorial();
         }
     }
@@ -202,8 +205,7 @@ public class PhoneFragment extends Fragment {
     }
 
     private void initModeTab() {
-        modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
-
+        StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
         modeGridView.setOnItemClickListener(new ModeClickListener(mainActivity));
         modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
     }
@@ -238,7 +240,7 @@ public class PhoneFragment extends Fragment {
                 } else {
                     artistTextView.setText(track.getArtist());
                     titleTextView.setText(track.getTitle());
-                    playPauseButton.setImageResource(R.drawable.pause_button_states);
+                    playPauseButton.setImageResource(R.drawable.pause_button);
                     mainActivity.getMusicPlaybackService().setPlayOnPrepared(true);
                     mainActivity.getMusicPlaybackService().play(track.getRealPosition());
                 }
@@ -316,13 +318,11 @@ public class PhoneFragment extends Fragment {
         artistTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!AudioTimeline.hasCurrentTrack()) return;
-                Intent artistInfoIntent = new Intent(mainActivity,
-                        LastfmArtistViewerActivity.class);
-                artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST,
-                        AudioTimeline.getCurrentTrack().getArtist());
-                mainActivity.startActivityForResult(artistInfoIntent,
-                        Constants.MAIN_REQUEST_CODE);
+                Track currentTrack = Timeline.getInstance().getCurrentTrack();
+                if (currentTrack == null) return;
+                Intent artistInfoIntent = new Intent(mainActivity, LastfmArtistViewerActivity.class);
+                artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, currentTrack.getArtist());
+                mainActivity.startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
             }
         });
 
@@ -346,7 +346,6 @@ public class PhoneFragment extends Fragment {
         });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mainActivity.getMusicPlaybackService().seekTo(seekBar.getProgress()
                         * mainActivity.getMusicPlaybackService().getDuration() / 100);
@@ -376,7 +375,7 @@ public class PhoneFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mainActivity, LastfmAlbumViewerActivity.class);
-                Album album = AudioTimeline.getAlbum();
+                Album album = Timeline.getInstance().getCurrentAlbum();
                 if (album == null) return;
                 intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
                 intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
@@ -403,7 +402,7 @@ public class PhoneFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        saveState();
+        StateManager.savePlaylistState(mainActivity.getMusicService());
     }
 
     public void changeViewPagerItem(int currentItem) {
@@ -434,47 +433,16 @@ public class PhoneFragment extends Fragment {
         }
     }
 
-    private void saveState() {
-        saveTrackState();
-        SharedPreferences.Editor editor = PreferencesManager.getPreferences().edit();
-        if (mainActivity.getMusicPlaybackService() != null) {
-            editor.putInt(Constants.CURRENT_POSITION,
-                    mainActivity.getMusicPlaybackService().getCurrentPosition());
-            editor.putInt(Constants.CURRENT_BUFFER,
-                    mainActivity.getMusicPlaybackService().getCurrentBuffer());
-            editor.putBoolean(Constants.SHUFFLE_MODE_ON,
-                    AudioTimeline.getShuffleMode() == ShuffleMode.SHUFFLE);
-            editor.putBoolean(Constants.REPEAT_MODE_ON,
-                    AudioTimeline.getRepeatMode() == RepeatMode.REPEAT);
-            editor.putInt(Constants.CURRENT_INDEX, AudioTimeline.getCurrentIndex());
-        }
-        editor.apply();
-    }
-
-    private void saveTrackState() {
-        SharedPreferences.Editor editor = PreferencesManager.getPreferences().edit();
-        final Track currentTrack = AudioTimeline.getCurrentTrack();
-        if (AudioTimeline.getPlaylist() != null
-                && AudioTimeline.getPlaylist().size() != 0
-                && currentTrack != null) {
-            editor.putString(Constants.ARTIST, currentTrack.getArtist());
-            editor.putString(Constants.TITLE, currentTrack.getTitle());
-            editor.putInt(Constants.DURATION, currentTrack.getDuration());
-        }
-        editor.putInt(Constants.CURRENT_INDEX, AudioTimeline.getCurrentIndex());
-        editor.apply();
-    }
-
     private void restorePreviousState() {
         shuffleButton.setImageResource(Utils.getShuffleButtonImage());
         repeatButton.setImageResource(Utils.getRepeatButtonImage());
 
-        List<Track> tracks = PlaylistManager.getInstance().loadPlaylist();
-        AudioTimeline.setPlaylist(tracks);
-        if (AudioTimeline.getPlaylist().size() == 0) {
-            return;
-        }
-        tracks = AudioTimeline.getPlaylist();
+        Playlist playlist = new PlaylistModel().getPlaylist();
+        Timeline.getInstance().setPlaylist(playlist);
+        if (Timeline.getInstance().getPlaylistTracks().size() == 0) return;
+
+        List<Track> tracks = playlist.getTracks();
+
         SharedPreferences preferences = PreferencesManager.getPreferences();
         String artist = preferences.getString(Constants.ARTIST, "");
         String title = preferences.getString(Constants.TITLE, "");
@@ -498,8 +466,8 @@ public class PhoneFragment extends Fragment {
             artistTextView.setText(Html.fromHtml(artist));
             titleTextView.setText(Html.fromHtml(title));
         }
-        AudioTimeline.setCurrentIndex(currentIndex);
-        if (currentIndex > AudioTimeline.getPlaylist().size()) {
+        Timeline.getInstance().setIndex(currentIndex);
+        if (currentIndex > tracks.size()) {
             artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
             position = 0;
         }
@@ -507,7 +475,7 @@ public class PhoneFragment extends Fragment {
             position = 0;
         }
 
-        AudioTimeline.setCurrentPosition(position);
+        Timeline.getInstance().setTimePosition(position);
         mainActivity.restorePreviousState();
         if (!Utils.isOnline()) {
             artistImageView.setImageResource(R.drawable.artist_placeholder);
@@ -517,7 +485,7 @@ public class PhoneFragment extends Fragment {
         }
         if (PreferencesManager.getPreferences()
                 .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-            new ImageModel().loadImage(AudioTimeline.getImageUrl(),
+            new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
                     artistImageView, new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted() {
@@ -541,7 +509,7 @@ public class PhoneFragment extends Fragment {
                     });
         }
 
-        Album album = AudioTimeline.getAlbum();
+        Album album = Timeline.getInstance().getCurrentAlbum();
         if (album != null) {
             String imageUrl = album.getImageUrl();
             if (imageUrl == null || !PreferencesManager.getPreferences()
@@ -562,25 +530,20 @@ public class PhoneFragment extends Fragment {
     }
 
     public void setServiceConnected() {
-        receiver = new ServiceBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Constants.ACTION_SERVICE);
-        mainActivity.registerReceiver(receiver, intentFilter);
-        if (AudioTimeline.getCurrentTrack() != null) {
-            playPauseButton.setImageResource(AudioTimeline.isPlaying() ?
-                    R.drawable.pause_button_states : R.drawable.play_button_states);
+        boolean playing = Timeline.getInstance().getPlayingState() == PlayingState.PLAYING;
+        if (Timeline.getInstance().getCurrentTrack() != null) {
+            playPauseButton.setImageResource(playing
+                    ? R.drawable.pause_button
+                    : R.drawable.play_button);
+            if (playing) {
+                mainActivity.getMusicPlaybackService().showTrackInNotification();
+            }
             playPauseButton.setEnabled(true);
             mainActivity.getMusicPlaybackService().startPlayProgressUpdater();
             seekBar.setEnabled(true);
             updateTime();
-            if (AudioTimeline.isStateActive())
-                mainActivity.getMusicPlaybackService().showTrackInNotification();
-
-        }
-        boolean isPlaying = AudioTimeline.isPlaying();
-        if (isPlaying) {
-//            AudioTimeline.setStateActive(true);
-            playPauseButton.setImageResource(R.drawable.pause_button_states);
         }
     }
 
@@ -590,13 +553,6 @@ public class PhoneFragment extends Fragment {
 
     public ListView getPlaylistListView() {
         return playlistsListView;
-    }
-
-    public void stopMusicService() {
-        try {
-            mainActivity.unregisterReceiver(receiver);
-        } catch (Exception ignored) {
-        }
     }
 
     @Override
@@ -623,124 +579,133 @@ public class PhoneFragment extends Fragment {
         }
     }
 
-    private class ServiceBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int callbackType = intent.getIntExtra("callback-type", -1);
-            switch (callbackType) {
-                case MusicPlaybackService.TRACK_INFO_CALLBACK:
-                    Track track = AudioTimeline.getCurrentTrack();
-                    if (track == null) return;
-                    if (PreferencesManager.getPreferences()
-                            .getBoolean("scroll_to_current", false)) {
-                        playlistsListView.requestFocusFromTouch();
-                        playlistsListView.setSelection(AudioTimeline.getCurrentIndex());
-                    }
-                    AudioTimeline.setCurrentAlbum(null);
-                    track.setCurrent(true);
-                    artistTextView.setText(Html.fromHtml(track.getArtist()));
-                    titleTextView.setText(Html.fromHtml(track.getTitle()));
-                    List<Integer> listToUpdate = new ArrayList<>(
-                            AudioTimeline.getPrevClickedItems());
-                    listToUpdate.addAll(AudioTimeline.getQueue());
-                    AudioTimeline.clearPrevClickedItems();
-                    mainActivity.updateView(listToUpdate);
-                    if (!Utils.isOnline()) {
-                        artistImageView.setImageResource(R.drawable.artist_placeholder);
-                        albumImageView.setImageDrawable(null);
-                        albumTextView.setVisibility(View.GONE);
-                    }
-                    break;
-                case MusicPlaybackService.PLAY_CALLBACK:
-                    playPauseButton.setImageResource(R.drawable.pause_button_states);
-                    break;
-                case MusicPlaybackService.PLAY_WITHOUT_ICON_CALLBACK:
-                    playPauseButton.setImageResource(R.drawable.play_button_states);
-                    break;
-                case MusicPlaybackService.PAUSE_CALLBACK:
-                    playPauseButton.setImageResource(R.drawable.play_button_states);
-                    break;
-                case MusicPlaybackService.PRAPARED_CALLBACK:
-                    updateTime();
-                    break;
-                case MusicPlaybackService.BUFFERIZATION_CALLBACK:
-                    seekBar.setSecondaryProgress(intent.getIntExtra("track-buffering", 0));
-                    break;
-                case MusicPlaybackService.UPDATE_POSITION_CALLBACK:
-                    updateTime();
-                    break;
-                case MusicPlaybackService.EXIT_CALLBACK:
-                    mainActivity.destroy();
-                    break;
-                case MusicPlaybackService.SHOW_PROGRESS_BAR:
-                    break;
-                case MusicPlaybackService.ARTIST_INFO_CALLBACK:
-                    if (PreferencesManager.getPreferences().getBoolean(
-                            Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                        String imageUrl = intent.getStringExtra(Constants.IMAGE_URL);
-                        AudioTimeline.setImageUrl(imageUrl);
-                        new ImageModel().loadImage(imageUrl, artistImageView, new ImageLoadingListener() {
-                            @Override
-                            public void onLoadingStarted() {
-
-                            }
-
-                            @Override
-                            public void onLoadingFailed(String message) {
-
-                            }
-
-                            @Override
-                            public void onLoadingComplete(Bitmap bitmap) {
-                                updatePaletteWithBitmap(bitmap);
-                            }
-
-                            @Override
-                            public void onLoadingCancelled() {
-
-                            }
-                        });
-                    }
-                    break;
-                case MusicPlaybackService.NO_URL_CALLBACK:
-                    break;
-                case MusicPlaybackService.INTERNET_STATE_CHANGE:
-                    mainActivity.getModeAdapter().notifyDataSetChanged();
-                    break;
-                case MusicPlaybackService.ALBUM_INFO_CALLBACK:
-                    Album album = AudioTimeline.getAlbum();
-                    if (album != null && !album.equals(AudioTimeline.getPreviousAlbum())) {
-                        String imageUrl = album.getImageUrl();
-                        if (imageUrl == null || !PreferencesManager.getPreferences().getBoolean(
-                                Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                            albumImageView.setVisibility(View.GONE);
-                        } else {
-                            albumImageView.setVisibility(View.VISIBLE);
-                            new ImageModel().loadImage(imageUrl, albumImageView);
-
-                        }
-                        String title = album.getTitle();
-                        if (title == null) {
-                            albumTextView.setVisibility(View.GONE);
-                        } else {
-                            albumTextView.setVisibility(View.VISIBLE);
-                            albumTextView.setText(title);
-                        }
-                    } else if (album == null) {
-                        albumImageView.setVisibility(View.GONE);
-                        albumTextView.setVisibility(View.GONE);
-                    }
-                    mainActivity.invalidateMenu();
-                    break;
-                case MusicPlaybackService.TIME_CALLBACK: {
-                    updateTime();
-                }
-                break;
-                default:
-                    break;
-            }
+    @Subscribe
+    public void trackInfoEvent(TrackInfoEvent event) {
+        Track track = Timeline.getInstance().getCurrentTrack();
+        if (track == null) return;
+        if (PreferencesManager.getPreferences()
+                .getBoolean("scroll_to_current", false)) {
+            playlistsListView.requestFocusFromTouch();
+            playlistsListView.setSelection(Timeline.getInstance().getIndex());
         }
+        Timeline.getInstance().setCurrentAlbum(null);
+        track.setCurrent(true);
+        artistTextView.setText(Html.fromHtml(track.getArtist()));
+        titleTextView.setText(Html.fromHtml(track.getTitle()));
+        List<Integer> indexesToUpdate = new ArrayList<>(Timeline.getInstance().getPreviousTracksIndexes());
+        indexesToUpdate.addAll(Timeline.getInstance().getQueueIndexes());
+        mainActivity.updateView(indexesToUpdate);
+        if (!Utils.isOnline()) {
+            artistImageView.setImageResource(R.drawable.artist_placeholder);
+            albumImageView.setImageDrawable(null);
+            albumTextView.setVisibility(View.GONE);
+        }
+    }
 
+    @Subscribe
+    public void playEvent(PlayEvent event) {
+        playPauseButton.setImageResource(R.drawable.pause_button);
+    }
+
+    @Subscribe
+    public void pauseEvent(PauseEvent event) {
+        playPauseButton.setImageResource(R.drawable.play_button);
+    }
+
+    @Subscribe
+    public void artistInfoEvent(ArtistInfoEvent event) {
+        if (PreferencesManager.getPreferences().getBoolean(
+                Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+            String imageUrl = event.getImageUrl();
+            Timeline.getInstance().setCurrentArtistImageUrl(imageUrl);
+            new ImageModel().loadImage(imageUrl, artistImageView, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted() {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String message) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(Bitmap bitmap) {
+                    updatePaletteWithBitmap(bitmap);
+                }
+
+                @Override
+                public void onLoadingCancelled() {
+
+                }
+            });
+        }
+    }
+
+    @Subscribe
+    public void albumInfoEvent(AlbumInfoEvent event) {
+        Album album = Timeline.getInstance().getCurrentAlbum();
+        if (album != null && !album.equals(Timeline.getInstance().getPreviousAlbum())) {
+            String imageUrl = album.getImageUrl();
+            if (imageUrl == null || !PreferencesManager.getPreferences().getBoolean(
+                    Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                albumImageView.setVisibility(View.GONE);
+            } else {
+                albumImageView.setVisibility(View.VISIBLE);
+                new ImageModel().loadImage(imageUrl, albumImageView);
+
+            }
+            String title = album.getTitle();
+            if (title == null) {
+                albumTextView.setVisibility(View.GONE);
+            } else {
+                albumTextView.setVisibility(View.VISIBLE);
+                albumTextView.setText(title);
+            }
+        } else if (album == null) {
+            albumImageView.setVisibility(View.GONE);
+            albumTextView.setVisibility(View.GONE);
+        }
+        mainActivity.invalidateMenu();
+    }
+
+    @Subscribe
+    public void exitEvent(ExitEvent event) {
+        mainActivity.destroy();
+    }
+
+    @Subscribe
+    public void networkStateEvent(NetworkStateChangeEvent event) {
+        mainActivity.getModeAdapter().notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void preparedEvent(PreparedEvent event) {
+        updateTime();
+    }
+
+    @Subscribe
+    public void bufferizationEvent(BufferizationEvent event) {
+        seekBar.setSecondaryProgress(event.getBuffered());
+    }
+
+    @Subscribe
+    public void playWithoutIconEvent(PlayWithoutIconEvent event) {
+        playPauseButton.setImageResource(R.drawable.play_button);
+    }
+
+    @Subscribe
+    public void showProgressEvent(ShowProgressEvent event) {
+    }
+
+    @Subscribe
+    public void timeEvent(TimeEvent event) {
+        updateTime();
+    }
+
+    @Subscribe
+    public void updatePositionEvent(UpdatePositionEvent event) {
+        updateTime();
     }
 
     private void updatePaletteWithBitmap(Bitmap bitmap) {

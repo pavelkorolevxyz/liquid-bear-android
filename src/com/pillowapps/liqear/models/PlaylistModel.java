@@ -1,21 +1,25 @@
 package com.pillowapps.liqear.models;
 
+import com.pillowapps.liqear.entities.Playlist;
+
 public class PlaylistModel {
 
     public void saveMainPlaylist() {
         //todo
     }
 
-    public void getMainPlaylist() {
+    public Playlist getMainPlaylist() {
         //todo
+        return null;
     }
 
     public void savePlaylist() {
         //todo
     }
 
-    public void getPlaylist() {
+    public Playlist getPlaylist() {
         //todo
+        return null;
     }
 
     public void removePlaylist() {

@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitCenter"
-                android:src="@drawable/prev_button_states"
+                android:src="@drawable/prev_button"
                 android:contentDescription="prev"
                 android:background="@null"
                 android:layout_weight="1"/>
@@ -65,7 +65,7 @@
         <ImageButton android:id="@+id/next" android:paddingRight="6dp" android:paddingLeft="6dp"
                      android:layout_height="wrap_content" android:layout_width="wrap_content"
                      android:layout_gravity="center_vertical"
-                     android:scaleType="fitCenter" android:src="@drawable/next_button_states"
+                     android:scaleType="fitCenter" android:src="@drawable/next_button"
                      android:contentDescription="next"
                      android:background="@null"
                      android:layout_weight="1"/>
@@ -88,7 +88,7 @@
         <ImageButton android:id="@+id/imageButton1" android:paddingRight="6dp" android:paddingLeft="6dp"
                      android:layout_height="wrap_content" android:layout_width="wrap_content"
                      android:layout_gravity="center_vertical" android:scaleType="fitCenter"
-                     android:src="@drawable/prev_button_states" android:contentDescription="prev"
+                     android:src="@drawable/prev_button" android:contentDescription="prev"
                      android:background="@null" android:layout_weight="1" android:visibility="invisible"/>
         <ImageButton android:id="@+id/imageButton2" android:paddingRight="6dp" android:paddingLeft="6dp"
                      android:layout_height="wrap_content" android:layout_width="wrap_content"
@@ -98,7 +98,7 @@
         <ImageButton android:id="@+id/imageButton3" android:paddingRight="6dp" android:paddingLeft="6dp"
                      android:layout_height="wrap_content" android:layout_width="wrap_content"
                      android:layout_gravity="center_vertical" android:scaleType="fitCenter"
-                     android:src="@drawable/next_button_states" android:contentDescription="next"
+                     android:src="@drawable/next_button" android:contentDescription="next"
                      android:background="@null" android:layout_weight="1" android:visibility="invisible"/>
         <ImageButton android:id="@+id/love_button"
                      android:layout_height="wrap_content" android:layout_width="wrap_content"

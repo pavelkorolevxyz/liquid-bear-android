@@ -177,7 +177,7 @@ public class TabletFragment extends Fragment {
                 } else {
                     artistTextView.setText(Html.fromHtml(track.getArtist()));
                     titleTextView.setText(Html.fromHtml(track.getTitle()));
-                    playPauseButton.setImageResource(R.drawable.pause_button_states);
+                    playPauseButton.setImageResource(R.drawable.pause_button);
                     mainActivity.getMusicPlaybackService().setPlayOnPrepared(true);
                     mainActivity.getMusicPlaybackService().play(track.getRealPosition());
                 }
@@ -294,7 +294,7 @@ public class TabletFragment extends Fragment {
         mainActivity.registerReceiver(receiver, intentFilter);
         if (AudioTimeline.getCurrentTrack() != null) {
             playPauseButton.setImageResource(AudioTimeline.isPlaying() ?
-                    R.drawable.pause_button_states : R.drawable.play_button_states);
+                    R.drawable.pause_button : R.drawable.play_button);
             playPauseButton.setEnabled(true);
             mainActivity.getMusicPlaybackService().startPlayProgressUpdater();
             seekBar.setEnabled(true);
@@ -305,7 +305,7 @@ public class TabletFragment extends Fragment {
         }
         boolean isPlaying = AudioTimeline.isPlaying();
         if (isPlaying) {
-            playPauseButton.setImageResource(R.drawable.pause_button_states);
+            playPauseButton.setImageResource(R.drawable.pause_button);
         }
     }
 
@@ -412,13 +412,13 @@ public class TabletFragment extends Fragment {
                     }
                     break;
                 case MusicPlaybackService.PLAY_CALLBACK:
-                    playPauseButton.setImageResource(R.drawable.pause_button_states);
+                    playPauseButton.setImageResource(R.drawable.pause_button);
                     break;
                 case MusicPlaybackService.PLAY_WITHOUT_ICON_CALLBACK:
-                    playPauseButton.setImageResource(R.drawable.play_button_states);
+                    playPauseButton.setImageResource(R.drawable.play_button);
                     break;
                 case MusicPlaybackService.PAUSE_CALLBACK:
-                    playPauseButton.setImageResource(R.drawable.play_button_states);
+                    playPauseButton.setImageResource(R.drawable.play_button);
                     break;
                 case MusicPlaybackService.PRAPARED_CALLBACK:
                     updateTime();
