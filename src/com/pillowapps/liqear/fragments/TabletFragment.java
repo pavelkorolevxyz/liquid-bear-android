@@ -313,13 +313,6 @@ public class TabletFragment extends Fragment {
         return listView;
     }
 
-    public void stopMusicService() {
-        try {
-            mainActivity.unregisterReceiver(receiver);
-        } catch (Exception ignored) {
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();

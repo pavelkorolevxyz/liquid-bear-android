@@ -45,8 +45,8 @@ import com.pillowapps.liqear.adapters.ModeListAdapter;
 import com.pillowapps.liqear.adapters.PhoneFragmentAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.MusicService;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
-import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
 import com.pillowapps.liqear.components.ActivityResult;
 import com.pillowapps.liqear.components.ArtistTrackComparator;
 import com.pillowapps.liqear.entities.Album;
@@ -58,7 +58,6 @@ import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.fragments.ModeListFragment;
 import com.pillowapps.liqear.fragments.PhoneFragment;
 import com.pillowapps.liqear.fragments.PlaybackControlFragment;
-import com.pillowapps.liqear.fragments.RightFragment;
 import com.pillowapps.liqear.fragments.TabletFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
@@ -92,7 +91,6 @@ public class MainActivity extends SlidingFragmentActivity {
     public Menu mainMenu;
     private PhoneFragment phoneFragment;
     private ServiceConnection serviceConnection;
-    private MusicPlaybackService musicPlaybackService;
     private MusicService musicService;
     private ActivityResult activityResult;
     private PlaylistItemsAdapter playlistItemsAdapter;
@@ -102,7 +100,6 @@ public class MainActivity extends SlidingFragmentActivity {
     private PlaybackControlFragment playbackControlFragment;
     private ModeAdapter modeAdapter;
     private ModeListFragment modeListFragment;
-    private RightFragment rightFragment;
     private boolean landscapeTablet = false;
     private ProgressDialog finalProgress;
 
@@ -371,7 +368,8 @@ public class MainActivity extends SlidingFragmentActivity {
             return true;
             case R.id.next_url_button: {
                 if (currentTrack == null) return true;
-                if (AudioTimeline.getCurrentTrack() != null && AudioTimeline.getCurrentTrack().isLocal()) {
+                if (AudioTimeline.getCurrentTrack() != null
+                        && Timeline.getInstance().getCurrentTrack().isLocal()) {
                     Toast.makeText(MainActivity.this, R.string.track_local,
                             Toast.LENGTH_SHORT).show();
                     return true;
@@ -426,9 +424,7 @@ public class MainActivity extends SlidingFragmentActivity {
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                if (currentTrack != null) {
-                    addToVk(currentTrack);
-                }
+                addToVk(currentTrack);
             }
             return true;
             case R.id.love_button: {
@@ -444,7 +440,7 @@ public class MainActivity extends SlidingFragmentActivity {
                     return true;
                 }
                 progressBar.setVisibility(View.VISIBLE);
-                final Track track = AudioTimeline.getCurrentTrack();
+                final Track track = Timeline.getInstance().getCurrentTrack();
                 if (!track.isLoved()) {
                     new LastfmTrackModel().love(track, new SimpleCallback<Object>() {
                         @Override
@@ -483,7 +479,7 @@ public class MainActivity extends SlidingFragmentActivity {
             }
             return true;
             case R.id.equalizer: {
-                if (musicPlaybackService == null) {
+                if (musicService == null) {
                     Toast.makeText(MainActivity.this, R.string.service_not_connected,
                             Toast.LENGTH_SHORT).show();
                     return true;
@@ -508,7 +504,7 @@ public class MainActivity extends SlidingFragmentActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                musicPlaybackService.setTimer(0);
+                                musicService.setTimer(0);
                                 dialog.dismiss();
                             }
                         });
@@ -516,7 +512,7 @@ public class MainActivity extends SlidingFragmentActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                musicPlaybackService.setTimer(sb.getCurrent() * 60);
+                                musicService.setTimer(sb.getCurrent() * 60);
                                 SharedPreferences.Editor editor =
                                         PreferencesManager.getPreferences().edit();
                                 editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
@@ -684,8 +680,8 @@ public class MainActivity extends SlidingFragmentActivity {
         AudioTimeline.getQueue().clear();
         setRealPositions();
         AudioTimeline.clearPreviousList();
-        if (musicPlaybackService != null) {
-            musicPlaybackService.pause(true);
+        if (musicService != null) {
+            musicService.pause(true);
         }
         if (AudioTimeline.getPlaylist().size() > 0) {
             if (play) {
@@ -698,7 +694,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
     private void sortByArtist() {
         if (playlistItemsAdapter == null) return;
-        List<Track> tracks = new ArrayList<Track>(playlistItemsAdapter.getValues());
+        List<Track> tracks = new ArrayList<>(playlistItemsAdapter.getValues());
         Collections.sort(tracks, new ArtistTrackComparator());
         AudioTimeline.setPlaylist(tracks);
         updateAdapter();
@@ -715,7 +711,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
     private void shufflePlaylist() {
         if (playlistItemsAdapter == null) return;
-        List<Track> tracks = new ArrayList<Track>(playlistItemsAdapter.getValues());
+        List<Track> tracks = new ArrayList<>(playlistItemsAdapter.getValues());
         Collections.shuffle(tracks);
         AudioTimeline.setPlaylist(tracks);
         updateAdapter();
@@ -763,7 +759,7 @@ public class MainActivity extends SlidingFragmentActivity {
     }
 
     private void openVideo(Track track) {
-        musicPlaybackService.pause(true);
+        musicService.pause(true);
         try {
             Intent intent = new Intent(Intent.ACTION_SEARCH);
             intent.setPackage("com.google.android.youtube");
@@ -839,7 +835,7 @@ public class MainActivity extends SlidingFragmentActivity {
             int menuLayout = R.menu.tablet_menu_no_track;
             if (AudioTimeline.hasCurrentTrack()) {
                 menuLayout = R.menu.tablet_menu;
-                if (AudioTimeline.getCurrentTrack().isLoved()) {
+                if (Timeline.getInstance().getCurrentTrack().isLoved()) {
                     menuLayout = R.menu.tablet_menu_loved;
                 }
             }
@@ -850,7 +846,7 @@ public class MainActivity extends SlidingFragmentActivity {
                     int menuLayout = R.menu.menu_play_tab_no_current_track;
                     if (AudioTimeline.hasCurrentTrack()) {
                         menuLayout = R.menu.menu_play_tab;
-                        if (AudioTimeline.getCurrentTrack().isLoved()) {
+                        if (Timeline.getInstance().getCurrentTrack().isLoved()) {
                             menuLayout = R.menu.menu_play_tab_loved;
                         }
                     }
@@ -890,16 +886,16 @@ public class MainActivity extends SlidingFragmentActivity {
         finalProgress = progress;
         serviceConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
-                MusicPlaybackService.LocalBinder binder =
-                        (MusicPlaybackService.LocalBinder) service;
-                musicPlaybackService = binder.getService();
+                MusicService.LocalBinder binder =
+                        (MusicService.LocalBinder) service;
+                musicService = binder.getService();
                 if (isTablet()) {
                     tabletFragment.setServiceConnected();
                 } else {
                     phoneFragment.setServiceConnected();
                 }
                 setVolumeControlStream(AudioManager.STREAM_MUSIC);
-                if (AudioTimeline.isStateActive()) musicPlaybackService.showTrackInNotification();
+                if (AudioTimeline.isStateActive()) musicService.showTrackInNotification();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -916,7 +912,7 @@ public class MainActivity extends SlidingFragmentActivity {
             public void onServiceDisconnected(ComponentName arg0) {
             }
         };
-        Intent intent = new Intent(LBApplication.getAppContext(), MusicPlaybackService.class);
+        Intent intent = new Intent(LBApplication.getAppContext(), MusicService.class);
         startService(intent);
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
     }
@@ -1000,7 +996,7 @@ public class MainActivity extends SlidingFragmentActivity {
     }
 
     private ListView getListView() {
-        ListView listView = null;
+        ListView listView;
         if (isTablet()) {
             listView = tabletFragment.getPlaylistListView();
         } else {
@@ -1023,17 +1019,12 @@ public class MainActivity extends SlidingFragmentActivity {
     }
 
     private void stopMusicService() {
-        Intent intent = new Intent(this, MusicPlaybackService.class);
+        Intent intent = new Intent(this, MusicService.class);
         try {
             if (serviceConnection != null) {
                 unbindService(serviceConnection);
             }
         } catch (IllegalArgumentException ignored) {
-        }
-        if (isTablet()) {
-            tabletFragment.stopMusicService();
-        } else {
-            phoneFragment.stopMusicService();
         }
         stopService(intent);
     }
@@ -1044,7 +1035,7 @@ public class MainActivity extends SlidingFragmentActivity {
             if (getSlidingMenu() != null) {
                 getSlidingMenu().showContent();
             }
-            if (musicPlaybackService == null) {
+            if (musicService == null) {
                 activityResult = new ActivityResult(requestCode, resultCode, data);
                 return;
             }
@@ -1054,7 +1045,7 @@ public class MainActivity extends SlidingFragmentActivity {
                 long aid = data.getLongExtra("aid", -1);
                 long oid = data.getLongExtra("oid", -1);
                 if (aid == -1 || oid == -1) {
-                    musicPlaybackService.nextUrl(data.getIntExtra("position", 0));
+                    musicService.nextUrl(data.getIntExtra("position", 0));
                 }
             }
         }
@@ -1195,8 +1186,8 @@ public class MainActivity extends SlidingFragmentActivity {
         return playlistItemsAdapter;
     }
 
-    public MusicPlaybackService getMusicPlaybackService() {
-        return musicPlaybackService;
+    public MusicService getMusicPlaybackService() {
+        return musicService;
     }
 
     public MusicService getMusicService() {
@@ -1215,13 +1206,9 @@ public class MainActivity extends SlidingFragmentActivity {
         return modeListFragment;
     }
 
-    public RightFragment getRightFragment() {
-        return rightFragment;
-    }
-
     public void playPause() {
-        startService(new Intent(MainActivity.this, MusicPlaybackService.class)
-                .setAction(MusicPlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION));
+        startService(new Intent(MainActivity.this, MusicService.class)
+                .setAction(MusicService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION));
     }
 
     public void invalidateMenu() {
