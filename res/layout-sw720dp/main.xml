@@ -1,20 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:id="@+id/tablet_layout"
-        android:background="@color/icons">
-    <FrameLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:id="@+id/tablet_layout"
+    android:background="@color/icons">
+
+    <include
+        layout="@layout/lb_toolbar"
+        android:id="@+id/toolbar" />
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- The main content view -->
+        <FrameLayout
             android:id="@+id/content_frame"
+            android:background="#fff"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_above="@+id/playback_controls_frame"
-            android:layout_alignParentTop="true"/>
-    <FrameLayout
-            android:id="@+id/playback_controls_frame"
+            android:layout_above="@+id/playback_controls_frame" />
+
+        <fragment
+            android:id="@+id/navigation_drawer"
+            android:layout_above="@+id/playback_controls_frame"
+            android:layout_width="@dimen/behind_width"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:name="com.pillowapps.liqear.fragments.ModeListFragment"
+            tools:layout="@layout/menu_frame" />
+
+        <fragment
+            android:id="@+id/playback_controls"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_alignParentBottom="true"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:name="com.pillowapps.liqear.fragments.PlaybackControlFragment" />
+
+    </android.support.v4.widget.DrawerLayout>
+
+
     <include layout="@layout/indeterminate_progress_bar" />
 </RelativeLayout>

@@ -2,6 +2,9 @@ package com.pillowapps.liqear.entities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -46,7 +49,10 @@ public class ListItem implements Item {
             holder = (ItemsHolder) convertView.getTag();
         }
 
-        holder.modeImageView.setImageResource(mode.getIcon());
+        Resources res = context.getResources();
+        Drawable drawable = res.getDrawable(mode.getIcon());
+        drawable.setColorFilter(R.color.primary, PorterDuff.Mode.MULTIPLY);
+        holder.modeImageView.setImageDrawable(drawable);
         holder.titleTextView.setText(context.getString(mode.getTitle()).toLowerCase());
         final boolean modeVisible = mode.isVisible();
 

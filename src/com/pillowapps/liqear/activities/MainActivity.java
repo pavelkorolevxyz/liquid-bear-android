@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.media.AudioManager;
@@ -17,7 +16,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.ActionBar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,8 +35,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.analytics.tracking.android.EasyTracker;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import com.michaelnovakjr.numberpicker.NumberPicker;
 import com.pillowapps.liqear.BuildConfig;
 import com.pillowapps.liqear.LBApplication;
@@ -86,8 +86,9 @@ import butterknife.InjectView;
 import fr.nicolaspomepuy.discreetapprate.AppRate;
 import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
 import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
+import timber.log.Timber;
 
-public class MainActivity extends SlidingFragmentActivity {
+public class MainActivity extends ActionBarActivity implements ModeListFragment.NavigationDrawerCallbacks {
     public Menu mainMenu;
     private PhoneFragment phoneFragment;
     private ServiceConnection serviceConnection;
@@ -100,26 +101,26 @@ public class MainActivity extends SlidingFragmentActivity {
     private PlaybackControlFragment playbackControlFragment;
     private ModeAdapter modeAdapter;
     private ModeListFragment modeListFragment;
-    private boolean landscapeTablet = false;
     private ProgressDialog finalProgress;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private boolean tabletMode = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        configureInitialSettings();
-        if ((!AuthorizationInfoManager.isAuthorizedOnVk()
-                || !AuthorizationInfoManager.isAuthorizedOnLastfm())
-                && !AuthorizationInfoManager.isAuthSkipped()) {
+        if (AuthorizationInfoManager.isAuthScreenNeeded()) {
             Intent intent = new Intent(this, AuthActivity.class);
-            intent.putExtra(Constants.FIRST_START, true);
+            intent.putExtra(Constants.SHOW_AUTHSCREEN_AUTO, true);
             startActivity(intent);
             finish();
             return;
         }
         setContentView(R.layout.main);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.app_name);
-        actionBar.setDisplayShowTitleEnabled(true);
+
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.setTitle(R.string.app_name);
+//        actionBar.setDisplayShowTitleEnabled(true);
 
         AppRate.with(this)
                 .theme(AppRateTheme.DARK)
@@ -129,79 +130,77 @@ public class MainActivity extends SlidingFragmentActivity {
                 .retryPolicy(RetryPolicy.EXPONENTIAL)
                 .checkAndShow();
 
-        if (findViewById(R.id.tablet_layout) != null) {
-            playlistItemsAdapter = new PlaylistItemsAdapter(MainActivity.this);
-            if (findViewById(R.id.menu_frame) == null) {
-                landscapeTablet = false;
-                setBehindContentView(R.layout.menu_frame);
-                getSlidingMenu().setSlidingEnabled(true);
-                getSlidingMenu().setMode(SlidingMenu.LEFT);
-                getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-                actionBar.setDisplayHomeAsUpEnabled(true);
-            } else {
-                View v = new View(this);
-                setBehindContentView(v);
-                getSlidingMenu().setSlidingEnabled(false);
-                getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-                landscapeTablet = true;
-            }
-
-            playbackControlFragment = new PlaybackControlFragment();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.playback_controls_frame, playbackControlFragment)
-                    .commit();
-
-            if (tabletFragment == null) {
-                tabletFragment = new TabletFragment();
-            }
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.content_frame, tabletFragment)
-                    .commit();
-
-            modeListFragment = new ModeListFragment();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.menu_frame, modeListFragment)
-                    .commit();
-
-            SlidingMenu sm = getSlidingMenu();
-            sm.setShadowWidthRes(R.dimen.shadow_width);
-            sm.setBehindWidthRes(R.dimen.behind_width);
-            setSlidingActionBarEnabled(false);
-            sm.setShadowDrawable(R.drawable.shadow);
-            sm.setBehindScrollScale(0.25f);
-            sm.setFadeDegree(0.25f);
+        tabletMode = findViewById(R.id.tablet_layout) != null;
+        if (tabletMode) {
+            initTabletLayout();
         } else {
-            phoneFragment = (PhoneFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.handset_fragment);
-            View v = new View(this);
-            setBehindContentView(v);
-            getSlidingMenu().setSlidingEnabled(false);
-            getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                    && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                int navBarHeight = getNavigationBarHeight();
-                findViewById(R.id.main_layout).setPadding(0, 0, 0, navBarHeight);
-                View menuFrame = findViewById(R.id.menu_frame);
-                if (menuFrame != null) {
-                    menuFrame.setPadding(0, 0, 0, navBarHeight);
-                }
-            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                int navBarWidth = getNavigationBarHeight();
-                findViewById(R.id.main_layout).setPadding(0, 0, navBarWidth, 0);
-                View menuFrame = findViewById(R.id.menu_frame);
-                if (menuFrame != null) {
-                    menuFrame.setPadding(0, 0, navBarWidth, 0);
-                }
-            }
+            initPhoneLayout();
         }
 
         ButterKnife.inject(this);
-        startMusicService();
+//        startMusicService();
+    }
+
+    private void initPhoneLayout() {
+        phoneFragment = (PhoneFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.handset_fragment);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            int navBarHeight = getNavigationBarHeight();
+            findViewById(R.id.main_layout).setPadding(0, 0, 0, navBarHeight);
+            View menuFrame = findViewById(R.id.menu_frame);
+            if (menuFrame != null) {
+                menuFrame.setPadding(0, 0, 0, navBarHeight);
+            }
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            int navBarWidth = getNavigationBarHeight();
+            findViewById(R.id.main_layout).setPadding(0, 0, navBarWidth, 0);
+            View menuFrame = findViewById(R.id.menu_frame);
+            if (menuFrame != null) {
+                menuFrame.setPadding(0, 0, navBarWidth, 0);
+            }
+        }
+    }
+
+    private void initTabletLayout() {
+        playlistItemsAdapter = new PlaylistItemsAdapter(MainActivity.this);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
+        setSupportActionBar(toolbar);
+
+        playbackControlFragment = (PlaybackControlFragment)
+                getSupportFragmentManager().findFragmentById(R.id.playback_controls);
+        
+        modeListFragment = (ModeListFragment)
+                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            toggle = new ActionBarDrawerToggle(
+                    this,
+                    drawerLayout,
+                    R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close);
+            drawerLayout.setDrawerListener(toggle);
+            toggle.setDrawerIndicatorEnabled(true);
+
+            modeListFragment.setUp(
+                    R.id.navigation_drawer,
+                    drawerLayout);
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            toggle.syncState();
+        }
+
+
+        if (tabletFragment == null) {
+            tabletFragment = new TabletFragment();
+        }
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_frame, tabletFragment)
+                .commit();
     }
 
     @Override
@@ -220,7 +219,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if (isTablet()) showContent();
+//        if (isTablet()) showContent();
         super.onSaveInstanceState(outState);
     }
 
@@ -251,16 +250,6 @@ public class MainActivity extends SlidingFragmentActivity {
         return phoneFragment == null && tabletFragment != null;
     }
 
-    private void configureInitialSettings() {
-        SharedPreferences preferences = PreferencesManager.getPreferences();
-        try {
-            preferences.edit().putInt("version", getPackageManager()
-                    .getPackageInfo(getPackageName(), 0).versionCode).apply();
-        } catch (PackageManager.NameNotFoundException ignored) {
-        }
-        PlaylistManager.getInstance().updateDatabase();
-    }
-
     public void openDropButton() {
         mainMenu.performIdentifierAction(R.id.track_button, 0);
     }
@@ -269,25 +258,24 @@ public class MainActivity extends SlidingFragmentActivity {
     protected void onResume() {
         super.onResume();
         invalidateOptionsMenu();
-        if (AudioTimeline.isPlaylistChanged()) {
+        if (Timeline.getInstance().isPlaylistChanged()) {
             updateAdapter();
             changePlaylistWithoutTrackChange();
         }
     }
 
     public void changePlaylistWithoutTrackChange() {
-        AudioTimeline.getQueue().clear();
+        Timeline.getInstance().clearQueue();
         setRealPositions();
-        AudioTimeline.clearPreviousList();
-        if (AudioTimeline.getPlaylist().size() > 0) {
-            PlaylistManager.getInstance().saveUnsavedPlaylist(AudioTimeline.getPlaylist());
+        Timeline.getInstance().clearPreviousIndexes();
+        if (Timeline.getInstance().getPlaylistTracks().size() > 0) {
+            PlaylistManager.getInstance().saveUnsavedPlaylist(Timeline.getInstance().getPlaylistTracks());
         }
-        AudioTimeline.setPlaylist(AudioTimeline.getPlaylist());
-        AudioTimeline.setPlaylistChanged(false);
+//        AudioTimeline.setPlaylistChanged(false);
     }
 
     public void setRealPositions() {
-        List<Track> playlist = AudioTimeline.getPlaylist();
+        List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
         for (int i = 0; i < playlist.size(); i++) {
             playlist.get(i).setRealPosition(i);
         }
@@ -313,10 +301,10 @@ public class MainActivity extends SlidingFragmentActivity {
                 modeListAdapter.notifyChanges();
                 fixed = true;
             } else {
-                if (getSlidingMenu().isMenuShowing()) {
-                    getSlidingMenu().showContent(true);
-                    return;
-                }
+//                if (getSlidingMenu().isMenuShowing()) {
+//                    getSlidingMenu().showContent(true);
+//                    return;
+//                }
             }
         }
         if (fixed) return;
@@ -334,7 +322,7 @@ public class MainActivity extends SlidingFragmentActivity {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home: {
-                if (getSlidingMenu() != null) toggle();
+//                if (getSlidingMenu() != null) toggle();
             }
             return true;
             case R.id.photo_artist_button: {
@@ -564,7 +552,7 @@ public class MainActivity extends SlidingFragmentActivity {
                 if (!isTablet()) {
                     modeAdapter.notifyChanges();
                 } else {
-                    if (!landscapeTablet) showMenu();
+//                    if (!landscapeTablet) showMenu();
                     modeListFragment.getAdapter().notifyChanges();
                 }
             }
@@ -1032,9 +1020,9 @@ public class MainActivity extends SlidingFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (getSlidingMenu() != null) {
-                getSlidingMenu().showContent();
-            }
+//            if (getSlidingMenu() != null) {
+//                getSlidingMenu().showContent();
+//            }
             if (musicService == null) {
                 activityResult = new ActivityResult(requestCode, resultCode, data);
                 return;
@@ -1136,7 +1124,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
     public void openRadiomix() {
         progressBar.setVisibility(View.VISIBLE);
-        if (isTablet()) showContent();
+//        if (isTablet()) showContent();
         new LastfmLibraryModel().getRadiomix(AuthorizationInfoManager.getLastfmName(),
                 new SimpleCallback<List<LastfmTrack>>() {
                     @Override
@@ -1160,7 +1148,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
     public void openLibrary() {
         progressBar.setVisibility(View.VISIBLE);
-        if (isTablet()) showContent();
+//        if (isTablet()) showContent();
         new LastfmLibraryModel().getLibrary(AuthorizationInfoManager.getLastfmName(),
                 new SimpleCallback<List<LastfmTrack>>() {
                     @Override
@@ -1220,4 +1208,8 @@ public class MainActivity extends SlidingFragmentActivity {
         });
     }
 
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+
+    }
 }

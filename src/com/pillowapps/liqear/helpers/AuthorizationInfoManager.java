@@ -117,4 +117,10 @@ public class AuthorizationInfoManager {
         return context.getSharedPreferences(ADDITIONAL_PREFERENCES,
                 Context.MODE_PRIVATE).getBoolean(Constants.SKIP_AUTH, false);
     }
+
+    public static boolean isAuthScreenNeeded() {
+        return (!AuthorizationInfoManager.isAuthorizedOnVk()
+                || !AuthorizationInfoManager.isAuthorizedOnLastfm())
+                && !AuthorizationInfoManager.isAuthSkipped();
+    }
 }

@@ -58,7 +58,7 @@ public class Constants {
     public static final String TOP_IN_RADIOMIX = "top_in_radiomix";
     public static final String WEEKLY_IN_RADIOMIX = "weekly_in_radiomix";
     public static final String SKIP_AUTH = "skip_auth";
-    public static final String FIRST_START = "first_start";
+    public static final String SHOW_AUTHSCREEN_AUTO = "first_start";
     public static final String MODE_VISIBLE = "mode_visible";
     public static final String SHARE_FORMAT = "share_format";
     public static final String SHOW_TOAST_TRACK_CHANGE = "show_track_change_toast";

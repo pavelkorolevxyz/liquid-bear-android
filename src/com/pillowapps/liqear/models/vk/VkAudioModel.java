@@ -32,6 +32,18 @@ public class VkAudioModel {
                 callback.failure(error);
             }
         });
+
+        vkService.getAudio(uid, count, offset, new VkCallback<VkTracksResponseRoot>() {
+            @Override
+            public void success(VkTracksResponseRoot data) {
+                callback.success(data.getResponse().getTracks());
+            }
+
+            @Override
+            public void failure(VkError error) {
+                callback.failure(error);
+            }
+        });
     }
 
     public void getVkGroupAudio(long gid, int count, int offset, final VkSimpleCallback<List<VkTrack>> callback) {

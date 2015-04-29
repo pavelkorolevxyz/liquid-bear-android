@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -64,8 +65,10 @@ public class AuthActivity extends TrackedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         setTitle(R.string.authorizations);
-        firstStart = getIntent().getBooleanExtra(Constants.FIRST_START, false);
+        firstStart = getIntent().getBooleanExtra(Constants.SHOW_AUTHSCREEN_AUTO, false);
         initViewPager();
         initUi();
         initListeners();

@@ -17,12 +17,12 @@ public abstract class VkCallback<T extends VkResponse> implements Callback<T> {
         }
     }
 
-    public abstract void success(T data);
-
-    public abstract void failure(VkError error);
-
     @Override
     public void failure(RetrofitError error) {
         failure(new VkError());
     }
+
+    public abstract void success(T data);
+
+    public abstract void failure(VkError error);
 }

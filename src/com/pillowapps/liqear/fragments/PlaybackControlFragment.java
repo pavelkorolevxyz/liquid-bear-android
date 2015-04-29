@@ -17,16 +17,27 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 
-public class PlaybackControlFragment extends Fragment {
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
-    private ImageButton playPauseButton;
-    private SeekBar seekBar;
-    private TextView timeTextView;
-    private TextView timeDurationTextView;
-    private ImageButton nextButton;
-    private ImageButton prevButton;
-    private ImageButton shuffleButton;
-    private ImageButton repeatButton;
+public class PlaybackControlFragment extends Fragment {
+    @InjectView(R.id.play_pause_button_playback_tab)
+    protected ImageButton playPauseButton;
+    @InjectView(R.id.seek_bar_playback_tab)
+    protected SeekBar seekBar;
+    @InjectView(R.id.time_text_view_playback_tab)
+    protected TextView timeTextView;
+    @InjectView(R.id.time_inverted_text_view_playback_tab)
+    protected TextView timeDurationTextView;
+    @InjectView(R.id.next_button_playback_tab)
+    protected ImageButton nextButton;
+    @InjectView(R.id.prev_button_playback_tab)
+    protected ImageButton prevButton;
+    @InjectView(R.id.shuffle_button_playback_tab)
+    protected ImageButton shuffleButton;
+    @InjectView(R.id.repeat_button_playback_tab)
+    protected ImageButton repeatButton;
+
     private MainActivity mainActivity;
 
     @Override
@@ -34,15 +45,8 @@ public class PlaybackControlFragment extends Fragment {
                              Bundle savedInstanceState) {
         mainActivity = (MainActivity) getActivity();
         mainActivity.init();
-        View v = inflater.inflate(R.layout.playback_controls_fragment_layout, null);
-        playPauseButton = (ImageButton) v.findViewById(R.id.play_pause_button_playback_tab);
-        seekBar = (SeekBar) v.findViewById(R.id.seek_bar_playback_tab);
-        timeTextView = (TextView) v.findViewById(R.id.time_text_view_playback_tab);
-        timeDurationTextView = (TextView) v.findViewById(R.id.time_inverted_text_view_playback_tab);
-        nextButton = (ImageButton) v.findViewById(R.id.next_button_playback_tab);
-        prevButton = (ImageButton) v.findViewById(R.id.prev_button_playback_tab);
-        shuffleButton = (ImageButton) v.findViewById(R.id.shuffle_button_playback_tab);
-        repeatButton = (ImageButton) v.findViewById(R.id.repeat_button_playback_tab);
+        View v = inflater.inflate(R.layout.playback_controls_fragment_layout, null, false);
+        ButterKnife.inject(this, v);
         initListeners();
         return v;
     }

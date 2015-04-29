@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModeListAdapter extends ArrayAdapter<Item> {
-    private List<DataSetObserver> observers = new ArrayList<DataSetObserver>();
+    private List<DataSetObserver> observers = new ArrayList<>();
     private LayoutInflater mInflater;
     private ModeItemsHelper helper;
 

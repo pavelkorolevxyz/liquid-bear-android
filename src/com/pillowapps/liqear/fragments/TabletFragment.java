@@ -313,15 +313,6 @@ public class TabletFragment extends Fragment {
         return listView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        ModeListAdapter adapter = mainActivity.getModeListFragment().getAdapter();
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
-    }
-
     public void clearFilter() {
         searchPlaylistEditText.setText("");
     }

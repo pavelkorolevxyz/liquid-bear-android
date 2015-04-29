@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="LiquidBearAppTheme" parent="AppTheme.Base21" />
-
-    <style name="AppTheme.Base21" parent="AppTheme.Base">
-        <item name="android:navigationBarColor">@color/primary_text</item>
-    </style>
+    <style name="LiquidBearAppTheme" parent="AppTheme.Base" />
 </resources>

@@ -16,12 +16,12 @@ public abstract class LastfmCallback<T extends LastfmResponse> implements Callba
         }
     }
 
-    public abstract void success(T data);
-
-    public abstract void failure(String error);
-
     @Override
     public void failure(RetrofitError error) {
         failure(error.getMessage());
     }
+
+    public abstract void success(T data);
+
+    public abstract void failure(String error);
 }

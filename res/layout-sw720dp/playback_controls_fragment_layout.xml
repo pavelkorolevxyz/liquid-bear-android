@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:id="@+id/relativeLayout">
+        android:id="@+id/relativeLayout"
+        android:background="@color/accent_mono">
 
         <ImageButton
             android:id="@+id/repeat_button_playback_tab"

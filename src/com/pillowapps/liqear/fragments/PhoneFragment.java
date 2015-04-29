@@ -438,8 +438,8 @@ public class PhoneFragment extends Fragment {
         repeatButton.setImageResource(Utils.getRepeatButtonImage());
 
         Playlist playlist = new PlaylistModel().getPlaylist();
+        if (playlist == null || playlist.getTracks().size() == 0) return;
         Timeline.getInstance().setPlaylist(playlist);
-        if (Timeline.getInstance().getPlaylistTracks().size() == 0) return;
 
         List<Track> tracks = playlist.getTracks();
 

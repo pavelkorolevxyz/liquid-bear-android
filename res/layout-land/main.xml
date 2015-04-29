@@ -16,5 +16,6 @@
             android:layout_height="match_parent"
             tools:layout="@layout/handset_fragment_layout">
     </fragment>
+
     <include layout="@layout/indeterminate_progress_bar"/>
 </RelativeLayout>

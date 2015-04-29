@@ -41,6 +41,7 @@ public class Timeline {
     private Album currentAlbum;
     private Album previousAlbum;
 
+    private boolean playlistChanged = false;
 
     private Timeline() {
     }
@@ -176,5 +177,17 @@ public class Timeline {
 
     public LinkedList<Integer> getQueueIndexes() {
         return queueIndexes;
+    }
+
+    public boolean isPlaylistChanged() {
+        return playlistChanged;
+    }
+
+    public void clearQueue() {
+        queueIndexes.clear();
+    }
+
+    public void clearPreviousIndexes() {
+        previousTracksIndexes.clear();
     }
 }
