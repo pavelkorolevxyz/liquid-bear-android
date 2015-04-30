@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
@@ -16,7 +17,7 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_below="@id/toolbar"
-        android:layout_above="@+id/playback_controls_frame">
+        android:layout_above="@+id/playback_controls">
 
         <fragment
             android:id="@+id/menu_frame"
@@ -28,23 +29,14 @@
             android:layout_alignParentBottom="true"
             android:name="com.pillowapps.liqear.fragments.ModeListFragment" />
 
-        <FrameLayout
-            android:id="@+id/content_frame"
-            android:layout_width="0dp"
+        <fragment
+            android:id="@+id/tablet_fragment"
+            android:layout_toRightOf="@id/menu_frame"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/menu_frame"
-            android:layout_alignParentRight="true" />
-
-        <FrameLayout
-            android:id="@+id/right_frame"
-            android:visibility="gone"
-            android:background="@color/almost_black"
-            android:paddingRight="1dp"
-            android:layout_width="@dimen/behind_width_right"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_gravity="start"
+            android:name="com.pillowapps.liqear.fragments.TabletFragment"
+            tools:layout="@layout/tablet_fragment_layout" />
     </RelativeLayout>
 
     <fragment
@@ -52,7 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:name="com.pillowapps.liqear.fragments.PlaybackControlFragment" />
+        android:name="com.pillowapps.liqear.fragments.PlaybackControlFragment"
+        tools:layout="@layout/playback_controls_fragment_layout" />
 
     <include layout="@layout/indeterminate_progress_bar" />
 </RelativeLayout>

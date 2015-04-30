@@ -81,10 +81,13 @@ public class TabletFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.tablet_fragment_layout, null);
         mainActivity = (MainActivity) getActivity();
-        initUi(v);
+        return v;
+    }
+
+    public void init(){
+        initUi(getView());
         initListeners();
         restorePreviousState();
-        return v;
     }
 
     private void initUi(View v) {

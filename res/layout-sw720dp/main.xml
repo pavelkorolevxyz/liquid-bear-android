@@ -18,29 +18,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- The main content view -->
-        <FrameLayout
-            android:id="@+id/content_frame"
-            android:background="#fff"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:layout_above="@+id/playback_controls_frame" />
-
         <fragment
             android:id="@+id/navigation_drawer"
-            android:layout_above="@+id/playback_controls_frame"
             android:layout_width="@dimen/behind_width"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:name="com.pillowapps.liqear.fragments.ModeListFragment"
             tools:layout="@layout/menu_frame" />
 
-        <fragment
-            android:id="@+id/playback_controls"
+        <!-- The main content view -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:name="com.pillowapps.liqear.fragments.PlaybackControlFragment" />
+            android:layout_height="match_parent">
+
+            <fragment
+                android:id="@+id/tablet_fragment"
+                android:layout_above="@+id/playback_controls"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:name="com.pillowapps.liqear.fragments.TabletFragment"
+                tools:layout="@layout/tablet_fragment_layout" />
+
+            <fragment
+                android:id="@+id/playback_controls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:name="com.pillowapps.liqear.fragments.PlaybackControlFragment"
+                tools:layout="@layout/playback_controls_fragment_layout" />
+        </RelativeLayout>
 
     </android.support.v4.widget.DrawerLayout>
 

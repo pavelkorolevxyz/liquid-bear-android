@@ -20,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -104,7 +105,6 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
     private ProgressDialog finalProgress;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
-    private boolean tabletMode = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,10 +118,6 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         }
         setContentView(R.layout.main);
 
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setTitle(R.string.app_name);
-//        actionBar.setDisplayShowTitleEnabled(true);
-
         AppRate.with(this)
                 .theme(AppRateTheme.DARK)
                 .debug(BuildConfig.DEBUG)
@@ -130,7 +126,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                 .retryPolicy(RetryPolicy.EXPONENTIAL)
                 .checkAndShow();
 
-        tabletMode = findViewById(R.id.tablet_layout) != null;
+        boolean tabletMode = findViewById(R.id.tablet_layout) != null;
         if (tabletMode) {
             initTabletLayout();
         } else {
@@ -170,7 +166,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
 
         playbackControlFragment = (PlaybackControlFragment)
                 getSupportFragmentManager().findFragmentById(R.id.playback_controls);
-        
+
         modeListFragment = (ModeListFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -192,15 +188,9 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
             toggle.syncState();
         }
 
-
-        if (tabletFragment == null) {
-            tabletFragment = new TabletFragment();
-        }
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.content_frame, tabletFragment)
-                .commit();
+        tabletFragment = (TabletFragment)
+                getSupportFragmentManager().findFragmentById(R.id.tablet_fragment);
+//        tabletFragment.init();
     }
 
     @Override
@@ -301,10 +291,10 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                 modeListAdapter.notifyChanges();
                 fixed = true;
             } else {
-//                if (getSlidingMenu().isMenuShowing()) {
-//                    getSlidingMenu().showContent(true);
-//                    return;
-//                }
+                if (drawerLayout != null && drawerLayout.isDrawerOpen(Gravity.START | Gravity.LEFT)) {
+                    drawerLayout.closeDrawers();
+                    return;
+                }
             }
         }
         if (fixed) return;
@@ -322,7 +312,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home: {
-//                if (getSlidingMenu() != null) toggle();
+                if (toggle != null) toggle.onOptionsItemSelected(item);
             }
             return true;
             case R.id.photo_artist_button: {
