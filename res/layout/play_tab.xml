@@ -5,6 +5,10 @@
     android:id="@+id/lowest_layout"
     android:orientation="vertical">
 
+    <include
+        layout="@layout/lb_toolbar"
+        android:id="@+id/toolbar" />
+
     <ImageView
         android:id="@+id/artist_image_view_headset"
         android:layout_width="match_parent"
@@ -15,7 +19,7 @@
         android:contentDescription="@string/artist_image"
         android:layout_above="@+id/bottom_combined_layout"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
+        android:layout_below="@+id/toolbar" />
 
     <View
         android:layout_width="wrap_content"
@@ -23,10 +27,10 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/fade_to_black_gradient"
         android:id="@+id/view"
-        android:layout_alignParentTop="true"
         android:layout_above="@+id/bottom_combined_layout"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/toolbar" />
 
     <TextView
         android:id="@+id/time_plate_text_view_playback_tab"

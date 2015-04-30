@@ -38,6 +38,7 @@ import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.events.ExitEvent;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
@@ -140,9 +141,9 @@ public class MusicService extends Service implements
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                             CompatIcs.registerRemote(MusicService.this, manager);
-                            if (AudioTimeline.getCurrentTrack() != null) {
+                            if (Timeline.getInstance().getCurrentTrack() != null) {
                                 CompatIcs.updateRemote(MusicService.this,
-                                        AudioTimeline.getCurrentTrack());
+                                        Timeline.getInstance().getCurrentTrack());
                             }
                         } else {
                             MediaButtonReceiver.registerMediaButton(MusicService.this);
@@ -173,7 +174,7 @@ public class MusicService extends Service implements
                 .getSystemService(Context.WIFI_SERVICE);
         wifiLock = wifimanager.createWifiLock("player_on");
         manager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        final Track currentTrack = AudioTimeline.getCurrentTrack();
+        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             CompatIcs.registerRemote(this, manager);
             if (currentTrack != null) {
@@ -384,7 +385,8 @@ public class MusicService extends Service implements
     }
 
     private void exit() {
-        sendCallback(EXIT_CALLBACK);
+//        sendCallback(EXIT_CALLBACK);
+        LBApplication.bus.post(new ExitEvent());
         stopSelf();
     }
 
@@ -502,15 +504,15 @@ public class MusicService extends Service implements
     private void saveTrackState() {
         SharedPreferences.Editor editor = PreferencesManager.getPreferences().edit();
         final Track currentTrack = AudioTimeline.getCurrentTrack();
-        if (AudioTimeline.getPlaylist() != null
-                && AudioTimeline.getPlaylist().size() != 0
+        if (Timeline.getInstance().getPlaylistTracks() != null
+                && Timeline.getInstance().getPlaylistTracks().size() != 0
                 && currentTrack != null) {
             editor.putString(Constants.ARTIST, currentTrack.getArtist());
             editor.putString(Constants.TITLE, currentTrack.getTitle());
             editor.putInt(Constants.DURATION, currentTrack
                     .getDuration());
         }
-        editor.putInt(Constants.CURRENT_INDEX, AudioTimeline.getCurrentIndex());
+        editor.putInt(Constants.CURRENT_INDEX, Timeline.getInstance().getIndex());
         editor.apply();
     }
 
@@ -558,8 +560,8 @@ public class MusicService extends Service implements
     }
 
     public void play(int position) {
-        AudioTimeline.setCurrentIndex(position);
-        AudioTimeline.setPlaying(true);
+        Timeline.getInstance().setIndex(position);
+//        Timeline.getInstance().setPlaying(true);
         urlNumber = 0;
         play(true);
     }
@@ -1329,7 +1331,7 @@ public class MusicService extends Service implements
                         Intent intent = new Intent();
                         intent.setAction(Constants.ACTION_SERVICE);
                         intent.putExtra(Constants.CALLBACK_TYPE, ALBUM_INFO_CALLBACK);
-                        AudioTimeline.setCurrentAlbum(album);
+                        Timeline.getInstance().setCurrentAlbum(album);
                         new LastfmAlbumModel().getCover(album, new CompletionCallback() {
                             @Override
                             public void onCompleted() {
@@ -1342,7 +1344,7 @@ public class MusicService extends Service implements
                         updateWidgets();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                             CompatIcs.updateRemote(MusicService.this,
-                                    AudioTimeline.getCurrentTrack());
+                                    Timeline.getInstance().getCurrentTrack());
                         }
                     }
 

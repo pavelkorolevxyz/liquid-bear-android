@@ -16,6 +16,10 @@ public class Playlist {
         // No operations.
     }
 
+    public Playlist(List<Track> tracks) {
+        this.tracks = tracks;
+    }
+
     @Override
     public String toString() {
         return "Playlist [title=" + title + ", tracks=" + tracks + ", pid=" + pid + "]";

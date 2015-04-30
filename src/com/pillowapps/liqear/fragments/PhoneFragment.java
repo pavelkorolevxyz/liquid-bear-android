@@ -208,6 +208,7 @@ public class PhoneFragment extends Fragment {
         StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
         modeGridView.setOnItemClickListener(new ModeClickListener(mainActivity));
         modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
+        modeGridView.setAdapter(mainActivity.getModeAdapter());
     }
 
     private void showTutorial() {

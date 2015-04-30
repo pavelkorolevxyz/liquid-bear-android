@@ -11,9 +11,11 @@ import com.pillowapps.liqear.activities.SearchActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmTagViewerActivity;
 import com.pillowapps.liqear.activities.TrackedActivity;
 import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
+import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
@@ -63,7 +65,7 @@ public class ResultActivity extends TrackedActivity {
         data.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         data.putExtra(Constants.ACTION_ENUM, MainActivityStartEnum.PLAY_TRACKS);
         data.putExtra(Constants.POSITION_TO_PLAY, position);
-        AudioTimeline.setPlaylist(tracks);
+        Timeline.getInstance().setPlaylist(new Playlist(tracks));
         setResult(RESULT_OK, data);
         finish();
     }

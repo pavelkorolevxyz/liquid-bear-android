@@ -4,6 +4,10 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+    <include
+        layout="@layout/lb_toolbar"
+        android:id="@+id/toolbar" />
+
     <com.mobeta.android.dslv.DragSortListView
         android:id="@+id/playlist_list_view_playlist_tab"
         dslv:drag_handle_id="@+id/grabber_list_item"
@@ -24,7 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
-        android:id="@+id/search_layout">
+        android:id="@+id/search_layout"
+        android:layout_below="@+id/toolbar">
 
         <EditText
             android:id="@+id/search_edit_text_playlist_tab"

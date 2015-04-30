@@ -64,7 +64,6 @@ public class ModeListFragment extends ListFragment {
         }
     }
 
-
     public boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }

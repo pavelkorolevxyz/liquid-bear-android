@@ -1402,7 +1402,6 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
         }
 
         private class ViewHolder {
-
             TextView textView;
             TextView secondTextView;
             TextView positionTextView;

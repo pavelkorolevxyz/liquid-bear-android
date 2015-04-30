@@ -10,10 +10,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.widget.DrawerLayout;
@@ -134,28 +132,12 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         }
 
         ButterKnife.inject(this);
-//        startMusicService();
+        startMusicService();
     }
 
     private void initPhoneLayout() {
         phoneFragment = (PhoneFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.handset_fragment);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            int navBarHeight = getNavigationBarHeight();
-            findViewById(R.id.main_layout).setPadding(0, 0, 0, navBarHeight);
-            View menuFrame = findViewById(R.id.menu_frame);
-            if (menuFrame != null) {
-                menuFrame.setPadding(0, 0, 0, navBarHeight);
-            }
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            int navBarWidth = getNavigationBarHeight();
-            findViewById(R.id.main_layout).setPadding(0, 0, navBarWidth, 0);
-            View menuFrame = findViewById(R.id.menu_frame);
-            if (menuFrame != null) {
-                menuFrame.setPadding(0, 0, navBarWidth, 0);
-            }
-        }
     }
 
     private void initTabletLayout() {
@@ -190,7 +172,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
 
         tabletFragment = (TabletFragment)
                 getSupportFragmentManager().findFragmentById(R.id.tablet_fragment);
-//        tabletFragment.init();
+        tabletFragment.init();
     }
 
     @Override
@@ -213,22 +195,10 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         super.onSaveInstanceState(outState);
     }
 
-    private int getNavigationBarHeight() {
-        Resources resources = getResources();
-
-        int resourceId = resources.getIdentifier(
-                getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
-                        "navigation_bar_height" : "navigation_bar_width",
-                "dimen", "android");
-        if (resourceId > 0) {
-            return resources.getDimensionPixelSize(resourceId);
-        }
-        return 0;
-    }
-
     public void init() {
         playlistItemsAdapter = new PlaylistItemsAdapter(MainActivity.this);
         modeAdapter = new ModeAdapter(MainActivity.this);
+        Timber.d(modeAdapter.getValues().toString());
     }
 
     public void restorePreviousState() {
@@ -853,7 +823,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
     }
 
     private void startMusicService() {
-        AudioTimeline.setQueue(new LinkedList<Integer>());
+        Timeline.getInstance().clearQueue();
         ProgressDialog progress = null;
         try {
             progress = ProgressDialog.show(MainActivity.this, null, getString(R.string.wait), true);
@@ -864,8 +834,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         finalProgress = progress;
         serviceConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
-                MusicService.LocalBinder binder =
-                        (MusicService.LocalBinder) service;
+                MusicService.LocalBinder binder = (MusicService.LocalBinder) service;
                 musicService = binder.getService();
                 if (isTablet()) {
                     tabletFragment.setServiceConnected();
@@ -873,7 +842,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                     phoneFragment.setServiceConnected();
                 }
                 setVolumeControlStream(AudioManager.STREAM_MUSIC);
-                if (AudioTimeline.isStateActive()) musicService.showTrackInNotification();
+//                if (AudioTimeline.isStateActive()) musicService.showTrackInNotification();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
