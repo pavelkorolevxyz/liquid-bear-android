@@ -2,7 +2,7 @@ package com.pillowapps.liqear.models.lastfm;
 
 import android.graphics.Bitmap;
 
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;
@@ -64,7 +64,7 @@ public class LastfmAlbumModel {
 
     public void getCover(final Album album, final CompletionCallback callback) {
         if (album == null) {
-            AudioTimeline.setCurrentAlbumBitmap(null);
+            Timeline.getInstance().setAlbumCoverBitmap(null);
             callback.onCompleted();
             return;
         }
@@ -81,7 +81,7 @@ public class LastfmAlbumModel {
 
             @Override
             public void onLoadingComplete(Bitmap bitmap) {
-                AudioTimeline.setCurrentAlbumBitmap(bitmap);
+                Timeline.getInstance().setAlbumCoverBitmap(bitmap);
                 callback.onCompleted();
             }
 

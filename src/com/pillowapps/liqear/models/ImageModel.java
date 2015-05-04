@@ -13,7 +13,7 @@ import com.pillowapps.liqear.network.ImageLoadingListener;
 
 public class ImageModel {
     private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc()
+            .cacheOnDisk(true)
             .bitmapConfig(Bitmap.Config.RGB_565)
             .displayer(new FadeInBitmapDisplayer(500))
             .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)

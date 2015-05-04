@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistManager;
@@ -211,7 +211,7 @@ public class PlaylistsActivity extends ResultActivity {
                             adapter.notifyDataSetChanged();
                         } else {
                             long pid = PlaylistManager.getInstance().addPlaylist(title,
-                                    AudioTimeline.getPlaylist());
+                                    Timeline.getInstance().getPlaylistTracks());
                             if (pid != -1) {
                                 ((List<Playlist>) adapter.getValues()).add(0,
                                         new Playlist(pid, title));

@@ -45,11 +45,11 @@ import com.pillowapps.liqear.adapters.PhoneFragmentAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.components.ActivityResult;
 import com.pillowapps.liqear.components.ArtistTrackComparator;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
+import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkError;
@@ -66,6 +66,7 @@ import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.PlayingState;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
@@ -77,7 +78,6 @@ import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -269,7 +269,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         }
         if (fixed) return;
         if (PreferencesManager.getPreferences().getBoolean("exit_anyway", false)
-                || !AudioTimeline.isStateActive()) {
+                || Timeline.getInstance().getPlayingState() == PlayingState.DEFAULT) {
             destroy();
         } else {
             moveTaskToBack(true);
@@ -278,7 +278,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Track currentTrack = AudioTimeline.getCurrentTrack();
+        Track currentTrack = Timeline.getInstance().getCurrentTrack();
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home: {
@@ -316,7 +316,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
             return true;
             case R.id.next_url_button: {
                 if (currentTrack == null) return true;
-                if (AudioTimeline.getCurrentTrack() != null
+                if (Timeline.getInstance().getCurrentTrack() != null
                         && Timeline.getInstance().getCurrentTrack().isLocal()) {
                     Toast.makeText(MainActivity.this, R.string.track_local,
                             Toast.LENGTH_SHORT).show();
@@ -543,12 +543,12 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.share_dialog_layout);
         dialog.setTitle(R.string.share_track);
-        final Track currentTrack = AudioTimeline.getCurrentTrack();
+        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
         ImageButton vkButton = (ImageButton) dialog.findViewById(R.id.vk_button);
         Button otherButton = (Button) dialog.findViewById(R.id.other_button);
         Button cancelButton = (Button) dialog.findViewById(R.id.cancel_button);
         String template = PreferencesManager.getPreferences().getString(Constants.SHARE_FORMAT, getString(R.string.listening_now));
-        final Album album = AudioTimeline.getAlbum();
+        final Album album = Timeline.getInstance().getCurrentAlbum();
         String artist = "";
         String trackTitle = "";
         String albumTitle = "";
@@ -605,12 +605,13 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
 
 
     public void removeTrack(int position) {
-        if (position < AudioTimeline.getCurrentIndex()) {
-            AudioTimeline.setCurrentIndex(AudioTimeline.getCurrentIndex() - 1);
-        } else if (position == AudioTimeline.getCurrentIndex()) {
-            AudioTimeline.setStillLastPlaylist(true);
+        int index = Timeline.getInstance().getIndex();
+        if (position < index) {
+            Timeline.getInstance().setIndex(index - 1);
+        } else if (position == index) {
+            Timeline.getInstance().setPlaylistChanged(false);
         }
-        AudioTimeline.getPlaylist().remove(position);
+        Timeline.getInstance().getPlaylistTracks().remove(position);
         updateAdapter();
         changePlaylistWithoutTrackChange();
     }
@@ -620,22 +621,23 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
     }
 
     public void updateAdapter() {
-        List<Track> playlist = AudioTimeline.getPlaylist();
+        List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
         playlistItemsAdapter.setValues(playlist);
     }
 
     private void changePlaylist(int position, boolean play) {
-        AudioTimeline.getQueue().clear();
+        Timeline.getInstance().clearQueue();
         setRealPositions();
-        AudioTimeline.clearPreviousList();
+        Timeline.getInstance().clearPreviousIndexes();
         if (musicService != null) {
-            musicService.pause(true);
+            musicService.pause();
         }
-        if (AudioTimeline.getPlaylist().size() > 0) {
+        List<Track> tracks = Timeline.getInstance().getPlaylistTracks();
+        if (tracks.size() > 0) {
             if (play) {
                 getListView().performItemClick(getPlaylistItemsAdapter().getView(position, null, null), position, position);
             }
-            PlaylistManager.getInstance().saveUnsavedPlaylist(AudioTimeline.getPlaylist());
+            PlaylistManager.getInstance().saveUnsavedPlaylist(tracks);
         }
         if (!isTablet()) phoneFragment.changeViewPagerItem(0);
     }
@@ -644,15 +646,15 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         if (playlistItemsAdapter == null) return;
         List<Track> tracks = new ArrayList<>(playlistItemsAdapter.getValues());
         Collections.sort(tracks, new ArtistTrackComparator());
-        AudioTimeline.setPlaylist(tracks);
+        Timeline.getInstance().setPlaylist(new Playlist(tracks));
         updateAdapter();
-        AudioTimeline.setStillLastPlaylist(true);
+        Timeline.getInstance().setPlaylistChanged(false);
         changePlaylistWithoutTrackChange();
     }
 
     private void findCurrentTrack() {
-        int currentIndex = AudioTimeline.getCurrentIndex();
-        if (currentIndex >= 0 && currentIndex < AudioTimeline.getPlaylistSize()) {
+        int currentIndex = Timeline.getInstance().getIndex();
+        if (currentIndex >= 0 && currentIndex < Timeline.getInstance().getPlaylistTracks().size()) {
             getListView().setSelection(currentIndex);
         }
     }
@@ -661,18 +663,18 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         if (playlistItemsAdapter == null) return;
         List<Track> tracks = new ArrayList<>(playlistItemsAdapter.getValues());
         Collections.shuffle(tracks);
-        AudioTimeline.setPlaylist(tracks);
+        Timeline.getInstance().setPlaylist(new Playlist(tracks));
         updateAdapter();
-        AudioTimeline.setStillLastPlaylist(true);
+        Timeline.getInstance().setPlaylistChanged(false);
         changePlaylistWithoutTrackChange();
     }
 
     private void fixateSearchResult() {
         if (playlistItemsAdapter == null) return;
-        AudioTimeline.setPlaylist(new ArrayList<>(playlistItemsAdapter.getValues()));
+        Timeline.getInstance().setPlaylist(new Playlist(playlistItemsAdapter.getValues()));
         updateAdapter();
         clearSearch();
-        AudioTimeline.clearPreviousList();
+        Timeline.getInstance().clearPreviousIndexes();
         changePlaylist();
     }
 
@@ -707,7 +709,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
     }
 
     private void openVideo(Track track) {
-        musicService.pause(true);
+        musicService.pause();
         try {
             Intent intent = new Intent(Intent.ACTION_SEARCH);
             intent.setPackage("com.google.android.youtube");
@@ -727,7 +729,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
     private void clearTitles() {
         String regexp = "[^\\w\\s\\?!&#\\-'\\(\\[\\)\\.,:/]+";
         String regexpBrackets = "\\(((?![^)]*(ft.|live|remix|cover|feat)).*?)\\)";
-        List<Track> playlist = AudioTimeline.getPlaylist();
+        List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
         if (playlist == null) return;
         for (int i = 0; i < playlist.size(); i++) {
             Track track = playlist.get(i);
@@ -781,7 +783,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         mainMenu = menu;
         if (isTablet()) {
             int menuLayout = R.menu.tablet_menu_no_track;
-            if (AudioTimeline.hasCurrentTrack()) {
+            if (Timeline.getInstance().getCurrentTrack() != null) {
                 menuLayout = R.menu.tablet_menu;
                 if (Timeline.getInstance().getCurrentTrack().isLoved()) {
                     menuLayout = R.menu.tablet_menu_loved;
@@ -792,7 +794,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
             switch (phoneFragment.getCurrentItem()) {
                 case PhoneFragmentAdapter.PLAY_TAB_INDEX: {
                     int menuLayout = R.menu.menu_play_tab_no_current_track;
-                    if (AudioTimeline.hasCurrentTrack()) {
+                    if (Timeline.getInstance().getCurrentTrack() != null) {
                         menuLayout = R.menu.menu_play_tab;
                         if (Timeline.getInstance().getCurrentTrack().isLoved()) {
                             menuLayout = R.menu.menu_play_tab_loved;
@@ -884,7 +886,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                 openLyrics(track);
                 break;
             case 2:
-                AudioTimeline.getQueue().add(info.position);
+                Timeline.getInstance().queueTrack(info.position);
                 updateView(Arrays.asList(info.position));
                 break;
             case 3:
@@ -905,7 +907,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                 removeTrack(info.position);
                 break;
             case 5: //Add to...
-                final Track targetTrack = AudioTimeline.getTrack(info.position);
+                final Track targetTrack = Timeline.getInstance().getPlaylistTracks().get(info.position);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle(R.string.choose_target).setItems(R.array.add_targets,
                         new DialogInterface.OnClickListener() {
@@ -1022,8 +1024,9 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                 track.setTitle(title);
                 track.setArtist(artist);
                 updateView(Arrays.asList(position));
-                if (AudioTimeline.getPlaylist().size() > 0) {
-                    PlaylistManager.getInstance().saveUnsavedPlaylist(AudioTimeline.getPlaylist());
+                List<Track> playlistTracks = Timeline.getInstance().getPlaylistTracks();
+                if (playlistTracks.size() > 0) {
+                    PlaylistManager.getInstance().saveUnsavedPlaylist(playlistTracks);
                 }
                 dialog.dismiss();
             }
@@ -1091,7 +1094,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                         int positionToPlay = 0;
                         List<Track> trackList = Converter.convertLastfmTrackList(tracks);
                         if (!isTablet()) phoneFragment.changeViewPagerItem(0);
-                        AudioTimeline.setPlaylist(trackList);
+                        Timeline.getInstance().setPlaylist(new Playlist(trackList));
                         updateAdapter();
                         changePlaylist(positionToPlay, true);
                         progressBar.setVisibility(View.GONE);
@@ -1115,7 +1118,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                         int positionToPlay = 0;
                         List<Track> trackList = Converter.convertLastfmTrackList(tracks);
                         if (!isTablet()) phoneFragment.changeViewPagerItem(0);
-                        AudioTimeline.setPlaylist(trackList);
+                        Timeline.getInstance().setPlaylist(new Playlist(trackList));
                         updateAdapter();
                         changePlaylist(positionToPlay, true);
                         progressBar.setVisibility(View.GONE);
@@ -1155,7 +1158,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
 
     public void playPause() {
         startService(new Intent(MainActivity.this, MusicService.class)
-                .setAction(MusicService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION));
+                .setAction(MusicService.ACTION_PLAY_PAUSE));
     }
 
     public void invalidateMenu() {

@@ -12,7 +12,6 @@ import com.pillowapps.liqear.activities.viewers.LastfmTagViewerActivity;
 import com.pillowapps.liqear.activities.TrackedActivity;
 import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
 import com.pillowapps.liqear.entities.Playlist;
@@ -76,7 +75,7 @@ public class ResultActivity extends TrackedActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        AudioTimeline.addToPlaylist(tracks);
+        Timeline.getInstance().addToPlaylist(tracks);
     }
 
     public void trackLongClick(List<Track> tracks, int position) {
@@ -85,7 +84,7 @@ public class ResultActivity extends TrackedActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        AudioTimeline.addToPlaylist(tracks.get(position));
+        Timeline.getInstance().addToPlaylist(tracks.get(position));
     }
 
     public void trackLongClick(Track track) {
@@ -94,7 +93,7 @@ public class ResultActivity extends TrackedActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        AudioTimeline.addToPlaylist(track);
+        Timeline.getInstance().addToPlaylist(track);
     }
 
     public void saveAsPlaylist(List<Track> tracks) {

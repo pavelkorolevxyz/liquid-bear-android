@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
@@ -61,14 +61,14 @@ public class PlaybackControlFragment extends Fragment {
     private void initListeners() {
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AudioTimeline.toggleShuffle();
+                Timeline.getInstance().toggleShuffle();
                 shuffleButton.setImageResource(Utils.getShuffleButtonImage());
                 mainActivity.getMusicPlaybackService().updateWidgets();
             }
         });
         repeatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                AudioTimeline.toggleRepeat();
+                Timeline.getInstance().toggleRepeat();
                 repeatButton.setImageResource(Utils.getRepeatButtonImage());
                 mainActivity.getMusicPlaybackService().updateWidgets();
             }

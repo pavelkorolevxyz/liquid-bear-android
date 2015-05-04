@@ -1,9 +1,6 @@
 package com.pillowapps.liqear.activities;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,21 +14,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
-import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkLyrics;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.vk.VkLyricsModel;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
+import com.squareup.otto.Subscribe;
 
 public class TextActivity extends ResultActivity {
     public static final String ARTIST_NAME = "artist_name";
@@ -41,7 +38,6 @@ public class TextActivity extends ResultActivity {
     private Aim aim;
     private String googleRequest;
     private int lyricsNumber;
-    private ServiceBroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +65,6 @@ public class TextActivity extends ResultActivity {
                         .getInt(googleRequest, 0);
                 getTrackLyrics(new Track(artist, title), lyricsNumber);
                 progressBar.setVisibility(View.VISIBLE);
-
-                receiver = new ServiceBroadcastReceiver();
-                IntentFilter intentFilter = new IntentFilter();
-                intentFilter.addAction(Constants.ACTION_SERVICE);
-                registerReceiver(receiver, intentFilter);
-
                 break;
             case DISCLAIMER:
                 actionBar.setTitle(getResources().getString(R.string.disclaimer));
@@ -84,15 +74,6 @@ public class TextActivity extends ResultActivity {
                 actionBar.setTitle(getResources().getString(R.string.thanks_to));
                 textView.setText(getResources().getString(R.string.thanks_text));
                 break;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        try {
-            unregisterReceiver(receiver);
-        } catch (Exception ignored) {
         }
     }
 
@@ -178,7 +159,7 @@ public class TextActivity extends ResultActivity {
                 break;
             case ARTIST_INFO:
                 MenuItem item = menu.add(getResources().getString(R.string.search_google));
-                item.setIcon(getResources().getDrawable(android.R.drawable.ic_menu_search, null));
+                item.setIcon(getResources().getDrawable(android.R.drawable.ic_menu_search));
                 break;
             default:
                 break;
@@ -252,23 +233,13 @@ public class TextActivity extends ResultActivity {
         THANKS
     }
 
-    private class ServiceBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int callbackType = intent.getIntExtra("callback-type", -1);
-            switch (callbackType) {
-                case MusicPlaybackService.TRACK_INFO_CALLBACK:
-                    Track track = AudioTimeline.getCurrentTrack();
-                    googleRequest = track.getNotation();
-                    getSupportActionBar().setTitle(googleRequest);
-                    getTrackLyrics(track, PreferencesManager
-                            .getLyricsNumberPreferences().getInt(googleRequest, 0));
-                    progressBar.setVisibility(View.VISIBLE);
-                    break;
-                default:
-                    break;
-            }
-        }
-
+    @Subscribe
+    public void trackInfoEvent(TrackInfoEvent event) {
+        Track track = Timeline.getInstance().getCurrentTrack();
+        googleRequest = track.getNotation();
+        getSupportActionBar().setTitle(googleRequest);
+        getTrackLyrics(track, PreferencesManager
+                .getLyricsNumberPreferences().getInt(googleRequest, 0));
+        progressBar.setVisibility(View.VISIBLE);
     }
 }

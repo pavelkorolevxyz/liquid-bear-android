@@ -1,9 +1,6 @@
 package com.pillowapps.liqear.fragments;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -29,22 +26,36 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
-import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.adapters.ModeListAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
-import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
-import com.pillowapps.liqear.entities.RepeatMode;
-import com.pillowapps.liqear.entities.ShuffleMode;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Playlist;
+import com.pillowapps.liqear.entities.RepeatMode;
+import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.events.AlbumInfoEvent;
+import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
+import com.pillowapps.liqear.entities.events.BufferizationEvent;
+import com.pillowapps.liqear.entities.events.ExitEvent;
+import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
+import com.pillowapps.liqear.entities.events.PauseEvent;
+import com.pillowapps.liqear.entities.events.PlayEvent;
+import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
+import com.pillowapps.liqear.entities.events.PreparedEvent;
+import com.pillowapps.liqear.entities.events.ShowProgressEvent;
+import com.pillowapps.liqear.entities.events.TimeEvent;
+import com.pillowapps.liqear.entities.events.TrackInfoEvent;
+import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.PlayingState;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +73,11 @@ public class TabletFragment extends Fragment {
     public ImageButton repeatButton;
     private MainActivity mainActivity;
     private DragSortListView listView;
-    private ServiceBroadcastReceiver receiver;
     private EditText searchPlaylistEditText;
     private ImageButton clearEditTextButton;
     private ImageView artistImageView;
     private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc()
+            .cacheOnDisk(true)
             .bitmapConfig(Bitmap.Config.RGB_565)
             .displayer(new FadeInBitmapDisplayer(300))
             .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
@@ -84,7 +94,7 @@ public class TabletFragment extends Fragment {
         return v;
     }
 
-    public void init(){
+    public void init() {
         initUi(getView());
         initListeners();
         restorePreviousState();
@@ -128,10 +138,11 @@ public class TabletFragment extends Fragment {
         artistTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!AudioTimeline.hasCurrentTrack()) return;
+                Track currentTrack = Timeline.getInstance().getCurrentTrack();
+                if (currentTrack == null) return;
                 Intent artistInfoIntent = new Intent(mainActivity, LastfmArtistViewerActivity.class);
                 artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST,
-                        AudioTimeline.getCurrentTrack().getArtist());
+                        currentTrack.getArtist());
                 mainActivity.startActivityForResult(artistInfoIntent,
                         Constants.MAIN_REQUEST_CODE);
             }
@@ -143,7 +154,7 @@ public class TabletFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(mainActivity, LastfmAlbumViewerActivity.class);
-                        Album album = AudioTimeline.getAlbum();
+                        Album album = Timeline.getInstance().getCurrentAlbum();
                         if (album == null) return;
                         intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
                         intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
@@ -172,7 +183,7 @@ public class TabletFragment extends Fragment {
         listView.setFocusable(true);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                List<Track> playlist = AudioTimeline.getPlaylist();
+                List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
                 Track track = playlist.get(mainActivity.getPlaylistItemsAdapter()
                         .getItem(position).getRealPosition());
                 if (mainActivity.getPlaylistItemsAdapter().isEditMode()) {
@@ -196,19 +207,21 @@ public class TabletFragment extends Fragment {
             @Override
             public void drop(int from, int to) {
                 if (from == to) return;
-                List<Track> playlist = AudioTimeline.getPlaylist();
-                int currentIndex = AudioTimeline.getCurrentIndex();
+                List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
+                int currentIndex = Timeline.getInstance().getIndex();
+                int index = 0;
                 if (from == currentIndex) {
-                    AudioTimeline.setCurrentIndex(to);
+                    index = to;
                 } else if (from < to && currentIndex < to && currentIndex > from) {
-                    AudioTimeline.setCurrentIndex(currentIndex - 1);
+                    index = currentIndex - 1;
                 } else if (from > to && currentIndex < from && currentIndex > to) {
-                    AudioTimeline.setCurrentIndex(currentIndex + 1);
+                    index = currentIndex + 1;
                 } else if (to == currentIndex && currentIndex > from) {
-                    AudioTimeline.setCurrentIndex(currentIndex - 1);
+                    index = currentIndex - 1;
                 } else if (to == currentIndex && currentIndex < from) {
-                    AudioTimeline.setCurrentIndex(currentIndex + 1);
+                    index = currentIndex + 1;
                 }
+                Timeline.getInstance().setIndex(index);
                 Track item = playlist.get(from);
                 playlist.remove(from);
                 playlist.add(to, item);
@@ -268,45 +281,41 @@ public class TabletFragment extends Fragment {
             editor.putInt(Constants.CURRENT_BUFFER,
                     mainActivity.getMusicPlaybackService().getCurrentBuffer());
             editor.putBoolean(Constants.SHUFFLE_MODE_ON,
-                    AudioTimeline.getShuffleMode() == ShuffleMode.SHUFFLE);
+                    Timeline.getInstance().getShuffleMode() == ShuffleMode.SHUFFLE);
             editor.putBoolean(Constants.REPEAT_MODE_ON,
-                    AudioTimeline.getRepeatMode() == RepeatMode.REPEAT);
-            editor.putInt(Constants.CURRENT_INDEX, AudioTimeline.getCurrentIndex());
+                    Timeline.getInstance().getRepeatMode() == RepeatMode.REPEAT);
+            editor.putInt(Constants.CURRENT_INDEX, Timeline.getInstance().getIndex());
         }
         editor.apply();
     }
 
     private void saveTrackState() {
         SharedPreferences.Editor editor = PreferencesManager.getPreferences().edit();
-        final Track currentTrack = AudioTimeline.getCurrentTrack();
-        if (AudioTimeline.getPlaylist() != null
-                && AudioTimeline.getPlaylist().size() != 0
+        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        if (Timeline.getInstance().getPlaylistTracks() != null
+                && Timeline.getInstance().getPlaylistTracks().size() != 0
                 && currentTrack != null) {
             editor.putString(Constants.ARTIST, currentTrack.getArtist());
             editor.putString(Constants.TITLE, currentTrack.getTitle());
             editor.putInt(Constants.DURATION, currentTrack.getDuration());
         }
-        editor.putInt(Constants.CURRENT_INDEX, AudioTimeline.getCurrentIndex());
+        editor.putInt(Constants.CURRENT_INDEX, Timeline.getInstance().getIndex());
         editor.apply();
     }
 
     public void setServiceConnected() {
-        receiver = new ServiceBroadcastReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constants.ACTION_SERVICE);
-        mainActivity.registerReceiver(receiver, intentFilter);
-        if (AudioTimeline.getCurrentTrack() != null) {
-            playPauseButton.setImageResource(AudioTimeline.isPlaying() ?
+        boolean isPlaying = Timeline.getInstance().getPlayingState() == PlayingState.PLAYING;
+        if (Timeline.getInstance().getCurrentTrack() != null) {
+            playPauseButton.setImageResource(isPlaying ?
                     R.drawable.pause_button : R.drawable.play_button);
             playPauseButton.setEnabled(true);
             mainActivity.getMusicPlaybackService().startPlayProgressUpdater();
             seekBar.setEnabled(true);
             updateTime();
-            if (AudioTimeline.isStateActive())
+            if (isPlaying)
                 mainActivity.getMusicPlaybackService().showTrackInNotification();
 
         }
-        boolean isPlaying = AudioTimeline.isPlaying();
         if (isPlaying) {
             playPauseButton.setImageResource(R.drawable.pause_button);
         }
@@ -331,11 +340,11 @@ public class TabletFragment extends Fragment {
         repeatButton.setImageResource(Utils.getRepeatButtonImage());
 
         List<Track> tracks = PlaylistManager.getInstance().loadPlaylist();
-        AudioTimeline.setPlaylist(tracks);
-        if (AudioTimeline.getPlaylist().size() == 0) {
+        Timeline.getInstance().setPlaylist(new Playlist(tracks));
+        if (Timeline.getInstance().getPlaylistTracks().size() == 0) {
             return;
         }
-        tracks = AudioTimeline.getPlaylist();
+        tracks = Timeline.getInstance().getPlaylistTracks();
         SharedPreferences preferences = PreferencesManager.getPreferences();
         String artist = preferences.getString(Constants.ARTIST, "");
         String title = preferences.getString(Constants.TITLE, "");
@@ -358,112 +367,159 @@ public class TabletFragment extends Fragment {
             artistTextView.setText(Html.fromHtml(artist));
             titleTextView.setText(Html.fromHtml(title));
         }
-        AudioTimeline.setCurrentIndex(currentIndex);
-        if (currentIndex > AudioTimeline.getPlaylist().size()) {
+        Timeline.getInstance().setIndex(currentIndex);
+        if (currentIndex > Timeline.getInstance().getPlaylistTracks().size()) {
             position = 0;
         }
         if (!PreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
             position = 0;
         }
 
-        AudioTimeline.setCurrentPosition(position);
+        Timeline.getInstance().setTimePosition(position);
         mainActivity.restorePreviousState();
     }
 
-    private class ServiceBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int callbackType = intent.getIntExtra("callback-type", -1);
-            switch (callbackType) {
-                case MusicPlaybackService.TRACK_INFO_CALLBACK:
-                    Track track = AudioTimeline.getCurrentTrack();
-                    if (track == null) return;
-                    if (PreferencesManager.getPreferences()
-                            .getBoolean("scroll_to_current", false)) {
-                        listView.requestFocusFromTouch();
-                        listView.setSelection(AudioTimeline.getCurrentIndex());
-                    }
-                    AudioTimeline.setCurrentAlbum(null);
-                    track.setCurrent(true);
-                    artistTextView.setText(Html.fromHtml(track.getArtist()));
-                    titleTextView.setText(Html.fromHtml(track.getTitle()));
-                    List<Integer> listToUpdate = new ArrayList<Integer>(
-                            AudioTimeline.getPrevClickedItems());
-                    listToUpdate.addAll(AudioTimeline.getQueue());
-                    AudioTimeline.clearPrevClickedItems();
-                    mainActivity.updateView(listToUpdate);
-                    if (!Utils.isOnline()) {
-                        artistImageView.setImageResource(R.drawable.artist_placeholder);
-                        albumImageView.setImageDrawable(null);
-                        albumTextView.setVisibility(View.INVISIBLE);
-                    }
-                    break;
-                case MusicPlaybackService.PLAY_CALLBACK:
-                    playPauseButton.setImageResource(R.drawable.pause_button);
-                    break;
-                case MusicPlaybackService.PLAY_WITHOUT_ICON_CALLBACK:
-                    playPauseButton.setImageResource(R.drawable.play_button);
-                    break;
-                case MusicPlaybackService.PAUSE_CALLBACK:
-                    playPauseButton.setImageResource(R.drawable.play_button);
-                    break;
-                case MusicPlaybackService.PRAPARED_CALLBACK:
-                    updateTime();
-                    break;
-                case MusicPlaybackService.BUFFERIZATION_CALLBACK:
-                    seekBar.setSecondaryProgress(intent.getIntExtra("track-buffering", 0));
-                    break;
-                case MusicPlaybackService.UPDATE_POSITION_CALLBACK:
-                    updateTime();
-                    break;
-                case MusicPlaybackService.EXIT_CALLBACK:
-                    mainActivity.destroy();
-                    break;
-                case MusicPlaybackService.SHOW_PROGRESS_BAR:
-                    break;
-                case MusicPlaybackService.ARTIST_INFO_CALLBACK:
-                    if (PreferencesManager.getPreferences().getBoolean(
-                            Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                        String imageUrl = intent.getStringExtra(Constants.IMAGE_URL);
-                        AudioTimeline.setImageUrl(imageUrl);
-                        imageLoader.displayImage(imageUrl, artistImageView, options);
-                    }
-                    break;
-                case MusicPlaybackService.NO_URL_CALLBACK:
-                    break;
-                case MusicPlaybackService.INTERNET_STATE_CHANGE:
-                    mainActivity.getModeAdapter().notifyDataSetChanged();
-                    break;
-                case MusicPlaybackService.ALBUM_INFO_CALLBACK:
-                    Album album = AudioTimeline.getAlbum();
-                    if (album != null && !album.equals(AudioTimeline.getPreviousAlbum())) {
-                        String imageUrl = album.getImageUrl();
-                        if (imageUrl == null || !PreferencesManager.getPreferences()
-                                .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)
-                                ) {
-                            albumImageView.setVisibility(View.INVISIBLE);
-                        } else {
-                            albumImageView.setVisibility(View.VISIBLE);
-                            imageLoader.displayImage(imageUrl, albumImageView, options);
-                        }
-                        String title = album.getTitle();
-                        if (title == null) {
-                            albumTextView.setVisibility(View.INVISIBLE);
-                        } else {
-                            albumTextView.setVisibility(View.VISIBLE);
-                            albumTextView.setText(title);
-                        }
-                    }
-                    mainActivity.invalidateMenu();
-                    break;
-                case MusicPlaybackService.TIME_CALLBACK: {
-                    updateTime();
-                }
-                break;
-                default:
-                    break;
+
+    @Subscribe
+    public void trackInfoEvent(TrackInfoEvent event) {
+        Track track = Timeline.getInstance().getCurrentTrack();
+        if (track == null) return;
+        if (PreferencesManager.getPreferences()
+                .getBoolean("scroll_to_current", false)) {
+            listView.requestFocusFromTouch();
+            listView.setSelection(Timeline.getInstance().getIndex());
+        }
+        Timeline.getInstance().setCurrentAlbum(null);
+        track.setCurrent(true);
+        artistTextView.setText(Html.fromHtml(track.getArtist()));
+        titleTextView.setText(Html.fromHtml(track.getTitle()));
+        List<Integer> listToUpdate = new ArrayList<Integer>(
+                Timeline.getInstance().getPreviousTracksIndexes());
+        listToUpdate.addAll(Timeline.getInstance().getQueueIndexes());
+        Timeline.getInstance().clearPreviousIndexes();
+        mainActivity.updateView(listToUpdate);
+        if (!Utils.isOnline()) {
+            artistImageView.setImageResource(R.drawable.artist_placeholder);
+            albumImageView.setImageDrawable(null);
+            albumTextView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Subscribe
+    public void playEvent(PlayEvent event) {
+        playPauseButton.setImageResource(R.drawable.pause_button);
+    }
+
+    @Subscribe
+    public void pauseEvent(PauseEvent event) {
+        playPauseButton.setImageResource(R.drawable.play_button);
+    }
+
+    @Subscribe
+    public void artistInfoEvent(ArtistInfoEvent event) {
+        if (PreferencesManager.getPreferences().getBoolean(
+                Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+            if (PreferencesManager.getPreferences().getBoolean(
+                    Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                String imageUrl = event.getImageUrl();
+                Timeline.getInstance().setCurrentArtistImageUrl(imageUrl);
+                imageLoader.displayImage(imageUrl, artistImageView, options);
             }
         }
+    }
 
+    @Subscribe
+    public void albumInfoEvent(AlbumInfoEvent event) {
+        Album album = Timeline.getInstance().getCurrentAlbum();
+        if (album != null && !album.equals(Timeline.getInstance().getPreviousAlbum())) {
+            String imageUrl = album.getImageUrl();
+            if (imageUrl == null || !PreferencesManager.getPreferences()
+                    .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)
+                    ) {
+                albumImageView.setVisibility(View.INVISIBLE);
+            } else {
+                albumImageView.setVisibility(View.VISIBLE);
+                imageLoader.displayImage(imageUrl, albumImageView, options);
+            }
+            String title = album.getTitle();
+            if (title == null) {
+                albumTextView.setVisibility(View.INVISIBLE);
+            } else {
+                albumTextView.setVisibility(View.VISIBLE);
+                albumTextView.setText(title);
+            }
+        }
+        mainActivity.invalidateMenu();
+    }
+
+    @Subscribe
+    public void exitEvent(ExitEvent event) {
+        mainActivity.destroy();
+    }
+
+    @Subscribe
+    public void networkStateEvent(NetworkStateChangeEvent event) {
+        mainActivity.getModeAdapter().notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void preparedEvent(PreparedEvent event) {
+        updateTime();
+    }
+
+    @Subscribe
+    public void bufferizationEvent(BufferizationEvent event) {
+        seekBar.setSecondaryProgress(event.getBuffered());
+    }
+
+    @Subscribe
+    public void playWithoutIconEvent(PlayWithoutIconEvent event) {
+        playPauseButton.setImageResource(R.drawable.play_button);
+    }
+
+    @Subscribe
+    public void showProgressEvent(ShowProgressEvent event) {
+    }
+
+    @Subscribe
+    public void timeEvent(TimeEvent event) {
+        updateTime();
+    }
+
+    @Subscribe
+    public void updatePositionEvent(UpdatePositionEvent event) {
+        updateTime();
+    }
+
+    private void updatePaletteWithBitmap(Bitmap bitmap) {
+        //todo
+//        if (bitmap == null) {
+//            backLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono_dark));
+//            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono));
+//            return;
+//        }
+//        Palette.generateAsync(bitmap,
+//                new Palette.PaletteAsyncListener() {
+//                    @Override
+//                    public void onGenerated(Palette palette) {
+//                        Palette.Swatch backSwatch =
+//                                palette.getDarkMutedSwatch();
+//                        if (backSwatch == null) {
+//                            backLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono_dark));
+//                            return;
+//                        }
+//                        backLayout.setBackgroundColor(
+//                                backSwatch.getRgb());
+//
+//                        Palette.Swatch bottomSwatch =
+//                                palette.getDarkVibrantSwatch();
+//                        if (bottomSwatch == null) {
+//                            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono));
+//                            return;
+//                        }
+//                        bottomControlsLayout.setBackgroundColor(
+//                                bottomSwatch.getRgb());
+//                    }
+//                });
     }
 }

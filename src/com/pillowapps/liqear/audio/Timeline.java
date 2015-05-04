@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.audio;
 
+import android.graphics.Bitmap;
+
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.RepeatMode;
@@ -24,26 +26,29 @@ public class Timeline {
     private PlayingState playingState = PlayingState.DEFAULT;
     private int timePosition = 0;
     private int[] listeningsCount;
-
     private int maxListeningsCount;
     private LinkedList<Integer> queueIndexes = new LinkedList<>();
-
     private Stack<Integer> previousTracksIndexes = new Stack<>();
+
     private ShuffleMode shuffleMode = PreferencesManager.getPreferences()
             .getBoolean(Constants.SHUFFLE_MODE_ON, false)
             ? ShuffleMode.SHUFFLE
             : ShuffleMode.DEFAULT;
-
     private RepeatMode repeatMode = PreferencesManager.getPreferences()
             .getBoolean(Constants.REPEAT_MODE_ON, false)
             ? RepeatMode.REPEAT
             : RepeatMode.REPEAT_PLAYLIST;
+
     private Album currentAlbum;
     private Album previousAlbum;
+    private Bitmap albumCoverBitmap;
 
     private boolean playlistChanged = false;
 
+    private PlayingState playingStateBeforeCall = PlayingState.DEFAULT;
+
     private Timeline() {
+        // No operations.
     }
 
     public static Timeline getInstance() {
@@ -190,5 +195,37 @@ public class Timeline {
 
     public void clearPreviousIndexes() {
         previousTracksIndexes.clear();
+    }
+
+    public void addToPlaylist(List<Track> tracks) {
+        currentPlaylist.getTracks().addAll(tracks);
+    }
+
+    public void addToPlaylist(Track track) {
+        currentPlaylist.getTracks().add(track);
+    }
+
+    public Bitmap getAlbumCoverBitmap() {
+        return albumCoverBitmap;
+    }
+
+    public void setAlbumCoverBitmap(Bitmap albumCoverBitmap) {
+        this.albumCoverBitmap = albumCoverBitmap;
+    }
+
+    public void setPlaylistChanged(boolean playlistChanged) {
+        this.playlistChanged = playlistChanged;
+    }
+
+    public void addToPrevIndexes(int index) {
+        previousTracksIndexes.add(index);
+    }
+
+    public PlayingState getPlayingStateBeforeCall() {
+        return playingStateBeforeCall;
+    }
+
+    public void setPlayingStateBeforeCall(PlayingState playingStateBeforeCall) {
+        this.playingStateBeforeCall = playingStateBeforeCall;
     }
 }

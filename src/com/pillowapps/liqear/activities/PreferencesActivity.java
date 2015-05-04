@@ -16,7 +16,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.pillowapps.liqear.BuildConfig;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
+import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.helpers.AppUtils;
 
 public class PreferencesActivity extends PreferenceActivity {
@@ -61,8 +61,8 @@ public class PreferencesActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 startService(new Intent(LBApplication.getAppContext(),
-                        MusicPlaybackService.class)
-                        .setAction(MusicPlaybackService.CHANGE_SHAKE_PREFERENCE));
+                        MusicService.class)
+                        .setAction(MusicService.CHANGE_SHAKE_PREFERENCE));
                 return true;
             }
         });

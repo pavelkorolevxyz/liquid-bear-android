@@ -13,8 +13,8 @@ import android.widget.RemoteViews;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
-import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
+import com.pillowapps.liqear.audio.MusicService;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
@@ -34,7 +34,7 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
 
         final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-        Track track = AudioTimeline.getCurrentTrack();
+        Track track = Timeline.getInstance().getCurrentTrack();
         String artist;
         String title;
         SharedPreferences savePreferences = PreferencesManager.getSavePreferences();
@@ -56,24 +56,24 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
         int playButton = playing ? R.drawable.pause_button : R.drawable.play_button;
         views.setInt(R.id.play_pause, "setImageResource", playButton);
 
-        ComponentName service = new ComponentName(context, MusicPlaybackService.class);
+        ComponentName service = new ComponentName(context, MusicService.class);
 
-        Intent playPause = new Intent(MusicPlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
+        Intent playPause = new Intent(MusicService.ACTION_PLAY_PAUSE);
         playPause.setComponent(service);
         views.setOnClickPendingIntent(R.id.play_pause,
                 PendingIntent.getService(context, 0, playPause, 0));
 
-        Intent nextIntent = new Intent(MusicPlaybackService.ACTION_NEXT);
+        Intent nextIntent = new Intent(MusicService.ACTION_NEXT);
         nextIntent.setComponent(service);
         views.setOnClickPendingIntent(R.id.next,
                 PendingIntent.getService(context, 0, nextIntent, 0));
 
-        Intent prevIntent = new Intent(MusicPlaybackService.ACTION_PREV);
+        Intent prevIntent = new Intent(MusicService.ACTION_PREV);
         prevIntent.setComponent(service);
         views.setOnClickPendingIntent(R.id.prev,
                 PendingIntent.getService(context, 0, prevIntent, 0));
 
-        Intent closeIntent = new Intent(MusicPlaybackService.ACTION_CLOSE);
+        Intent closeIntent = new Intent(MusicService.ACTION_CLOSE);
         closeIntent.setComponent(service);
         views.setOnClickPendingIntent(R.id.force_close,
                 PendingIntent.getService(context, 0, closeIntent, 0));
@@ -83,7 +83,7 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.clicable_widget_part2, activity);
         views.setOnClickPendingIntent(R.id.clicable_widget_part3, activity);
 
-        Album albumFromTimeline = AudioTimeline.getAlbum();
+        Album albumFromTimeline = Timeline.getInstance().getCurrentAlbum();
         if (albumFromTimeline == null) {
             albumFromTimeline = new Album();
             String imageUrl = savePreferences.getString(Constants.WIDGET_ALBUM_IMAGE, null);
@@ -92,7 +92,7 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
             savePreferences.edit().putString(Constants.WIDGET_ALBUM_IMAGE,
                     albumFromTimeline.getImageUrl()).apply();
         }
-        Bitmap bitmap = AudioTimeline.getCurrentAlbumBitmap();
+        Bitmap bitmap = Timeline.getInstance().getAlbumCoverBitmap();
         if (bitmap == null) {
             views.setInt(R.id.album_cover_image_view, "setImageResource", R.drawable.lb_icon_white);
         } else {

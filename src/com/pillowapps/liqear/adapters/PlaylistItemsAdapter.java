@@ -11,7 +11,7 @@ import android.widget.Filter;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Track;
 
 import java.util.ArrayList;
@@ -96,10 +96,10 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         holder.artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
         holder.titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
 
-        holder.playImageView.setVisibility(!AudioTimeline.isStillLastPlaylist()
-                && AudioTimeline.getCurrentIndex() == realPosition ? View.VISIBLE : View.INVISIBLE);
+        holder.playImageView.setVisibility(!Timeline.getInstance().isPlaylistChanged()
+                && Timeline.getInstance().getIndex() == realPosition ? View.VISIBLE : View.INVISIBLE);
 
-        int queueIndex = AudioTimeline.getQueue().indexOf(realPosition);
+        int queueIndex = Timeline.getInstance().getQueueIndexes().indexOf(realPosition);
         holder.queueTextView.setText(queueIndex++ != -1 ? String.format("(%d)", queueIndex) : "");
         if (!editMode) {
             holder.grabber.setVisibility(View.GONE);

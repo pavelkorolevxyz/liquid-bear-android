@@ -9,8 +9,6 @@ import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
-import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
 import com.pillowapps.liqear.helpers.CompatFroyo;
 
 public class MediaButtonReceiver extends BroadcastReceiver {
@@ -31,45 +29,51 @@ public class MediaButtonReceiver extends BroadcastReceiver {
         if (event == null || isInCall(context)) {
             return false;
         }
+        Intent intent = null;
         int action = event.getAction();
-        final MusicPlaybackService musicPlaybackService = AudioTimeline.getMusicPlaybackService();
-        if (musicPlaybackService == null) return true;
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_HEADSETHOOK:
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
                 if (action == KeyEvent.ACTION_DOWN) {
                     long time = SystemClock.uptimeMillis();
                     if (time - sLastClickTime < DOUBLE_CLICK_DELAY) {
-                        musicPlaybackService.next();
+                        intent = new Intent(context, MusicService.class)
+                                .setAction(MusicService.ACTION_NEXT);
                     } else {
-                        musicPlaybackService.playPause();
+                        intent = new Intent(context, MusicService.class)
+                                .setAction(MusicService.ACTION_PLAY_PAUSE);
                     }
                     sLastClickTime = time;
                 }
                 break;
             case KeyEvent.KEYCODE_MEDIA_NEXT:
                 if (action == KeyEvent.ACTION_DOWN) {
-                    musicPlaybackService.next();
+                    intent = new Intent(context, MusicService.class)
+                            .setAction(MusicService.ACTION_NEXT);
                 }
                 break;
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                 if (action == KeyEvent.ACTION_DOWN) {
-                    musicPlaybackService.prev();
+                    intent = new Intent(context, MusicService.class)
+                            .setAction(MusicService.ACTION_PREV);
                 }
                 break;
             case KeyEvent.KEYCODE_MEDIA_PLAY:
                 if (action == KeyEvent.ACTION_DOWN) {
-                    musicPlaybackService.play();
+                    intent = new Intent(context, MusicService.class)
+                            .setAction(MusicService.ACTION_PLAY);
                 }
                 break;
             case KeyEvent.KEYCODE_MEDIA_PAUSE:
                 if (action == KeyEvent.ACTION_DOWN) {
-                    musicPlaybackService.pause(true);
+                    intent = new Intent(context, MusicService.class)
+                            .setAction(MusicService.ACTION_PAUSE);
                 }
                 break;
             default:
                 return false;
         }
+        if (intent != null) context.startService(intent);
 
         return true;
     }

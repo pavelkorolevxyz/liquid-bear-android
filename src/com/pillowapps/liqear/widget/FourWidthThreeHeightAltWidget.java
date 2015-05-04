@@ -13,13 +13,14 @@ import android.widget.RemoteViews;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
-import com.pillowapps.liqear.audio.deprecated.MusicPlaybackService;
+import com.pillowapps.liqear.audio.MusicService;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.models.PlayingState;
 
 public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
     private static boolean sEnabled;
@@ -37,7 +38,7 @@ public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
         final RemoteViews views = new RemoteViews(context.getPackageName(),
                 R.layout.widget_layout_4x3_alt);
 
-        Track track = AudioTimeline.getCurrentTrack();
+        Track track = Timeline.getInstance().getCurrentTrack();
         String artist;
         String title;
         SharedPreferences savePreferences = PreferencesManager.getSavePreferences();
@@ -66,44 +67,44 @@ public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
         int loveButton = Utils.getLoveButtonImage();
         views.setInt(R.id.love_button, "setImageResource", loveButton);
 
-        ComponentName service = new ComponentName(context, MusicPlaybackService.class);
+        ComponentName service = new ComponentName(context, MusicService.class);
 
-        Intent playPause = new Intent(MusicPlaybackService.ACTION_TOGGLE_PLAYBACK_NOTIFICATION);
+        Intent playPause = new Intent(MusicService.ACTION_PLAY_PAUSE);
         playPause.setComponent(service);
         views.setOnClickPendingIntent(R.id.play_pause,
                 PendingIntent.getService(context, 0, playPause, 0));
 
-        Intent nextIntent = new Intent(MusicPlaybackService.ACTION_NEXT);
+        Intent nextIntent = new Intent(MusicService.ACTION_NEXT);
         nextIntent.setComponent(service);
         views.setOnClickPendingIntent(R.id.next,
                 PendingIntent.getService(context, 0, nextIntent, 0));
 
-        Intent prevIntent = new Intent(MusicPlaybackService.ACTION_PREV);
+        Intent prevIntent = new Intent(MusicService.ACTION_PREV);
         prevIntent.setComponent(service);
         views.setOnClickPendingIntent(R.id.prev,
                 PendingIntent.getService(context, 0, prevIntent, 0));
 
-        Intent closeIntent = new Intent(MusicPlaybackService.ACTION_CLOSE);
+        Intent closeIntent = new Intent(MusicService.ACTION_CLOSE);
         closeIntent.setComponent(service);
         views.setOnClickPendingIntent(R.id.force_close,
                 PendingIntent.getService(context, 0, closeIntent, 0));
 
-        Intent shuffleIntent = new Intent(MusicPlaybackService.ACTION_SHUFFLE);
+        Intent shuffleIntent = new Intent(MusicService.ACTION_SHUFFLE);
         shuffleIntent.setComponent(service);
         views.setOnClickPendingIntent(R.id.shuffle_button,
                 PendingIntent.getService(context, 0, shuffleIntent, 0));
 
-        Intent repeatIntent = new Intent(MusicPlaybackService.ACTION_REPEAT);
+        Intent repeatIntent = new Intent(MusicService.ACTION_REPEAT);
         repeatIntent.setComponent(service);
         views.setOnClickPendingIntent(R.id.repeat_button,
                 PendingIntent.getService(context, 0, repeatIntent, 0));
 
-        Intent loveIntent = new Intent(MusicPlaybackService.ACTION_LOVE);
+        Intent loveIntent = new Intent(MusicService.ACTION_LOVE);
         loveIntent.setComponent(service);
         views.setOnClickPendingIntent(R.id.love_button,
                 PendingIntent.getService(context, 0, loveIntent, 0));
 
-        Intent addToVkIntent = new Intent(MusicPlaybackService.ACTION_ADD_TO_VK);
+        Intent addToVkIntent = new Intent(MusicService.ACTION_ADD_TO_VK);
         addToVkIntent.setComponent(service);
         views.setOnClickPendingIntent(R.id.add_to_vk_button,
                 PendingIntent.getService(context, 0, addToVkIntent, 0));
@@ -114,7 +115,7 @@ public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.clicable_widget_part2, activity);
         views.setOnClickPendingIntent(R.id.clicable_widget_part3, activity);
 
-        Album albumFromTimeline = AudioTimeline.getAlbum();
+        Album albumFromTimeline = Timeline.getInstance().getCurrentAlbum();
         if (albumFromTimeline == null) {
             albumFromTimeline = new Album();
             String imageUrl = savePreferences.getString(Constants.WIDGET_ALBUM_IMAGE, null);
@@ -123,7 +124,7 @@ public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
             savePreferences.edit().putString(Constants.WIDGET_ALBUM_IMAGE,
                     albumFromTimeline.getImageUrl()).apply();
         }
-        Bitmap bitmap = AudioTimeline.getCurrentAlbumBitmap();
+        Bitmap bitmap = Timeline.getInstance().getAlbumCoverBitmap();
         if (bitmap == null) {
             views.setInt(R.id.album_cover_image_view, "setImageResource", R.drawable.lb_icon_white);
         } else {
@@ -146,6 +147,6 @@ public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager manager, int[] appWidgetIds) {
         sEnabled = true;
-        updateWidget(context, manager, AudioTimeline.isPlaying());
+        updateWidget(context, manager, Timeline.getInstance().getPlayingState() == PlayingState.PLAYING);
     }
 }

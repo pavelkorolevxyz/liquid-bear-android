@@ -490,12 +490,10 @@ public class PhoneFragment extends Fragment {
                     artistImageView, new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted() {
-
                         }
 
                         @Override
                         public void onLoadingFailed(String message) {
-
                         }
 
                         @Override
@@ -505,7 +503,6 @@ public class PhoneFragment extends Fragment {
 
                         @Override
                         public void onLoadingCancelled() {
-
                         }
                     });
         }

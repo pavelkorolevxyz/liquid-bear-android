@@ -9,7 +9,6 @@ import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.entities.Track;
 
 import java.text.SimpleDateFormat;
@@ -74,7 +73,7 @@ public class Utils {
     }
 
     public static int getLoveButtonImage() {
-        Track track = AudioTimeline.getCurrentTrack();
+        Track track = Timeline.getInstance().getCurrentTrack();
         if (track == null) return R.drawable.ic_love;
         return track.isLoved() ? R.drawable.ic_love_active : R.drawable.ic_love;
     }

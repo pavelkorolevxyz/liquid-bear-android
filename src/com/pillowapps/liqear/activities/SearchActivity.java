@@ -43,7 +43,7 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmUserViewerActivity;
 import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
@@ -204,7 +204,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 if (target != null && !target.isEmpty()) {
                     searchVK(target, 100);
                 } else {
-                    searchVK(AudioTimeline.getCurrentTrack().getNotation(), 100);
+                    searchVK(Timeline.getInstance().getCurrentTrack().getNotation(), 100);
                 }
                 setTrackLongClick();
                 break;
@@ -217,7 +217,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 if (target != null && !target.isEmpty()) {
                     searchVK(target, 100);
                 } else {
-                    searchVK(AudioTimeline.getCurrentTrack().getNotation(), 100);
+                    searchVK(Timeline.getInstance().getCurrentTrack().getNotation(), 100);
                 }
                 break;
             case PLAYLIST_TRACKLIST: {

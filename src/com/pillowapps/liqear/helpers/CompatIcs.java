@@ -17,10 +17,11 @@ import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
-import com.pillowapps.liqear.audio.deprecated.AudioTimeline;
 import com.pillowapps.liqear.audio.MediaButtonReceiver;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.models.PlayingState;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +56,7 @@ public class CompatIcs {
         if (remote == null || track == null) {
             return;
         }
-        remote.setPlaybackState(AudioTimeline.isPlaying() ?
+        remote.setPlaybackState(Timeline.getInstance().getPlayingState() == PlayingState.PLAYING ?
                         RemoteControlClient.PLAYSTATE_PLAYING :
                         RemoteControlClient.PLAYSTATE_PAUSED
         );
@@ -72,7 +73,7 @@ public class CompatIcs {
 
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                Album album = AudioTimeline.getAlbum();
+                Album album = Timeline.getInstance().getCurrentAlbum();
                 Bitmap bitmap = null;
                 if (album != null) {
                     InputStream sourceStream = null;
