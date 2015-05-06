@@ -25,7 +25,7 @@ public abstract class ViewerPage<T> {
     protected TextView emptyTextView;
     private Context context;
 
-    private int page = 1;
+    private int page = 0;
     private int totalPages = Integer.MAX_VALUE;
     private View view;
     private String title;

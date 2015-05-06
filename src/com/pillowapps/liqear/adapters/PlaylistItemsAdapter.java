@@ -50,6 +50,7 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         this.original.clear();
         this.tracks.addAll(tracks);
         this.original.addAll(tracks);
+        notifyDataSetChanged();
     }
 
     @Override

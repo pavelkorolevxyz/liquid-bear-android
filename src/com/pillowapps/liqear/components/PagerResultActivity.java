@@ -16,13 +16,8 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 public class PagerResultActivity extends ResultActivity {
-    @InjectView(R.id.viewpager)
     protected ViewPager pager;
-    @InjectView(R.id.indicator)
     protected TitlePageIndicator indicator;
     private List<ViewerPage> viewers = new ArrayList<>();
 
@@ -46,20 +41,19 @@ public class PagerResultActivity extends ResultActivity {
             trackLongClick(Converter.convertTrack(tracks.get(position)));
         }
     };
-
     public OnViewerItemClickListener<VkTrack> vkTrackLongClickListener = new OnViewerItemClickListener<VkTrack>() {
         @Override
         public void onViewerClicked(List<VkTrack> tracks, int position) {
             trackLongClick(Converter.convertVkTrack(tracks.get(position)));
         }
     };
+
     public OnViewerItemClickListener<LastfmArtist> artistClickListener = new OnViewerItemClickListener<LastfmArtist>() {
         @Override
         public void onViewerClicked(List<LastfmArtist> artists, int position) {
             openArtist(artists.get(position));
         }
     };
-
     public OnViewerItemClickListener<LastfmAlbum> albumClickListener = new OnViewerItemClickListener<LastfmAlbum>() {
         @Override
         public void onViewerClicked(List<LastfmAlbum> albums, int position) {
@@ -94,7 +88,8 @@ public class PagerResultActivity extends ResultActivity {
     }
 
     protected void injectViewPager(PagerAdapter adapter) {
-        ButterKnife.inject(this);
+        pager = (ViewPager) findViewById(R.id.viewpager);
+        indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         pager.setAdapter(adapter);
         indicator.setOnClickListener(null);
         indicator.setViewPager(pager);

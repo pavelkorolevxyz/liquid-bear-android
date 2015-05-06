@@ -3,6 +3,7 @@ package com.pillowapps.liqear.activities.viewers;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -32,6 +33,9 @@ public class LastfmTagViewerActivity extends PagerResultActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewer_layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         Bundle extras = getIntent().getExtras();
         tag = new Tag(extras.getString((TAG)));
         ActionBar actionBar = getSupportActionBar();

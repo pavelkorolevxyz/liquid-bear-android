@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -102,6 +104,9 @@ public class PhoneFragment extends Fragment {
     private ViewGroup bottomControlsLayout;
 
     private Tutorial tutorial = new Tutorial();
+    private Toolbar modeToolbar;
+    private Toolbar playbackToolbar;
+    private Toolbar playlistToolbar;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.handset_fragment_layout, container, false);
@@ -132,6 +137,11 @@ public class PhoneFragment extends Fragment {
         pager.setOffscreenPageLimit(pages.size());
         pager.setAdapter(new PhoneFragmentAdapter(pages));
 
+        playlistToolbar = (Toolbar) playlistTab.findViewById(R.id.toolbar);
+        playbackToolbar = (Toolbar) playbackTab.findViewById(R.id.toolbar);
+        modeToolbar = (Toolbar) modeTab.findViewById(R.id.toolbar);
+        updateToolbars();
+
         indicator = (UnderlinePageIndicator) v.findViewById(R.id.indicator);
         indicator.setSelectedColor(getResources().getColor(R.color.accent));
         indicator.setOnClickListener(null);
@@ -157,6 +167,31 @@ public class PhoneFragment extends Fragment {
 
             }
         });
+    }
+
+    public void updateToolbars() {
+        playlistToolbar.getMenu().clear();
+        playbackToolbar.getMenu().clear();
+        modeToolbar.getMenu().clear();
+        int menuLayout = R.menu.menu_play_tab_no_current_track;
+        if (Timeline.getInstance().getCurrentTrack() != null) {
+            menuLayout = R.menu.menu_play_tab;
+            if (Timeline.getInstance().getCurrentTrack().isLoved()) {
+                menuLayout = R.menu.menu_play_tab_loved;
+            }
+        }
+        Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                return mainActivity.onOptionsItemSelected(menuItem);
+            }
+        };
+        playbackToolbar.inflateMenu(menuLayout);
+        playlistToolbar.inflateMenu(R.menu.menu_playlist_tab);
+        modeToolbar.inflateMenu(R.menu.menu_mode_tab);
+        playbackToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+        playlistToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+        modeToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
     }
 
     private void initUi(View v) {

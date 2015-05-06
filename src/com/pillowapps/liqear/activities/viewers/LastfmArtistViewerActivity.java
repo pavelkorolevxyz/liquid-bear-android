@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -56,7 +57,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     private LastfmArtistModel artistModel = new LastfmArtistModel();
 
     private View infoTab;
-    @InjectView(R.id.progress_bar_scrallable_text_layout)
+    @InjectView(R.id.progress_bar_scrollable_text_layout)
     protected ProgressBar artistInfoProgressBar;
     @InjectView(R.id.text_view_scrollable_text_layout)
     protected TextView artistInfoTextView;
@@ -65,6 +66,8 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewer_layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         Bundle extras = getIntent().getExtras();
         artist = new Artist(extras.getString(ARTIST));
         ActionBar actionBar = getSupportActionBar();
@@ -76,6 +79,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     private void initUi() {
         initViewPager();
         ButterKnife.inject(this, infoTab);
+        infoTab.findViewById(R.id.toolbar).setVisibility(View.GONE);
         artistInfoTextView.setMovementMethod(LinkMovementMethod.getInstance());
         int defaultIndex = TOP_TRACKS_INDEX;
         changeViewPagerItem(defaultIndex);

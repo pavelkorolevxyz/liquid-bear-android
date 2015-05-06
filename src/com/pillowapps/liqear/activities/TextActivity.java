@@ -50,7 +50,7 @@ public class TextActivity extends ResultActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         textView = (TextView) findViewById(R.id.text_view_scrollable_text_layout);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar_scrallable_text_layout);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar_scrollable_text_layout);
         Bundle extras = getIntent().getExtras();
         aim = (Aim) extras.get(TEXT_AIM);
         switch (aim) {

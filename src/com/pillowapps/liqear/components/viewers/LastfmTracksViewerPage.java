@@ -54,7 +54,7 @@ public class LastfmTracksViewerPage extends ViewerPage<LastfmTrack> {
 
     public void fill(List<LastfmTrack> tracks) {
         int adapterSize = adapter == null ? 0 : adapter.getCount();
-
+        if (tracks == null) return;
         int count = adapterSize + tracks.size();
         showEmptyPlaceholder(count == 0);
         showProgressBar(false);

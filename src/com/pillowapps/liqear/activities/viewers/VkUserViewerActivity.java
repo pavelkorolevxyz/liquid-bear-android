@@ -57,6 +57,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewer_layout);
+
         Bundle extras = getIntent().getExtras();
         user = (User) extras.getSerializable(USER);
         defaultIndex = extras.getInt(TAB_INDEX);

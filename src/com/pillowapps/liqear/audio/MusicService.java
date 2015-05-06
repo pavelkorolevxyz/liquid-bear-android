@@ -18,32 +18,51 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.text.Html;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.SearchActivity;
+import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.events.AlbumInfoEvent;
+import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
 import com.pillowapps.liqear.entities.events.BufferizationEvent;
 import com.pillowapps.liqear.entities.events.ExitEvent;
+import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
+import com.pillowapps.liqear.entities.events.PauseEvent;
+import com.pillowapps.liqear.entities.events.PlayEvent;
+import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
+import com.pillowapps.liqear.entities.events.PreparedEvent;
 import com.pillowapps.liqear.entities.events.TimeEvent;
+import com.pillowapps.liqear.entities.events.TrackInfoEvent;
+import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
+import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.entities.lastfm.LastfmImage;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
+import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.ShakeDetector;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.PlayingState;
 import com.pillowapps.liqear.models.TrackNotification;
+import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
+import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkStatusModel;
+import com.pillowapps.liqear.network.callbacks.CompletionCallback;
 import com.pillowapps.liqear.network.callbacks.PassiveCallback;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.callbacks.VkPassiveCallback;
@@ -52,6 +71,7 @@ import com.pillowapps.liqear.widget.FourWidthOneHeightWidget;
 import com.pillowapps.liqear.widget.FourWidthThreeHeightAltWidget;
 import com.pillowapps.liqear.widget.FourWidthThreeHeightWidget;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -128,9 +148,13 @@ public class MusicService extends Service implements
                 }
             };
     private boolean playOnPrepared;
-    private Subscriber<Long> timeSubscriber;
+    private Subscriber<Long> playProgressSubscriber;
+    private Subscriber<Long> nowplayingSubscriber;
+    private Subscriber<Long> timerSubscriber;
     private boolean prepared;
     private int currentBuffer = 0;
+    private int currentPositionPercent = 0;
+    private boolean scrobbled = false;
 
     @Override
     public void onCreate() {
@@ -507,22 +531,196 @@ public class MusicService extends Service implements
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
+        currentPositionPercent = 0;
+        if (Timeline.getInstance().getPlaylistTracks().size() <= 0) {
+            return;
+        }
         prepared = true;
+        LBApplication.bus.post(new PreparedEvent());
+        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        currentTrack.setDuration(mediaPlayer.getDuration());
+        hasDataSource = true;
+        scrobbled = false;
+        if (Utils.isOnline()) {
+            if (!currentTrack.getArtist()
+                    .equals(Timeline.getInstance().getPreviousArtist())) {
+                getArtistInfo(currentTrack.getArtist(),
+                        AuthorizationInfoManager.getLastfmName());
+            }
+            getTrackInfo(currentTrack);
+        }
+        saveTrackState();
+        if (playOnPrepared) {
+            mediaPlayer.start();
+            startUpdaters();
+            LBApplication.bus.post(new PlayEvent());
+            startPlayProgressUpdater();
+            showTrackInNotification();
+        } else {
+            LBApplication.bus.post(new PlayWithoutIconEvent());
+//            if (!playedOnce) {
+//                mediaPlayer.seekTo(Timeline.getInstance());
+            LBApplication.bus.post(new UpdatePositionEvent());
+//            }
+//            playedOnce = true;
+        }
+        int result = manager.requestAudioFocus(focusChangeListener,
+                AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            if (Timeline.getInstance().getPlayingStateBeforeCall() == PlayingState.PLAYING) {
+                play();
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                CompatIcs.registerRemote(this, manager);
+                CompatIcs.updateRemote(MusicService.this, currentTrack);
+            } else {
+                MediaButtonReceiver.registerMediaButton(this);
+            }
+        }
     }
 
     public int getCurrentBuffer() {
-        return 0;
+        return currentBuffer;
+    }
+
+    private void startUpdaters() {
+        startNowplayingUpdater();
+        startPlayProgressUpdater();
+    }
+
+    private void stopUpdaters() {
+        if (nowplayingSubscriber != null && !nowplayingSubscriber.isUnsubscribed()) {
+            nowplayingSubscriber.unsubscribe();
+        }
+        if (playProgressSubscriber != null && !playProgressSubscriber.isUnsubscribed()) {
+            playProgressSubscriber.unsubscribe();
+        }
     }
 
     public void pause() {
-
+        Timeline.getInstance().setPlayingState(PlayingState.DEFAULT);
+        releaseLocks();
+        if (hasDataSource) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
+            showTrackInNotification();
+            stopUpdaters();
+            LBApplication.bus.post(new PauseEvent());
+            stopPlayProgressUpdater();
+        }
     }
 
     private void play() {
-
+        Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
+        acquireLocks();
+        if (hasDataSource) {
+            mediaPlayer.start();
+            showTrackInNotification();
+            startUpdaters();
+            playOnPrepared = true;
+            startPlayProgressUpdater();
+            LBApplication.bus.post(new PlayEvent());
+        }
     }
 
     public void play(int index) {
+        Timeline.getInstance().setIndex(index);
+        urlNumber = 0;
+        updateWidgets();
+
+//        Timeline.getInstance().addToPrevClicked(Timeline.getInstance().getIndex());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            CompatIcs.registerRemote(MusicService.this, manager);
+            if (Timeline.getInstance().getCurrentTrack() != null) {
+                CompatIcs.updateRemote(MusicService.this,
+                        Timeline.getInstance().getCurrentTrack());
+            }
+        } else {
+            MediaButtonReceiver.registerMediaButton(MusicService.this);
+        }
+        Timeline.getInstance().setPlaylistChanged(false);
+        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        if (currentTrack == null) return;
+        if (true) { //add
+            Timeline.getInstance().addToPrevIndexes(Timeline.getInstance().getIndex());
+            Timeline.getInstance().getPlaylistTracks().get(Timeline.getInstance().getPreviousTracksIndexes().peek())
+                    .setCurrent(false);
+        }
+        acquireLocks();
+        if (currentTrack.getUrl() != null && !currentTrack.getUrl().isEmpty()) {
+            try {
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+            } catch (Exception ignored) {
+            }
+            try {
+                mediaPlayer.setDataSource(currentTrack.getUrl());
+                mediaPlayer.prepareAsync();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
+        } else {
+            final SharedPreferences urlNumberPreferences =
+                    PreferencesManager.getUrlNumberPreferences();
+            if (!urlChanged) {
+                urlNumber = urlNumberPreferences.getInt(currentTrack.getNotation(), 0);
+            } else {
+                urlChanged = false;
+            }
+            getTrackUrl(currentTrack, true, urlNumber);
+        }
+        if (playOnPrepared) {
+            showNotificationToast();
+            showTrackInNotification();
+            LBApplication.bus.post(new PlayEvent());
+        } else {
+            LBApplication.bus.post(new PlayWithoutIconEvent());
+        }
+        LBApplication.bus.post(new TrackInfoEvent());
+    }
+
+    private void playWithUrl() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            CompatIcs.registerRemote(MusicService.this, manager);
+            if (Timeline.getInstance().getCurrentTrack() != null) {
+                CompatIcs.updateRemote(MusicService.this,
+                        Timeline.getInstance().getCurrentTrack());
+            }
+        } else {
+            MediaButtonReceiver.registerMediaButton(MusicService.this);
+        }
+        Timeline.getInstance().setPlaylistChanged(true);
+        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        if (currentTrack == null) return;
+        if (true) {
+            Timeline.getInstance().addToPrevIndexes(Timeline.getInstance().getIndex());
+            Timeline.getInstance().getPlaylistTracks().get(Timeline.getInstance().getPreviousTracksIndexes().peek()).setCurrent(false);
+        }
+        if (currentTrack.getUrl() != null && !currentTrack.getUrl().isEmpty()) {
+            try {
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+            } catch (Exception ignored) {
+            }
+            acquireLocks();
+            try {
+                mediaPlayer.setDataSource(currentTrack.getUrl());
+                mediaPlayer.prepareAsync();
+            } catch (IOException | IllegalStateException e) {
+                e.printStackTrace();
+            }
+        }
+        if (playOnPrepared) {
+            showNotificationToast();
+            showTrackInNotification();
+            LBApplication.bus.post(new PlayEvent());
+        } else {
+            LBApplication.bus.post(new PlayWithoutIconEvent());
+        }
+        LBApplication.bus.post(new TrackInfoEvent());
     }
 
     private void togglePlayPause() {
@@ -584,6 +782,15 @@ public class MusicService extends Service implements
         startForeground(LIQUID_BEAR_ID, notification);
     }
 
+    private void showNotificationToast() {
+        if (PreferencesManager.getPreferences()
+                .getBoolean(Constants.SHOW_TOAST_TRACK_CHANGE, false)) {
+            Toast.makeText(MusicService.this,
+                    Html.fromHtml(Timeline.getInstance().getCurrentTrack().getNotation()),
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void bluetoothNotifyChange(String what, Track track) {
         Intent i = new Intent(what);
         int duration = getDuration();
@@ -598,25 +805,59 @@ public class MusicService extends Service implements
     }
 
     public void setTimer(int seconds) {
+        if (timerSubscriber != null && !timerSubscriber.isUnsubscribed()) {
+            timerSubscriber.unsubscribe();
+        }
+        timerSubscriber = new Subscriber<Long>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Long aLong) {
+                if (PreferencesManager.getPreferences().getString("timer_action", "1").equals("1")) {
+                    pause();
+                } else {
+                    exit();
+                }
+            }
+        };
+
         Observable.timer(seconds, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        if (PreferencesManager.getPreferences().getString("timer_action", "1").equals("1")) {
-                            pause();
-                        } else {
-                            exit();
-                        }
-                    }
-                });
+                .subscribe(timerSubscriber);
     }
 
-    private void setNowplaying() {
+    private void startNowplayingUpdater() {
+        if (nowplayingSubscriber != null && !nowplayingSubscriber.isUnsubscribed()) {
+            nowplayingSubscriber.unsubscribe();
+        }
         if (Utils.isOnline() && AuthorizationInfoManager.isAuthorizedOnLastfm()
                 && PreferencesManager.getPreferences().getBoolean("nowplaying_check_box_preferences", true)
                 && Timeline.getInstance().getPlaylistTracks().size() > Timeline.getInstance()
                 .getIndex()) {
+            nowplayingSubscriber = new Subscriber<Long>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Long aLong) {
+                    updateNowPlaying(Timeline.getInstance().getCurrentTrack());
+                }
+            };
             Observable.interval(15, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<Long>() {
@@ -656,7 +897,10 @@ public class MusicService extends Service implements
     }
 
     public void startPlayProgressUpdater() {
-        timeSubscriber = new Subscriber<Long>() {
+        if (playProgressSubscriber != null && !playProgressSubscriber.isUnsubscribed()) {
+            playProgressSubscriber.unsubscribe();
+        }
+        playProgressSubscriber = new Subscriber<Long>() {
             @Override
             public void onCompleted() {
 
@@ -674,15 +918,118 @@ public class MusicService extends Service implements
         };
         Observable.interval(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(timeSubscriber);
+                .subscribe(playProgressSubscriber);
     }
 
     public void stopPlayProgressUpdater() {
-        if (timeSubscriber != null) timeSubscriber.unsubscribe();
+        if (playProgressSubscriber != null) playProgressSubscriber.unsubscribe();
     }
 
     public boolean isPrepared() {
         return prepared;
+    }
+
+    private void getTrackUrl(final Track trackToFind, final boolean current, final int urlNumber) {
+//        QueryManager.setTrackUrlQuery(null);
+        final Timeline timeline = Timeline.getInstance();
+        if (trackToFind.isLocal()) {
+            if (timeline.getCurrentTrack() != null) {
+                timeline.getCurrentTrack().setUrl(trackToFind.getUrl());
+                if (!current) {
+                    playOnPrepared = false;
+                }
+                play();
+            } else {
+                next();
+            }
+            return;
+        }
+        if (!Utils.isOnline()) {
+            LBApplication.bus.post(new NetworkStateChangeEvent());
+            return;
+        }
+        new VkAudioModel().getTrackByNotation(trackToFind, urlNumber, new VkSimpleCallback<VkTrack>() {
+            @Override
+            public void success(VkTrack track) {
+                if (!Utils.isOnline()) {
+//                    QueryManager.setTrackUrlQuery(new TrackUrlQuery(trackToFind, current,
+//                            urlNumber, this, System.currentTimeMillis()));
+                }
+                if (track != null) {
+                    Track currentTrack = timeline.getCurrentTrack();
+                    if (currentTrack != null) {
+                        currentTrack.setUrl(track.getUrl());
+                        currentTrack.setAid(track.getAudioId());
+                        currentTrack.setOwnerId(track.getOwnerId());
+                        if (!current) {
+                            playOnPrepared = false;
+                        }
+                        playWithUrl();
+                    } else {
+                        next();
+                    }
+                } else {
+                    next();
+                }
+            }
+
+            @Override
+            public void failure(VkError error) {
+                next();
+            }
+        });
+    }
+
+    private void getTrackInfo(final Track track) {
+        new LastfmTrackModel().getTrackInfo(track, AuthorizationInfoManager.getLastfmName(),
+                new SimpleCallback<LastfmTrack>() {
+                    @Override
+                    public void success(LastfmTrack lastfmTrack) {
+                        Album album = Converter.convertAlbum(lastfmTrack.getAlbum());
+                        Boolean loved = lastfmTrack.isLoved();
+                        Intent intent = new Intent();
+                        intent.setAction(Constants.ACTION_SERVICE);
+                        LBApplication.bus.post(new AlbumInfoEvent());
+                        Timeline.getInstance().setCurrentAlbum(album);
+                        new LastfmAlbumModel().getCover(album, new CompletionCallback() {
+                            @Override
+                            public void onCompleted() {
+                                showTrackInNotification();
+                            }
+                        });
+                        track.setLoved(loved);
+                        updateWidgets();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                            CompatIcs.updateRemote(MusicService.this,
+                                    Timeline.getInstance().getCurrentTrack());
+                        }
+                    }
+
+                    @Override
+                    public void failure(String errorMessage) {
+
+                    }
+                });
+    }
+
+    private void getArtistInfo(final String artist, final String username) {
+        new LastfmArtistModel().getArtistInfo(artist, username, new SimpleCallback<LastfmArtist>() {
+            @Override
+            public void success(LastfmArtist lastfmArtist) {
+                Timeline.getInstance().setPreviousArtist(artist);
+                List<LastfmImage> list = lastfmArtist.getImages();
+                String imageUrl = null;
+                if (list.size() != 0) {
+                    LastfmImage lastfmImage = list.get(list.size() - 1);
+                    imageUrl = lastfmImage != null ? lastfmImage.getUrl() : null;
+                }
+                LBApplication.bus.post(new ArtistInfoEvent(imageUrl));
+            }
+
+            @Override
+            public void failure(String error) {
+            }
+        });
     }
 
     public class LocalBinder extends Binder {

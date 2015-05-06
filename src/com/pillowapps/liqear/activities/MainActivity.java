@@ -41,7 +41,6 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.ModeAdapter;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
-import com.pillowapps.liqear.adapters.PhoneFragmentAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
@@ -217,7 +216,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
     @Override
     protected void onResume() {
         super.onResume();
-        invalidateOptionsMenu();
+        invalidateMenu();
         if (Timeline.getInstance().isPlaylistChanged()) {
             updateAdapter();
             changePlaylistWithoutTrackChange();
@@ -791,27 +790,27 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
             }
             inflater.inflate(menuLayout, menu);
         } else {
-            switch (phoneFragment.getCurrentItem()) {
-                case PhoneFragmentAdapter.PLAY_TAB_INDEX: {
-                    int menuLayout = R.menu.menu_play_tab_no_current_track;
-                    if (Timeline.getInstance().getCurrentTrack() != null) {
-                        menuLayout = R.menu.menu_play_tab;
-                        if (Timeline.getInstance().getCurrentTrack().isLoved()) {
-                            menuLayout = R.menu.menu_play_tab_loved;
-                        }
-                    }
-                    inflater.inflate(menuLayout, menu);
-                }
-                break;
-                case PhoneFragmentAdapter.PLAYLIST_TAB_INDEX:
-                    inflater.inflate(R.menu.menu_playlist_tab, menu);
-                    break;
-                case PhoneFragmentAdapter.MODE_TAB_INDEX:
-                    inflater.inflate(R.menu.menu_mode_tab, menu);
-                    break;
-                default:
-                    break;
-            }
+//            switch (phoneFragment.getCurrentItem()) {
+//                case PhoneFragmentAdapter.PLAY_TAB_INDEX: {
+//                    int menuLayout = R.menu.menu_play_tab_no_current_track;
+//                    if (Timeline.getInstance().getCurrentTrack() != null) {
+//                        menuLayout = R.menu.menu_play_tab;
+//                        if (Timeline.getInstance().getCurrentTrack().isLoved()) {
+//                            menuLayout = R.menu.menu_play_tab_loved;
+//                        }
+//                    }
+//                    inflater.inflate(menuLayout, menu);
+//                }
+//                break;
+//                case PhoneFragmentAdapter.PLAYLIST_TAB_INDEX:
+//                    inflater.inflate(R.menu.menu_playlist_tab, menu);
+//                    break;
+//                case PhoneFragmentAdapter.MODE_TAB_INDEX:
+//                    inflater.inflate(R.menu.menu_mode_tab, menu);
+//                    break;
+//                default:
+//                    break;
+//            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -1162,12 +1161,11 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
     }
 
     public void invalidateMenu() {
-        MainActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                supportInvalidateOptionsMenu();
-            }
-        });
+        if (phoneFragment != null) {
+            phoneFragment.updateToolbars();
+        } else {
+            MainActivity.this.supportInvalidateOptionsMenu();
+        }
     }
 
     @Override

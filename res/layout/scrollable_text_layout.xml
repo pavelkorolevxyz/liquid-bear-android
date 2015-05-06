@@ -29,7 +29,7 @@
     </ScrollView>
 
     <ProgressBar
-        android:id="@+id/progress_bar_scrallable_text_layout"
+        android:id="@+id/progress_bar_scrollable_text_layout"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

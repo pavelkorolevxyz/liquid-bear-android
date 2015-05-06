@@ -46,6 +46,7 @@ public class Timeline {
     private boolean playlistChanged = false;
 
     private PlayingState playingStateBeforeCall = PlayingState.DEFAULT;
+    private String previousArtist;
 
     private Timeline() {
         // No operations.
@@ -227,5 +228,13 @@ public class Timeline {
 
     public void setPlayingStateBeforeCall(PlayingState playingStateBeforeCall) {
         this.playingStateBeforeCall = playingStateBeforeCall;
+    }
+
+    public String getPreviousArtist() {
+        return previousArtist;
+    }
+
+    public void setPreviousArtist(String previousArtist) {
+        this.previousArtist = previousArtist;
     }
 }
