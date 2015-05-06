@@ -5,34 +5,37 @@
     android:background="@color/icons"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/lb_toolbar" />
 
     <com.costum.android.widget.LoadMoreListView
         android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
-        android:layout_below="@+id/edit_part_quick_search_layout" />
+        android:layout_below="@+id/edit_part_quick_search_layout"
+        android:layout_marginLeft="0dp" />
 
     <TextView
+        android:id="@+id/empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/empty"
-        android:visibility="gone"
-        android:id="@+id/empty"
-        android:layout_centerHorizontal="true"
         android:layout_alignTop="@+id/list"
+        android:layout_centerHorizontal="true"
+        android:padding="@dimen/normal_padding"
+        android:text="@string/empty"
         android:textColor="@android:color/white"
         android:textSize="@dimen/normal_text_size"
-        android:padding="@dimen/normal_padding" />
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/edit_part_quick_search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_below="@id/toolbar"
         android:layout_marginLeft="0dp"
-        android:layout_alignParentTop="true"
         android:layout_marginTop="0dp">
 
         <EditText
@@ -40,31 +43,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:maxLength="50"
             android:drawableLeft="@android:drawable/ic_menu_search"
+            android:ems="10"
+            android:inputType="none"
+            android:maxLength="50"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
-            android:inputType="none"
             android:singleLine="true" />
 
         <ImageButton
             android:id="@+id/search_button_quick_search_layout"
             android:layout_width="50dp"
             android:layout_height="fill_parent"
-            android:src="@drawable/ic_simple_search_mode"
             android:contentDescription="search button"
+            android:src="@drawable/ic_simple_search_mode"
             android:visibility="visible" />
     </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyleHorizontal"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:indeterminate="true" />
 
 </RelativeLayout>

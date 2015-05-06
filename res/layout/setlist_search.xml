@@ -2,15 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp"
-    android:background="@color/icons">
+    android:background="@color/icons"
+    android:padding="12dp">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/lb_toolbar" />
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/scrollView"
         android:layout_above="@+id/search_setlist_button"
-        android:layout_alignParentTop="true">
+        android:layout_below="@id/toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,48 +26,48 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/artist_name"
-                android:layout_gravity="left|center_vertical" />
+                android:layout_gravity="left|center_vertical"
+                android:text="@string/artist_name" />
 
             <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/artist_name_edit_text_setlist"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/city"
-                android:layout_gravity="left|center_vertical" />
+                android:layout_gravity="left|center_vertical"
+                android:text="@string/city" />
 
             <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/city_edit_text_setlist"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/venue"
-                android:layout_gravity="left|center_vertical" />
+                android:layout_gravity="left|center_vertical"
+                android:text="@string/venue" />
 
             <EditText
+                android:id="@+id/venue_edit_text_setlist"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/venue_edit_text_setlist"
                 android:layout_gravity="left|center_vertical" />
         </LinearLayout>
 
     </ScrollView>
 
     <Button
-        android:text="@string/search"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
         android:id="@+id/search_setlist_button"
-        android:layout_alignParentLeft="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/search" />
 </RelativeLayout>

@@ -25,6 +25,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
@@ -34,8 +35,6 @@ import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
-import com.pillowapps.liqear.entities.RepeatMode;
-import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.events.AlbumInfoEvent;
 import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
@@ -53,6 +52,7 @@ import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.PlayingState;
 import com.squareup.otto.Subscribe;
@@ -91,7 +91,14 @@ public class TabletFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.tablet_fragment_layout, null);
         mainActivity = (MainActivity) getActivity();
+        LBApplication.bus.register(this);
         return v;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LBApplication.bus.unregister(this);
     }
 
     public void init() {
@@ -130,8 +137,8 @@ public class TabletFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        saveState();
         super.onSaveInstanceState(outState);
+        StateManager.savePlaylistState(mainActivity.getMusicService());
     }
 
     private void initListeners() {
@@ -270,37 +277,6 @@ public class TabletFragment extends Fragment {
             timeTextView.setText(text);
             timeDurationTextView.setText(Utils.secondsToString(duration / 1000));
         }
-    }
-
-    private void saveState() {
-        saveTrackState();
-        SharedPreferences.Editor editor = PreferencesManager.getPreferences().edit();
-        if (mainActivity.getMusicPlaybackService() != null) {
-            editor.putInt(Constants.CURRENT_POSITION,
-                    mainActivity.getMusicPlaybackService().getCurrentPosition());
-            editor.putInt(Constants.CURRENT_BUFFER,
-                    mainActivity.getMusicPlaybackService().getCurrentBuffer());
-            editor.putBoolean(Constants.SHUFFLE_MODE_ON,
-                    Timeline.getInstance().getShuffleMode() == ShuffleMode.SHUFFLE);
-            editor.putBoolean(Constants.REPEAT_MODE_ON,
-                    Timeline.getInstance().getRepeatMode() == RepeatMode.REPEAT);
-            editor.putInt(Constants.CURRENT_INDEX, Timeline.getInstance().getIndex());
-        }
-        editor.apply();
-    }
-
-    private void saveTrackState() {
-        SharedPreferences.Editor editor = PreferencesManager.getPreferences().edit();
-        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
-        if (Timeline.getInstance().getPlaylistTracks() != null
-                && Timeline.getInstance().getPlaylistTracks().size() != 0
-                && currentTrack != null) {
-            editor.putString(Constants.ARTIST, currentTrack.getArtist());
-            editor.putString(Constants.TITLE, currentTrack.getTitle());
-            editor.putInt(Constants.DURATION, currentTrack.getDuration());
-        }
-        editor.putInt(Constants.CURRENT_INDEX, Timeline.getInstance().getIndex());
-        editor.apply();
     }
 
     public void setServiceConnected() {

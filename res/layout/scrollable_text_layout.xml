@@ -2,35 +2,40 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/icons">
+    android:background="@color/icons"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/lb_toolbar" />
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_view_scrollable_text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autoLink="all"
             android:clickable="true"
             android:linksClickable="true"
-            android:autoLink="all"
             android:padding="12dp"
             android:textColor="@color/primary_text"
-            android:textSize="18sp"
-            android:textColorLink="@color/accent" />
+            android:textColorLink="@color/accent"
+            android:textSize="18sp" />
     </ScrollView>
 
     <ProgressBar
         android:id="@+id/progress_bar_scrallable_text_layout"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:visibility="gone"
+        android:layout_alignParentRight="true"
         android:indeterminate="true"
-        android:layout_alignParentRight="true" />
+        android:visibility="gone" />
 
 </RelativeLayout>

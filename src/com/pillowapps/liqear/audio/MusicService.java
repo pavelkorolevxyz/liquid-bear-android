@@ -471,8 +471,12 @@ public class MusicService extends Service implements
     }
 
     private void releaseLocks() {
-        wakeLock.release();
-        wifiLock.release();
+        if (wakeLock.isHeld()) {
+            wakeLock.release();
+        }
+        if (wifiLock.isHeld()) {
+            wifiLock.release();
+        }
     }
 
     private void acquireLocks() {

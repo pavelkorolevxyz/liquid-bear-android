@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.components.ResultActivity;
@@ -43,6 +45,8 @@ public class TextActivity extends ResultActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scrollable_text_layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         textView = (TextView) findViewById(R.id.text_view_scrollable_text_layout);
@@ -75,6 +79,13 @@ public class TextActivity extends ResultActivity {
                 textView.setText(getResources().getString(R.string.thanks_text));
                 break;
         }
+        LBApplication.bus.register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LBApplication.bus.unregister(this);
     }
 
     @Override

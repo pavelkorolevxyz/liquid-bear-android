@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,11 +42,12 @@ public class EqualizerActivity extends TrackedActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setTitle(R.string.equalizer);
         setContentView(R.layout.equalizer_layout);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        setTitle(R.string.equalizer);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 

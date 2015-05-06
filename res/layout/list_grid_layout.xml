@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/icons"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <GridView
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/lb_toolbar" />
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit"
-        android:columnWidth="150dp"
-        android:id="@+id/recommendations_grid_view" />
+        android:background="@color/icons">
 
-    <com.costum.android.widget.LoadMoreListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/recommendations_list_view"
-        android:visibility="gone" />
+        <GridView
+            android:id="@+id/recommendations_grid_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnWidth="150dp"
+            android:numColumns="auto_fit" />
 
-    <ProgressBar
-        android:id="@+id/pageProgressBar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:indeterminate="true"
-        android:layout_gravity="center_horizontal|bottom" />
-</FrameLayout>
+        <com.costum.android.widget.LoadMoreListView
+            android:id="@+id/recommendations_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/pageProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:indeterminate="true" />
+    </FrameLayout>
+</LinearLayout>
