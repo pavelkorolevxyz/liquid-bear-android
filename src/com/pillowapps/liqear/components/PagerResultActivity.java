@@ -51,7 +51,7 @@ public class PagerResultActivity extends ResultActivity {
     public OnViewerItemClickListener<LastfmArtist> artistClickListener = new OnViewerItemClickListener<LastfmArtist>() {
         @Override
         public void onViewerClicked(List<LastfmArtist> artists, int position) {
-            openArtist(artists.get(position));
+            openArtistByName(artists.get(position).getName());
         }
     };
     public OnViewerItemClickListener<LastfmAlbum> albumClickListener = new OnViewerItemClickListener<LastfmAlbum>() {

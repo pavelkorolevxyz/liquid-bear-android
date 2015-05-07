@@ -63,7 +63,6 @@ import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.entities.vk.VkUser;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.CollectionUtils;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.PlaylistManager;
@@ -661,12 +660,12 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 int artistLastNumberAll = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
                 int artistsLastNumberMod = artistLastNumberAll % Constants.PRESET_WANTED_COUNT;
                 editor.putInt(Constants.PRESET_LAST_NUMBER, artistLastNumberAll + 1);
-                LastfmArtist artist = (LastfmArtist) adapter.get(position);
+                Artist artist = (Artist) adapter.get(position);
                 editor.putString(Constants.ARTIST_NUMBER + artistsLastNumberMod, artist.getName());
                 editor.putString(Constants.IMAGE + artistsLastNumberMod,
-                        CollectionUtils.last(artist.getImages()).getUrl());
+                        artist.getPreviewUrl());
                 editor.apply();
-                openArtist(artist);
+                openArtistByName(artist.getName());
             }
             break;
             case TAG: {

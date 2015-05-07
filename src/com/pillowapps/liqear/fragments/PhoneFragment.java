@@ -140,6 +140,9 @@ public class PhoneFragment extends Fragment {
         playlistToolbar = (Toolbar) playlistTab.findViewById(R.id.toolbar);
         playbackToolbar = (Toolbar) playbackTab.findViewById(R.id.toolbar);
         modeToolbar = (Toolbar) modeTab.findViewById(R.id.toolbar);
+        playlistToolbar.setTitle(R.string.playlist_tab);
+        playbackToolbar.setTitle(R.string.play_tab);
+        modeToolbar.setTitle(R.string.mode_tab);
         updateToolbars();
 
         indicator = (UnderlinePageIndicator) v.findViewById(R.id.indicator);

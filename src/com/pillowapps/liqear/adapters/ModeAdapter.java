@@ -14,10 +14,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.entities.Mode;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.PreferencesManager;
-import com.pillowapps.liqear.entities.Mode;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
 
 import java.util.ArrayList;
@@ -147,7 +147,6 @@ public class ModeAdapter implements StickyGridHeadersBaseAdapter {
         final boolean modeVisible = mode.isVisible();
         boolean modeEnabled = ModeItemsHelper.isModeEnabled(mode);
         holder.modeButton.setEnabled(modeEnabled);
-
         holder.switchVisibilityButton.setVisibility(
                 ModeItemsHelper.isEditMode() ? View.VISIBLE : View.GONE);
         holder.switchVisibilityButton.setImageResource(modeVisible

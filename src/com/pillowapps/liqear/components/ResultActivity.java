@@ -104,9 +104,9 @@ public class ResultActivity extends TrackedActivity {
         startActivity(intent);
     }
 
-    protected void openArtist(LastfmArtist artist) {
+    protected void openArtistByName(String name) {
         Intent intent = new Intent(ResultActivity.this, LastfmArtistViewerActivity.class);
-        intent.putExtra(LastfmArtistViewerActivity.ARTIST, artist.getName());
+        intent.putExtra(LastfmArtistViewerActivity.ARTIST, name);
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 

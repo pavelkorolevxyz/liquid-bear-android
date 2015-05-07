@@ -4,6 +4,6 @@
     android:id="@+id/toolbar"
     app:theme="@style/ToolbarTheme"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="?attr/actionBarSize"
+    android:layout_height="?attr/actionBarSize"
+    android:gravity="center_vertical"
     android:background="@color/primary" />
