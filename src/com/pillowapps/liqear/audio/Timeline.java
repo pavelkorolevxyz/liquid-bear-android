@@ -8,6 +8,7 @@ import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.PlaylistUtils;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.models.PlayingState;
 
@@ -15,6 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
+
+import io.realm.RealmObject;
 
 public class Timeline {
     private static Timeline instance;
@@ -47,6 +50,7 @@ public class Timeline {
 
     private PlayingState playingStateBeforeCall = PlayingState.DEFAULT;
     private String previousArtist;
+    private Iterable<RealmObject> playlist;
 
     private Timeline() {
         // No operations.
@@ -67,6 +71,7 @@ public class Timeline {
 
     public void setPlaylist(Playlist playlist) {
         this.currentPlaylist = playlist;
+        if (playlist == null) return;
         listeningsCount = new int[playlist.getTracks().size()];
         maxListeningsCount = 1;
     }
@@ -105,7 +110,7 @@ public class Timeline {
     }
 
     public Track getCurrentTrack() {
-        if (currentPlaylist == null || currentPlaylist.size() <= index) return null;
+        if (currentPlaylist == null || PlaylistUtils.sizeOf(currentPlaylist) <= index) return null;
         return currentPlaylist.getTracks().get(index);
     }
 
@@ -114,7 +119,7 @@ public class Timeline {
     }
 
     public Track getNextTrack() {
-        if (currentPlaylist == null || currentPlaylist.size() <= index) return null;
+        if (currentPlaylist == null || PlaylistUtils.sizeOf(currentPlaylist) <= index) return null;
         return currentPlaylist.getTracks().get(getRandomIndex());
     }
 
@@ -236,5 +241,9 @@ public class Timeline {
 
     public void setPreviousArtist(String previousArtist) {
         this.previousArtist = previousArtist;
+    }
+
+    public Playlist getPlaylist() {
+        return currentPlaylist;
     }
 }

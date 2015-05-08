@@ -159,7 +159,7 @@ public class PlaylistManager {
                         String artist = c.getString(c.getColumnIndex("artist"));
                         String title = c.getString(c.getColumnIndex("title"));
                         String url = c.getString(c.getColumnIndex("url"));
-                        trackList.add(new Track(artist, title, trackId, url));
+                        trackList.add(new Track(artist, title, url));
                     } while (c.moveToNext());
                 }
             }
@@ -435,7 +435,7 @@ public class PlaylistManager {
                     String artist = c.getString(c.getColumnIndex("artist"));
                     String title = c.getString(c.getColumnIndex("title"));
                     Long time = c.getLong(c.getColumnIndex("time"));
-                    return new Track(artist, title, trackId, time);
+                    return new Track(artist, title);
                 }
             }
             sampleDB.setTransactionSuccessful();

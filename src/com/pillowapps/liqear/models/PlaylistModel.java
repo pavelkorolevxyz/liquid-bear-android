@@ -1,16 +1,27 @@
 package com.pillowapps.liqear.models;
 
+import com.pillowapps.liqear.LBApplication;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Playlist;
 
+import io.realm.Realm;
+import io.realm.RealmQuery;
+
 public class PlaylistModel {
+    private Realm realm = LBApplication.realm;
 
     public void saveMainPlaylist() {
-        //todo
+        realm.beginTransaction();
+        realm.where(Playlist.class).equalTo("mainPlaylist", true).findAll().clear(); // delete previous main playlist
+        Playlist playlist = Timeline.getInstance().getPlaylist();
+        playlist.setMainPlaylist(true);
+        realm.copyToRealm(playlist);
+        realm.commitTransaction();
     }
 
     public Playlist getMainPlaylist() {
-        //todo
-        return null;
+        RealmQuery<Playlist> query = realm.where(Playlist.class).equalTo("mainPlaylist", true);
+        return query.findFirst();
     }
 
     public void savePlaylist() {

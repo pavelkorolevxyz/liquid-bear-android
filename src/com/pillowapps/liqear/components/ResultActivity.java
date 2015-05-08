@@ -4,12 +4,11 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
-import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
-import com.pillowapps.liqear.activities.PlaylistsActivity;
 import com.pillowapps.liqear.activities.SearchActivity;
-import com.pillowapps.liqear.activities.viewers.LastfmTagViewerActivity;
 import com.pillowapps.liqear.activities.TrackedActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmTagViewerActivity;
 import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
@@ -17,14 +16,12 @@ import com.pillowapps.liqear.entities.MainActivityStartEnum;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ResultActivity extends TrackedActivity {
@@ -97,11 +94,12 @@ public class ResultActivity extends TrackedActivity {
     }
 
     public void saveAsPlaylist(List<Track> tracks) {
-        Intent intent = new Intent(ResultActivity.this,
-                PlaylistsActivity.class);
-        intent.putExtra("aim", PlaylistsActivity.Aim.SAVE_AS_PLAYLIST);
-        intent.putParcelableArrayListExtra(Constants.TRACKLIST, (ArrayList<Track>) tracks);
-        startActivity(intent);
+//        Intent intent = new Intent(ResultActivity.this,
+//                PlaylistsActivity.class);
+//        intent.putExtra("aim", PlaylistsActivity.Aim.SAVE_AS_PLAYLIST);
+//        intent.putParcelableArrayListExtra(Constants.TRACKLIST, (ArrayList<Track>) tracks);
+//        startActivity(intent);
+        //todo with otto
     }
 
     protected void openArtistByName(String name) {

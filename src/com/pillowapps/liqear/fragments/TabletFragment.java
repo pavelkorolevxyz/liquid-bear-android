@@ -366,7 +366,7 @@ public class TabletFragment extends Fragment {
             listView.setSelection(Timeline.getInstance().getIndex());
         }
         Timeline.getInstance().setCurrentAlbum(null);
-        track.setCurrent(true);
+//        track.setCurrent(true);
         artistTextView.setText(Html.fromHtml(track.getArtist()));
         titleTextView.setText(Html.fromHtml(track.getTitle()));
         List<Integer> listToUpdate = new ArrayList<Integer>(

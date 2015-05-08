@@ -26,6 +26,7 @@ import com.pillowapps.liqear.entities.vk.VkLyrics;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.vk.VkLyricsModel;
 import com.pillowapps.liqear.network.callbacks.SimpleCallback;
@@ -247,7 +248,7 @@ public class TextActivity extends ResultActivity {
     @Subscribe
     public void trackInfoEvent(TrackInfoEvent event) {
         Track track = Timeline.getInstance().getCurrentTrack();
-        googleRequest = track.getNotation();
+        googleRequest = TrackUtils.getNotation(track);
         getSupportActionBar().setTitle(googleRequest);
         getTrackLyrics(track, PreferencesManager
                 .getLyricsNumberPreferences().getInt(googleRequest, 0));

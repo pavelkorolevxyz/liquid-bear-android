@@ -9,6 +9,7 @@ import com.pillowapps.liqear.entities.vk.roots.VkAlbumsResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkTrackUrlResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkTracksResponseRoot;
 import com.pillowapps.liqear.helpers.StringUtils;
+import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.VkCallbackUtils;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.callbacks.VkCallback;
@@ -160,7 +161,7 @@ public class VkAudioModel {
     }
 
     public void getTrackByNotation(Track track, int index, final VkSimpleCallback<VkTrack> callback) {
-        vkService.getTrackUrl(track.getNotation(), index, new VkCallback<VkTrackUrlResponseRoot>() {
+        vkService.getTrackUrl(TrackUtils.getNotation(track), index, new VkCallback<VkTrackUrlResponseRoot>() {
             @Override
             public void success(VkTrackUrlResponseRoot data) {
                 List<VkTrack> tracks = data.getResponse();

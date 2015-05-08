@@ -4,6 +4,7 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkLyrics;
 import com.pillowapps.liqear.entities.vk.roots.VkLyricsResponseRoot;
+import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.callbacks.VkCallback;
 import com.pillowapps.liqear.network.callbacks.VkSimpleCallback;
@@ -15,7 +16,7 @@ public class VkLyricsModel {
     private VkApiService vkService = ServiceHelper.getVkService();
 
     public void getLyrics(Track track, int index, VkSimpleCallback<VkLyrics> callback) {
-        getLyrics(track.getNotation(), index, callback);
+        getLyrics(TrackUtils.getNotation(track), index, callback);
     }
 
     public void getLyrics(String notation, int index, final VkSimpleCallback<VkLyrics> callback) {

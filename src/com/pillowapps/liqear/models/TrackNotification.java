@@ -17,6 +17,7 @@ import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.CompatIcs;
+import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.Utils;
 
 public class TrackNotification {
@@ -36,7 +37,7 @@ public class TrackNotification {
 
     private Notification createSimpleNotification(Context context, Track track) {
         Notification notification = new Notification();
-        notification.tickerText = Html.fromHtml(track.getNotation());
+        notification.tickerText = Html.fromHtml(TrackUtils.getNotation(track));
         notification.icon = R.drawable.ic_stat_liquid_bear_logotype_revision;
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
         Intent intent = new Intent(context, MainActivity.class);
@@ -53,7 +54,7 @@ public class TrackNotification {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_stat_liquid_bear_logotype_revision)
-                        .setTicker(Html.fromHtml(track.getNotation()));
+                        .setTicker(Html.fromHtml(TrackUtils.getNotation(track)));
         final RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification);
         contentView.setTextViewText(R.id.title,
                 Html.fromHtml(track.getTitle()));

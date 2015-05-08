@@ -64,6 +64,7 @@ import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.PlayingState;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
@@ -118,7 +119,6 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         AppRate.with(this)
                 .theme(AppRateTheme.DARK)
                 .debug(BuildConfig.DEBUG)
-                .fromTop(true)
                 .delay(1000)
                 .retryPolicy(RetryPolicy.EXPONENTIAL)
                 .checkAndShow();
@@ -332,7 +332,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                     return true;
                 }
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                intent.putExtra(Constants.TARGET, currentTrack.getNotation());
+                intent.putExtra(Constants.TARGET, TrackUtils.getNotation(currentTrack));
                 intent.putExtra(SearchActivity.SEARCH_MODE,
                         SearchActivity.SearchMode.AUDIO_SEARCH_RESULT);
                 intent.putExtra(Constants.TYPE, 2);
@@ -749,11 +749,11 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 intent.putExtra(SearchActivity.SEARCH_MODE,
                         SearchActivity.SearchMode.AUDIO_SEARCH_RESULT_ADD_VK);
-                intent.putExtra(Constants.TARGET, track.getNotation());
+                intent.putExtra(Constants.TARGET, TrackUtils.getNotation(track));
                 startActivity(intent);
             }
         } else {
-            new VkAudioModel().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>() {
+            new VkAudioModel().addToUserAudioFast(TrackUtils.getNotation(track), new VkSimpleCallback<VkResponse>() {
                 @Override
                 public void success(VkResponse data) {
                     Toast.makeText(LBApplication.getAppContext(),
@@ -789,28 +789,6 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                 }
             }
             inflater.inflate(menuLayout, menu);
-        } else {
-//            switch (phoneFragment.getCurrentItem()) {
-//                case PhoneFragmentAdapter.PLAY_TAB_INDEX: {
-//                    int menuLayout = R.menu.menu_play_tab_no_current_track;
-//                    if (Timeline.getInstance().getCurrentTrack() != null) {
-//                        menuLayout = R.menu.menu_play_tab;
-//                        if (Timeline.getInstance().getCurrentTrack().isLoved()) {
-//                            menuLayout = R.menu.menu_play_tab_loved;
-//                        }
-//                    }
-//                    inflater.inflate(menuLayout, menu);
-//                }
-//                break;
-//                case PhoneFragmentAdapter.PLAYLIST_TAB_INDEX:
-//                    inflater.inflate(R.menu.menu_playlist_tab, menu);
-//                    break;
-//                case PhoneFragmentAdapter.MODE_TAB_INDEX:
-//                    inflater.inflate(R.menu.menu_mode_tab, menu);
-//                    break;
-//                default:
-//                    break;
-//            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -1162,7 +1140,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
 
     public void invalidateMenu() {
         if (phoneFragment != null) {
-            phoneFragment.updateToolbars();
+            phoneFragment.updatePlaybackToolbar();
         } else {
             MainActivity.this.supportInvalidateOptionsMenu();
         }
@@ -1171,5 +1149,9 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
     @Override
     public void onNavigationDrawerItemSelected(int position) {
 
+    }
+
+    public void setMainMenu(Menu mainMenu) {
+        this.mainMenu = mainMenu;
     }
 }

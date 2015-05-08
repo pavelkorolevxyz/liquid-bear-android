@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -36,6 +37,7 @@ public class LoginActivity extends TrackedActivity {
         setContentView(R.layout.vk_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         WebView webview = (WebView) findViewById(R.id.login_webview);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         webview.clearCache(true);
@@ -98,7 +100,19 @@ public class LoginActivity extends TrackedActivity {
         } else {
             throw new Exception("Invalid authorization request");
         }
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return false;
     }
 
     private class LoginWebViewClient extends WebViewClient {

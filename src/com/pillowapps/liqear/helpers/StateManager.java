@@ -7,6 +7,7 @@ import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.models.PlaylistModel;
 
 public class StateManager {
     public static void savePlaylistState(MusicService service) {
@@ -24,6 +25,7 @@ public class StateManager {
             editor.putInt(Constants.CURRENT_INDEX, Timeline.getInstance().getIndex());
         }
         editor.apply();
+        new PlaylistModel().saveMainPlaylist();
     }
 
     public static void saveTrackState() {
@@ -41,7 +43,7 @@ public class StateManager {
     }
 
     public static void restorePlaylistState() {
-
+        Timeline.getInstance().setPlaylist(new PlaylistModel().getMainPlaylist());
     }
 
     public static void restoreTrackState() {

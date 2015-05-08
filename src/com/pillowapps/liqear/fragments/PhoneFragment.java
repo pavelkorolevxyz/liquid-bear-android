@@ -63,7 +63,6 @@ import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.PlayingState;
-import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.Tutorial;
 import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.squareup.otto.Subscribe;
@@ -108,6 +107,13 @@ public class PhoneFragment extends Fragment {
     private Toolbar playbackToolbar;
     private Toolbar playlistToolbar;
 
+    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            return mainActivity.onOptionsItemSelected(menuItem);
+        }
+    };
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.handset_fragment_layout, container, false);
         mainActivity = (MainActivity) getActivity();
@@ -141,7 +147,7 @@ public class PhoneFragment extends Fragment {
         playbackToolbar = (Toolbar) playbackTab.findViewById(R.id.toolbar);
         modeToolbar = (Toolbar) modeTab.findViewById(R.id.toolbar);
         playlistToolbar.setTitle(R.string.playlist_tab);
-        playbackToolbar.setTitle(R.string.play_tab);
+        playbackToolbar.setTitle(R.string.app_name);
         modeToolbar.setTitle(R.string.mode_tab);
         updateToolbars();
 
@@ -172,10 +178,18 @@ public class PhoneFragment extends Fragment {
         });
     }
 
-    public void updateToolbars() {
+    private void updateToolbars() {
         playlistToolbar.getMenu().clear();
-        playbackToolbar.getMenu().clear();
         modeToolbar.getMenu().clear();
+        modeToolbar.inflateMenu(R.menu.menu_mode_tab);
+        playlistToolbar.inflateMenu(R.menu.menu_playlist_tab);
+        playlistToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+        modeToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+        updatePlaybackToolbar();
+    }
+
+    public void updatePlaybackToolbar() {
+        playbackToolbar.getMenu().clear();
         int menuLayout = R.menu.menu_play_tab_no_current_track;
         if (Timeline.getInstance().getCurrentTrack() != null) {
             menuLayout = R.menu.menu_play_tab;
@@ -183,18 +197,9 @@ public class PhoneFragment extends Fragment {
                 menuLayout = R.menu.menu_play_tab_loved;
             }
         }
-        Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                return mainActivity.onOptionsItemSelected(menuItem);
-            }
-        };
         playbackToolbar.inflateMenu(menuLayout);
-        playlistToolbar.inflateMenu(R.menu.menu_playlist_tab);
-        modeToolbar.inflateMenu(R.menu.menu_mode_tab);
         playbackToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
-        playlistToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
-        modeToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+        mainActivity.setMainMenu(playbackToolbar.getMenu());
     }
 
     private void initUi(View v) {
@@ -476,7 +481,9 @@ public class PhoneFragment extends Fragment {
         shuffleButton.setImageResource(Utils.getShuffleButtonImage());
         repeatButton.setImageResource(Utils.getRepeatButtonImage());
 
-        Playlist playlist = new PlaylistModel().getPlaylist();
+        StateManager.restorePlaylistState();
+
+        Playlist playlist = Timeline.getInstance().getPlaylist();
         if (playlist == null || playlist.getTracks().size() == 0) return;
         Timeline.getInstance().setPlaylist(playlist);
 
@@ -625,7 +632,7 @@ public class PhoneFragment extends Fragment {
             playlistsListView.setSelection(Timeline.getInstance().getIndex());
         }
         Timeline.getInstance().setCurrentAlbum(null);
-        track.setCurrent(true);
+//        track.setCurrent(true);
         artistTextView.setText(Html.fromHtml(track.getArtist()));
         titleTextView.setText(Html.fromHtml(track.getTitle()));
         List<Integer> indexesToUpdate = new ArrayList<>(Timeline.getInstance().getPreviousTracksIndexes());

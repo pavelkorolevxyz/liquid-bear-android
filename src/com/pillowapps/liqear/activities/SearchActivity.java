@@ -68,6 +68,7 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.SetlistfmUtils;
+import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
@@ -122,6 +123,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
         ImageButton searchButton = (ImageButton) findViewById(
                 R.id.search_button_quick_search_layout);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        Track currentTrack = Timeline.getInstance().getCurrentTrack();
         switch (aim) {
             case ARTIST:
                 actionBar.setTitle(getString(R.string.artist_radio));
@@ -206,7 +208,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 if (target != null && !target.isEmpty()) {
                     searchVK(target, 100);
                 } else {
-                    searchVK(Timeline.getInstance().getCurrentTrack().getNotation(), 100);
+                    searchVK(TrackUtils.getNotation(currentTrack), 100);
                 }
                 setTrackLongClick();
                 break;
@@ -219,7 +221,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 if (target != null && !target.isEmpty()) {
                     searchVK(target, 100);
                 } else {
-                    searchVK(Timeline.getInstance().getCurrentTrack().getNotation(), 100);
+                    searchVK(TrackUtils.getNotation(currentTrack), 100);
                 }
                 break;
             case PLAYLIST_TRACKLIST: {
@@ -269,11 +271,10 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 String artist = extras.getString("artist");
                 actionBar.setTitle(extras.getString("notation"));
                 List<Track> tracks = new ArrayList<Track>();
-                boolean live = PreferencesManager.getPreferences().getBoolean("search_live", false);
                 for (String trackTitle : stringArrayList) {
-                    tracks.add(new Track(artist, trackTitle, live));
+                    tracks.add(new Track(artist, trackTitle));
                 }
-                adapter = new QuickSearchArrayAdapter<Track>(
+                adapter = new QuickSearchArrayAdapter<>(
                         SearchActivity.this, tracks, Track.class);
                 setAdapter();
                 setTrackLongClick();
@@ -568,8 +569,9 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                     menu.add(Menu.NONE, i, i, menuItems[i]);
                 }
             } else if (SearchMode.PLAYLIST_TRACKLIST == aim) {
-                menu.setHeaderTitle(((Track) listView.getAdapter()
-                        .getItem(info.position)).getNotation());
+                Track track = (Track) listView.getAdapter()
+                        .getItem(info.position);
+                menu.setHeaderTitle(TrackUtils.getNotation(track));
                 String[] menuItems = getResources()
                         .getStringArray(R.array.playlist_tracklist_item_menu);
                 for (int i = 0; i < menuItems.length; i++) {
@@ -601,8 +603,8 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
             switch (item.getItemId()) {
                 case 0:
                     adapter.notifyDataSetChanged();
-                    PlaylistManager.getInstance().removeTrack(((Track) adapter.get(info.position))
-                            .getDbId());
+//                    PlaylistManager.getInstance().removeTrack(((Track) adapter.get(info.position))
+//                            .getDbId());
                     adapter.getValues().remove(info.position);
                     break;
                 default:
@@ -745,7 +747,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 resultData.putExtra("position", position);
                 if (type == 1) {
                     Track track = (Track) adapter.get(position);
-                    resultData.putExtra("aid", track.getAid());
+                    resultData.putExtra("aid", track.getAudioId());
                     resultData.putExtra("oid", track.getOwnerId());
                 }
                 setResult(RESULT_OK, resultData);
@@ -756,7 +758,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 int type = getIntent().getIntExtra("type", 1);
                 if (type == 1) {
                     Track track = (Track) adapter.get(position);
-                    new VkAudioModel().addToUserAudio(track.getAid(), track.getOwnerId(), new VkSimpleCallback<VkResponse>() {
+                    new VkAudioModel().addToUserAudio(track.getAudioId(), track.getOwnerId(), new VkSimpleCallback<VkResponse>() {
                         @Override
                         public void success(VkResponse data) {
                             Toast.makeText(LBApplication.getAppContext(),

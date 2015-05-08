@@ -54,6 +54,7 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.ShakeDetector;
+import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.PlayingState;
 import com.pillowapps.liqear.models.TrackNotification;
@@ -423,7 +424,7 @@ public class MusicService extends Service implements
                         searchVkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         searchVkIntent.putExtra(SearchActivity.SEARCH_MODE,
                                 SearchActivity.SearchMode.AUDIO_SEARCH_RESULT_ADD_VK);
-                        searchVkIntent.putExtra(Constants.TARGET, track.getNotation());
+                        searchVkIntent.putExtra(Constants.TARGET, TrackUtils.getNotation(track));
                         getApplication().startActivity(searchVkIntent);
                     }
                     break;
@@ -431,20 +432,21 @@ public class MusicService extends Service implements
                 case ACTION_ADD_TO_VK_FAST: {
                     final Track track = Timeline.getInstance().getCurrentTrack();
                     if (track != null) {
-                        new VkAudioModel().addToUserAudioFast(track.getNotation(), new VkSimpleCallback<VkResponse>() {
-                            @Override
-                            public void success(VkResponse data) {
-                                track.setAddedToVk(true);
-                                Toast.makeText(LBApplication.getAppContext(),
-                                        R.string.added, Toast.LENGTH_SHORT).show();
-                                showTrackInNotification();
-                            }
+                        new VkAudioModel().addToUserAudioFast(TrackUtils.getNotation(track),
+                                new VkSimpleCallback<VkResponse>() {
+                                    @Override
+                                    public void success(VkResponse data) {
+                                        track.setAddedToVk(true);
+                                        Toast.makeText(LBApplication.getAppContext(),
+                                                R.string.added, Toast.LENGTH_SHORT).show();
+                                        showTrackInNotification();
+                                    }
 
-                            @Override
-                            public void failure(VkError error) {
+                                    @Override
+                                    public void failure(VkError error) {
 
-                            }
-                        });
+                                    }
+                                });
                     }
                     break;
                 }
@@ -592,9 +594,7 @@ public class MusicService extends Service implements
         if (nowplayingSubscriber != null && !nowplayingSubscriber.isUnsubscribed()) {
             nowplayingSubscriber.unsubscribe();
         }
-        if (playProgressSubscriber != null && !playProgressSubscriber.isUnsubscribed()) {
-            playProgressSubscriber.unsubscribe();
-        }
+        stopPlayProgressUpdater();
     }
 
     public void pause() {
@@ -605,10 +605,9 @@ public class MusicService extends Service implements
                 mediaPlayer.pause();
             }
             showTrackInNotification();
-            stopUpdaters();
             LBApplication.bus.post(new PauseEvent());
-            stopPlayProgressUpdater();
         }
+        stopUpdaters();
     }
 
     private void play() {
@@ -644,8 +643,8 @@ public class MusicService extends Service implements
         if (currentTrack == null) return;
         if (true) { //add
             Timeline.getInstance().addToPrevIndexes(Timeline.getInstance().getIndex());
-            Timeline.getInstance().getPlaylistTracks().get(Timeline.getInstance().getPreviousTracksIndexes().peek())
-                    .setCurrent(false);
+//            Timeline.getInstance().getPlaylistTracks().get(Timeline.getInstance().getPreviousTracksIndexes().peek())
+//                    .setCurrent(false);
         }
         acquireLocks();
         if (currentTrack.getUrl() != null && !currentTrack.getUrl().isEmpty()) {
@@ -666,7 +665,7 @@ public class MusicService extends Service implements
             final SharedPreferences urlNumberPreferences =
                     PreferencesManager.getUrlNumberPreferences();
             if (!urlChanged) {
-                urlNumber = urlNumberPreferences.getInt(currentTrack.getNotation(), 0);
+                urlNumber = urlNumberPreferences.getInt(TrackUtils.getNotation(currentTrack), 0);
             } else {
                 urlChanged = false;
             }
@@ -697,7 +696,7 @@ public class MusicService extends Service implements
         if (currentTrack == null) return;
         if (true) {
             Timeline.getInstance().addToPrevIndexes(Timeline.getInstance().getIndex());
-            Timeline.getInstance().getPlaylistTracks().get(Timeline.getInstance().getPreviousTracksIndexes().peek()).setCurrent(false);
+//            Timeline.getInstance().getPlaylistTracks().get(Timeline.getInstance().getPreviousTracksIndexes().peek()).setCurrent(false);
         }
         if (currentTrack.getUrl() != null && !currentTrack.getUrl().isEmpty()) {
             try {
@@ -786,7 +785,7 @@ public class MusicService extends Service implements
         if (PreferencesManager.getPreferences()
                 .getBoolean(Constants.SHOW_TOAST_TRACK_CHANGE, false)) {
             Toast.makeText(MusicService.this,
-                    Html.fromHtml(Timeline.getInstance().getCurrentTrack().getNotation()),
+                    Html.fromHtml(TrackUtils.getNotation(Timeline.getInstance().getCurrentTrack())),
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -885,7 +884,7 @@ public class MusicService extends Service implements
         final SharedPreferences.Editor editor = urlNumberPreferences.edit();
         final Track currentTrack = Timeline.getInstance().getCurrentTrack();
         if (currentTrack == null) return;
-        final String notation = currentTrack.getNotation();
+        final String notation = TrackUtils.getNotation(currentTrack);
         editor.putInt(notation, urlNumber);
         editor.apply();
         currentTrack.setUrl(null);
@@ -922,7 +921,9 @@ public class MusicService extends Service implements
     }
 
     public void stopPlayProgressUpdater() {
-        if (playProgressSubscriber != null) playProgressSubscriber.unsubscribe();
+        if (playProgressSubscriber != null && !playProgressSubscriber.isUnsubscribed()) {
+            playProgressSubscriber.unsubscribe();
+        }
     }
 
     public boolean isPrepared() {
@@ -959,7 +960,7 @@ public class MusicService extends Service implements
                     Track currentTrack = timeline.getCurrentTrack();
                     if (currentTrack != null) {
                         currentTrack.setUrl(track.getUrl());
-                        currentTrack.setAid(track.getAudioId());
+                        currentTrack.setAudioId(track.getAudioId());
                         currentTrack.setOwnerId(track.getOwnerId());
                         if (!current) {
                             playOnPrepared = false;

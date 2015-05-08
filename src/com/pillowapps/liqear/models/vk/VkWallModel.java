@@ -127,7 +127,7 @@ public class VkWallModel {
                 attachmentsBuilder.append("audio")
                         .append(track.getOwnerId())
                         .append("_")
-                        .append(track.getAid());
+                        .append(track.getAudioId());
             }
             postWall(message, attachmentsBuilder.toString()).subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -165,14 +165,14 @@ public class VkWallModel {
                             attachmentsBuilder.append("audio")
                                     .append(track.getOwnerId())
                                     .append("_")
-                                    .append(track.getAid());
+                                    .append(track.getAudioId());
                         }
                     } else {
                         if (track.getOwnerId() != 0) {
                             attachmentsBuilder.append("audio")
                                     .append(track.getOwnerId())
                                     .append("_")
-                                    .append(track.getAid());
+                                    .append(track.getAudioId());
                         }
                     }
                     return postWall(message, attachmentsBuilder.toString());

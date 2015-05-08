@@ -253,14 +253,15 @@ public class PlaylistsActivity extends ResultActivity {
                             ((Playlist) adapter.get(position)).setTitle(title);
                             adapter.notifyDataSetChanged();
                         } else {
-                            List<Track> tracklist = getIntent()
-                                    .getParcelableArrayListExtra(Constants.TRACKLIST);
-                            long pid = PlaylistManager.getInstance().addPlaylist(title, tracklist);
-                            if (pid != -1) {
-                                ((List<Playlist>) adapter.getValues())
-                                        .add(0, new Playlist(pid, title));
-                                adapter.notifyDataSetChanged();
-                            }
+//                            List<Track> tracklist = getIntent()
+//                                    .getParcelableArrayListExtra(Constants.TRACKLIST);
+//                            long pid = PlaylistManager.getInstance().addPlaylist(title, tracklist);
+//                            if (pid != -1) {
+//                                ((List<Playlist>) adapter.getValues())
+//                                        .add(0, new Playlist(pid, title));
+//                                adapter.notifyDataSetChanged();
+//                            }
+                            //todo with otto
                         }
                     }
                 });

@@ -2,10 +2,16 @@ package com.pillowapps.liqear.entities;
 
 import java.util.List;
 
-public class Playlist {
-    private String title;
-    private List<Track> tracks;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Playlist extends RealmObject {
+    @PrimaryKey
     private long pid;
+    private String title;
+    private RealmList<Track> tracks;
+    private boolean mainPlaylist = false;
 
     public Playlist(long pid, String title) {
         this.pid = pid;
@@ -17,28 +23,9 @@ public class Playlist {
     }
 
     public Playlist(List<Track> tracks) {
-        this.tracks = tracks;
-    }
-
-    @Override
-    public String toString() {
-        return "Playlist [title=" + title + ", tracks=" + tracks + ", pid=" + pid + "]";
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public List<Track> getTracks() {
-        return tracks;
-    }
-
-    public void setTracks(List<Track> tracks) {
-        this.tracks = tracks;
+        RealmList<Track> realmList = new RealmList<>();
+        realmList.addAll(tracks);
+        this.tracks = realmList;
     }
 
     public long getPid() {
@@ -49,8 +36,27 @@ public class Playlist {
         this.pid = pid;
     }
 
-    public int size() {
-        if (tracks == null) return 0;
-        return tracks.size();
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public RealmList<Track> getTracks() {
+        return tracks;
+    }
+
+    public void setTracks(RealmList<Track> tracks) {
+        this.tracks = tracks;
+    }
+
+    public boolean isMainPlaylist() {
+        return mainPlaylist;
+    }
+
+    public void setMainPlaylist(boolean mainPlaylist) {
+        this.mainPlaylist = mainPlaylist;
     }
 }

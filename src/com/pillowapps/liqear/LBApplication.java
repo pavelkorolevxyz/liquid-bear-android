@@ -11,11 +11,13 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import timber.log.Timber;
 
 public class LBApplication extends Application {
     private static Context context;
     public static final Bus bus = new Bus(ThreadEnforcer.ANY);
+    public static Realm realm;
 
     public static Context getAppContext() {
         return LBApplication.context;
@@ -25,6 +27,7 @@ public class LBApplication extends Application {
     public void onCreate() {
         super.onCreate();
         LBApplication.context = getApplicationContext();
+        realm = Realm.getInstance(this);
 
         if (!BuildConfig.DEBUG) {
             Crashlytics.start(this);
