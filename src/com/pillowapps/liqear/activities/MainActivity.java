@@ -62,11 +62,11 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.PlayingState;
+import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
@@ -85,6 +85,7 @@ import butterknife.InjectView;
 import fr.nicolaspomepuy.discreetapprate.AppRate;
 import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
 import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
+import io.realm.Realm;
 import timber.log.Timber;
 
 public class MainActivity extends ActionBarActivity implements ModeListFragment.NavigationDrawerCallbacks {
@@ -228,16 +229,19 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         setRealPositions();
         Timeline.getInstance().clearPreviousIndexes();
         if (Timeline.getInstance().getPlaylistTracks().size() > 0) {
-            PlaylistManager.getInstance().saveUnsavedPlaylist(Timeline.getInstance().getPlaylistTracks());
+            new PlaylistModel().saveMainPlaylist();
         }
 //        AudioTimeline.setPlaylistChanged(false);
     }
 
     public void setRealPositions() {
         List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
+        Realm realm = LBApplication.realm;
+        realm.beginTransaction();
         for (int i = 0; i < playlist.size(); i++) {
             playlist.get(i).setRealPosition(i);
         }
+        realm.commitTransaction();
     }
 
     @Override
@@ -636,7 +640,8 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
             if (play) {
                 getListView().performItemClick(getPlaylistItemsAdapter().getView(position, null, null), position, position);
             }
-            PlaylistManager.getInstance().saveUnsavedPlaylist(tracks);
+//            PlaylistManager.getInstance().saveUnsavedPlaylist(tracks);
+            new PlaylistModel().saveMainPlaylist();
         }
         if (!isTablet()) phoneFragment.changeViewPagerItem(0);
     }
@@ -739,7 +744,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
         }
         playlistItemsAdapter.notifyDataSetChanged();
         if (playlist.size() > 0) {
-            PlaylistManager.getInstance().saveUnsavedPlaylist(playlist);
+            new PlaylistModel().saveMainPlaylist();
         }
     }
 
@@ -1003,7 +1008,7 @@ public class MainActivity extends ActionBarActivity implements ModeListFragment.
                 updateView(Arrays.asList(position));
                 List<Track> playlistTracks = Timeline.getInstance().getPlaylistTracks();
                 if (playlistTracks.size() > 0) {
-                    PlaylistManager.getInstance().saveUnsavedPlaylist(playlistTracks);
+                    new PlaylistModel().saveMainPlaylist();
                 }
                 dialog.dismiss();
             }

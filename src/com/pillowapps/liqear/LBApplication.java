@@ -27,6 +27,7 @@ public class LBApplication extends Application {
     public void onCreate() {
         super.onCreate();
         LBApplication.context = getApplicationContext();
+        Realm.deleteRealmFile(this);
         realm = Realm.getInstance(this);
 
         if (!BuildConfig.DEBUG) {

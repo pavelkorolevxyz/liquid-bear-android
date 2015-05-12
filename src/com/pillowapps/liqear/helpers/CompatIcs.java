@@ -13,20 +13,10 @@ import android.media.RemoteControlClient;
 import android.os.Build;
 import android.text.Html;
 
-import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.pillowapps.liqear.audio.MediaButtonReceiver;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.models.PlayingState;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class CompatIcs {
@@ -60,63 +50,19 @@ public class CompatIcs {
                         RemoteControlClient.PLAYSTATE_PLAYING :
                         RemoteControlClient.PLAYSTATE_PAUSED
         );
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
-                editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
-                        Html.fromHtml(track.getArtist()).toString());
-                editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST,
-                        Html.fromHtml(track.getArtist()).toString());
-                editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
-                        Html.fromHtml(track.getTitle()).toString());
+        RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
+        editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
+                Html.fromHtml(track.getArtist()).toString());
+        editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST,
+                Html.fromHtml(track.getArtist()).toString());
+        editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
+                Html.fromHtml(track.getTitle()).toString());
 
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                Album album = Timeline.getInstance().getCurrentAlbum();
-                Bitmap bitmap = null;
-                if (album != null) {
-                    InputStream sourceStream = null;
-                    String imageUrl = album.getImageUrl();
-                    if (imageUrl == null) {
-                        return;
-                    }
-                    DiscCacheAware discCache = ImageLoader.getInstance().getDiscCache();
-                    if (discCache == null) {
-                        return;
-                    }
-                    File cachedImage = discCache.get(imageUrl);
-                    if (cachedImage == null) {
-                        return;
-                    }
-                    try {
-                        if (cachedImage.exists()) { // if image was cached by UIL
-                            sourceStream = new FileInputStream(cachedImage);
-                            bitmap = BitmapFactory.decodeStream(sourceStream);
-                        } else if (PreferencesManager.getPreferences().getBoolean(
-                                Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                            ImageDownloader downloader = new BaseImageDownloader(context);
-                            sourceStream = downloader.getStream(imageUrl, null);
-                            bitmap = BitmapFactory.decodeStream(sourceStream);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }finally {
-                        if (sourceStream != null) {
-                            try {
-                                sourceStream.close();
-                            } catch (IOException ignored) {
-                            }
-                        }
-                    }
-                }
-                try {
-                    editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap);
-                } catch (Exception ignored) {
-                }
-                editor.apply();
-            }
-        }).start();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = Timeline.getInstance().getAlbumCoverBitmap();
+        editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap);
+        editor.apply();
     }
 
     public static void unregisterRemote(Context context, AudioManager am) {

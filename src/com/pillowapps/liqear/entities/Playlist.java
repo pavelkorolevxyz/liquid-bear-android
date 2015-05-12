@@ -5,7 +5,9 @@ import java.util.List;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
 
+@RealmClass
 public class Playlist extends RealmObject {
     @PrimaryKey
     private long pid;
@@ -52,11 +54,11 @@ public class Playlist extends RealmObject {
         this.tracks = tracks;
     }
 
-    public boolean isMainPlaylist() {
-        return mainPlaylist;
-    }
-
     public void setMainPlaylist(boolean mainPlaylist) {
         this.mainPlaylist = mainPlaylist;
+    }
+
+    public boolean isMainPlaylist() {
+        return mainPlaylist;
     }
 }

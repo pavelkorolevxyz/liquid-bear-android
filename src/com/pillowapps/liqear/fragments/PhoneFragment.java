@@ -485,7 +485,6 @@ public class PhoneFragment extends Fragment {
 
         Playlist playlist = Timeline.getInstance().getPlaylist();
         if (playlist == null || playlist.getTracks().size() == 0) return;
-        Timeline.getInstance().setPlaylist(playlist);
 
         List<Track> tracks = playlist.getTracks();
 
@@ -687,7 +686,7 @@ public class PhoneFragment extends Fragment {
 
     @Subscribe
     public void albumInfoEvent(AlbumInfoEvent event) {
-        Album album = Timeline.getInstance().getCurrentAlbum();
+        Album album = event.getAlbum();
         if (album != null && !album.equals(Timeline.getInstance().getPreviousAlbum())) {
             String imageUrl = album.getImageUrl();
             if (imageUrl == null || !PreferencesManager.getPreferences().getBoolean(

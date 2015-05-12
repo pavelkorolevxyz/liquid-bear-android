@@ -50,7 +50,6 @@ import com.pillowapps.liqear.entities.events.TimeEvent;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.PreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.Utils;
@@ -315,11 +314,15 @@ public class TabletFragment extends Fragment {
         shuffleButton.setImageResource(Utils.getShuffleButtonImage());
         repeatButton.setImageResource(Utils.getRepeatButtonImage());
 
-        List<Track> tracks = PlaylistManager.getInstance().loadPlaylist();
-        Timeline.getInstance().setPlaylist(new Playlist(tracks));
+        StateManager.restorePlaylistState();
+
+        Playlist playlist = Timeline.getInstance().getPlaylist();
+        if (playlist == null || playlist.getTracks().size() == 0) return;
         if (Timeline.getInstance().getPlaylistTracks().size() == 0) {
             return;
         }
+        List<Track> tracks = playlist.getTracks();
+
         tracks = Timeline.getInstance().getPlaylistTracks();
         SharedPreferences preferences = PreferencesManager.getPreferences();
         String artist = preferences.getString(Constants.ARTIST, "");
@@ -406,7 +409,7 @@ public class TabletFragment extends Fragment {
 
     @Subscribe
     public void albumInfoEvent(AlbumInfoEvent event) {
-        Album album = Timeline.getInstance().getCurrentAlbum();
+        Album album = event.getAlbum();
         if (album != null && !album.equals(Timeline.getInstance().getPreviousAlbum())) {
             String imageUrl = album.getImageUrl();
             if (imageUrl == null || !PreferencesManager.getPreferences()

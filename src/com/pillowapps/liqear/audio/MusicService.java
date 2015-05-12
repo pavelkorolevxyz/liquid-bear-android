@@ -73,9 +73,12 @@ import com.pillowapps.liqear.widget.FourWidthThreeHeightAltWidget;
 import com.pillowapps.liqear.widget.FourWidthThreeHeightWidget;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
+import io.realm.Realm;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -363,7 +366,7 @@ public class MusicService extends Service implements
                     if (hasDataSource) {
                         togglePlayPause();
                     } else {
-                        Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
+//                        Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
                         List<Track> tracks = PlaylistManager.getInstance().loadPlaylist();
                         Timeline.getInstance().setPlaylist(new Playlist(tracks));
                         SharedPreferences preferences = PreferencesManager.getPreferences();
@@ -540,7 +543,10 @@ public class MusicService extends Service implements
         prepared = true;
         LBApplication.bus.post(new PreparedEvent());
         Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        Realm realm = LBApplication.realm;
+        realm.beginTransaction();
         currentTrack.setDuration(mediaPlayer.getDuration());
+        realm.commitTransaction();
         hasDataSource = true;
         scrobbled = false;
         if (Utils.isOnline()) {
@@ -553,6 +559,7 @@ public class MusicService extends Service implements
         }
         saveTrackState();
         if (playOnPrepared) {
+            Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
             mediaPlayer.start();
             startUpdaters();
             LBApplication.bus.post(new PlayEvent());
@@ -731,15 +738,64 @@ public class MusicService extends Service implements
     }
 
     public void prev() {
+        stopPlayProgressUpdater();
+        PreferencesManager.getPreferences().edit().putInt(Constants.CURRENT_POSITION, 0).commit();
+        Stack<Integer> prevTracksIndexes = Timeline.getInstance().getPreviousTracksIndexes();
+        if (prevTracksIndexes.size() == 0) {
+            return;
+        }
 
+        if (prevTracksIndexes.size() > 1) {
+            prevTracksIndexes.pop();
+        }
+
+        int prevPosition = prevTracksIndexes.peek();
+        Timeline.getInstance().setIndex(prevPosition);
+        updateWidgets();
+        play();
     }
 
     public void next() {
-
+        stopPlayProgressUpdater();
+        PreferencesManager.getPreferences().edit().putInt(Constants.CURRENT_POSITION, 0).commit();
+        List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
+        if (playlist == null) return;
+        switch (Timeline.getInstance().getRepeatMode()) {
+            case REPEAT_PLAYLIST:
+                int tracklistSize = playlist.size();
+                if (tracklistSize == 0) {
+                    return;
+                }
+                int currentIndex = Timeline.getInstance().getIndex();
+                switch (Timeline.getInstance().getShuffleMode()) {
+                    case DEFAULT:
+                        currentIndex = (currentIndex + 1) % tracklistSize;
+                        break;
+                    case SHUFFLE:
+                        currentIndex = Timeline.getInstance().getRandomIndex();
+                        break;
+                    default:
+                        break;
+                }
+                LinkedList<Integer> queue = Timeline.getInstance().getQueueIndexes();
+                if (queue != null && !queue.isEmpty()) {
+                    currentIndex = queue.poll();
+                }
+                Timeline.getInstance().setIndex(currentIndex);
+                updateWidgets();
+                break;
+            default:
+                break;
+        }
+        play();
     }
 
     public void seekTo(int position) {
-
+        if (position > mediaPlayer.getDuration()) {
+            position = 0;
+        }
+        mediaPlayer.seekTo(position);
+        Timeline.getInstance().setTimePosition(position);
     }
 
     private void exit() {
@@ -959,9 +1015,12 @@ public class MusicService extends Service implements
                 if (track != null) {
                     Track currentTrack = timeline.getCurrentTrack();
                     if (currentTrack != null) {
+                        Realm realm = LBApplication.realm;
+                        realm.beginTransaction();
                         currentTrack.setUrl(track.getUrl());
                         currentTrack.setAudioId(track.getAudioId());
                         currentTrack.setOwnerId(track.getOwnerId());
+                        realm.commitTransaction();
                         if (!current) {
                             playOnPrepared = false;
                         }
@@ -990,8 +1049,8 @@ public class MusicService extends Service implements
                         Boolean loved = lastfmTrack.isLoved();
                         Intent intent = new Intent();
                         intent.setAction(Constants.ACTION_SERVICE);
-                        LBApplication.bus.post(new AlbumInfoEvent());
                         Timeline.getInstance().setCurrentAlbum(album);
+                        LBApplication.bus.post(new AlbumInfoEvent(album));
                         new LastfmAlbumModel().getCover(album, new CompletionCallback() {
                             @Override
                             public void onCompleted() {

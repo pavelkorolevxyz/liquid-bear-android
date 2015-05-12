@@ -1,8 +1,9 @@
 package com.pillowapps.liqear.entities;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
+import io.realm.annotations.RealmClass;
 
+@RealmClass
 public class Track extends RealmObject {
     private String title;
     private String artist;
@@ -11,14 +12,9 @@ public class Track extends RealmObject {
     private long audioId;
     private int duration;
     private boolean local = false;
-
-    @Ignore
-    private String url = null;
-    @Ignore
     private int realPosition;
-    @Ignore
+    private String url = null;
     private boolean loved = false;
-    @Ignore
     private boolean addedToVk = false;
 
     public Track(long audioId, long oid) {
