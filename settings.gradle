@@ -1,3 +1,4 @@
+include ':app'
 include ':libraries:DragSortListLibrary'
 include ':libraries:PullToRefreshLibrary'
 include ':libraries:StickyGridHeaders'

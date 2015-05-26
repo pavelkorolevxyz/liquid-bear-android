@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.pillowapps.liqear"
+    android:installLocation="auto">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="com.android.vending.BILLING" />
+
+    <application
+        android:name=".LBApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/lb_icon_white"
+        android:label="@string/app_name"
+        android:theme="@style/LiquidBearAppTheme">
+        <activity
+            android:name=".activities.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.AuthActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.viewers.VkUserViewerActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.viewers.LastfmUserViewerActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.viewers.LastfmChartsViewerActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.SearchActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.viewers.LastfmArtistViewerActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.viewers.LastfmAlbumViewerActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.ImagePagerActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.EqualizerActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.TextActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.PreferencesActivity"
+            android:theme="@style/PreferencesTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.RecommendationsActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.viewers.LastfmTagViewerActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.PlaylistsActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.SetlistsActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.NewcomersActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.DonateActivity"
+            android:windowSoftInputMode="stateHidden" />
+
+        <receiver android:name=".audio.MediaButtonReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".audio.HeadsetStateReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.HEADSET_PLUG" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".widget.FourWidthOneHeightWidget"
+            android:label="@string/widget_label_4x1">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+        <receiver
+            android:name=".widget.FourWidthThreeHeightWidget"
+            android:label="@string/widget_label_4x3">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_4x3" />
+        </receiver>
+        <receiver
+            android:name=".widget.FourWidthThreeHeightAltWidget"
+            android:label="@string/widget_label_4x3alt">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_4x3_alt" />
+        </receiver>
+
+        <receiver android:name=".network.NetworkStateReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".audio.MusicService" />
+
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="67de2f90b51dfbe09c08beb887dcd581fc584b77" />
+
+    </application>
+</manifest>
