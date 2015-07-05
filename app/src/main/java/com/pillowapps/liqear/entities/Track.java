@@ -1,32 +1,15 @@
 package com.pillowapps.liqear.entities;
 
-import com.pillowapps.liqear.helpers.LBDatabase;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+public class Track {
 
-@Table(databaseName = LBDatabase.NAME)
-public class Track extends BaseModel {
-
-    @Column
-    @PrimaryKey(autoincrement = true)
     Long id;
-    @Column
     String title;
-    @Column
     String artist;
-    @Column
     String album;
-    @Column
     long ownerId;
-    @Column
     long audioId;
-    @Column
     int duration;
-    @Column
     boolean local = false;
-    @Column
     Long playlistId;
 
     private int realPosition;

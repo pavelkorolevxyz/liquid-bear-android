@@ -12,7 +12,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:id="@+id/relativeLayout"
-        android:background="@color/accent_mono">
+        android:background="@color/accent_light">
 
         <ImageButton
             android:id="@+id/repeat_button_playback_tab"
@@ -46,7 +46,7 @@
             android:id="@+id/view"
             android:layout_toRightOf="@+id/shuffle_button_playback_tab"
             android:layout_centerVertical="true"
-            android:background="@color/almost_black" />
+            android:background="@color/primary" />
 
         <View
             android:layout_width="1dp"
@@ -54,7 +54,7 @@
             android:layout_alignRight="@+id/time_inverted_text_view_playback_tab"
             android:layout_alignTop="@+id/view"
             android:layout_centerVertical="true"
-            android:background="@color/almost_black" />
+            android:background="@color/primary" />
 
         <ImageButton
             android:id="@+id/next_button_playback_tab"
@@ -94,7 +94,7 @@
         <SeekBar
             android:id="@+id/seek_bar_playback_tab"
             android:layout_width="wrap_content"
-            android:thumb="@color/none"
+            android:thumb="@color/transparent"
             android:layout_height="wrap_content"
             android:max="100"
             android:paddingLeft="22dp"

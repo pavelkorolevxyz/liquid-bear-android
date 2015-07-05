@@ -1,38 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <color name="primary">#673AB7</color>
-    <color name="primary_dark">#512DA8</color>
-    <color name="primary_light">#D1C4E9</color>
-    <color name="accent_mono">#506874</color>
-    <color name="accent">#FFC107</color>
+    <color name="primary">#383840</color>
+    <color name="primary_dark">#212026</color>
+    <color name="primary_light">#B8B8BF</color>
+    <color name="accent">#676673</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
-    <color name="icons">#FFFFFF</color>
-    <color name="icons_shaded">#f0f0f0</color>
-    <color name="divider">#B6B6B6</color>
-    <color name="accent_mono_dark">#35434C</color>
+    <color name="icons">#F2F2F2</color>
+    <color name="accent_light">#858492</color>
+    <color name="accent_mono_dark">#383840</color>
+
     <color name="background_notification">#424242</color>
 
-    <color name="success_green">#196d1d</color>
-    <color name="error_red">#821c1c</color>
-    <color name="darkening_bg">#ccB0BF5A</color>
-    <!--<color name="darkening_bg">#cc157DAF</color>-->
-    <color name="clear_blue">#B0BF5A</color>
-    <!--<color name="clear_blue">#1BA1E2</color>-->
-    <color name="blue_darken">#ff272727</color>
-    <!--<color name="blue_darken">#0C4662</color>-->
-    <color name="darkest_blue">#272727</color>
-    <!--<color name="darkest_blue">#1B3440</color>-->
-    <color name="none">#00000000</color>
-    <!--<color name="almost_black">#ff101b23</color>-->
-    <color name="almost_black">#ff121212</color>
-    <!--<color name="almost_black_darker">#ff070a0f</color>-->
-    <color name="almost_black_darker">#ff000606</color>
-    <color name="widget_background_color">#ff222222</color>
-    <!--<color name="widget_background_color">#ff222222</color>-->
+    <color name="error_red">#A6362F</color>
+    <color name="error_red_shaded">#8a322b</color>
+    <color name="success_green">#25A01A</color>
+    <color name="success_green_shaded">#23871a</color>
 
-    <!--<color name="dark_grey">#ff17242f</color>-->
-    <color name="dark_grey">#272727</color>
-    <color name="white">#fff</color>
+    <color name="inverted_primary">#F2F2F2</color>
+    <color name="inverted_primary_dark">#dcdcdc</color>
+    <color name="inverted_primary_text">#F2F2F2</color>
+    <color name="inverted_secondary_text">#bbbbbb</color>
+    <color name="inverted_icons">#383840</color>
+
+    <color name="transparent">#0000</color>
 </resources>

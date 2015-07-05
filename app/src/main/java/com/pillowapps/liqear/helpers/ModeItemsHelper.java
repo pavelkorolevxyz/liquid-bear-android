@@ -65,41 +65,26 @@ public class ModeItemsHelper {
 
     public static boolean isModeEnabled(Mode mode) {
         final boolean modeVisible = mode.isVisible();
+        boolean isModeLocal = mode.getCategory() == Category.LOCAL;
+        boolean areBothAuthorized = AuthorizationInfoManager.isAuthorizedOnVk()
+                && AuthorizationInfoManager.isAuthorizedOnLastfm();
+        boolean isOnlyVkModeAndAuthorized = AuthorizationInfoManager.isAuthorizedOnVk()
+                && !mode.isNeedLastfm();
+        boolean isModeForLastfmAuthorized = AuthorizationInfoManager.isAuthorizedOnLastfm()
+                &&
+                mode.getCategory() != Category.VK
+                &&
+                mode.getModeEnum() != ModeEnum.RADIOMIX
+                &&
+                mode.getModeEnum() != ModeEnum.LIBRARY;
+        boolean isLastfmModeNotNeededAuth = !mode.isNeedLastfm() && mode.getCategory() != Category.VK;
         return modeVisible
-                && ((mode.getCategory() == Category.LOCAL)
-                ||
-                (
-                        (
-                                (
-                                        (
-                                                AuthorizationInfoManager.isAuthorizedOnVk()
-                                                        &&
-                                                        AuthorizationInfoManager.isAuthorizedOnLastfm()
-                                        )
-                                                ||
-                                                (
-                                                        AuthorizationInfoManager.isAuthorizedOnVk()
-                                                                &&
-                                                                !mode.isNeedLastfm()
-                                                )
-                                                ||
-                                                (
-                                                        AuthorizationInfoManager.isAuthorizedOnLastfm()
-                                                                &&
-                                                                mode.getCategory() != Category.VK
-                                                                &&
-                                                                mode.getModeEnum() != ModeEnum.RADIOMIX
-                                                                &&
-                                                                mode.getModeEnum() != ModeEnum.LIBRARY
-                                                )
-
-                                )
-                                        || (!mode.isNeedLastfm() && mode.getCategory() != Category.VK)
-                        )
-                                &&
-                                Utils.isOnline()
-                )
-        );
+                && (isModeLocal
+                || (((areBothAuthorized
+                || isOnlyVkModeAndAuthorized
+                || isModeForLastfmAuthorized)
+                || isLastfmModeNotNeededAuth)
+                && Utils.isOnline()));
     }
 
     public List<Item> createItemsList(UpdateAdapterCallback callback) {

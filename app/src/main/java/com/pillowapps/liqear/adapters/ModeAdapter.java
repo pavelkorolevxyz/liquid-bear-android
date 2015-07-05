@@ -137,7 +137,9 @@ public class ModeAdapter implements StickyGridHeadersBaseAdapter {
         Resources res = context.getResources();
 
         Drawable drawable = res.getDrawable(icon);
-        drawable.setColorFilter(R.color.primary, PorterDuff.Mode.MULTIPLY);
+        boolean modeEnabled = ModeItemsHelper.isModeEnabled(mode);
+        int iconsColor = modeEnabled ? R.color.icons : R.color.accent;
+        drawable.setColorFilter(res.getColor(iconsColor), PorterDuff.Mode.MULTIPLY);
 
         holder.modeButton.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         String label = context.getString(mode.getTitle()).toLowerCase();
@@ -145,7 +147,6 @@ public class ModeAdapter implements StickyGridHeadersBaseAdapter {
         holder.modeButton.setContentDescription(label);
 
         final boolean modeVisible = mode.isVisible();
-        boolean modeEnabled = ModeItemsHelper.isModeEnabled(mode);
         holder.modeButton.setEnabled(modeEnabled);
         holder.switchVisibilityButton.setVisibility(
                 ModeItemsHelper.isEditMode() ? View.VISIBLE : View.GONE);

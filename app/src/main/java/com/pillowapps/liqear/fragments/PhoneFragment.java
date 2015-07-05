@@ -757,7 +757,7 @@ public class PhoneFragment extends Fragment {
     private void updatePaletteWithBitmap(Bitmap bitmap) {
         if (bitmap == null) {
             backLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono_dark));
-            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono));
+            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_light));
             return;
         }
         Palette.generateAsync(bitmap,
@@ -776,7 +776,7 @@ public class PhoneFragment extends Fragment {
                         Palette.Swatch bottomSwatch =
                                 palette.getDarkVibrantSwatch();
                         if (bottomSwatch == null) {
-                            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono));
+                            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_light));
                             return;
                         }
                         bottomControlsLayout.setBackgroundColor(

@@ -86,8 +86,9 @@ import fr.nicolaspomepuy.discreetapprate.AppRate;
 import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
 import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
 import timber.log.Timber;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class MainActivity extends ActionBarActivity implements ModeListFragment.NavigationDrawerCallbacks {
+public class MainActivity extends BaseActivity implements ModeListFragment.NavigationDrawerCallbacks {
     public Menu mainMenu;
     private PhoneFragment phoneFragment;
     private ServiceConnection serviceConnection;

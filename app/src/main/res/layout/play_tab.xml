@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lowest_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/lowest_layout"
     android:orientation="vertical">
 
     <include
-        layout="@layout/lb_toolbar"
-        android:id="@+id/toolbar" />
+        android:id="@+id/toolbar"
+        layout="@layout/lb_toolbar" />
 
     <ImageView
         android:id="@+id/artist_image_view_headset"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:baselineAlignBottom="false"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/artist_image"
         android:layout_above="@+id/bottom_combined_layout"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/toolbar" />
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/toolbar"
+        android:baselineAlignBottom="false"
+        android:contentDescription="@string/artist_image"
+        android:scaleType="centerCrop" />
 
     <View
+        android:id="@+id/view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/fade_to_black_gradient"
-        android:id="@+id/view"
         android:layout_above="@+id/bottom_combined_layout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/toolbar" />
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/fade_to_black_gradient" />
 
     <TextView
         android:id="@+id/time_plate_text_view_playback_tab"
@@ -48,189 +48,189 @@
         android:visibility="gone" />
 
     <RelativeLayout
+        android:id="@+id/bottom_combined_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bottom_combined_layout"
         android:layout_alignParentBottom="true">
 
         <RelativeLayout
+            android:id="@+id/back_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/accent_mono_dark"
-            android:id="@+id/back_layout"
+            android:gravity="center_vertical"
+            android:paddingBottom="16dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:gravity="center_vertical">
+            android:paddingTop="16dp">
 
             <RelativeLayout
+                android:id="@+id/time_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="bottom"
+                android:layout_alignBottom="@+id/artist_title_layout"
                 android:layout_alignParentRight="true"
-                android:id="@+id/time_layout"
-                android:layout_alignBottom="@+id/artist_title_layout">
+                android:gravity="bottom">
 
                 <TextView
                     android:id="@+id/time_text_view_playback_tab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|top"
                     android:gravity="center"
+                    android:paddingLeft="@dimen/main_screen_padding"
                     android:textColor="@android:color/white"
                     android:textSize="16sp"
-                    android:layout_gravity="center_horizontal|top"
-                    android:paddingLeft="@dimen/main_screen_padding"
                     android:visibility="visible" />
 
                 <TextView
                     android:id="@+id/time_inverted_text_view_playback_tab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|top"
+                    android:layout_toRightOf="@+id/time_text_view_playback_tab"
                     android:gravity="center"
+                    android:paddingRight="@dimen/main_screen_padding"
                     android:textColor="@android:color/white"
                     android:textSize="16sp"
-                    android:layout_gravity="center_horizontal|top"
-                    android:paddingRight="@dimen/main_screen_padding"
-                    android:visibility="visible"
-                    android:layout_toRightOf="@+id/time_text_view_playback_tab" />
+                    android:visibility="visible" />
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/artist_title_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/time_layout"
                 android:layout_alignParentBottom="false"
-                android:id="@+id/artist_title_layout">
+                android:layout_toLeftOf="@+id/time_layout">
 
                 <TextView
                     android:id="@+id/artist_text_view_playback_tab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:textColor="@android:color/white"
+                    android:textColor="@drawable/main_artist_text_color"
                     android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/title_text_view_playback_tab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/artist_text_view_playback_tab"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:layout_below="@+id/artist_text_view_playback_tab" />
+                    android:textSize="16sp" />
 
             </RelativeLayout>
 
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/bottom_controls_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/accent_mono"
-            android:id="@+id/bottom_controls_layout"
-            android:layout_below="@+id/back_layout">
+            android:layout_below="@+id/back_layout"
+            android:background="@color/accent_light">
 
             <RelativeLayout
-                android:orientation="horizontal"
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:id="@+id/linearLayout"
-                android:paddingTop="8dp"
+                android:orientation="horizontal"
                 android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
-                android:paddingRight="8dp">
+                android:paddingRight="8dp"
+                android:paddingTop="8dp">
 
                 <ImageButton
                     android:id="@+id/repeat_button_playback_tab"
-                    android:layout_height="48dp"
-                    android:background="@null"
-                    android:src="@drawable/ic_repeat"
                     android:layout_width="48dp"
-                    android:layout_gravity="left"
-                    android:layout_alignParentLeft="false"
-                    android:layout_marginLeft="8dp"
-                    android:layout_alignParentTop="false"
-                    android:layout_marginTop="0dp"
-                    android:layout_margin="0dp"
-                    android:contentDescription="@string/repeat_button"
+                    android:layout_height="48dp"
                     android:layout_alignParentBottom="false"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentTop="false"
+                    android:layout_gravity="left"
+                    android:layout_margin="0dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@null"
+                    android:contentDescription="@string/repeat_button"
+                    android:padding="10dp"
                     android:scaleType="fitXY"
-                    android:padding="10dp" />
+                    android:src="@drawable/ic_repeat" />
 
                 <ImageButton
                     android:id="@+id/prev_button_playback_tab"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@null"
-                    android:src="@drawable/prev_button"
+                    android:layout_alignTop="@+id/repeat_button_playback_tab"
                     android:layout_gravity="center"
                     android:layout_toLeftOf="@+id/play_pause_button_playback_tab"
-                    android:layout_alignTop="@+id/repeat_button_playback_tab"
+                    android:background="@null"
                     android:contentDescription="@string/prev_button"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitXY"
+                    android:src="@drawable/prev_button" />
 
                 <ImageButton
                     android:id="@+id/play_pause_button_playback_tab"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_alignParentBottom="false"
-                    android:background="@null"
-                    android:src="@drawable/play_button"
                     android:layout_alignParentLeft="false"
-                    android:layout_marginLeft="0dp"
                     android:layout_alignParentTop="false"
-                    android:layout_marginTop="0dp"
-                    android:layout_margin="0dp"
                     android:layout_centerHorizontal="true"
+                    android:layout_margin="0dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@null"
                     android:contentDescription="@string/play_pause"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitXY"
+                    android:src="@drawable/play_button" />
 
                 <ImageButton
                     android:id="@+id/next_button_playback_tab"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@null"
-                    android:src="@drawable/next_button"
+                    android:layout_alignTop="@+id/repeat_button_playback_tab"
                     android:layout_gravity="center"
                     android:layout_toRightOf="@+id/play_pause_button_playback_tab"
-                    android:layout_alignTop="@+id/repeat_button_playback_tab"
+                    android:background="@null"
                     android:contentDescription="@string/next_button"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitXY"
+                    android:src="@drawable/next_button" />
 
                 <ImageButton
                     android:id="@+id/shuffle_button_playback_tab"
+                    android:layout_width="48dp"
                     android:layout_height="48dp"
+                    android:layout_alignParentLeft="false"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="false"
-                    android:background="@null"
-                    android:src="@drawable/ic_shuffle"
-                    android:layout_width="48dp"
-                    android:contentDescription="@string/shuffle_button"
-                    android:layout_alignParentLeft="false"
+                    android:layout_margin="0dp"
                     android:layout_marginLeft="0dp"
                     android:layout_marginTop="0dp"
-                    android:layout_margin="0dp"
+                    android:background="@null"
+                    android:contentDescription="@string/shuffle_button"
+                    android:padding="10dp"
                     android:scaleType="fitXY"
-                    android:padding="10dp" />
+                    android:src="@drawable/ic_shuffle" />
             </RelativeLayout>
 
         </RelativeLayout>
 
         <View
             android:layout_width="fill_parent"
+            android:layout_height="1dp"
             android:layout_above="@+id/bottom_controls_layout"
-            android:background="@color/icons"
-            android:layout_height="1dp" />
+            android:background="@color/icons" />
 
         <SeekBar
             android:id="@+id/seek_bar_playback_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="100"
             android:layout_above="@+id/bottom_controls_layout"
             android:layout_marginBottom="-16dp"
-            android:theme="@style/LiquidBearAppTheme.ProgressBar"/>
+            android:max="100"
+            android:theme="@style/LiquidBearAppTheme.ProgressBar" />
 
     </RelativeLayout>
 
@@ -242,51 +242,51 @@
         android:padding="@dimen/main_screen_padding">
 
         <ImageView
+            android:id="@+id/album_cover_image_view"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:contentDescription="@string/album_image"
-            android:id="@+id/album_cover_image_view" />
+            android:contentDescription="@string/album_image" />
 
         <TextView
+            android:id="@+id/album_title_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/album_title_text_view"
-            android:layout_toRightOf="@+id/album_cover_image_view"
-            android:layout_alignTop="@+id/album_cover_image_view"
             android:layout_alignParentRight="false"
-            android:textColor="@android:color/white"
-            android:paddingLeft="@dimen/main_screen_padding"
-            android:background="@color/dark_grey"
-            android:visibility="gone"
+            android:layout_alignTop="@+id/album_cover_image_view"
+            android:layout_toRightOf="@+id/album_cover_image_view"
+            android:background="@drawable/album_text_background"
             android:padding="@dimen/main_screen_padding"
-            android:textSize="16sp" />
+            android:paddingLeft="@dimen/main_screen_padding"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/tutorial_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="clip_vertical"
-        android:visibility="gone"
-        android:id="@+id/tutorial_layout">
+        android:visibility="gone">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/swipe_left_image_view"
-            android:src="@drawable/swipe_left"
-            android:layout_alignTop="@+id/swipe_right_image_view"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/swipe_right_image_view"
+            android:src="@drawable/swipe_left" />
+
+        <ImageView
             android:id="@+id/swipe_right_image_view"
-            android:src="@drawable/swipe_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="false"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:src="@drawable/swipe_right" />
     </RelativeLayout>
 
 

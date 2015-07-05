@@ -20,7 +20,7 @@
         android:paddingBottom="8dp"
         android:paddingTop="20dp"
         android:stateListAnimator="@null"
-        android:textColor="@color/secondary_text"
+        android:textColor="@drawable/mode_button_text_color"
         android:textSize="@dimen/mode_button_text_size" />
 
     <ImageButton

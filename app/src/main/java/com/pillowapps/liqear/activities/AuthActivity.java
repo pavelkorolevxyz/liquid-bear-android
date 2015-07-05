@@ -44,8 +44,8 @@ public class AuthActivity extends TrackedActivity {
     private View vkTab;
     private ViewPager pager;
     private View lastfmTab;
-    private Button authorizeVkButton;
-    private Button authorizeLastfmButton;
+    private View authorizeVkButton;
+    private View authorizeLastfmButton;
     private EditText loginLastfmEditText;
     private EditText passwordLastfmEditText;
     private View authVkPanel;
@@ -60,6 +60,8 @@ public class AuthActivity extends TrackedActivity {
     private TextView errorLastfmTextView;
     private LastfmAuthModel authModel = new LastfmAuthModel();
     private ImageModel imageModel = new ImageModel();
+    private View signOutVkButton;
+    private View signOutLastfmButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,15 +95,35 @@ public class AuthActivity extends TrackedActivity {
 
     private void showSaves() {
         if (AuthorizationInfoManager.isAuthorizedOnVk()) {
+            avatarVkImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageModel.loadImage(AuthorizationInfoManager.getVkAvatar(), avatarVkImageView);
             vkNameTextView.setText(AuthorizationInfoManager.getVkName());
             authVkPanel.setVisibility(View.VISIBLE);
+            signOutVkButton.setVisibility(View.VISIBLE);
+            authorizeVkButton.setVisibility(View.GONE);
+        } else {
+            avatarVkImageView.setScaleType(ImageView.ScaleType.CENTER);
+            avatarVkImageView.setImageResource(R.drawable.user);
+            signOutVkButton.setVisibility(View.GONE);
+            authorizeVkButton.setVisibility(View.VISIBLE);
         }
         if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
+            avatarLastfmImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageModel.loadImage(AuthorizationInfoManager.getLastfmAvatar(), avatarLastfmImageView);
             lastfmNameTextView.setText(AuthorizationInfoManager.getLastfmName());
             loginLastfmEditText.setText(AuthorizationInfoManager.getLastfmName());
             authLastfmPanel.setVisibility(View.VISIBLE);
-            imageModel.loadImage(AuthorizationInfoManager.getLastfmAvatar(), avatarLastfmImageView);
+            signOutLastfmButton.setVisibility(View.VISIBLE);
+            authorizeLastfmButton.setVisibility(View.GONE);
+            loginLastfmEditText.setVisibility(View.GONE);
+            passwordLastfmEditText.setVisibility(View.GONE);
+        } else {
+            avatarLastfmImageView.setScaleType(ImageView.ScaleType.CENTER);
+            avatarLastfmImageView.setImageResource(R.drawable.user);
+            signOutLastfmButton.setVisibility(View.GONE);
+            authorizeLastfmButton.setVisibility(View.VISIBLE);
+            loginLastfmEditText.setVisibility(View.VISIBLE);
+            passwordLastfmEditText.setVisibility(View.VISIBLE);
         }
     }
 
@@ -117,9 +139,10 @@ public class AuthActivity extends TrackedActivity {
         TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
         indicator.setCurrentItem(0);
+        indicator.setBackgroundColor(getResources().getColor(R.color.primary));
         indicator.setFooterColor(getResources().getColor(R.color.accent));
-        indicator.setTextColor(getResources().getColor(R.color.primary_text));
-        indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
+        indicator.setTextColor(getResources().getColor(R.color.icons));
+        indicator.setSelectedColor(getResources().getColor(R.color.icons));
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
@@ -139,8 +162,10 @@ public class AuthActivity extends TrackedActivity {
     }
 
     private void initUi() {
-        authorizeVkButton = (Button) vkTab.findViewById(R.id.authorize_vk_button);
-        authorizeLastfmButton = (Button) lastfmTab.findViewById(R.id.authorize_lastfm_button);
+        authorizeVkButton = vkTab.findViewById(R.id.authorize_vk_button);
+        signOutVkButton = vkTab.findViewById(R.id.sign_out_vk_button);
+        authorizeLastfmButton = lastfmTab.findViewById(R.id.authorize_lastfm_button);
+        signOutLastfmButton = lastfmTab.findViewById(R.id.sign_out_lastfm_button);
         authVkPanel = vkTab.findViewById(R.id.auth_panel);
         loginLastfmEditText = (EditText) lastfmTab.findViewById(R.id.login_edit_text);
         passwordLastfmEditText = (EditText) lastfmTab.findViewById(R.id.password_edit_text);
@@ -160,12 +185,10 @@ public class AuthActivity extends TrackedActivity {
                     new VkSimpleCallback<VkUser>() {
                         @Override
                         public void success(VkUser vkUser) {
-                            authVkPanel.setVisibility(View.VISIBLE);
                             AuthorizationInfoManager.setVkAvatar(vkUser.getPhotoMedium());
-                            imageModel.loadImage(vkUser.getPhotoMedium(), avatarVkImageView);
-                            vkNameTextView.setText(vkUser.getName());
                             AuthorizationInfoManager.setVkName(vkUser.getName());
                             invalidateOptionsMenu();
+                            showSaves();
                             if (firstStart && AuthorizationInfoManager.isAuthorizedOnLastfm()) {
                                 Utils.startMainActivity(AuthActivity.this);
                                 finish();
@@ -190,6 +213,28 @@ public class AuthActivity extends TrackedActivity {
                 authVkPanel.setVisibility(View.INVISIBLE);
                 Intent intent = new Intent(AuthActivity.this, LoginActivity.class);
                 startActivityForResult(intent, Constants.AUTH_VK_REQUEST);
+            }
+        });
+        signOutVkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AuthorizationInfoManager.signOutVk();
+                authVkPanel.setVisibility(View.INVISIBLE);
+                invalidateOptionsMenu();
+                showSaves();
+            }
+        });
+
+        signOutLastfmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AuthorizationInfoManager.signOutLastfm();
+                authLastfmPanel.setVisibility(View.INVISIBLE);
+                loginLastfmEditText.setVisibility(View.VISIBLE);
+                passwordLastfmEditText.setVisibility(View.VISIBLE);
+                loginLastfmEditText.setText("");
+                passwordLastfmEditText.setText("");
+                showSaves();
             }
         });
         authorizeLastfmButton.setOnClickListener(new View.OnClickListener() {
@@ -223,6 +268,7 @@ public class AuthActivity extends TrackedActivity {
                                         String url = images.get(images.size() - 1).getUrl();
                                         AuthorizationInfoManager.setLastfmAvatar(url);
                                         imageModel.loadImage(url, avatarLastfmImageView);
+                                        showSaves();
                                     }
 
                                     @Override
@@ -304,19 +350,6 @@ public class AuthActivity extends TrackedActivity {
                 AuthorizationInfoManager.skipAuth();
                 Utils.startMainActivity(AuthActivity.this);
                 finish();
-            }
-            return true;
-            case R.id.sign_out_button: {
-                if (currentPage == VK_INDEX) {
-                    AuthorizationInfoManager.signOutVk();
-                    authVkPanel.setVisibility(View.INVISIBLE);
-                } else if (currentPage == LASTFM_INDEX) {
-                    AuthorizationInfoManager.signOutLastfm();
-                    authLastfmPanel.setVisibility(View.INVISIBLE);
-                    loginLastfmEditText.setVisibility(View.VISIBLE);
-                    passwordLastfmEditText.setVisibility(View.VISIBLE);
-                }
-                invalidateOptionsMenu();
             }
             return true;
             default:

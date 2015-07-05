@@ -82,9 +82,6 @@
         <activity
             android:name=".activities.NewcomersActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.DonateActivity"
-            android:windowSoftInputMode="stateHidden" />
 
         <receiver android:name=".audio.MediaButtonReceiver">
             <intent-filter>

@@ -7,12 +7,12 @@ import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
 import butterknife.ButterKnife;
 import timber.log.Timber;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class LBApplication extends Application {
     private static Context context;
@@ -27,7 +27,6 @@ public class LBApplication extends Application {
         super.onCreate();
         LBApplication.context = getApplicationContext();
 
-        FlowManager.init(this);
         if (!BuildConfig.DEBUG) {
             Crashlytics.start(this);
         } else {
@@ -41,11 +40,16 @@ public class LBApplication extends Application {
         ImageLoader.getInstance().init(config);
 
         ButterKnife.setDebug(true);
+
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                        .setDefaultFontPath("fonts/PTC55F.ttf")
+                        .setFontAttrId(R.attr.fontPath)
+                        .build()
+        );
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
-        FlowManager.destroy();
     }
 }

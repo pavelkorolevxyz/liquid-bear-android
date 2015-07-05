@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -22,6 +23,8 @@ import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.helpers.AppUtils;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class PreferencesActivity extends PreferenceActivity {
     @Override
@@ -126,6 +129,11 @@ public class PreferencesActivity extends PreferenceActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

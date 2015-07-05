@@ -39,7 +39,7 @@
         android:layout_height="1dp"
         android:layout_toRightOf="@+id/album_cover_image_view"
         android:layout_centerVertical="true"
-        android:background="@color/darkest_blue"
+        android:background="@color/primary_dark"
         android:layout_above="@+id/linearLayout2" />
 
     <LinearLayout
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            android:background="@color/none"
+            android:background="@color/transparent"
             android:src="@drawable/prev_button"
             android:contentDescription="prev"
             android:layout_toLeftOf="@+id/play_pause"
@@ -80,7 +80,7 @@
             android:layout_gravity="center"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_play"
-            android:background="@color/none"
+            android:background="@color/transparent"
             android:contentDescription="play / pause"
             android:layout_toLeftOf="@+id/next"
             android:layout_alignTop="@+id/linearLayout"
@@ -96,7 +96,7 @@
             android:layout_gravity="center"
             android:scaleType="fitCenter"
             android:src="@drawable/next_button"
-            android:background="@color/none"
+            android:background="@color/transparent"
             android:contentDescription="next"
             android:layout_toLeftOf="@+id/force_close"
             android:layout_alignTop="@+id/linearLayout"
@@ -106,7 +106,7 @@
         <RelativeLayout
             android:layout_width="1dp"
             android:layout_height="fill_parent"
-            android:background="@color/darkest_blue" />
+            android:background="@color/primary_dark" />
 
         <ImageButton
             android:id="@+id/love_button"
@@ -116,7 +116,7 @@
             android:layout_width="wrap_content"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_love"
-            android:background="@color/none"
+            android:background="@color/transparent"
             android:contentDescription="next"
             android:layout_toLeftOf="@+id/force_close"
             android:layout_alignTop="@+id/linearLayout"
@@ -131,7 +131,7 @@
             android:layout_width="wrap_content"
             android:scaleType="fitCenter"
             android:src="@drawable/add_button"
-            android:background="@color/none"
+            android:background="@color/transparent"
             android:contentDescription="next"
             android:layout_toLeftOf="@+id/force_close"
             android:layout_alignTop="@+id/linearLayout"
@@ -145,7 +145,7 @@
         android:layout_width="wrap_content"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        android:background="@color/none"
+        android:background="@color/transparent"
         android:src="@drawable/ic_exit"
         android:contentDescription="close"
         android:layout_alignParentRight="true"

@@ -6,7 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.pillowapps.liqear.BuildConfig;
 
-public class TrackedActivity extends ActionBarActivity {
+public class TrackedActivity extends BaseActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

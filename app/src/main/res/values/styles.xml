@@ -17,8 +17,8 @@
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/primary</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:textColorPrimary">@color/inverted_primary_text</item>
+        <item name="android:textColorSecondary">@color/inverted_primary_text</item>
         <item name="popupTheme">@style/Theme.AppCompat.Light.NoActionBar</item>
     </style>
 

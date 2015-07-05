@@ -28,7 +28,7 @@ def getDate() {
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "19.1"
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
         minSdkVersion 10
@@ -49,6 +49,7 @@ android {
             manifest.srcFile 'src/main/AndroidManifest.xml'
             java.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['src/main/assets']
         }
     }
 
@@ -76,12 +77,8 @@ android {
 }
 
 dependencies {
-    apt 'com.raizlabs.android:DBFlow-Compiler:2.0.0'
-    compile "com.raizlabs.android:DBFlow:2.0.0"
-    compile "com.raizlabs.android:DBFlow-Core:2.0.0"
-
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.android.support:palette-v7:21.0.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:palette-v7:22.2.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.jakewharton.timber:timber:2.7.1'
@@ -94,6 +91,10 @@ dependencies {
     compile 'com.github.inaka:tinytask:v1'
     compile 'fr.nicolaspomepuy:discreetapprate:2.0.3@aar'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+    compile 'com.pushtorefresh.storio:sqlite:1.0.0'
+    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
+    compile 'com.github.medyo:fancybuttons:1.4@aar'
+
     compile project(':libraries:PullToRefreshLibrary')
     compile project(':libraries:DragSortListLibrary')
     compile project(':libraries:StickyGridHeaders')

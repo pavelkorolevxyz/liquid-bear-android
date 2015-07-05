@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/album_title_text_view"
                 android:textColor="@android:color/white"
-                android:background="@color/dark_grey"
+                android:background="@color/primary"
                 android:visibility="invisible"
                 android:padding="4dp"
                 android:textSize="20sp"

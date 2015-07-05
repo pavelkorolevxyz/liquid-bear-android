@@ -1,53 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent" android:gravity="center"
-              android:id="@+id/relativeLayout" android:padding="@dimen/normal_padding">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary"
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <RelativeLayout
-            android:layout_width="fill_parent"
+        android:id="@+id/auth_panel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/avatar"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/avatar"
+        android:layout_toStartOf="@+id/avatar"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/auth_panel" android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true" android:visibility="invisible" android:layout_below="@+id/main_panel">
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/authorized_as"
+            android:textColor="@color/icons"
+            android:textSize="14sp" />
+
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/name_text_view"
-                android:layout_toRightOf="@+id/avatar" android:layout_alignBottom="@+id/avatar"
-                android:textSize="18sp" android:textColor="@color/primary_text"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/authorized_as"
-                  android:textSize="14sp"
-                  android:layout_alignLeft="@+id/name_text_view" android:layout_above="@+id/name_text_view"
-                  android:textColor="@color/secondary_text"/>
-        <ImageView android:layout_width="@dimen/avatar_size" android:layout_height="@dimen/avatar_size" android:id="@+id/avatar"
-                   android:layout_alignParentBottom="true" android:paddingRight="4dp"
-                />
+            android:id="@+id/name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/textView2"
+            android:layout_alignRight="@+id/textView2"
+            android:layout_below="@+id/textView2"
+            android:gravity="right"
+            android:textColor="@color/icons"
+            android:textSize="18sp" />
     </RelativeLayout>
+
     <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" android:id="@+id/main_panel">
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/authorize"
-                android:id="@+id/authorize_vk_button" android:layout_gravity="center"
-                android:layout_centerHorizontal="true" android:layout_below="@+id/imageView"/>
-        <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" android:src="@drawable/vk_logo"
-                android:cropToPadding="false"
-                android:id="@+id/imageView"
-                android:layout_alignParentLeft="true" android:layout_alignParentTop="true"/>
+        android:id="@+id/main_panel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonsLayout"
+        android:layout_marginTop="20dp">
+
+        <!--<Button-->
+        <!--android:id="@+id/authorize_vk_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/imageView"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:text="@string/authorize" />-->
+
+        ImageView
+        android:id="@+id/imageView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:cropToPadding="false"
+        android:src="@drawable/vk_logo" />
+
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/auth_error_happened"
-                android:id="@+id/auth_error_text_view"
-                android:background="@color/error_red"
-                android:padding="4dp" android:layout_below="@+id/authorize_vk_button" android:visibility="gone"
-                android:layout_alignParentLeft="true" android:layout_alignParentRight="true"/>
+            android:id="@+id/auth_error_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:background="@color/error_red"
+            android:padding="4dp"
+            android:text="@string/auth_error_happened"
+            android:visibility="gone" />
     </RelativeLayout>
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/avatar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        app:riv_border_color="#fff"
+        app:riv_border_width="2dip"
+        app:riv_oval="true" />
+
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/avatar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true">
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/authorize_vk_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/avatar"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:paddingBottom="16dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:paddingTop="16dp"
+            app:fb_textSize="8sp"
+            app:fb_defaultColor="@color/success_green"
+            app:fb_focusColor="@color/success_green_shaded"
+            app:fb_text="@string/authorize"
+            app:fb_textColor="@color/inverted_primary_text" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/sign_out_vk_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/avatar"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:paddingBottom="16dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:paddingTop="16dp"
+            app:fb_textSize="8sp"
+            app:fb_defaultColor="@color/error_red"
+            app:fb_focusColor="@color/error_red_shaded"
+            app:fb_text="@string/sign_out"
+            app:fb_textColor="@color/inverted_primary_text" />
+    </LinearLayout>
+
 </RelativeLayout>
