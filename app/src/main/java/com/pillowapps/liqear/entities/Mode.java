@@ -3,7 +3,7 @@ package com.pillowapps.liqear.entities;
 import android.content.SharedPreferences;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 public class Mode {
     private int title;
@@ -121,7 +121,7 @@ public class Mode {
     }
 
     public boolean isVisible(){
-        SharedPreferences modePreferences = PreferencesManager.getModePreferences();
+        SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences();
         return modePreferences.getBoolean(Constants.MODE_VISIBLE + getModeEnum(), visibleByDefault);
     }
 }

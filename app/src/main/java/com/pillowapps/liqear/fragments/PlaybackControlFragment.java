@@ -14,7 +14,7 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 
 import butterknife.ButterKnife;
@@ -118,7 +118,7 @@ public class PlaybackControlFragment extends Fragment {
         timeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences preferences = PreferencesManager.getPreferences();
+                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean(Constants.TIME_INVERTED,
                         !preferences.getBoolean(Constants.TIME_INVERTED, false));

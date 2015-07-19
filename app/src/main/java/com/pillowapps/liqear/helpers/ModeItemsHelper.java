@@ -113,7 +113,7 @@ public class ModeItemsHelper {
         categories.clear();
         itemsPerCategory.clear();
         for (Mode currentMode : allModes) {
-            if (PreferencesManager.getModePreferences().getBoolean(Constants.MODE_VISIBLE
+            if (SharedPreferencesManager.getModePreferences().getBoolean(Constants.MODE_VISIBLE
                     + currentMode.getModeEnum(), currentMode.isVisible()) || isEditMode()) {
                 modes.add(currentMode);
                 Category category = currentMode.getCategory();

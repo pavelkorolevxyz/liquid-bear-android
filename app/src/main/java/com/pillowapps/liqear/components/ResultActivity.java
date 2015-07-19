@@ -20,7 +20,7 @@ import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class ResultActivity extends TrackedActivity {
     public int TRACKS_IN_TOP_COUNT = getPageSize();
 
     protected int getPageSize() {
-        return PreferencesManager.getPreferences().getInt("page_size", 50);
+        return SharedPreferencesManager.getPreferences().getInt("page_size", 50);
     }
 
     @Override
@@ -42,11 +42,7 @@ public class ResultActivity extends TrackedActivity {
     }
 
     public void openMainPlaylist(List<Track> tracks, int position) {
-        boolean local = false;
-        try {
-            local = tracks.get(position).isLocal();
-        } catch (Exception ignored) {
-        }
+        boolean local = tracks.get(position).isLocal();
         openMainPlaylist(tracks, position, local);
 
     }

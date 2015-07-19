@@ -66,7 +66,7 @@ import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.PlaylistManager;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.SetlistfmUtils;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
@@ -441,7 +441,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
             @Override
             public void success(List<VkTrack> data) {
                 fillWithVkTracklist(data);
-                adapter.setHighlighted(PreferencesManager.getUrlNumberPreferences()
+                adapter.setHighlighted(SharedPreferencesManager.getUrlNumberPreferences()
                         .getInt(getIntent().getStringExtra(Constants.TARGET), 0));
                 progressBar.setVisibility(View.GONE);
             }
@@ -481,7 +481,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
 
     private void loadAlbumPresets() {
         LinkedHashSet<Album> albums = new LinkedHashSet<Album>(Constants.PRESET_WANTED_COUNT);
-        SharedPreferences artistPreferences = PreferencesManager.getAlbumPreferences();
+        SharedPreferences artistPreferences = SharedPreferencesManager.getAlbumPreferences();
         int albumCount = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
         if (albumCount >= Constants.PRESET_WANTED_COUNT) {
             for (int i = albumCount - 1; i >= albumCount - Constants.PRESET_WANTED_COUNT; i--) {
@@ -509,7 +509,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
 
     private void loadTagPresets() {
         LinkedHashSet<Tag> tags = new LinkedHashSet<Tag>(Constants.PRESET_WANTED_COUNT);
-        SharedPreferences tagPreferences = PreferencesManager.getTagPreferences();
+        SharedPreferences tagPreferences = SharedPreferencesManager.getTagPreferences();
         int tagsCount = tagPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
         if (tagsCount >= Constants.PRESET_WANTED_COUNT) {
             for (int i = tagsCount - 1; i >= tagsCount - Constants.PRESET_WANTED_COUNT; i--) {
@@ -531,7 +531,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
 
     private void loadArtistPresets() {
         LinkedHashSet<Artist> artists = new LinkedHashSet<Artist>(Constants.PRESET_WANTED_COUNT);
-        SharedPreferences artistPreferences = PreferencesManager.getArtistPreferences();
+        SharedPreferences artistPreferences = SharedPreferencesManager.getArtistPreferences();
         int artistCount = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
         if (artistCount >= Constants.PRESET_WANTED_COUNT) {
             for (int i = artistCount - 1; i >= artistCount - Constants.PRESET_WANTED_COUNT; i--) {
@@ -657,7 +657,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (aim) {
             case ARTIST: {
-                SharedPreferences artistPreferences = PreferencesManager.getArtistPreferences();
+                SharedPreferences artistPreferences = SharedPreferencesManager.getArtistPreferences();
                 SharedPreferences.Editor editor = artistPreferences.edit();
                 int artistLastNumberAll = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
                 int artistsLastNumberMod = artistLastNumberAll % Constants.PRESET_WANTED_COUNT;
@@ -671,7 +671,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
             }
             break;
             case TAG: {
-                SharedPreferences tagPreferences = PreferencesManager.getTagPreferences();
+                SharedPreferences tagPreferences = SharedPreferencesManager.getTagPreferences();
                 SharedPreferences.Editor editor = tagPreferences.edit();
                 int tagLastNumberAll = tagPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
                 int tagsLastNumberMod = tagLastNumberAll % Constants.PRESET_WANTED_COUNT;
@@ -683,7 +683,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
             }
             break;
             case ALBUM: {
-                SharedPreferences albumPreferences = PreferencesManager.getAlbumPreferences();
+                SharedPreferences albumPreferences = SharedPreferencesManager.getAlbumPreferences();
                 SharedPreferences.Editor editor = albumPreferences.edit();
                 int albumLastNumberAll = albumPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
                 int albumsLastNumberMod = albumLastNumberAll % Constants.PRESET_WANTED_COUNT;
@@ -1331,7 +1331,7 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                     holder.textView = (TextView) convertView.findViewById(R.id.text_list_item);
                     holder.imageView = (ImageView) convertView.findViewById(
                             R.id.image_view_list_item);
-                    holder.loadImages = PreferencesManager.getPreferences()
+                    holder.loadImages = SharedPreferencesManager.getPreferences()
                             .getBoolean("download_images_check_box_preferences", true);
                     holder.mainLayout = convertView.findViewById(
                             R.id.playlist_tab_item_main_layout);

@@ -18,7 +18,7 @@ import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 public class FourWidthOneHeightWidget extends AppWidgetProvider {
     private static boolean sEnabled;
@@ -37,7 +37,7 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
         Track track = Timeline.getInstance().getCurrentTrack();
         String artist;
         String title;
-        SharedPreferences savePreferences = PreferencesManager.getSavePreferences();
+        SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences();
         if (track != null) {
             artist = track.getArtist();
             title = track.getTitle();

@@ -3,10 +3,10 @@ package com.pillowapps.liqear.models;
 import android.content.SharedPreferences;
 
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 public class Tutorial {
-    private SharedPreferences startPreferences = PreferencesManager.getStartPreferences();
+    private SharedPreferences startPreferences = SharedPreferencesManager.getStartPreferences();
     private SharedPreferences.Editor editor = startPreferences.edit();
 
     public void end() {

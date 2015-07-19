@@ -3,11 +3,13 @@ package com.pillowapps.liqear.network;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.pillowapps.liqear.adapters.gson.LastfmAlbumMatchesGsonAdapter;
 import com.pillowapps.liqear.adapters.gson.LastfmBooleanGsonAdapter;
 import com.pillowapps.liqear.adapters.gson.LastfmTrackListGsonAdapter;
 import com.pillowapps.liqear.adapters.gson.SetlistfmSetListGsonAdapter;
 import com.pillowapps.liqear.adapters.gson.SetlistfmSetsAdapter;
 import com.pillowapps.liqear.adapters.gson.SetlistfmSongListGsonAdapter;
+import com.pillowapps.liqear.entities.lastfm.LastfmAlbums;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.setlistfm.SetlistfmSet;
 import com.pillowapps.liqear.entities.setlistfm.SetlistfmSets;
@@ -85,10 +87,13 @@ public class ServiceHelper {
             }.getType();
             Type booleanTypeAdapter = new TypeToken<Boolean>() {
             }.getType();
+            Type albumMatchesAdapter = new TypeToken<LastfmAlbums>() {
+            }.getType();
 
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(trackListTypeAdapter, new LastfmTrackListGsonAdapter())
                     .registerTypeAdapter(booleanTypeAdapter, new LastfmBooleanGsonAdapter())
+                    .registerTypeAdapter(albumMatchesAdapter, new LastfmAlbumMatchesGsonAdapter())
                     .create();
 
             OkHttpClient okHttpClient = new OkHttpClient();

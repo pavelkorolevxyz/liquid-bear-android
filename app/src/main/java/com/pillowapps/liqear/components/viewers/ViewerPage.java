@@ -25,6 +25,7 @@ public abstract class ViewerPage<T> {
     protected TextView emptyTextView;
     private Context context;
 
+    private boolean singlePage = false;
     private int page = 0;
     private int totalPages = Integer.MAX_VALUE;
     private View view;
@@ -73,10 +74,6 @@ public abstract class ViewerPage<T> {
     }
 
     public int getPage() {
-        if (totalPages < page++) {
-            listView.onLoadMoreComplete();
-            return -1;
-        }
         return page;
     }
 
@@ -114,6 +111,10 @@ public abstract class ViewerPage<T> {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setSinglePage(boolean singlePage) {
+        this.singlePage = singlePage;
     }
 
     public void setOnLoadMoreListener(LoadMoreListView.OnLoadMoreListener listener) {

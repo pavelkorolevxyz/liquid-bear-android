@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -62,7 +61,7 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.PlayingState;
@@ -86,7 +85,6 @@ import fr.nicolaspomepuy.discreetapprate.AppRate;
 import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
 import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
 import timber.log.Timber;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends BaseActivity implements ModeListFragment.NavigationDrawerCallbacks {
     public Menu mainMenu;
@@ -268,7 +266,7 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
             }
         }
         if (fixed) return;
-        if (PreferencesManager.getPreferences().getBoolean("exit_anyway", false)
+        if (SharedPreferencesManager.getPreferences().getBoolean("exit_anyway", false)
                 || Timeline.getInstance().getPlayingState() == PlayingState.DEFAULT) {
             destroy();
         } else {
@@ -442,7 +440,7 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
                 View layout = inflater.inflate(R.layout.seekbar_layout, null);
                 final NumberPicker sb = (NumberPicker) layout.findViewById(R.id.minutes_picker);
                 sb.setRange(1, 1440);
-                int timerDefault = PreferencesManager.getPreferences()
+                int timerDefault = SharedPreferencesManager.getPreferences()
                         .getInt(Constants.TIMER_DEFAULT, 10);
                 sb.setCurrent(timerDefault);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
@@ -462,7 +460,7 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
                             public void onClick(DialogInterface dialog, int which) {
                                 musicService.setTimer(sb.getCurrent() * 60);
                                 SharedPreferences.Editor editor =
-                                        PreferencesManager.getPreferences().edit();
+                                        SharedPreferencesManager.getPreferences().edit();
                                 editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
                                 editor.apply();
                             }
@@ -518,7 +516,7 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
             }
             return true;
             case R.id.menu_search: {
-                SharedPreferences savePreferences = PreferencesManager.getSavePreferences();
+                SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences();
                 boolean visibility = !savePreferences.getBoolean(
                         Constants.SEARCH_PLAYLIST_VISIBILITY, false);
                 savePreferences.edit().putBoolean(
@@ -547,7 +545,7 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
         ImageButton vkButton = (ImageButton) dialog.findViewById(R.id.vk_button);
         Button otherButton = (Button) dialog.findViewById(R.id.other_button);
         Button cancelButton = (Button) dialog.findViewById(R.id.cancel_button);
-        String template = PreferencesManager.getPreferences().getString(Constants.SHARE_FORMAT, getString(R.string.listening_now));
+        String template = SharedPreferencesManager.getPreferences().getString(Constants.SHARE_FORMAT, getString(R.string.listening_now));
         final Album album = Timeline.getInstance().getCurrentAlbum();
         String artist = "";
         String trackTitle = "";
@@ -609,7 +607,7 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
         if (position < index) {
             Timeline.getInstance().setIndex(index - 1);
         } else if (position == index) {
-            Timeline.getInstance().setPlaylistChanged(false);
+            Timeline.getInstance().setPlaylistChanged(true);
         }
         Timeline.getInstance().getPlaylistTracks().remove(position);
         updateAdapter();
@@ -623,6 +621,9 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
     public void updateAdapter() {
         List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
         playlistItemsAdapter.setValues(playlist);
+        if (!isTablet()) {
+            phoneFragment.updateEmptyTextView();
+        }
     }
 
     private void changePlaylist(int position, boolean play) {
@@ -666,7 +667,7 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
         Collections.shuffle(tracks);
         Timeline.getInstance().setPlaylist(new Playlist(tracks));
         updateAdapter();
-        Timeline.getInstance().setPlaylistChanged(false);
+        Timeline.getInstance().setPlaylistChanged(true);
         changePlaylistWithoutTrackChange();
     }
 
@@ -746,7 +747,7 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
     }
 
     private void addToVk(Track track) {
-        if (PreferencesManager.getPreferences().getBoolean("add_to_vk_slow", true)) {
+        if (SharedPreferencesManager.getPreferences().getBoolean("add_to_vk_slow", true)) {
             if (track != null) {
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 intent.putExtra(SearchActivity.SEARCH_MODE,

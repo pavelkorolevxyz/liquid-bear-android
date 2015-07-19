@@ -36,7 +36,10 @@ public class Converter {
     public static Track convertVkTrack(VkTrack vkTrack) {
         String artist = vkTrack.getArtist();
         String title = vkTrack.getTitle();
-        return new Track(artist, title);
+        Track track = new Track(artist, title);
+        track.setAudioId(vkTrack.getAudioId());
+        track.setOwnerId(vkTrack.getOwnerId());
+        return track;
     }
 
     public static Artist convertArtist(LastfmArtist lastfmArtist) {

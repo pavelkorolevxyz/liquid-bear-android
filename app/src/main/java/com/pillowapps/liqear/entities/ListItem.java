@@ -16,10 +16,10 @@ import com.pillowapps.liqear.adapters.ModeListAdapter;
 import com.pillowapps.liqear.components.UpdateAdapterCallback;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 public class ListItem implements Item {
-    final SharedPreferences modePreferences = PreferencesManager.getModePreferences();
+    final SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences();
     private final Mode mode;
     private final Context context;
     private final UpdateAdapterCallback callback;

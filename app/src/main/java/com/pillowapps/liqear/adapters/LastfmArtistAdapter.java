@@ -14,7 +14,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.helpers.CollectionUtils;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.ImageModel;
 
 import java.util.List;
@@ -64,7 +64,7 @@ public class LastfmArtistAdapter extends ArrayAdapter<LastfmArtist> {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.image_list_item, parent, false);
             holder = new ViewHolder(convertView);
-            holder.loadImages = PreferencesManager.getPreferences()
+            holder.loadImages = SharedPreferencesManager.getPreferences()
                     .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true);
             convertView.setTag(holder);
         } else {

@@ -24,7 +24,7 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.EqualizerManager;
 import com.pillowapps.liqear.helpers.CompatEq;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class EqualizerActivity extends TrackedActivity {
     private BassBoost bassBoost;
     private LinearLayout mainLinearLayout;
     private Spinner spinner;
-    private SharedPreferences preferences = PreferencesManager.getEqualizerPreferences();
+    private SharedPreferences preferences = SharedPreferencesManager.getEqualizerPreferences();
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -96,7 +96,7 @@ public class EqualizerActivity extends TrackedActivity {
 
     private void setupEqualizerFxAndUI(boolean fromSaves) {
         final short bands = equalizer.getNumberOfBands();
-        final SharedPreferences preferences = PreferencesManager.getEqualizerPreferences();
+        final SharedPreferences preferences = SharedPreferencesManager.getEqualizerPreferences();
         if (fromSaves) {
             for (short i = 0; i < bands; i++) {
                 equalizer.setBandLevel(i, (short) preferences.getInt(Constants.EQUALIZER + i, 0));
@@ -128,7 +128,7 @@ public class EqualizerActivity extends TrackedActivity {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view,
                                            int position, long l) {
-                    Editor editor = PreferencesManager.getEqualizerPreferences().edit();
+                    Editor editor = SharedPreferencesManager.getEqualizerPreferences().edit();
                     editor.putInt("selected", position);
                     editor.putBoolean("changed", false);
                     int presetIteration = 0;
@@ -174,7 +174,7 @@ public class EqualizerActivity extends TrackedActivity {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                Editor editor = PreferencesManager.getEqualizerPreferences().edit();
+                Editor editor = SharedPreferencesManager.getEqualizerPreferences().edit();
                 editor.putBoolean("enabled", isChecked);
                 editor.apply();
                 EqualizerManager.setEnabled(isChecked);
@@ -232,7 +232,7 @@ public class EqualizerActivity extends TrackedActivity {
                 }
 
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    Editor editor = PreferencesManager.getEqualizerPreferences().edit();
+                    Editor editor = SharedPreferencesManager.getEqualizerPreferences().edit();
                     editor.putInt(Constants.EQUALIZER + band, equalizer.getBandLevel(band));
                     editor.putBoolean("changed", true);
                     editor.apply();
@@ -276,7 +276,7 @@ public class EqualizerActivity extends TrackedActivity {
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Editor editor = PreferencesManager.getEqualizerPreferences().edit();
+                Editor editor = SharedPreferencesManager.getEqualizerPreferences().edit();
                 editor.putInt(Constants.EQUALIZER_BASS, (int) bassBoost.getRoundedStrength());
                 editor.putBoolean("changed", true);
                 editor.apply();

@@ -17,7 +17,7 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.entities.Mode;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ModeAdapter implements StickyGridHeadersBaseAdapter {
     private final LayoutInflater inflater;
     private final Context context;
-    private final SharedPreferences modePreferences = PreferencesManager.getModePreferences();
+    private final SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences();
     private List<Mode> modes;
     private List<DataSetObserver> observers = new ArrayList<DataSetObserver>();
     private ModeItemsHelper modeItemsHelper = new ModeItemsHelper();

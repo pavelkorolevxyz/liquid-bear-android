@@ -9,7 +9,7 @@ import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistUtils;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.PlayingState;
 
 import java.util.LinkedList;
@@ -31,12 +31,13 @@ public class Timeline {
     private int maxListeningsCount;
     private LinkedList<Integer> queueIndexes = new LinkedList<>();
     private Stack<Integer> previousTracksIndexes = new Stack<>();
+    private boolean startPlayingOnPrepared = false;
 
-    private ShuffleMode shuffleMode = PreferencesManager.getPreferences()
+    private ShuffleMode shuffleMode = SharedPreferencesManager.getPreferences()
             .getBoolean(Constants.SHUFFLE_MODE_ON, false)
             ? ShuffleMode.SHUFFLE
             : ShuffleMode.DEFAULT;
-    private RepeatMode repeatMode = PreferencesManager.getPreferences()
+    private RepeatMode repeatMode = SharedPreferencesManager.getPreferences()
             .getBoolean(Constants.REPEAT_MODE_ON, false)
             ? RepeatMode.REPEAT
             : RepeatMode.REPEAT_PLAYLIST;
@@ -202,6 +203,7 @@ public class Timeline {
     }
 
     public void addToPlaylist(List<Track> tracks) {
+        if (tracks == null || currentPlaylist == null) return;
         currentPlaylist.getTracks().addAll(tracks);
     }
 
@@ -243,5 +245,13 @@ public class Timeline {
 
     public Playlist getPlaylist() {
         return currentPlaylist;
+    }
+
+    public boolean isStartPlayingOnPrepared() {
+        return startPlayingOnPrepared;
+    }
+
+    public void setStartPlayingOnPrepared(boolean startPlayingOnPrepared) {
+        this.startPlayingOnPrepared = startPlayingOnPrepared;
     }
 }

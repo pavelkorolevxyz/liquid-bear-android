@@ -32,7 +32,7 @@ import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.portals.AlterportalAlbumModel;
 import com.pillowapps.liqear.models.portals.FunkySoulsAlbumModel;
 import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
@@ -276,7 +276,7 @@ public class NewcomersActivity extends ResultActivity {
                 holder.genre = (TextView) convertView.findViewById(R.id.genre_list_item);
                 holder.cover = (ImageView) convertView.findViewById(
                         R.id.cover_image_view_album_list_item);
-                holder.loadImages = PreferencesManager.getPreferences()
+                holder.loadImages = SharedPreferencesManager.getPreferences()
                         .getBoolean("download_images_check_box_preferences", true);
                 convertView.setTag(holder);
             } else {

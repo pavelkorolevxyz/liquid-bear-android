@@ -37,7 +37,7 @@ import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmRecommendationsModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
@@ -82,7 +82,7 @@ public class RecommendationsActivity extends ResultActivity {
         progressBar = (ProgressBar) findViewById(R.id.pageProgressBar);
         gridView = (GridView) findViewById(R.id.recommendations_grid_view);
         listView = (ListView) findViewById(R.id.recommendations_list_view);
-        if (!PreferencesManager.getPreferences().getBoolean("show_images_grid", true)) {
+        if (!SharedPreferencesManager.getPreferences().getBoolean("show_images_grid", true)) {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
             gridMode = false;
@@ -236,7 +236,7 @@ public class RecommendationsActivity extends ResultActivity {
                     holder = new ViewHolder();
                     holder.text = (TextView) convertView.findViewById(R.id.text_tile_list_item);
                     holder.image = (ImageView) convertView.findViewById(R.id.image_tile_list_item);
-                    holder.loadImages = PreferencesManager.getPreferences()
+                    holder.loadImages = SharedPreferencesManager.getPreferences()
                             .getBoolean("download_images_check_box_preferences", true);
                     convertView.setTag(holder);
                 } else {
@@ -285,7 +285,7 @@ public class RecommendationsActivity extends ResultActivity {
                     holder = new ViewHolder();
                     holder.text = (TextView) convertView.findViewById(R.id.text_list_item);
                     holder.image = (ImageView) convertView.findViewById(R.id.image_view_list_item);
-                    holder.loadImages = PreferencesManager.getPreferences()
+                    holder.loadImages = SharedPreferencesManager.getPreferences()
                             .getBoolean("download_images_check_box_preferences", true);
                     convertView.setTag(holder);
                 } else {

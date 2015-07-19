@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class LastfmTagAdapter extends ArrayAdapter<LastfmTag> {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.image_list_item, parent, false);
             holder = new ViewHolder(convertView);
-            holder.loadImages = PreferencesManager.getPreferences()
+            holder.loadImages = SharedPreferencesManager.getPreferences()
                     .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true);
             convertView.setTag(holder);
         } else {

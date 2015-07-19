@@ -15,10 +15,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerViewAdapter;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
@@ -31,7 +31,6 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.network.ImageLoadingListener;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,12 +126,7 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.top_tracks);
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getAlbumInfo(album, viewer);
-            }
-        });
+        viewer.setSinglePage(true);
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -215,7 +209,7 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
                 artistTextView.setText(album.getArtistName());
                 titleTextView.setText(album.getTitle());
                 String releaseDate = album.getReleaseDate();
-                if (releaseDate != null && !releaseDate.isEmpty()) {
+                if (releaseDate != null && !releaseDate.trim().isEmpty()) {
                     otherTextView.setText(releaseDate.substring(0, releaseDate.indexOf(",")).trim());
                 }
             }

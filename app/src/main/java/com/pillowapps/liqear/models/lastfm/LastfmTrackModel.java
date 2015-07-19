@@ -1,7 +1,9 @@
 package com.pillowapps.liqear.models.lastfm;
 
-import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
+import com.pillowapps.liqear.callbacks.LastfmCallback;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTrackRoot;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
@@ -9,8 +11,6 @@ import com.pillowapps.liqear.helpers.LastfmApiHelper;
 import com.pillowapps.liqear.helpers.LastfmCallbackUtils;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.network.ServiceHelper;
-import com.pillowapps.liqear.callbacks.LastfmCallback;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class LastfmTrackModel {
         String sessionKey = AuthorizationInfoManager.getLastfmKey();
         Map<String, String> params = new TreeMap<>();
         String artist = track.getArtist();
-        String title = track.getArtist();
+        String title = track.getTitle();
         String album = track.getAlbum();
         params.put("artist", artist);
         params.put("track", title);

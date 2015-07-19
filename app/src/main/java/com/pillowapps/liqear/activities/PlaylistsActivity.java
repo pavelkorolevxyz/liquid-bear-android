@@ -25,10 +25,10 @@ import android.widget.TextView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.components.ResultActivity;
-import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.PlaylistManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +39,7 @@ public class PlaylistsActivity extends ResultActivity {
     private Bundle extras;
     private Aim aim;
     private ListView listView;
+    private TextView emptyTextView;
 
     public void onStart() {
         super.onStart();
@@ -62,6 +63,7 @@ public class PlaylistsActivity extends ResultActivity {
         extras = getIntent().getExtras();
         aim = (Aim) extras.getSerializable(AIM);
         listView = (ListView) findViewById(android.R.id.list);
+        emptyTextView = (TextView) findViewById(R.id.empty);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(getResources().getString(R.string.playlist_tab));
@@ -70,6 +72,7 @@ public class PlaylistsActivity extends ResultActivity {
         adapter = new PlaylistsArrayAdapter<>(
                 PlaylistsActivity.this, playlists, Playlist.class);
         listView.setAdapter(adapter);
+        updateEmptyTextView();
 
         listView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
@@ -104,6 +107,13 @@ public class PlaylistsActivity extends ResultActivity {
         });
     }
 
+    private void updateEmptyTextView() {
+        emptyTextView.setVisibility(
+                listView.getAdapter() != null
+                        && listView.getAdapter().getCount() > 0
+                        ? View.GONE : View.VISIBLE);
+    }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         if (v.getId() == android.R.id.list) {
@@ -125,6 +135,7 @@ public class PlaylistsActivity extends ResultActivity {
             case 0:
                 adapter.getValues().remove(info.position);
                 adapter.notifyDataSetChanged();
+                updateEmptyTextView();
                 PlaylistManager.getInstance().removePlaylist(playlist.getId());
                 break;
             case 1:
@@ -180,6 +191,7 @@ public class PlaylistsActivity extends ResultActivity {
                         if (pid != -1) {
                             ((List<Playlist>) adapter.getValues()).add(0, new Playlist(pid, title));
                             adapter.notifyDataSetChanged();
+                            updateEmptyTextView();
                         }
                     }
                 });
@@ -213,6 +225,7 @@ public class PlaylistsActivity extends ResultActivity {
                                     ((Playlist) adapter.get(position)).getId(), title);
                             ((Playlist) adapter.get(position)).setTitle(title);
                             adapter.notifyDataSetChanged();
+                            updateEmptyTextView();
                         } else {
                             long pid = PlaylistManager.getInstance().addPlaylist(title,
                                     Timeline.getInstance().getPlaylistTracks());
@@ -220,6 +233,7 @@ public class PlaylistsActivity extends ResultActivity {
                                 ((List<Playlist>) adapter.getValues()).add(0,
                                         new Playlist(pid, title));
                                 adapter.notifyDataSetChanged();
+                                updateEmptyTextView();
                             }
                         }
                     }
@@ -252,6 +266,7 @@ public class PlaylistsActivity extends ResultActivity {
                                     ((Playlist) adapter.get(position)).getId(), title);
                             ((Playlist) adapter.get(position)).setTitle(title);
                             adapter.notifyDataSetChanged();
+                            updateEmptyTextView();
                         } else {
 //                            List<Track> tracklist = getIntent()
 //                                    .getParcelableArrayListExtra(Constants.TRACKLIST);

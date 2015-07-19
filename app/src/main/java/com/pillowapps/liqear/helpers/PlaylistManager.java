@@ -408,7 +408,7 @@ public class PlaylistManager {
     }
 
     public void updateDatabase() {
-        SharedPreferences databasePreferences = PreferencesManager.getDatabasePreferences();
+        SharedPreferences databasePreferences = SharedPreferencesManager.getDatabasePreferences();
         SharedPreferences.Editor editor = databasePreferences.edit();
         if (databasePreferences.getInt(Constants.DATABASE_VERSION, 0) < DATABASE_VERSION) {
             try {

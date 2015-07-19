@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.pillowapps.liqear.LBApplication;
 
-public class PreferencesManager {
+public class SharedPreferencesManager {
     private static final String LASTFM_PREFERENCES = "lastfm_preferences";
     private static final String SAVE_PREFERENCES = "save_preferences";
     private static final String ALBUM_PREFERENCES = "album_preferences";

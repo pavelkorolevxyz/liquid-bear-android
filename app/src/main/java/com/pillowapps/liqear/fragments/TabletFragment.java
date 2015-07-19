@@ -51,7 +51,7 @@ import com.pillowapps.liqear.entities.events.TimeEvent;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.PlayingState;
@@ -111,7 +111,7 @@ public class TabletFragment extends Fragment {
         listView = (DragSortListView) v.findViewById(R.id.playlist_list_view_playlist_tab);
         listView.setAdapter(mainActivity.getPlaylistItemsAdapter());
         searchPlaylistEditText = (EditText) v.findViewById(R.id.search_edit_text_playlist_tab);
-        searchPlaylistEditText.setVisibility(PreferencesManager.getSavePreferences()
+        searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
                 .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false)
                 ? View.VISIBLE : View.GONE);
         clearEditTextButton = (ImageButton) v.findViewById(
@@ -199,7 +199,7 @@ public class TabletFragment extends Fragment {
                     artistTextView.setText(Html.fromHtml(track.getArtist()));
                     titleTextView.setText(Html.fromHtml(track.getTitle()));
                     playPauseButton.setImageResource(R.drawable.pause_button);
-                    mainActivity.getMusicPlaybackService().setPlayOnPrepared(true);
+                    Timeline.getInstance().setStartPlayingOnPrepared(true);
                     mainActivity.getMusicPlaybackService().play(track.getRealPosition());
                 }
             }
@@ -268,7 +268,7 @@ public class TabletFragment extends Fragment {
         int timeFromBeginning = mainActivity.getMusicPlaybackService().getCurrentPosition() / 1000;
         int duration = mainActivity.getMusicPlaybackService().getDuration();
         if (duration > 0) {
-            if (PreferencesManager.getPreferences().getBoolean(Constants.TIME_INVERTED, false)) {
+            if (SharedPreferencesManager.getPreferences().getBoolean(Constants.TIME_INVERTED, false)) {
                 int timeToEnd = duration / 1000 - timeFromBeginning;
                 text = "-" + Utils.secondsToString(timeToEnd);
             } else {
@@ -306,7 +306,7 @@ public class TabletFragment extends Fragment {
     }
 
     public void updateSearchVisibility() {
-        searchPlaylistEditText.setVisibility(PreferencesManager.getSavePreferences()
+        searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
                 .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ?
                 View.VISIBLE : View.GONE);
     }
@@ -326,7 +326,7 @@ public class TabletFragment extends Fragment {
                 List<Track> tracks = playlist.getTracks();
 
                 tracks = Timeline.getInstance().getPlaylistTracks();
-                SharedPreferences preferences = PreferencesManager.getPreferences();
+                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
                 String artist = preferences.getString(Constants.ARTIST, "");
                 String title = preferences.getString(Constants.TITLE, "");
                 int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
@@ -352,7 +352,7 @@ public class TabletFragment extends Fragment {
                 if (currentIndex > Timeline.getInstance().getPlaylistTracks().size()) {
                     position = 0;
                 }
-                if (!PreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
+                if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
                     position = 0;
                 }
 
@@ -367,7 +367,7 @@ public class TabletFragment extends Fragment {
     public void trackInfoEvent(TrackInfoEvent event) {
         Track track = Timeline.getInstance().getCurrentTrack();
         if (track == null) return;
-        if (PreferencesManager.getPreferences()
+        if (SharedPreferencesManager.getPreferences()
                 .getBoolean("scroll_to_current", false)) {
             listView.requestFocusFromTouch();
             listView.setSelection(Timeline.getInstance().getIndex());
@@ -400,9 +400,9 @@ public class TabletFragment extends Fragment {
 
     @Subscribe
     public void artistInfoEvent(ArtistInfoEvent event) {
-        if (PreferencesManager.getPreferences().getBoolean(
+        if (SharedPreferencesManager.getPreferences().getBoolean(
                 Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-            if (PreferencesManager.getPreferences().getBoolean(
+            if (SharedPreferencesManager.getPreferences().getBoolean(
                     Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
                 String imageUrl = event.getImageUrl();
                 Timeline.getInstance().setCurrentArtistImageUrl(imageUrl);
@@ -416,7 +416,7 @@ public class TabletFragment extends Fragment {
         Album album = event.getAlbum();
         if (album != null && !album.equals(Timeline.getInstance().getPreviousAlbum())) {
             String imageUrl = album.getImageUrl();
-            if (imageUrl == null || !PreferencesManager.getPreferences()
+            if (imageUrl == null || !SharedPreferencesManager.getPreferences()
                     .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)
                     ) {
                 albumImageView.setVisibility(View.INVISIBLE);

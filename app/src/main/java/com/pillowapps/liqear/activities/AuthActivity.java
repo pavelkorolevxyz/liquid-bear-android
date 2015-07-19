@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,7 +24,7 @@ import com.pillowapps.liqear.entities.vk.VkUser;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAuthModel;
@@ -254,7 +253,7 @@ public class AuthActivity extends TrackedActivity {
                             @Override
                             public void success(LastfmSession session) {
                                 String name = session.getName();
-                                SharedPreferences.Editor editor = PreferencesManager
+                                SharedPreferences.Editor editor = SharedPreferencesManager
                                         .getLastfmPreferences(AuthActivity.this).edit();
                                 editor.putString(Constants.LASTFM_NAME, name);
                                 editor.putString(Constants.LASTFM_KEY, session.getKey());

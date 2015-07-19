@@ -17,7 +17,7 @@ import timber.log.Timber;
 public class StateManager {
     public static void savePlaylistState(MusicService service) {
         saveTrackState();
-        SharedPreferences.Editor editor = PreferencesManager.getPreferences().edit();
+        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences().edit();
         if (service != null) {
             editor.putInt(Constants.CURRENT_POSITION, service.getCurrentPosition());
             editor.putInt(Constants.CURRENT_BUFFER, service.getCurrentBuffer());
@@ -32,7 +32,7 @@ public class StateManager {
     }
 
     public static void saveTrackState() {
-        SharedPreferences.Editor editor = PreferencesManager.getPreferences().edit();
+        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences().edit();
         final Track currentTrack = Timeline.getInstance().getCurrentTrack();
         if (Timeline.getInstance().getPlaylistTracks() != null
                 && Timeline.getInstance().getPlaylistTracks().size() != 0

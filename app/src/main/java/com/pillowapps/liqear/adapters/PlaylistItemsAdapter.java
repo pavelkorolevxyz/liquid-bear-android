@@ -54,6 +54,11 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
     }
 
     @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
+    @Override
     public Track getItem(int position) {
         if (position >= tracks.size()) return null;
         return tracks.get(position);

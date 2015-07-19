@@ -59,7 +59,7 @@ import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.ImageModel;
@@ -114,6 +114,7 @@ public class PhoneFragment extends Fragment {
             return mainActivity.onOptionsItemSelected(menuItem);
         }
     };
+    private TextView emptyTextView;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.handset_fragment_layout, container, false);
@@ -222,9 +223,10 @@ public class PhoneFragment extends Fragment {
         playlistsListView = (DragSortListView) playlistTab.findViewById(R.id.playlist_list_view_playlist_tab);
         playlistsListView.setAdapter(mainActivity.getPlaylistItemsAdapter());
         searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
-        searchPlaylistEditText.setVisibility(PreferencesManager.getSavePreferences()
+        searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
                 .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ? View.VISIBLE : View.GONE);
         clearEditTextButton = (ImageButton) playlistTab.findViewById(R.id.clear_edit_text_button_playlist_tab);
+        emptyTextView = (TextView) playlistTab.findViewById(R.id.empty);
     }
 
     private void initPlaybackTab() {
@@ -286,7 +288,7 @@ public class PhoneFragment extends Fragment {
                     artistTextView.setText(track.getArtist());
                     titleTextView.setText(track.getTitle());
                     playPauseButton.setImageResource(R.drawable.pause_button);
-                    mainActivity.getMusicPlaybackService().setPlayOnPrepared(true);
+                    Timeline.getInstance().setStartPlayingOnPrepared(true);
                     mainActivity.getMusicPlaybackService().play(track.getRealPosition());
                 }
             }
@@ -295,6 +297,7 @@ public class PhoneFragment extends Fragment {
             @Override
             public void remove(int which) {
                 mainActivity.removeTrack(which);
+                updateEmptyTextView();
             }
         });
         playlistsListView.setDropListener(new DragSortListView.DropListener() {
@@ -432,7 +435,7 @@ public class PhoneFragment extends Fragment {
         timeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences preferences = PreferencesManager.getPreferences();
+                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean(Constants.TIME_INVERTED,
                         !preferences.getBoolean(Constants.TIME_INVERTED, false));
@@ -456,7 +459,7 @@ public class PhoneFragment extends Fragment {
     }
 
     public void updateSearchVisibility() {
-        searchPlaylistEditText.setVisibility(PreferencesManager.getSavePreferences()
+        searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
                 .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ? View.VISIBLE : View.GONE);
     }
 
@@ -467,7 +470,7 @@ public class PhoneFragment extends Fragment {
         int timeFromBeginning = mainActivity.getMusicPlaybackService().getCurrentPosition() / 1000;
         int duration = mainActivity.getMusicPlaybackService().getDuration();
         if (duration > 0) {
-            if (PreferencesManager.getPreferences().getBoolean(Constants.TIME_INVERTED, false)) {
+            if (SharedPreferencesManager.getPreferences().getBoolean(Constants.TIME_INVERTED, false)) {
                 int timeToEnd = duration / 1000 - timeFromBeginning;
                 text = "-" + Utils.secondsToString(timeToEnd);
             } else {
@@ -490,7 +493,7 @@ public class PhoneFragment extends Fragment {
 
                 List<Track> tracks = playlist.getTracks();
 
-                SharedPreferences preferences = PreferencesManager.getPreferences();
+                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
                 String artist = preferences.getString(Constants.ARTIST, "");
                 String title = preferences.getString(Constants.TITLE, "");
                 int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
@@ -518,7 +521,7 @@ public class PhoneFragment extends Fragment {
                     artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
                     position = 0;
                 }
-                if (!PreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
+                if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
                     position = 0;
                 }
 
@@ -530,7 +533,7 @@ public class PhoneFragment extends Fragment {
                     albumTextView.setVisibility(View.GONE);
                     return;
                 }
-                if (PreferencesManager.getPreferences()
+                if (SharedPreferencesManager.getPreferences()
                         .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
                     new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
                             artistImageView, new ImageLoadingListener() {
@@ -556,7 +559,7 @@ public class PhoneFragment extends Fragment {
                 Album album = Timeline.getInstance().getCurrentAlbum();
                 if (album != null) {
                     String imageUrl = album.getImageUrl();
-                    if (imageUrl == null || !PreferencesManager.getPreferences()
+                    if (imageUrl == null || !SharedPreferencesManager.getPreferences()
                             .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
                         albumImageView.setVisibility(View.GONE);
                     } else {
@@ -616,6 +619,13 @@ public class PhoneFragment extends Fragment {
         searchPlaylistEditText.setText("");
     }
 
+    public void updateEmptyTextView() {
+        emptyTextView.setVisibility(
+                playlistsListView.getAdapter() != null
+                        && playlistsListView.getAdapter().getCount() > 0
+                        ? View.GONE : View.VISIBLE);
+    }
+
     public class ModeLongClickListener implements AdapterView.OnItemLongClickListener {
         @Override
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -629,7 +639,7 @@ public class PhoneFragment extends Fragment {
     public void trackInfoEvent(TrackInfoEvent event) {
         Track track = Timeline.getInstance().getCurrentTrack();
         if (track == null) return;
-        if (PreferencesManager.getPreferences()
+        if (SharedPreferencesManager.getPreferences()
                 .getBoolean("scroll_to_current", false)) {
             playlistsListView.requestFocusFromTouch();
             playlistsListView.setSelection(Timeline.getInstance().getIndex());
@@ -660,7 +670,7 @@ public class PhoneFragment extends Fragment {
 
     @Subscribe
     public void artistInfoEvent(ArtistInfoEvent event) {
-        if (PreferencesManager.getPreferences().getBoolean(
+        if (SharedPreferencesManager.getPreferences().getBoolean(
                 Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
             String imageUrl = event.getImageUrl();
             Timeline.getInstance().setCurrentArtistImageUrl(imageUrl);
@@ -693,7 +703,7 @@ public class PhoneFragment extends Fragment {
         Album album = event.getAlbum();
         if (album != null && !album.equals(Timeline.getInstance().getPreviousAlbum())) {
             String imageUrl = album.getImageUrl();
-            if (imageUrl == null || !PreferencesManager.getPreferences().getBoolean(
+            if (imageUrl == null || !SharedPreferencesManager.getPreferences().getBoolean(
                     Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
                 albumImageView.setVisibility(View.GONE);
             } else {

@@ -25,7 +25,7 @@ import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkLyrics;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.PreferencesManager;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.vk.VkLyricsModel;
@@ -66,7 +66,7 @@ public class TextActivity extends ResultActivity {
                 String title = extras.getString("title");
                 googleRequest = artist + " - " + title;
                 actionBar.setTitle(Html.fromHtml(googleRequest));
-                lyricsNumber = PreferencesManager.getLyricsNumberPreferences()
+                lyricsNumber = SharedPreferencesManager.getLyricsNumberPreferences()
                         .getInt(googleRequest, 0);
                 getTrackLyrics(new Track(artist, title), lyricsNumber);
                 progressBar.setVisibility(View.VISIBLE);
@@ -106,7 +106,7 @@ public class TextActivity extends ResultActivity {
                     break;
                 case R.id.google:
                     String url;
-                    if (PreferencesManager.getPreferences()
+                    if (SharedPreferencesManager.getPreferences()
                             .getBoolean("lucky_search_check_box_preferences", true)) {
                         url = "http://www.google.com/webhp#q="
                                 + Uri.encode(googleRequest + " lyrics") + "&btnI";
@@ -121,7 +121,7 @@ public class TextActivity extends ResultActivity {
                 case R.id.next_result:
                     lyricsNumber++;
                     final SharedPreferences lyricsNumberPreferences =
-                            PreferencesManager.getLyricsNumberPreferences();
+                            SharedPreferencesManager.getLyricsNumberPreferences();
                     final SharedPreferences.Editor editor = lyricsNumberPreferences.edit();
                     editor.putInt(googleRequest,
                             lyricsNumberPreferences.getInt(googleRequest, 0) + 1);
@@ -250,7 +250,7 @@ public class TextActivity extends ResultActivity {
         Track track = Timeline.getInstance().getCurrentTrack();
         googleRequest = TrackUtils.getNotation(track);
         getSupportActionBar().setTitle(googleRequest);
-        getTrackLyrics(track, PreferencesManager
+        getTrackLyrics(track, SharedPreferencesManager
                 .getLyricsNumberPreferences().getInt(googleRequest, 0));
         progressBar.setVisibility(View.VISIBLE);
     }
