@@ -488,92 +488,96 @@ public class PhoneFragment extends Fragment {
         StateManager.restorePlaylistState(new CompletionCallback() {
             @Override
             public void onCompleted() {
-                Playlist playlist = Timeline.getInstance().getPlaylist();
+                final Playlist playlist = Timeline.getInstance().getPlaylist();
                 if (playlist == null || playlist.getTracks().size() == 0) return;
 
-                List<Track> tracks = playlist.getTracks();
+                mainActivity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        List<Track> tracks = playlist.getTracks();
 
-                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                String artist = preferences.getString(Constants.ARTIST, "");
-                String title = preferences.getString(Constants.TITLE, "");
-                int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
-                seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
+                        SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                        String artist = preferences.getString(Constants.ARTIST, "");
+                        String title = preferences.getString(Constants.TITLE, "");
+                        int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                        int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+                        seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
 
-                boolean currentFits = currentIndex < tracks.size();
-                if (!currentFits) currentIndex = 0;
-                Track currentTrack = tracks.get(currentIndex);
-                boolean tracksEquals = currentFits
-                        && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                        + currentTrack.getTitle());
-                if (!tracksEquals) {
-                    artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
-                    currentIndex = 0;
-                    artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
-                    titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
-                    position = 0;
-                } else {
-                    artistTextView.setText(Html.fromHtml(artist));
-                    titleTextView.setText(Html.fromHtml(title));
-                }
-                Timeline.getInstance().setIndex(currentIndex);
-                if (currentIndex > tracks.size()) {
-                    artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
-                    position = 0;
-                }
-                if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
-                    position = 0;
-                }
+                        boolean currentFits = currentIndex < tracks.size();
+                        if (!currentFits) currentIndex = 0;
+                        Track currentTrack = tracks.get(currentIndex);
+                        boolean tracksEquals = currentFits
+                                && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                                + currentTrack.getTitle());
+                        if (!tracksEquals) {
+                            artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
+                            currentIndex = 0;
+                            artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
+                            titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
+                            position = 0;
+                        } else {
+                            artistTextView.setText(Html.fromHtml(artist));
+                            titleTextView.setText(Html.fromHtml(title));
+                        }
+                        Timeline.getInstance().setIndex(currentIndex);
+                        if (currentIndex > tracks.size()) {
+                            artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
+                            position = 0;
+                        }
+                        if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
+                            position = 0;
+                        }
 
-                Timeline.getInstance().setTimePosition(position);
-                mainActivity.restorePreviousState();
-                if (!Utils.isOnline()) {
-                    artistImageView.setImageResource(R.drawable.artist_placeholder);
-                    albumImageView.setImageDrawable(null);
-                    albumTextView.setVisibility(View.GONE);
-                    return;
-                }
-                if (SharedPreferencesManager.getPreferences()
-                        .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                    new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
-                            artistImageView, new ImageLoadingListener() {
-                                @Override
-                                public void onLoadingStarted() {
-                                }
+                        Timeline.getInstance().setTimePosition(position);
+                        mainActivity.restorePreviousState();
+                        if (!Utils.isOnline()) {
+                            artistImageView.setImageResource(R.drawable.artist_placeholder);
+                            albumImageView.setImageDrawable(null);
+                            albumTextView.setVisibility(View.GONE);
+                            return;
+                        }
+                        if (SharedPreferencesManager.getPreferences()
+                                .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                            new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
+                                    artistImageView, new ImageLoadingListener() {
+                                        @Override
+                                        public void onLoadingStarted() {
+                                        }
 
-                                @Override
-                                public void onLoadingFailed(String message) {
-                                }
+                                        @Override
+                                        public void onLoadingFailed(String message) {
+                                        }
 
-                                @Override
-                                public void onLoadingComplete(Bitmap bitmap) {
-                                    updatePaletteWithBitmap(bitmap);
-                                }
+                                        @Override
+                                        public void onLoadingComplete(Bitmap bitmap) {
+                                            updatePaletteWithBitmap(bitmap);
+                                        }
 
-                                @Override
-                                public void onLoadingCancelled() {
-                                }
-                            });
-                }
+                                        @Override
+                                        public void onLoadingCancelled() {
+                                        }
+                                    });
+                        }
 
-                Album album = Timeline.getInstance().getCurrentAlbum();
-                if (album != null) {
-                    String imageUrl = album.getImageUrl();
-                    if (imageUrl == null || !SharedPreferencesManager.getPreferences()
-                            .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                        albumImageView.setVisibility(View.GONE);
-                    } else {
-                        albumImageView.setVisibility(View.VISIBLE);
-                        new ImageModel().loadImage(imageUrl, albumImageView);
+                        Album album = Timeline.getInstance().getCurrentAlbum();
+                        if (album != null) {
+                            String imageUrl = album.getImageUrl();
+                            if (imageUrl == null || !SharedPreferencesManager.getPreferences()
+                                    .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                                albumImageView.setVisibility(View.GONE);
+                            } else {
+                                albumImageView.setVisibility(View.VISIBLE);
+                                new ImageModel().loadImage(imageUrl, albumImageView);
+                            }
+                            String albumTitle = album.getTitle();
+                            if (albumTitle == null) {
+                                albumTextView.setVisibility(View.GONE);
+                            } else {
+                                albumTextView.setVisibility(View.VISIBLE);
+                                albumTextView.setText(albumTitle);
+                            }
+                        }
                     }
-                    String albumTitle = album.getTitle();
-                    if (albumTitle == null) {
-                        albumTextView.setVisibility(View.GONE);
-                    } else {
-                        albumTextView.setVisibility(View.VISIBLE);
-                        albumTextView.setText(albumTitle);
-                    }
-                }
+                });
             }
         });
     }

@@ -28,7 +28,7 @@ public class StateManager {
             editor.putInt(Constants.CURRENT_INDEX, Timeline.getInstance().getIndex());
         }
         editor.apply();
-        new PlaylistModel().saveMainPlaylist();
+//        new PlaylistModel().saveMainPlaylist();
     }
 
     public static void saveTrackState() {

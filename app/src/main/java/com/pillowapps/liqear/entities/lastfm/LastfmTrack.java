@@ -11,7 +11,7 @@ public class LastfmTrack {
     @SerializedName("album")
     private LastfmAlbumWithName album;
     @SerializedName("userloved")
-    private Boolean loved;
+    private Boolean loved = false;
 
     public LastfmTrack() {
     }

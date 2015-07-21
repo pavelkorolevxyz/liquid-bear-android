@@ -3,6 +3,12 @@ package com.pillowapps.liqear.models;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.RestoringPlaylistCallback;
 import com.pillowapps.liqear.entities.Playlist;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.From;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
+import timber.log.Timber;
 
 
 public class PlaylistModel {
@@ -12,19 +18,24 @@ public class PlaylistModel {
         if (playlist == null) return;
         clearMainPlaylist();
         playlist.setMainPlaylist(true);
+
+        playlist.save();
+
     }
 
     public void getMainPlaylist(final RestoringPlaylistCallback callback) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-//                callback.onCompleted(new Select().from(Playlist.class).where(Condition.column("mainPlaylist").is(true)).querySingle());
+                From<Playlist> from = new Select().from(Playlist.class);
+                Timber.d(from.queryList().toString());
+                callback.onCompleted(from.where(Condition.column("mainPlaylist").is(true)).querySingle());
             }
         }).start();
     }
 
     private void clearMainPlaylist() {
-//        new Delete().from(Playlist.class).where(Condition.column("mainPlaylist").is(true));
+        new Delete().from(Playlist.class).where(Condition.column("mainPlaylist").is(true)).query();
     }
 
 //    public void savePlaylist(Playlist playlist) {

@@ -266,7 +266,9 @@ public class MusicService extends Service implements
     }
 
     private void destroyShake() {
-        sensorManager.unregisterListener(shakeDetector);
+        if (sensorManager != null && shakeDetector != null) {
+            sensorManager.unregisterListener(shakeDetector);
+        }
     }
 
     private void unregisterPhoneCallReceiver() {
@@ -998,7 +1000,7 @@ public class MusicService extends Service implements
                                 showTrackInNotification();
                             }
                         });
-                        track.setLoved(loved);
+                        Timeline.getInstance().getCurrentTrack().setLoved(loved);
                         updateWidgets();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                             CompatIcs.updateRemote(MusicService.this,

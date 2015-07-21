@@ -118,6 +118,7 @@
             android:background="@color/accent"
             android:layout_marginTop="20dp"
             android:padding="10dp"
+            android:textCursorDrawable="@null"
             android:textColor="@color/inverted_primary_text"
             android:textColorHint="@color/inverted_secondary_text"/>
 
@@ -131,6 +132,7 @@
             android:visibility="visible"
             android:background="@color/accent"
             android:padding="10dp"
+            android:textCursorDrawable="@null"
             android:textColor="@color/inverted_primary_text"
             android:textColorHint="@color/inverted_secondary_text"
             android:layout_marginTop="20dp" />

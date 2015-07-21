@@ -318,46 +318,49 @@ public class TabletFragment extends Fragment {
         StateManager.restorePlaylistState(new CompletionCallback() {
             @Override
             public void onCompleted() {
-                Playlist playlist = Timeline.getInstance().getPlaylist();
+                final Playlist playlist = Timeline.getInstance().getPlaylist();
                 if (playlist == null || playlist.getTracks().size() == 0) return;
-                if (Timeline.getInstance().getPlaylistTracks().size() == 0) {
-                    return;
-                }
-                List<Track> tracks = playlist.getTracks();
 
-                tracks = Timeline.getInstance().getPlaylistTracks();
-                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                String artist = preferences.getString(Constants.ARTIST, "");
-                String title = preferences.getString(Constants.TITLE, "");
-                int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
-                seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
+                mainActivity.runOnUiThread(new Runnable() {
+                    public void run() {
 
-                boolean currentFits = currentIndex < tracks.size();
-                if (!currentFits) currentIndex = 0;
-                Track currentTrack = tracks.get(currentIndex);
-                boolean tracksEquals = currentFits && (artist + title)
-                        .equalsIgnoreCase(currentTrack.getArtist()
-                                + currentTrack.getTitle());
-                if (!tracksEquals) {
-                    currentIndex = 0;
-                    artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
-                    titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
-                    position = 0;
-                } else {
-                    artistTextView.setText(Html.fromHtml(artist));
-                    titleTextView.setText(Html.fromHtml(title));
-                }
-                Timeline.getInstance().setIndex(currentIndex);
-                if (currentIndex > Timeline.getInstance().getPlaylistTracks().size()) {
-                    position = 0;
-                }
-                if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
-                    position = 0;
-                }
+                        List<Track> tracks = playlist.getTracks();
 
-                Timeline.getInstance().setTimePosition(position);
-                mainActivity.restorePreviousState();
+                        tracks = Timeline.getInstance().getPlaylistTracks();
+                        SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                        String artist = preferences.getString(Constants.ARTIST, "");
+                        String title = preferences.getString(Constants.TITLE, "");
+                        int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                        int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+                        seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
+
+                        boolean currentFits = currentIndex < tracks.size();
+                        if (!currentFits) currentIndex = 0;
+                        Track currentTrack = tracks.get(currentIndex);
+                        boolean tracksEquals = currentFits && (artist + title)
+                                .equalsIgnoreCase(currentTrack.getArtist()
+                                        + currentTrack.getTitle());
+                        if (!tracksEquals) {
+                            currentIndex = 0;
+                            artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
+                            titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
+                            position = 0;
+                        } else {
+                            artistTextView.setText(Html.fromHtml(artist));
+                            titleTextView.setText(Html.fromHtml(title));
+                        }
+                        Timeline.getInstance().setIndex(currentIndex);
+                        if (currentIndex > Timeline.getInstance().getPlaylistTracks().size()) {
+                            position = 0;
+                        }
+                        if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
+                            position = 0;
+                        }
+
+                        Timeline.getInstance().setTimePosition(position);
+                        mainActivity.restorePreviousState();
+                    }
+                });
             }
         });
     }
