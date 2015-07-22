@@ -25,6 +25,7 @@ import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.SearchActivity;
 import com.pillowapps.liqear.callbacks.CompletionCallback;
+import com.pillowapps.liqear.callbacks.GetPlaylistCallback;
 import com.pillowapps.liqear.callbacks.PassiveCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkPassiveCallback;
@@ -57,12 +58,12 @@ import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LBPreferencesManager;
-import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.ShakeDetector;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.PlayingState;
+import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.TrackNotification;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
@@ -390,39 +391,45 @@ public class MusicService extends Service implements
                     if (hasDataSource()) {
                         togglePlayPause();
                     } else {
-//                        Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
-                        List<Track> tracks = PlaylistManager.getInstance().loadPlaylist();
-                        Timeline.getInstance().setPlaylist(new Playlist(tracks));
-                        SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                        String artist = preferences.getString(Constants.ARTIST, "");
-                        String title = preferences.getString(Constants.TITLE, "");
-                        int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                        int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+                        Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
+                        new PlaylistModel().getMainPlaylist(new GetPlaylistCallback() {
+                            @Override
+                            public void onCompleted(Playlist playlist) {
+                                Timeline.getInstance().setPlaylist(playlist);
+                                List<Track> tracks = playlist.getTracks();
 
-                        boolean currentFits = currentIndex < tracks.size();
-                        if (!currentFits) currentIndex = 0;
-                        if (currentIndex == 0 && tracks.size() == 0) return START_STICKY;
-                        Track currentTrack = tracks.get(currentIndex);
-                        boolean tracksEquals = currentFits
-                                && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                                + currentTrack.getTitle());
-                        if (!tracksEquals) {
-                            currentIndex = 0;
-                            position = 0;
-                        }
-                        Timeline.getInstance().setIndex(currentIndex);
-                        if (currentIndex > tracks.size()) {
-                            position = 0;
-                        }
-                        if (!LBPreferencesManager.isContinueFromLastPositionEnabled()) {
-                            position = 0;
-                        }
+                                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                                String artist = preferences.getString(Constants.ARTIST, "");
+                                String title = preferences.getString(Constants.TITLE, "");
+                                int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                                int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
 
-                        Timeline.getInstance().setTimePosition(position);
-                        if (tracks.size() != 0
-                                && Timeline.getInstance().getCurrentTrack() == null) {
-                            play();
-                        }
+                                boolean currentFits = currentIndex < tracks.size();
+                                if (!currentFits) currentIndex = 0;
+                                if (currentIndex == 0 && tracks.size() == 0) return;
+                                Track currentTrack = tracks.get(currentIndex);
+                                boolean tracksEquals = currentFits
+                                        && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                                        + currentTrack.getTitle());
+                                if (!tracksEquals) {
+                                    currentIndex = 0;
+                                    position = 0;
+                                }
+                                Timeline.getInstance().setIndex(currentIndex);
+                                if (currentIndex > tracks.size()) {
+                                    position = 0;
+                                }
+                                if (!LBPreferencesManager.isContinueFromLastPositionEnabled()) {
+                                    position = 0;
+                                }
+
+                                Timeline.getInstance().setTimePosition(position);
+                                if (tracks.size() != 0
+                                        && Timeline.getInstance().getCurrentTrack() == null) {
+                                    play();
+                                }
+                            }
+                        });
                     }
                     break;
                 case ACTION_CLOSE:

@@ -45,10 +45,12 @@ import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmUserViewerActivity;
 import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.audio.Timeline;
+import com.pillowapps.liqear.callbacks.GetPlaylistCallback;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Group;
+import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.User;
@@ -65,10 +67,10 @@ import com.pillowapps.liqear.entities.vk.VkUser;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.PlaylistManager;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.SetlistfmUtils;
 import com.pillowapps.liqear.helpers.TrackUtils;
+import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
@@ -228,10 +230,16 @@ public class SearchActivity extends ResultActivity implements OnItemClickListene
                 ll.setVisibility(View.GONE);
                 String title = extras.getString("title");
                 actionBar.setTitle(title);
-                List<Track> tracks = PlaylistManager.getInstance().getPlaylist(extras.getLong("pid"));
-                adapter = new QuickSearchArrayAdapter<>(
-                        SearchActivity.this, tracks, Track.class);
-                setAdapter();
+                new PlaylistModel().getPlaylist(extras.getLong("pid"), new GetPlaylistCallback() {
+                    @Override
+                    public void onCompleted(Playlist playlist) {
+                        List<Track> tracks = playlist.getTracks();
+                        adapter = new QuickSearchArrayAdapter<>(
+                                SearchActivity.this, tracks, Track.class);
+                        setAdapter();
+                    }
+                });
+
                 listView.setOnCreateContextMenuListener(this);
                 setTrackLongClick();
             }

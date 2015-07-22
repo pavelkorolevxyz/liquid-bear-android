@@ -24,11 +24,12 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.Timeline;
+import com.pillowapps.liqear.callbacks.GetPlaylistListCallback;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.PlaylistManager;
+import com.pillowapps.liqear.models.PlaylistModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +69,16 @@ public class PlaylistsActivity extends ResultActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(getResources().getString(R.string.playlist_tab));
         listView.setOnCreateContextMenuListener(this);
-        List<Playlist> playlists = PlaylistManager.getInstance().getPlaylists();
-        adapter = new PlaylistsArrayAdapter<>(
-                PlaylistsActivity.this, playlists, Playlist.class);
-        listView.setAdapter(adapter);
-        updateEmptyTextView();
+
+        new PlaylistModel().getSavedPlaylists(new GetPlaylistListCallback() {
+            @Override
+            public void onCompleted(List<Playlist> playlistList) {
+                adapter = new PlaylistsArrayAdapter<>(
+                        PlaylistsActivity.this, playlistList, Playlist.class);
+                listView.setAdapter(adapter);
+                updateEmptyTextView();
+            }
+        });
 
         listView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
@@ -80,9 +86,8 @@ public class PlaylistsActivity extends ResultActivity {
                 switch (aim) {
                     case ADD_TO_PLAYLIST: {
                         Playlist playlist = (Playlist) adapter.get(position);
-                        PlaylistManager.getInstance().addTrackToPlaylist(
-                                new Track(extras.getString("artist"),
-                                        extras.getString("title")), playlist.getId());
+                        new PlaylistModel().addTrackToPlaylist(playlist, new Track(extras.getString("artist"),
+                                extras.getString("title")));
                         finish();
                         break;
                     }
@@ -136,7 +141,7 @@ public class PlaylistsActivity extends ResultActivity {
                 adapter.getValues().remove(info.position);
                 adapter.notifyDataSetChanged();
                 updateEmptyTextView();
-                PlaylistManager.getInstance().removePlaylist(playlist.getId());
+                new PlaylistModel().removePlaylist(playlist.getId());
                 break;
             case 1:
                 showSavePlaylistDialog(true, info.position);
@@ -186,7 +191,7 @@ public class PlaylistsActivity extends ResultActivity {
                         if (title.length() < 1) {
                             title = getResources().getString(R.string.new_playlist);
                         }
-                        long pid = PlaylistManager.getInstance().addPlaylist(title,
+                        long pid = new PlaylistModel().addPlaylist(title,
                                 new ArrayList<Track>());
                         if (pid != -1) {
                             ((List<Playlist>) adapter.getValues()).add(0, new Playlist(pid, title));
@@ -221,13 +226,13 @@ public class PlaylistsActivity extends ResultActivity {
                         }
 
                         if (isRenaming) {
-                            PlaylistManager.getInstance().renamePlaylist(
+                            new PlaylistModel().renamePlaylist(
                                     ((Playlist) adapter.get(position)).getId(), title);
                             ((Playlist) adapter.get(position)).setTitle(title);
                             adapter.notifyDataSetChanged();
                             updateEmptyTextView();
                         } else {
-                            long pid = PlaylistManager.getInstance().addPlaylist(title,
+                            long pid = new PlaylistModel().addPlaylist(title,
                                     Timeline.getInstance().getPlaylistTracks());
                             if (pid != -1) {
                                 ((List<Playlist>) adapter.getValues()).add(0,
@@ -262,7 +267,7 @@ public class PlaylistsActivity extends ResultActivity {
                         }
 
                         if (isRenaming) {
-                            PlaylistManager.getInstance().renamePlaylist(
+                            new PlaylistModel().renamePlaylist(
                                     ((Playlist) adapter.get(position)).getId(), title);
                             ((Playlist) adapter.get(position)).setTitle(title);
                             adapter.notifyDataSetChanged();
@@ -270,13 +275,13 @@ public class PlaylistsActivity extends ResultActivity {
                         } else {
 //                            List<Track> tracklist = getIntent()
 //                                    .getParcelableArrayListExtra(Constants.TRACKLIST);
-//                            long pid = PlaylistManager.getInstance().addPlaylist(title, tracklist);
+//                            long pid = new PlaylistModel().addPlaylist(title, tracklist);
 //                            if (pid != -1) {
 //                                ((List<Playlist>) adapter.getValues())
 //                                        .add(0, new Playlist(pid, title));
 //                                adapter.notifyDataSetChanged();
 //                            }
-                            //todo with otto
+//                            //todo with otto
                         }
                     }
                 });
