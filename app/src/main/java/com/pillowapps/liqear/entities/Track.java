@@ -33,20 +33,23 @@ public class Track extends BaseModel {
     public long audioId;
 
     @Column
-    @ForeignKey(
-            references = {@ForeignKeyReference(columnName = "playlistId",
-                    columnType = Long.class,
-                    foreignColumnName = "id")},
+    public boolean local;
+
+    @Column
+    public String localUrl;
+
+    private String url;
+
+    @Column
+    @ForeignKey(references = {@ForeignKeyReference(columnName = "playlistId",
+            columnType = Long.class,
+            foreignColumnName = "id")},
             saveForeignKeyModel = false)
     public ForeignKeyContainer<Playlist> playlistModelContainer;
 
-    int duration;
-
-    @Column
-    boolean local = false;
+    public int duration;
 
     private int realPosition;
-    private String url = null;
     private boolean loved = false;
     private boolean addedToVk = false;
 
@@ -55,10 +58,10 @@ public class Track extends BaseModel {
         this.ownerId = oid;
     }
 
-    public Track(String artist, String title, String url, boolean local) {
+    public Track(String artist, String title, String localUrl, boolean local) {
         this.artist = artist;
         this.title = title;
-        this.url = url;
+        this.localUrl = localUrl;
         this.local = local;
     }
 
@@ -173,5 +176,9 @@ public class Track extends BaseModel {
     @Override
     public String toString() {
         return "Track{" + TrackUtils.getNotation(this) + "}";
+    }
+
+    public String getLocalUrl() {
+        return localUrl;
     }
 }

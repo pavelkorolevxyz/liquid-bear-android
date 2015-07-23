@@ -12,6 +12,7 @@ import inaka.com.tinytask.TinyTask;
 
 public class AlterportalAlbumModel {
 
+    @SuppressWarnings("unchecked")
     public void getNewcomers(final List<Integer> pages, final NewcomersSimpleCallback<List<Album>> callback) {
         TinyTask.perform(new Something<List<Album>>() {
             @Override

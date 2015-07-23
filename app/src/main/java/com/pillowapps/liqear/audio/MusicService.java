@@ -83,6 +83,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
@@ -126,6 +127,7 @@ public class MusicService extends Service implements
 
     private boolean hasDataSource = false;
     private boolean scrobbled = false;
+    private int secondsTrackPlayed = 0;
 
     private boolean urlChanged;
     private int urlNumber;
@@ -589,6 +591,7 @@ public class MusicService extends Service implements
         currentTrack.setDuration(mediaPlayer.getDuration());
         hasDataSource = true;
         scrobbled = false;
+        secondsTrackPlayed = 0;
         if (Utils.isOnline()) {
             if (!currentTrack.getArtist().equals(Timeline.getInstance().getPreviousArtist())) {
                 getArtistInfo(currentTrack.getArtist(), AuthorizationInfoManager.getLastfmName());
@@ -704,11 +707,12 @@ public class MusicService extends Service implements
         Timeline.getInstance().addToPrevIndexes(Timeline.getInstance().getIndex());
 //            Timeline.getInstance().getPlaylistTracks().get(Timeline.getInstance().getPreviousTracksIndexes().peek()).setCurrent(false);
         acquireLocks();
-        if (currentTrack.getUrl() != null && !currentTrack.getUrl().isEmpty()) {
+        String url = TrackUtils.getUrlFromTrack(currentTrack);
+        if (url != null && !url.isEmpty()) {
             mediaPlayer.stop();
             mediaPlayer.reset();
             try {
-                mediaPlayer.setDataSource(currentTrack.getUrl());
+                mediaPlayer.setDataSource(url);
                 prepared = false;
                 mediaPlayer.prepareAsync();
             } catch (IOException e) {
@@ -901,6 +905,16 @@ public class MusicService extends Service implements
             @Override
             public void onNext(Long aLong) {
                 LBApplication.bus.post(new TimeEvent());
+                if (scrobbled) return;
+                secondsTrackPlayed++;
+                int duration = getDuration();
+                if (duration != 0) {
+                    int playedPercent = (int) (((float) secondsTrackPlayed / (duration / 1000f)) * 100);
+                    Timber.d(secondsTrackPlayed + " " + (duration / 1000f) + " " + playedPercent + "  from " + LBPreferencesManager.getPercentsToScrobble());
+                    if (playedPercent >= LBPreferencesManager.getPercentsToScrobble()) {
+                        scrobble(Timeline.getInstance().getCurrentTrack());
+                    }
+                }
             }
         };
         Observable.interval(1, TimeUnit.SECONDS)
@@ -1025,6 +1039,14 @@ public class MusicService extends Service implements
 
                     }
                 });
+    }
+
+    private void scrobble(final Track track) {
+        String album = track.getAlbum();
+        scrobbled = true;
+        new LastfmTrackModel().scrobble(track.getArtist(), track.getTitle(), album,
+                Utils.getCurrentTime(),
+                new PassiveCallback());
     }
 
     private void getArtistInfo(final String artist, final String username) {

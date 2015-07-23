@@ -21,4 +21,8 @@ public class LBPreferencesManager {
     public static boolean isTimerActionPause() {
         return SharedPreferencesManager.getPreferences().getString("timer_action", "1").equals("1");
     }
+
+    public static int getPercentsToScrobble() {
+        return SharedPreferencesManager.getPreferences().getInt("scrobble_time_preferences", 40);
+    }
 }

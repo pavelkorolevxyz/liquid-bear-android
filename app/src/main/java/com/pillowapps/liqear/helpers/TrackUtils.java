@@ -10,4 +10,12 @@ public class TrackUtils {
     public static boolean vkInfoAvailable(Track track) {
         return track.getAudioId() > 0 && track.getOwnerId() > 0;
     }
+
+    public static String getUrlFromTrack(Track track) {
+        if (track.isLocal()) {
+            return track.getLocalUrl();
+        } else {
+            return track.getUrl();
+        }
+    }
 }

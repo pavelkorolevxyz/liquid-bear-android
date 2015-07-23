@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.network.service;
 
+import com.pillowapps.liqear.callbacks.LastfmCallback;
+import com.pillowapps.liqear.callbacks.VkCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
@@ -22,8 +24,6 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmTrackRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmUserRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmWeeklyTrackChartRoot;
-import com.pillowapps.liqear.callbacks.LastfmCallback;
-import com.pillowapps.liqear.callbacks.VkCallback;
 
 import java.util.List;
 
@@ -208,9 +208,24 @@ public interface LastfmApiService {
                          LastfmCallback<LastfmResponse> callback);
 
     @POST("/?method=track.scrobble")
+    public void scrobble(@Query("artist") String artist,
+                         @Query("track") String track,
+                         @Query("timestamp") String timestamp,
+                         @Query("api_sig") String apiSig,
+                         @Query("sk") String sessionKey,
+                         LastfmCallback<LastfmResponse> callback);
+
+    @POST("/?method=track.scrobble")
     public Observable<LastfmResponse> scrobble(@Query("artist") String artist,
                                                @Query("track") String track,
                                                @Query("album") String album,
+                                               @Query("timestamp") String timestamp,
+                                               @Query("api_sig") String apiSig,
+                                               @Query("sk") String sessionKey);
+
+    @POST("/?method=track.scrobble")
+    public Observable<LastfmResponse> scrobble(@Query("artist") String artist,
+                                               @Query("track") String track,
                                                @Query("timestamp") String timestamp,
                                                @Query("api_sig") String apiSig,
                                                @Query("sk") String sessionKey);

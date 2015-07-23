@@ -69,16 +69,27 @@ public class LastfmTrackModel {
         Map<String, String> params = new TreeMap<>();
         params.put("artist", artist);
         params.put("track", title);
-        params.put("album", album);
+        params.put("timestamp", timestamp);
         params.put("sk", sessionKey);
-        params.put("method", "track.unlove");
-        lastfmService.scrobble(artist,
-                title,
-                album,
-                timestamp,
-                apiHelper.generateApiSig(params),
-                sessionKey,
-                LastfmCallbackUtils.createTransitiveCallback(callback));
+        params.put("method", "track.scrobble");
+        String apiSig = apiHelper.generateApiSig(params);
+        if (album != null) {
+            params.put("album", album);
+            lastfmService.scrobble(artist,
+                    title,
+                    album,
+                    timestamp,
+                    apiSig,
+                    sessionKey,
+                    LastfmCallbackUtils.createTransitiveCallback(callback));
+        } else {
+            lastfmService.scrobble(artist,
+                    title,
+                    timestamp,
+                    apiSig,
+                    sessionKey,
+                    LastfmCallbackUtils.createTransitiveCallback(callback));
+        }
     }
 
     public Observable<LastfmResponse> scrobble(String artist, String title, String album,
@@ -87,15 +98,24 @@ public class LastfmTrackModel {
         Map<String, String> params = new TreeMap<>();
         params.put("artist", artist);
         params.put("track", title);
-        params.put("album", album);
+        params.put("timestamp", timestamp);
         params.put("sk", sessionKey);
-        params.put("method", "track.unlove");
-        return lastfmService.scrobble(artist,
-                title,
-                album,
-                timestamp,
-                apiHelper.generateApiSig(params),
-                sessionKey);
+        params.put("method", "track.scrobble");
+        if (album != null) {
+            params.put("album", album);
+            return lastfmService.scrobble(artist,
+                    title,
+                    album,
+                    timestamp,
+                    apiHelper.generateApiSig(params),
+                    sessionKey);
+        } else {
+            return lastfmService.scrobble(artist,
+                    title,
+                    timestamp,
+                    apiHelper.generateApiSig(params),
+                    sessionKey);
+        }
     }
 
     public void nowplaying(Track track, final SimpleCallback<Object> callback) {
