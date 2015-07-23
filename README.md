@@ -34,3 +34,27 @@ var count = index + 1;
 var searchResults = API.audio.search({"q":q,"sort":2, "count":count});
 return [searchResults.items[0], searchResults.items[index]];
 ```
+
+###execute.getUrlById
+```javascript
+var aid = Args.audioId;
+var oid = Args.ownerId;
+var q = Args.notation;
+var index = Args.index;
+var count = index + 1;
+var idString = oid + "_" + aid;
+var trackById = API.audio.getById({"audios":idString});
+var searchResults = API.audio.search({"q":q,"sort":2, "count":count});
+return [trackById[0], searchResults.items[0], searchResults.items[index]];
+```
+
+###execute.searchAndPostStatus
+```javascript
+var q = Args.notation;
+var index = Args.index;
+var count = index + 1;
+var searchResults = API.audio.search({"q":q,"sort":1, "count":count});
+var sR = searchResults[1];
+var audioId = sR.oid+"_"+sR.aid;
+return API.status.set({"audio":audioId});
+```
