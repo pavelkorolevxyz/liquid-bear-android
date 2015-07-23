@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.models.vk;
 
+import com.pillowapps.liqear.callbacks.VkCallback;
+import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
@@ -12,8 +14,6 @@ import com.pillowapps.liqear.helpers.StringUtils;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.VkCallbackUtils;
 import com.pillowapps.liqear.network.ServiceHelper;
-import com.pillowapps.liqear.callbacks.VkCallback;
-import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.network.service.VkApiService;
 
 import java.util.List;
@@ -165,13 +165,12 @@ public class VkAudioModel {
             @Override
             public void success(VkTrackUrlResponseRoot data) {
                 List<VkTrack> tracks = data.getResponse();
-                int tracksSize = tracks.size();
-                if (tracksSize > 1) {
-                    callback.success(tracks.get(1));
-                } else if (tracksSize == 1) {
-                    callback.success(tracks.get(0));
-                } else {
+                if (tracks.size() == 0) {
                     callback.success(null);
+                } else if (tracks.get(1) != null) {
+                    callback.success(tracks.get(1));
+                } else if (tracks.get(0) != null) {
+                    callback.success(tracks.get(0));
                 }
             }
 
@@ -180,5 +179,30 @@ public class VkAudioModel {
                 callback.failure(error);
             }
         });
+    }
+
+    public void getTrackById(Track track, int index, final VkSimpleCallback<VkTrack> callback) {
+        vkService.getTrackUrlById(TrackUtils.getNotation(track),
+                track.getAudioId(), track.getOwnerId(),
+                index, new VkCallback<VkTrackUrlResponseRoot>() {
+                    @Override
+                    public void success(VkTrackUrlResponseRoot data) {
+                        List<VkTrack> tracks = data.getResponse();
+                        if (tracks.size() == 0) {
+                            callback.success(null);
+                        } else if (tracks.get(0) != null) {
+                            callback.success(tracks.get(0));
+                        } else if (tracks.get(2) != null) {
+                            callback.success(tracks.get(2));
+                        } else if (tracks.get(1) != null) {
+                            callback.success(tracks.get(1));
+                        }
+                    }
+
+                    @Override
+                    public void failure(VkError error) {
+                        callback.failure(error);
+                    }
+                });
     }
 }

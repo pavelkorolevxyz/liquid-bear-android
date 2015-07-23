@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.network.service;
 
+import com.pillowapps.liqear.callbacks.VkCallback;
 import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.entities.vk.roots.VkAlbumsResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkGetUsersResponseRoot;
@@ -11,7 +12,6 @@ import com.pillowapps.liqear.entities.vk.roots.VkTracksResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkUploadServerRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkUsersResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkWallMessagesResponseRoot;
-import com.pillowapps.liqear.callbacks.VkCallback;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -111,6 +111,13 @@ public interface VkApiService {
     public void getTrackUrl(@Query("notation") String trackNotation,
                             @Query("index") int index,
                             VkCallback<VkTrackUrlResponseRoot> callback);
+
+    @GET("/execute.getUrlById")
+    public void getTrackUrlById(@Query("notation") String trackNotation,
+                                @Query("audioId") long audioId,
+                                @Query("ownerId") long ownerId,
+                                @Query("index") int index,
+                                VkCallback<VkTrackUrlResponseRoot> callback);
 
     @GET("/execute.getLyrics")
     public void getLyrics(@Query("notation") String trackNotation,

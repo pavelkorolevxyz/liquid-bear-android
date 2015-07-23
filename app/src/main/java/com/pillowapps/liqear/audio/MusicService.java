@@ -962,7 +962,7 @@ public class MusicService extends Service implements
             LBApplication.bus.post(new NetworkStateChangeEvent());
             return;
         }
-        new VkAudioModel().getTrackByNotation(trackToFind, urlNumber, new VkSimpleCallback<VkTrack>() {
+        VkSimpleCallback<VkTrack> callback = new VkSimpleCallback<VkTrack>() {
             @Override
             public void success(VkTrack track) {
                 if (track != null) {
@@ -987,7 +987,12 @@ public class MusicService extends Service implements
             public void failure(VkError error) {
                 next();
             }
-        });
+        };
+        if (TrackUtils.vkInfoAvailable(trackToFind)) {
+            new VkAudioModel().getTrackById(trackToFind, urlNumber, callback);
+        } else {
+            new VkAudioModel().getTrackByNotation(trackToFind, urlNumber, callback);
+        }
     }
 
     private void getTrackInfo(final Track track) {
