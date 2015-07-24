@@ -783,7 +783,7 @@ public class MusicService extends Service implements
         play();
     }
 
-    public void nextUrl(int urlNumber) {
+    public void changeUrl(int urlNumber) {
         this.urlNumber = urlNumber;
         urlChanged = true;
         final SharedPreferences urlNumberPreferences = SharedPreferencesManager.getUrlNumberPreferences();
@@ -794,7 +794,7 @@ public class MusicService extends Service implements
         editor.putInt(notation, urlNumber);
         editor.apply();
         currentTrack.setUrl(null);
-        play();
+        play(Timeline.getInstance().getIndex());
     }
 
     public void seekTo(int position) {
@@ -806,11 +806,9 @@ public class MusicService extends Service implements
     }
 
     public int getDuration() {
-        int duration;
-        try {
+        int duration = 0;
+        if (prepared) {
             duration = mediaPlayer.getDuration();
-        } catch (IllegalStateException e) {
-            duration = 0;
         }
         if (duration > 2 * 60 * 60 * 1000 || duration < 0) return 0;
         return duration;
@@ -918,6 +916,7 @@ public class MusicService extends Service implements
             }
         };
         Observable.interval(1, TimeUnit.SECONDS)
+                .startWith(-1L)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(playProgressSubscriber);
     }

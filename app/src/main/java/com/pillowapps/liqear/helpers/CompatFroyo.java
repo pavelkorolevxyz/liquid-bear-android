@@ -2,7 +2,7 @@ package com.pillowapps.liqear.helpers;
 
 import android.annotation.TargetApi;
 import android.content.ComponentName;
-import android.media.AudioManager;import java.lang.Override;
+import android.media.AudioManager;
 
 /**
  * Framework methods only in Froyo or above go here.
@@ -21,19 +21,16 @@ public class CompatFroyo implements AudioManager.OnAudioFocusChangeListener {
 
     private static CompatFroyo sAudioFocus;
 
-    public static void createAudioFocus()
-    {
+    public static void createAudioFocus() {
         sAudioFocus = new CompatFroyo();
     }
 
-    public static void requestAudioFocus(AudioManager manager)
-    {
+    public static void requestAudioFocus(AudioManager manager) {
         manager.requestAudioFocus(sAudioFocus, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
     }
 
     @Override
-    public void onAudioFocusChange(int type)
-    {
+    public void onAudioFocusChange(int type) {
     }
 }

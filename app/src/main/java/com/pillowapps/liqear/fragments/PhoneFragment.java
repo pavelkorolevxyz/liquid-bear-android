@@ -594,7 +594,7 @@ public class PhoneFragment extends Fragment {
                 mainActivity.getMusicPlaybackService().showTrackInNotification();
             }
             playPauseButton.setEnabled(true);
-            mainActivity.getMusicPlaybackService().startPlayProgressUpdater();
+//            mainActivity.getMusicPlaybackService().startPlayProgressUpdater();
             seekBar.setEnabled(true);
             updateTime();
         }

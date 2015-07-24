@@ -11,6 +11,8 @@ import android.view.KeyEvent;
 
 import com.pillowapps.liqear.helpers.CompatFroyo;
 
+import timber.log.Timber;
+
 public class MediaButtonReceiver extends BroadcastReceiver {
     private static final int DOUBLE_CLICK_DELAY = 400;
     private static int sInCall = -1;
@@ -31,6 +33,7 @@ public class MediaButtonReceiver extends BroadcastReceiver {
         }
         Intent intent = null;
         int action = event.getAction();
+        Timber.d("process keypress" + event.getKeyCode() + "");
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_HEADSETHOOK:
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:

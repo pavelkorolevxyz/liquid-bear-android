@@ -974,7 +974,7 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
                 long aid = data.getLongExtra("aid", -1);
                 long oid = data.getLongExtra("oid", -1);
                 if (aid == -1 || oid == -1) {
-                    musicService.nextUrl(data.getIntExtra("position", 0));
+                    musicService.changeUrl(data.getIntExtra("position", 0));
                 }
             }
         }

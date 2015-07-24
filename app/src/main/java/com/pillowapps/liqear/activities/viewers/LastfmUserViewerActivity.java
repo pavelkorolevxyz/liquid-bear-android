@@ -20,6 +20,7 @@ import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerAdapter;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
@@ -33,7 +34,6 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -314,20 +314,18 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         } else {
             viewer.showProgressBar(true);
         }
-        if (page > 0) {
-            userModel.getLovedTracks(user.getName(), limit, page,
-                    new SimpleCallback<List<LastfmTrack>>() {
-                        @Override
-                        public void success(List<LastfmTrack> lastfmTracks) {
-                            viewer.fill(lastfmTracks);
-                        }
+        userModel.getLovedTracks(user.getName(), limit, page,
+                new SimpleCallback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> lastfmTracks) {
+                        viewer.fill(lastfmTracks);
+                    }
 
-                        @Override
-                        public void failure(String error) {
-                            showError(error);
-                        }
-                    });
-        }
+                    @Override
+                    public void failure(String error) {
+                        showError(error);
+                    }
+                });
     }
 
     private void changeViewPagerItem(int currentItem) {
