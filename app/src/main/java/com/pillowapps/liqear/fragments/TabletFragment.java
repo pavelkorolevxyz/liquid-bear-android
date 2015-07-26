@@ -306,9 +306,11 @@ public class TabletFragment extends Fragment {
     }
 
     public void updateSearchVisibility() {
-        searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
-                .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ?
-                View.VISIBLE : View.GONE);
+        boolean visible = SharedPreferencesManager.getSavePreferences().getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false);
+        if (visible) {
+            searchPlaylistEditText.requestFocus();
+        }
+        searchPlaylistEditText.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private void restorePreviousState() {

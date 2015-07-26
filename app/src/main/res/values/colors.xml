@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+    <color name="transparent">#0000</color>
+
     <color name="primary">#383840</color>
     <color name="primary_dark">#212026</color>
     <color name="primary_light">#B8B8BF</color>
@@ -19,10 +21,18 @@
     <color name="success_green_shaded">#23871a</color>
 
     <color name="inverted_primary">#F2F2F2</color>
+    <color name="inverted_primary_tinted">#ededed</color>
     <color name="inverted_primary_dark">#dcdcdc</color>
     <color name="inverted_primary_text">#F2F2F2</color>
     <color name="inverted_secondary_text">#bbbbbb</color>
     <color name="inverted_icons">#383840</color>
 
-    <color name="transparent">#0000</color>
+
+    <color name="match_100">#FF0101</color>
+    <color name="match_80">#E9C102</color>
+    <color name="match_60">#05BD4C</color>
+    <color name="match_40">#5336BD</color>
+    <color name="match_20">#453E45</color>
+    <color name="match_0">@color/inverted_primary</color>
+
 </resources>

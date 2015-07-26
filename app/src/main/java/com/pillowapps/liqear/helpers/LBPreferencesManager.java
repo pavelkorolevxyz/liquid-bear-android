@@ -25,4 +25,16 @@ public class LBPreferencesManager {
     public static int getPercentsToScrobble() {
         return SharedPreferencesManager.getPreferences().getInt("scrobble_time_preferences", 40);
     }
+
+    public static boolean isScrobblingEnabled() {
+        return SharedPreferencesManager.getPreferences().getBoolean("scrobble_check_box_preferences", false);
+    }
+
+    public static boolean isDownloadImagesEnabled() {
+        return SharedPreferencesManager.getPreferences().getBoolean("download_images_check_box_preferences", true);
+    }
+
+    public static int getPageSize() {
+        return SharedPreferencesManager.getPreferences().getInt("page_size", 50);
+    }
 }

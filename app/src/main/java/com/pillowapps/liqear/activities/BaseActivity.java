@@ -12,4 +12,8 @@ public class BaseActivity extends AppCompatActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    public CharSequence getToolbarTitle(){
+        return getSupportActionBar().getTitle();
+    }
+
 }

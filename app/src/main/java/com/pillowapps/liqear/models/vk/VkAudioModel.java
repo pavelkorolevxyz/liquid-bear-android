@@ -93,7 +93,7 @@ public class VkAudioModel {
 
     public void getUserAudioFromAlbum(long uid, long albumId, final int count, int offset,
                                       final VkSimpleCallback<List<VkTrack>> callback) {
-        vkService.getAudio(String.valueOf(uid), String.valueOf(albumId), count, offset,
+        vkService.getAudio(uid, albumId, count, offset,
                 new VkCallback<VkTracksResponseRoot>() {
                     @Override
                     public void success(VkTracksResponseRoot data) {
@@ -109,7 +109,7 @@ public class VkAudioModel {
 
     public void getGroupAudioFromAlbum(long gid, long albumId, final int count, int offset,
                                        final VkSimpleCallback<List<VkTrack>> callback) {
-        vkService.getAudio(String.format("-%d", gid), String.valueOf(albumId), count, offset,
+        vkService.getAudio(-gid, albumId, count, offset,
                 new VkCallback<VkTracksResponseRoot>() {
                     @Override
                     public void success(VkTracksResponseRoot data) {

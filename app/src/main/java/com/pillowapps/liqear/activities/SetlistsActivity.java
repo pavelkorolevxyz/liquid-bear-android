@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.modes.SetlistsResultActivity;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.helpers.Constants;
 
@@ -40,10 +41,7 @@ public class SetlistsActivity extends ResultActivity {
 
     @OnClick(R.id.search_setlist_button)
     protected void onSearchClicked() {
-        Intent intent = new Intent(SetlistsActivity.this,
-                SearchActivity.class);
-        intent.putExtra(SearchActivity.SEARCH_MODE,
-                SearchActivity.SearchMode.SETLIST);
+        Intent intent = new Intent(SetlistsActivity.this, SetlistsResultActivity.class);
         intent.putExtra("artist", artistEditText.getText().toString());
         intent.putExtra("venue", venueEditText.getText().toString());
         intent.putExtra("city", cityEditText.getText().toString());

@@ -53,10 +53,11 @@ public class Converter {
         return artist;
     }
 
-    private static User convertUser(LastfmUser lastfmUser) {
+    public static User convertUser(LastfmUser lastfmUser) {
         String name = lastfmUser.getName();
         User user = new User(name);
         List<LastfmImage> images = lastfmUser.getImages();
+        user.setMatch(lastfmUser.getMatch());
         if (images != null) {
             user.setImageUrl(images.get(images.size() - 1).getUrl());
         }

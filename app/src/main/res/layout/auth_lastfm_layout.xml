@@ -120,7 +120,8 @@
             android:padding="10dp"
             android:textCursorDrawable="@null"
             android:textColor="@color/inverted_primary_text"
-            android:textColorHint="@color/inverted_secondary_text"/>
+            android:textColorHint="@color/inverted_secondary_text"
+            android:singleLine="true" />
 
         <EditText
             android:id="@+id/login_edit_text"
@@ -135,7 +136,8 @@
             android:textCursorDrawable="@null"
             android:textColor="@color/inverted_primary_text"
             android:textColorHint="@color/inverted_secondary_text"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/auth_error_text_view"

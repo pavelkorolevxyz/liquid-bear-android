@@ -11,13 +11,13 @@ import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerAdapter;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,6 @@ import java.util.List;
 public class LastfmTagViewerActivity extends PagerResultActivity {
     public static final String TAG = "tag";
     public static final int TRACKS_INDEX = 0;
-    public static final int PAGES_NUMBER = 5;
     private Tag tag;
     private LastfmTagModel tagModel = new LastfmTagModel();
 
@@ -54,7 +53,7 @@ public class LastfmTagViewerActivity extends PagerResultActivity {
     }
 
     protected void initViewPager() {
-        List<ViewerPage> pages = new ArrayList<>(PAGES_NUMBER);
+        List<ViewerPage> pages = new ArrayList<>();
         pages.add(createTagTopTracksPage());
         setViewers(pages);
         final ViewerAdapter adapter = new ViewerAdapter(pages);

@@ -97,7 +97,6 @@ public class PhoneFragment extends Fragment {
     private MainActivity mainActivity;
     private UnderlinePageIndicator indicator;
     private EditText searchPlaylistEditText;
-    private ImageButton clearEditTextButton;
     private View tutorialLayout;
     private Animation tutorialBlinkAnimation;
     private ViewGroup backLayout;
@@ -169,6 +168,7 @@ public class PhoneFragment extends Fragment {
                     if (tutorial.isEnabled() && tutorialBlinkAnimation != null) {
                         tutorialBlinkAnimation.cancel();
                         tutorialLayout.setVisibility(View.GONE);
+                        tutorial.end();
                     }
                 }
             }
@@ -225,7 +225,6 @@ public class PhoneFragment extends Fragment {
         searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
         searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
                 .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ? View.VISIBLE : View.GONE);
-        clearEditTextButton = (ImageButton) playlistTab.findViewById(R.id.clear_edit_text_button_playlist_tab);
         emptyTextView = (TextView) playlistTab.findViewById(R.id.empty);
     }
 
@@ -326,11 +325,6 @@ public class PhoneFragment extends Fragment {
             }
         });
 
-        clearEditTextButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                searchPlaylistEditText.setText("");
-            }
-        });
         searchPlaylistEditText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
             }
@@ -339,7 +333,6 @@ public class PhoneFragment extends Fragment {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                clearEditTextButton.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
                 PlaylistItemsAdapter playlistItemsAdapter = mainActivity.getPlaylistItemsAdapter();
                 if (playlistItemsAdapter != null) {
                     playlistItemsAdapter.getFilter().filter(s);
@@ -459,8 +452,12 @@ public class PhoneFragment extends Fragment {
     }
 
     public void updateSearchVisibility() {
-        searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
-                .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ? View.VISIBLE : View.GONE);
+
+        boolean visible = SharedPreferencesManager.getSavePreferences().getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false);
+        if (visible) {
+            searchPlaylistEditText.requestFocus();
+        }
+        searchPlaylistEditText.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private void updateTime() {
@@ -490,6 +487,7 @@ public class PhoneFragment extends Fragment {
             public void onCompleted() {
                 final Playlist playlist = Timeline.getInstance().getPlaylist();
                 if (playlist == null || playlist.getTracks().size() == 0) return;
+                updateMainPlaylistTitle();
 
                 mainActivity.runOnUiThread(new Runnable() {
                     public void run() {
@@ -628,6 +626,14 @@ public class PhoneFragment extends Fragment {
                 playlistsListView.getAdapter() != null
                         && playlistsListView.getAdapter().getCount() > 0
                         ? View.GONE : View.VISIBLE);
+    }
+
+    public void updateMainPlaylistTitle() {
+        String title = Timeline.getInstance().getPlaylist().getTitle();
+        if (title == null) {
+            title = getString(R.string.playlist_tab);
+        }
+        playlistToolbar.setTitle(title);
     }
 
     public class ModeLongClickListener implements AdapterView.OnItemLongClickListener {

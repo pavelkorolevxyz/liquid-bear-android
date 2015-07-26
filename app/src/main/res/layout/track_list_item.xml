@@ -1,129 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/playlist_tab_item_main_layout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:baselineAligned="false"
-    android:id="@+id/playlist_tab_item_main_layout">
-
-    <!--<ImageView-->
-    <!--android:id="@+id/play_image_view_list_item"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentLeft="true"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:focusable="false"-->
-    <!--android:focusableInTouchMode="false"-->
-    <!--android:src="@drawable/ic_media_play"-->
-    <!--android:visibility="invisible" />-->
+    android:orientation="horizontal">
 
     <View
         android:id="@+id/play_image_view_list_item"
         android:layout_width="20dp"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/relativeLayout"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
         android:layout_alignParentTop="false"
+        android:layout_marginLeft="0dp"
         android:layout_marginTop="0dp"
-        android:visibility="visible"
-        android:layout_alignBottom="@+id/relativeLayout" />
+        android:visibility="invisible" />
 
     <ImageView
+        android:id="@+id/grabber_list_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/menu_little"
+        android:layout_alignBottom="@+id/play_image_view_list_item"
+        android:layout_alignTop="@+id/play_image_view_list_item"
+        android:layout_toRightOf="@+id/play_image_view_list_item"
+        android:adjustViewBounds="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:id="@+id/grabber_list_item"
-        android:visibility="gone"
-        android:adjustViewBounds="false"
-        android:layout_toRightOf="@+id/play_image_view_list_item"
-        android:layout_alignTop="@+id/play_image_view_list_item"
-        android:layout_alignBottom="@+id/play_image_view_list_item" />
+        android:src="@drawable/menu_little"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/addition_info_linear_layout"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/play_image_view_list_item"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:orientation="vertical"
+        android:paddingBottom="8dp"
         android:paddingLeft="10dp"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@+id/play_image_view_list_item"
-        android:layout_alignParentBottom="false">
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/position_text_view_list_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/queue_number_text_view_list_item"
+            android:layout_alignParentTop="true"
             android:layout_gravity="right"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:textColor="@color/secondary_text"
-            android:textSize="14dip"
             android:gravity="center"
-            android:layout_alignLeft="@+id/queue_number_text_view_list_item"
-            android:layout_alignParentTop="true" />
+            android:textColor="@color/secondary_text"
+            android:textSize="14dip" />
 
         <TextView
             android:id="@+id/queue_number_text_view_list_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:layout_gravity="right|bottom"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:gravity="center"
             android:textColor="@color/secondary_text"
-            android:textSize="14dip"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true" />
+            android:textSize="14dip" />
     </RelativeLayout>
 
     <RelativeLayout
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:id="@+id/relativeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/addition_info_linear_layout"
+        android:layout_toRightOf="@+id/grabber_list_item"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:id="@+id/relativeLayout"
-        android:layout_toRightOf="@+id/grabber_list_item"
-        android:layout_toLeftOf="@+id/addition_info_linear_layout"
+        android:paddingBottom="8dp"
         android:paddingLeft="8dp"
-        android:layout_alignParentBottom="false">
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/title_list_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:textColor="@color/primary_text"
-            android:textSize="18dip"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentLeft="true" />
+            android:textSize="18dip" />
 
         <TextView
             android:id="@+id/artist_list_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/title_list_item"
+            android:layout_alignRight="@+id/title_list_item"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_below="@+id/title_list_item"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:textColor="@color/secondary_text"
-            android:textSize="12dip"
-            android:layout_alignWithParentIfMissing="false"
-            android:layout_alignLeft="@+id/title_list_item"
-            android:layout_below="@+id/title_list_item"
-            android:layout_alignRight="@+id/title_list_item" />
+            android:textColor="@drawable/list_item_secondary_text_color"
+            android:textSize="12dip" />
     </RelativeLayout>
 
 </RelativeLayout>

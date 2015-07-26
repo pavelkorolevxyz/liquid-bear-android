@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.activities;
+package com.pillowapps.liqear.activities.modes;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +29,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
@@ -42,11 +43,10 @@ import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmRecommendationsModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.network.ImageLoadingListener;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 
 import java.util.List;
 
-public class RecommendationsActivity extends ResultActivity {
+public class LastfmRecommendationsActivity extends ResultActivity {
     private static final int RECOMMENDATIONS_AMOUNT = 20;
     private RecommendationsArrayAdapter<Artist> adapter;
     private ProgressBar progressBar;
@@ -110,7 +110,7 @@ public class RecommendationsActivity extends ResultActivity {
         AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent artistInfoIntent = new Intent(RecommendationsActivity.this,
+                Intent artistInfoIntent = new Intent(LastfmRecommendationsActivity.this,
                         LastfmArtistViewerActivity.class);
                 artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, adapter.get(i).getName());
                 startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
@@ -136,7 +136,7 @@ public class RecommendationsActivity extends ResultActivity {
                 break;
             case 0:
                 if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-                    Toast.makeText(RecommendationsActivity.this,
+                    Toast.makeText(LastfmRecommendationsActivity.this,
                             R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -161,7 +161,7 @@ public class RecommendationsActivity extends ResultActivity {
                 progressBar.setVisibility(View.GONE);
                 List<Artist> artists = Converter.convertArtistList(data);
                 if (adapter == null) {
-                    adapter = new RecommendationsArrayAdapter<>(RecommendationsActivity.this, artists, Artist.class);
+                    adapter = new RecommendationsArrayAdapter<>(LastfmRecommendationsActivity.this, artists, Artist.class);
                     if (gridMode) {
                         gridView.setAdapter(adapter);
                     } else {
@@ -178,7 +178,7 @@ public class RecommendationsActivity extends ResultActivity {
 
             @Override
             public void failure(String errorMessage) {
-                ErrorNotifier.showError(RecommendationsActivity.this, errorMessage);
+                ErrorNotifier.showError(LastfmRecommendationsActivity.this, errorMessage);
             }
         });
     }
@@ -187,7 +187,7 @@ public class RecommendationsActivity extends ResultActivity {
         new LastfmRecommendationsModel().getRecommendationsTracks(artists, new SimpleCallback<List<LastfmTrack>>() {
             @Override
             public void success(List<LastfmTrack> data) {
-                openMainPlaylist(Converter.convertLastfmTrackList(data), 0);
+                openMainPlaylist(Converter.convertLastfmTrackList(data), 0, getToolbarTitle());
             }
 
             @Override
@@ -232,7 +232,7 @@ public class RecommendationsActivity extends ResultActivity {
             Artist artist = (Artist) values.get(position);
             if (gridMode) {
                 if (convertView == null) {
-                    convertView = View.inflate(RecommendationsActivity.this, R.layout.image_text_tile, null);
+                    convertView = View.inflate(LastfmRecommendationsActivity.this, R.layout.image_text_tile, null);
                     holder = new ViewHolder();
                     holder.text = (TextView) convertView.findViewById(R.id.text_tile_list_item);
                     holder.image = (ImageView) convertView.findViewById(R.id.image_tile_list_item);

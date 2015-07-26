@@ -20,6 +20,7 @@ import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerViewAdapter;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.components.viewers.LastfmAlbumViewerPage;
@@ -36,7 +37,6 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmDiscographyModel;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -277,7 +277,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
                 new LastfmDiscographyModel().getDiscographyTracks(values, new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> tracks) {
-                        openMainPlaylist(Converter.convertLastfmTrackList(tracks), 0);
+                        openMainPlaylist(Converter.convertLastfmTrackList(tracks), 0, getToolbarTitle());
                     }
 
                     @Override

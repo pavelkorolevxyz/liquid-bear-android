@@ -54,8 +54,8 @@ public interface VkApiService {
                               Callback<VkTracksResponseRoot> callback);
 
     @GET("/audio.get")
-    public void getAudio(@Query("owner_id") String ownerId,
-                         @Query("album_id") String albumId,
+    public void getAudio(@Query("owner_id") long ownerId,
+                         @Query("album_id") long albumId,
                          @Query("count") int count,
                          @Query("start_from") int offset,
                          Callback<VkTracksResponseRoot> callback);

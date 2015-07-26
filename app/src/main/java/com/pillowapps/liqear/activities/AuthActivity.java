@@ -260,7 +260,7 @@ public class AuthActivity extends TrackedActivity {
                                 editor.apply();
                                 lastfmNameTextView.setText(name);
                                 authLastfmPanel.setVisibility(View.VISIBLE);
-                                new LastfmUserModel().getUserInfo(name, new VkSimpleCallback<LastfmUser>() {
+                                new LastfmUserModel().getUserInfo(name, new SimpleCallback<LastfmUser>() {
                                     @Override
                                     public void success(LastfmUser user) {
                                         List<LastfmImage> images = user.getImages();
@@ -271,7 +271,7 @@ public class AuthActivity extends TrackedActivity {
                                     }
 
                                     @Override
-                                    public void failure(VkError error) {
+                                    public void failure(String errorMessage) {
 
                                     }
                                 });

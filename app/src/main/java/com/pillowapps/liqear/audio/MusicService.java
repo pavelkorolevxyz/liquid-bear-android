@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.SearchActivity;
+import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.callbacks.CompletionCallback;
 import com.pillowapps.liqear.callbacks.GetPlaylistCallback;
 import com.pillowapps.liqear.callbacks.PassiveCallback;
@@ -83,7 +83,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
@@ -288,6 +287,13 @@ public class MusicService extends Service implements
     private void restoreService() {
         EqualizerManager.restoreEqualizer();
         EqualizerManager.setEnabled(SharedPreferencesManager.getEqualizerPreferences().getBoolean("enabled", true));
+
+        final SharedPreferences urlNumberPreferences = SharedPreferencesManager.getUrlNumberPreferences();
+        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        if (currentTrack == null) return;
+        urlNumber = urlNumberPreferences.getInt(TrackUtils.getNotation(currentTrack), 0);
+        Timeline.getInstance().addToPrevIndexes(Timeline.getInstance().getIndex());
+        getTrackUrl(currentTrack, false, urlNumber);
     }
 
     private void initWidgets() {
@@ -455,10 +461,8 @@ public class MusicService extends Service implements
                     Track track = Timeline.getInstance().getCurrentTrack();
                     if (track != null) {
                         Intent searchVkIntent = new Intent(getBaseContext(),
-                                SearchActivity.class);
+                                VkAudioSearchActivity.class);
                         searchVkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        searchVkIntent.putExtra(SearchActivity.SEARCH_MODE,
-                                SearchActivity.SearchMode.AUDIO_SEARCH_RESULT_ADD_VK);
                         searchVkIntent.putExtra(Constants.TARGET, TrackUtils.getNotation(track));
                         getApplication().startActivity(searchVkIntent);
                     }
@@ -808,7 +812,10 @@ public class MusicService extends Service implements
     public int getDuration() {
         int duration = 0;
         if (prepared) {
-            duration = mediaPlayer.getDuration();
+            try {
+                duration = mediaPlayer.getDuration();
+            } catch (IllegalStateException ignored) {
+            }
         }
         if (duration > 2 * 60 * 60 * 1000 || duration < 0) return 0;
         return duration;
@@ -903,12 +910,11 @@ public class MusicService extends Service implements
             @Override
             public void onNext(Long aLong) {
                 LBApplication.bus.post(new TimeEvent());
-                if (scrobbled) return;
+                if (scrobbled || !LBPreferencesManager.isScrobblingEnabled()) return;
                 secondsTrackPlayed++;
                 int duration = getDuration();
                 if (duration != 0) {
                     int playedPercent = (int) (((float) secondsTrackPlayed / (duration / 1000f)) * 100);
-                    Timber.d(secondsTrackPlayed + " " + (duration / 1000f) + " " + playedPercent + "  from " + LBPreferencesManager.getPercentsToScrobble());
                     if (playedPercent >= LBPreferencesManager.getPercentsToScrobble()) {
                         scrobble(Timeline.getInstance().getCurrentTrack());
                     }

@@ -8,12 +8,23 @@ import android.widget.Toast;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.viewers.LastfmChartsViewerActivity;
+import com.pillowapps.liqear.activities.modes.LastfmRecommendationsActivity;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.activities.NewcomersActivity;
-import com.pillowapps.liqear.activities.RecommendationsActivity;
-import com.pillowapps.liqear.activities.SearchActivity;
+import com.pillowapps.liqear.activities.modes.NewcomersActivity;
 import com.pillowapps.liqear.activities.SetlistsActivity;
+import com.pillowapps.liqear.activities.modes.LastfmNeighboursActivity;
+import com.pillowapps.liqear.activities.modes.LocalAlbumsActivity;
+import com.pillowapps.liqear.activities.modes.LocalArtistsActivity;
+import com.pillowapps.liqear.activities.modes.LocalTracksActivity;
+import com.pillowapps.liqear.activities.modes.SearchAlbumActivity;
+import com.pillowapps.liqear.activities.modes.SearchArtistActivity;
+import com.pillowapps.liqear.activities.modes.SearchLastfmUserActivity;
+import com.pillowapps.liqear.activities.modes.SearchSimpleTrackActivity;
+import com.pillowapps.liqear.activities.modes.SearchTagActivity;
+import com.pillowapps.liqear.activities.modes.VkFriendsActivity;
+import com.pillowapps.liqear.activities.modes.VkGroupsActivity;
+import com.pillowapps.liqear.activities.modes.VkRecommendationsActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmChartsViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmUserViewerActivity;
 import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.entities.Category;
@@ -105,31 +116,25 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case ARTIST_RADIO: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.ARTIST);
+                Intent intent = new Intent(activity, SearchArtistActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Artist search");
             }
             break;
             case TAG_RADIO: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.TAG);
+                Intent intent = new Intent(activity, SearchTagActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Tag search");
             }
             break;
             case ALBUM_RADIO: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.ALBUM);
+                Intent intent = new Intent(activity, SearchAlbumActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Album search");
             }
             break;
             case RECOMMENDATIONS: {
-                Intent intent = new Intent(activity, RecommendationsActivity.class);
+                Intent intent = new Intent(activity, LastfmRecommendationsActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Recommended");
             }
@@ -140,17 +145,13 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case NEIGHBOURS: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.NEIGHBOURS);
+                Intent intent = new Intent(activity, LastfmNeighboursActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Neighbours");
             }
             break;
             case FRIENDS_LAST: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.LASTFM_FRIENDS);
+                Intent intent = new Intent(activity, SearchLastfmUserActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Friends");
             }
@@ -178,25 +179,19 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case GROUP_VK: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.GROUP);
+                Intent intent = new Intent(activity, VkGroupsActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Group");
             }
             break;
             case FRIENDS_VK: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.VK_FRIENDS);
+                Intent intent = new Intent(activity, VkFriendsActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Friends");
             }
             break;
             case SEARCH_VK: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.VK_SIMPLE_SEARCH);
+                Intent intent = new Intent(activity, SearchSimpleTrackActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Search");
             }
@@ -213,9 +208,7 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case RECOMMENDATIONS_VK: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.VK_RECOMMENDATIONS);
+                Intent intent = new Intent(activity, VkRecommendationsActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Recommendations");
             }
@@ -276,25 +269,19 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             }
             break;
             case LOCAL_ARTISTS: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.LOCAL_ARTISTS);
+                Intent intent = new Intent(activity, LocalArtistsActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LOCAL] Artists");
             }
             break;
             case LOCAL_TRACKS: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.LOCAL_TRACKS);
+                Intent intent = new Intent(activity, LocalTracksActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LOCAL] Tracks");
             }
             break;
             case LOCAL_ALBUMS: {
-                Intent intent = new Intent(activity, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.LOCAL_ALBUMS);
+                Intent intent = new Intent(activity, LocalAlbumsActivity.class);
                 activity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LOCAL] Albums");
             }

@@ -7,21 +7,83 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.network.ImageLoadingListener;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ImageModel {
     private DisplayImageOptions options = new DisplayImageOptions.Builder()
             .cacheOnDisk(true)
+            .cacheInMemory(true)
             .bitmapConfig(Bitmap.Config.RGB_565)
             .displayer(new FadeInBitmapDisplayer(500))
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
             .build();
+
+    private DisplayImageOptions avatarListOptions = new DisplayImageOptions.Builder()
+            .showImageOnLoading(R.drawable.user_dark_list)
+            .showImageForEmptyUri(R.drawable.user_dark_list)
+            .showImageOnFail(R.drawable.user_dark_list)
+            .cacheOnDisk(true)
+            .cacheInMemory(true)
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .build();
+
+    private DisplayImageOptions groupListOptions = new DisplayImageOptions.Builder()
+            .showImageOnLoading(R.drawable.group_dark_list)
+            .showImageForEmptyUri(R.drawable.group_dark_list)
+            .showImageOnFail(R.drawable.group_dark_list)
+            .cacheOnDisk(true)
+            .cacheInMemory(true)
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .build();
+
+    private DisplayImageOptions artistListOptions = new DisplayImageOptions.Builder()
+            .showImageOnLoading(R.drawable.artist_dark_list)
+            .showImageForEmptyUri(R.drawable.artist_dark_list)
+            .showImageOnFail(R.drawable.artist_dark_list)
+            .cacheOnDisk(true)
+            .cacheInMemory(true)
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .build();
+
+    private DisplayImageOptions albumListOptions = new DisplayImageOptions.Builder()
+            .showImageOnLoading(R.drawable.album_dark_list)
+            .showImageForEmptyUri(R.drawable.album_dark_list)
+            .showImageOnFail(R.drawable.album_dark_list)
+            .cacheOnDisk(true)
+            .cacheInMemory(true)
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .build();
+
     private ImageLoader imageLoader = ImageLoader.getInstance();
 
     public void loadImage(String url, ImageView imageView) {
         imageLoader.displayImage(url, imageView, options);
+    }
+
+    public void loadAvatarListImage(String url, ImageView imageView) {
+        AnimateFirstDisplayListener animateFirstDisplayListener = new AnimateFirstDisplayListener();
+        imageLoader.displayImage(url, imageView, avatarListOptions, animateFirstDisplayListener);
+    }
+
+    public void loadGroupListImage(String url, ImageView imageView) {
+        AnimateFirstDisplayListener animateFirstDisplayListener = new AnimateFirstDisplayListener();
+        imageLoader.displayImage(url, imageView, groupListOptions, animateFirstDisplayListener);
+    }
+
+    public void loadArtistListImage(String url, ImageView imageView) {
+        AnimateFirstDisplayListener animateFirstDisplayListener = new AnimateFirstDisplayListener();
+        imageLoader.displayImage(url, imageView, artistListOptions, animateFirstDisplayListener);
+    }
+
+    public void loadAlbumListImage(String url, ImageView imageView) {
+        AnimateFirstDisplayListener animateFirstDisplayListener = new AnimateFirstDisplayListener();
+        imageLoader.displayImage(url, imageView, albumListOptions, animateFirstDisplayListener);
     }
 
     public void loadImage(String url, final ImageLoadingListener listener) {
@@ -98,5 +160,23 @@ public class ImageModel {
                 listener.onLoadingCancelled();
             }
         });
+    }
+
+
+    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+
+        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            if (loadedImage != null) {
+                ImageView imageView = (ImageView) view;
+                boolean firstDisplay = !displayedImages.contains(imageUri);
+                if (firstDisplay) {
+                    FadeInBitmapDisplayer.animate(imageView, 500);
+                    displayedImages.add(imageUri);
+                }
+            }
+        }
     }
 }

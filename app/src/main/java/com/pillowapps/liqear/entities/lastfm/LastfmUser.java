@@ -9,6 +9,8 @@ public class LastfmUser {
     String name;
     @SerializedName("image")
     List<LastfmImage> images;
+    @SerializedName("match")
+    double match;
 
     public LastfmUser() {
     }
@@ -19,6 +21,10 @@ public class LastfmUser {
 
     public List<LastfmImage> getImages() {
         return images;
+    }
+
+    public double getMatch() {
+        return match;
     }
 
     @Override

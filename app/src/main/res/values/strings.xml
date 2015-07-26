@@ -137,7 +137,7 @@
     <string name="scrobbling_after_summary">How many percents of track should be over to scrobble</string>
     <string name="pick_good_result">pick good result</string>
     <string name="refresh">next result</string>
-    <string name="vk_albums">albums</string>
+    <string name="vk_albums">Albums</string>
     <string name="search_live">Search live</string>
     <string name="search_live_summary">Try to find live versions of tracks in setlist search</string>
     <string name="find_current">Find current</string>

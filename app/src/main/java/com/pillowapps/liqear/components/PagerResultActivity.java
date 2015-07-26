@@ -24,14 +24,16 @@ public class PagerResultActivity extends ResultActivity {
     public OnViewerItemClickListener<LastfmTrack> trackClickListener = new OnViewerItemClickListener<LastfmTrack>() {
         @Override
         public void onViewerClicked(List<LastfmTrack> tracks, int position) {
-            openMainPlaylist(Converter.convertLastfmTrackList(tracks), position);
+            String title = String.format("%s / %s", getViewer(pager.getCurrentItem()).getTitle(), getToolbarTitle());
+            openMainPlaylist(Converter.convertLastfmTrackList(tracks), position, title);
         }
     };
 
     public OnViewerItemClickListener<VkTrack> vkTrackClickListener = new OnViewerItemClickListener<VkTrack>() {
         @Override
         public void onViewerClicked(List<VkTrack> tracks, int position) {
-            openMainPlaylist(Converter.convertVkTrackList(tracks), position);
+            String title = String.format("%s / %s", getViewer(pager.getCurrentItem()).getTitle(), getToolbarTitle());
+            openMainPlaylist(Converter.convertVkTrackList(tracks), position, title);
         }
     };
 
@@ -64,6 +66,12 @@ public class PagerResultActivity extends ResultActivity {
         @Override
         public void onViewerClicked(List<VkAlbum> albums, int position) {
             openVkAlbum(albums.get(position));
+        }
+    };
+    public OnViewerItemClickListener<VkAlbum> vkGroupAlbumClickListener = new OnViewerItemClickListener<VkAlbum>() {
+        @Override
+        public void onViewerClicked(List<VkAlbum> albums, int position) {
+            openGroupVkAlbum(albums.get(position));
         }
     };
 

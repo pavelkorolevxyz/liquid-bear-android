@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/icons"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/lb_toolbar" />
+
+    <com.costum.android.widget.LoadMoreListView
+        android:id="@+id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/edit_part_quick_search_layout"
+        android:layout_marginLeft="0dp"
+        app:recyclerviewScrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/normal_padding"
+        android:text="@string/empty"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/secondary_text"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/edit_part_quick_search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/toolbar"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <com.pillowapps.liqear.components.HintMaterialEditText
+            android:id="@+id/search_edit_text_quick_search_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/clear_edit_text_button_playlist_tab"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="none"
+            android:maxLength="50"
+            android:singleLine="true"
+            app:met_clearButton="true"
+            app:met_floatingLabel="normal"
+            app:met_iconLeft="@drawable/ic_search_dark" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:indeterminate="true" />
+
+</RelativeLayout>

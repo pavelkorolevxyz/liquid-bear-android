@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.models.lastfm;
 
+import com.pillowapps.liqear.callbacks.LastfmCallback;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
@@ -12,15 +14,10 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmUserRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmWeeklyTrackChartRoot;
-import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LastfmApiHelper;
 import com.pillowapps.liqear.network.ServiceHelper;
-import com.pillowapps.liqear.callbacks.LastfmCallback;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.callbacks.VkCallback;
-import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
@@ -173,16 +170,16 @@ public class LastfmUserModel {
         });
     }
 
-    public void getUserInfo(String name, final VkSimpleCallback<LastfmUser> callback) {
-        lastfmService.getUserInfo(name, new VkCallback<LastfmUserRoot>() {
+    public void getUserInfo(String name, final SimpleCallback<LastfmUser> callback) {
+        lastfmService.getUserInfo(name, new SimpleCallback<LastfmUserRoot>() {
             @Override
             public void success(LastfmUserRoot data) {
                 callback.success(data.getUser());
             }
 
             @Override
-            public void failure(VkError error) {
-                callback.failure(error);
+            public void failure(String errorMessage) {
+                callback.failure(errorMessage);
             }
         });
     }

@@ -27,27 +27,32 @@
         <item>Show similar artists</item>
     </array>
     <array name="tag_presets">
-        <item>rock</item>
-        <item>alternative</item>
-        <item>indie</item>
-        <item>electronic</item>
-        <item>pop</item>
-        <item>metal</item>
-        <item>female vocalists</item>
-        <item>classic rock</item>
-        <item>alternative rock</item>
-        <item>jazz</item>
-        <item>punk</item>
-        <item>indie rock</item>
-        <item>folk</item>
+        <item>acoustic</item>
         <item>ambient</item>
-        <item>experimental</item>
-        <item>hard rock</item>
-        <item>hip-hop</item>
-        <item>80s</item>
+        <item>blues</item>
+        <item>classical</item>
+        <item>country</item>
+        <item>electronic</item>
+        <item>emo</item>
+        <item>folk</item>
         <item>hardcore</item>
-        <item>british</item>
+        <item>hip hop</item>
+        <item>indie</item>
+        <item>jazz</item>
+        <item>latin</item>
+        <item>metal</item>
+        <item>pop</item>
+        <item>pop punk</item>
+        <item>punk</item>
         <item>reggae</item>
+        <item>rnb</item>
+        <item>rock</item>
+        <item>soul</item>
+        <item>world</item>
+        <item>60s</item>
+        <item>70s</item>
+        <item>80s</item>
+        <item>90s</item>
     </array>
 
     <string-array name="actions_for_timers">

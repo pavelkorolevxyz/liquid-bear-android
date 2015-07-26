@@ -225,7 +225,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
     }
 
     private void getMostLoved(final LastfmTracksViewerPage viewer) {
-        chartsModel.getLovedTracksChart(TRACKS_IN_TOP_COUNT,
+        chartsModel.getLovedTracksChart(getPageSize(),
                 viewer.getPage(), new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
@@ -240,7 +240,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
     }
 
     private void getTopArtists(final LastfmArtistViewerPage viewer) {
-        chartsModel.getTopArtists(TRACKS_IN_TOP_COUNT,
+        chartsModel.getTopArtists(getPageSize(),
                 viewer.getPage(), new SimpleCallback<List<LastfmArtist>>() {
                     @Override
                     public void success(List<LastfmArtist> lastfmArtists) {
@@ -255,7 +255,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
     }
 
     private void getTopTracks(final LastfmTracksViewerPage viewer) {
-        chartsModel.getTopTracksChart(TRACKS_IN_TOP_COUNT,
+        chartsModel.getTopTracksChart(getPageSize(),
                 viewer.getPage(), new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
@@ -270,7 +270,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
     }
 
     private void getHypedTracks(final LastfmTracksViewerPage viewer) {
-        chartsModel.getHypedTracks(TRACKS_IN_TOP_COUNT,
+        chartsModel.getHypedTracks(getPageSize(),
                 viewer.getPage(), new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> lastfmTracks) {
@@ -285,7 +285,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
     }
 
     private void getHypedArtists(final LastfmArtistViewerPage viewer) {
-        chartsModel.getHypedArtists(TRACKS_IN_TOP_COUNT,
+        chartsModel.getHypedArtists(getPageSize(),
                 viewer.getPage(), new SimpleCallback<List<LastfmArtist>>() {
                     @Override
                     public void success(List<LastfmArtist> lastfmArtists) {

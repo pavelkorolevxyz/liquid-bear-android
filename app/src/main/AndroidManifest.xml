@@ -23,65 +23,47 @@
             android:name=".activities.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.AuthActivity" />
+        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.viewers.VkUserViewerActivity" />
+        <activity android:name=".activities.viewers.LastfmUserViewerActivity" />
+        <activity android:name=".activities.viewers.LastfmChartsViewerActivity" />
+        <activity android:name=".activities.SearchActivity" />
+        <activity android:name=".activities.viewers.LastfmArtistViewerActivity" />
+        <activity android:name=".activities.viewers.LastfmAlbumViewerActivity" />
+        <activity android:name=".activities.ImagePagerActivity" />
+        <activity android:name=".activities.EqualizerActivity" />
+        <activity android:name=".activities.TextActivity" />
         <activity
-            android:name=".activities.AuthActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.LoginActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.viewers.VkUserViewerActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.viewers.LastfmUserViewerActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.viewers.LastfmChartsViewerActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.SearchActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.viewers.LastfmArtistViewerActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.viewers.LastfmAlbumViewerActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.ImagePagerActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.EqualizerActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.TextActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.PreferencesActivity"
-            android:theme="@style/PreferencesTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.RecommendationsActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.viewers.LastfmTagViewerActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.PlaylistsActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.SetlistsActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.NewcomersActivity"
-            android:windowSoftInputMode="stateHidden" />
+            android:name=".activities.PreferencesActivity"/>
+        <activity android:name=".activities.modes.LastfmRecommendationsActivity" />
+        <activity android:name=".activities.viewers.LastfmTagViewerActivity" />
+        <activity android:name=".activities.PlaylistsActivity" />
+        <activity android:name=".activities.SetlistsActivity" />
+        <activity android:name=".activities.modes.NewcomersActivity" />
+        <activity android:name=".activities.modes.SearchArtistActivity" />
+        <activity android:name=".activities.modes.SearchTagActivity" />
+        <activity android:name=".activities.modes.SearchAlbumActivity" />
+        <activity android:name=".activities.modes.VkGroupsActivity" />
+        <activity android:name=".activities.modes.LastfmNeighboursActivity" />
+        <activity android:name=".activities.modes.SearchSimpleTrackActivity" />
+        <activity android:name=".activities.modes.SearchLastfmUserActivity" />
+        <activity android:name=".activities.modes.VkFriendsActivity" />
+        <activity android:name=".activities.modes.VkRecommendationsActivity" />
+        <activity android:name=".activities.modes.VkAudioSearchActivity" />
+        <activity android:name=".activities.modes.LocalPlaylistTracksActivity" />
+        <activity android:name=".activities.modes.VkAlbumTracksActivity" />
+        <activity android:name=".activities.modes.NewcomersTracksActivity" />
+        <activity android:name=".activities.modes.SetlistTracksActivity" />
+        <activity android:name=".activities.modes.LocalArtistsActivity" />
+        <activity android:name=".activities.modes.LocalTracksActivity" />
+        <activity android:name=".activities.modes.LocalAlbumsActivity" />
 
         <receiver android:name=".audio.MediaButtonReceiver">
             <intent-filter>

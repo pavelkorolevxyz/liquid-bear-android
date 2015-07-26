@@ -1,8 +1,7 @@
-package com.pillowapps.liqear.activities;
+package com.pillowapps.liqear.activities.modes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -23,19 +22,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.costum.android.widget.LoadMoreListView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
+import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.portals.AlterportalAlbumModel;
 import com.pillowapps.liqear.models.portals.FunkySoulsAlbumModel;
-import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,13 +45,6 @@ public class NewcomersActivity extends ResultActivity {
     private NewcomersAdapter adapter;
     private ProgressBar progressBar;
     private int visiblePages = 1;
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .displayer(new FadeInBitmapDisplayer(500))
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .build();
-    private ImageLoader imageLoader = ImageLoader.getInstance();
     private LoadMoreListView listView;
     private TextView emptyTextView;
 
@@ -92,7 +82,7 @@ public class NewcomersActivity extends ResultActivity {
                         tracks.add(new Track(album.getArtist(), title));
                     }
                 }
-                openMainPlaylist(tracks, 0);
+                openMainPlaylist(tracks, 0, getToolbarTitle());
                 break;
             default:
                 break;
@@ -120,7 +110,7 @@ public class NewcomersActivity extends ResultActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_layout);
+        setContentView(R.layout.newcomers_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -170,13 +160,11 @@ public class NewcomersActivity extends ResultActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(NewcomersActivity.this,
-                        SearchActivity.class);
+                        NewcomersTracksActivity.class);
                 Album album = (Album) adapter.getValues().get(position);
                 intent.putExtra("artist", album.getArtist());
-                intent.putStringArrayListExtra("tracks", new ArrayList<String>(album.getTracks()));
+                intent.putStringArrayListExtra("tracks", new ArrayList<>(album.getTracks()));
                 intent.putExtra("title", album.getTitle());
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.TRACKLIST_FUNKY);
                 startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
             }
         });
@@ -288,7 +276,7 @@ public class NewcomersActivity extends ResultActivity {
             holder.artistAlbum.setText(Html.fromHtml(album.getNotation()));
             holder.genre.setText(Html.fromHtml(album.getGenre()));
             if (holder.loadImages) {
-                imageLoader.displayImage(album.getImageUrl(), holder.cover, options);
+                new ImageModel().loadAlbumListImage(album.getImageUrl(), holder.cover);
             } else {
                 holder.cover.setVisibility(View.GONE);
             }

@@ -18,7 +18,7 @@ public class VkAlbum {
     }
 
     public long getOwnerId() {
-        return ownerId;
+        return Math.abs(ownerId);
     }
 
     public String getTitle() {

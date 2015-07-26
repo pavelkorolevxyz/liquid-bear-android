@@ -37,12 +37,16 @@ import com.michaelnovakjr.numberpicker.NumberPicker;
 import com.pillowapps.liqear.BuildConfig;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.ModeAdapter;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.callbacks.VkPassiveCallback;
+import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.components.ActivityResult;
 import com.pillowapps.liqear.components.ArtistTrackComparator;
 import com.pillowapps.liqear.entities.Album;
@@ -70,9 +74,6 @@ import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.callbacks.VkPassiveCallback;
-import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -330,10 +331,8 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                Intent intent = new Intent(MainActivity.this, VkAudioSearchActivity.class);
                 intent.putExtra(Constants.TARGET, TrackUtils.getNotation(currentTrack));
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.AUDIO_SEARCH_RESULT);
                 intent.putExtra(Constants.TYPE, 2);
                 startActivityForResult(intent, 7463);
             }
@@ -641,7 +640,10 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
 //            PlaylistManager.getInstance().saveUnsavedPlaylist(tracks);
             new PlaylistModel().saveMainPlaylist();
         }
-        if (!isTablet()) phoneFragment.changeViewPagerItem(0);
+        if (!isTablet()) {
+            phoneFragment.updateMainPlaylistTitle();
+            phoneFragment.changeViewPagerItem(0);
+        }
     }
 
     private void sortByArtist() {
@@ -749,9 +751,7 @@ public class MainActivity extends BaseActivity implements ModeListFragment.Navig
     private void addToVk(Track track) {
         if (SharedPreferencesManager.getPreferences().getBoolean("add_to_vk_slow", true)) {
             if (track != null) {
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                intent.putExtra(SearchActivity.SEARCH_MODE,
-                        SearchActivity.SearchMode.AUDIO_SEARCH_RESULT_ADD_VK);
+                Intent intent = new Intent(MainActivity.this, VkAudioSearchActivity.class);
                 intent.putExtra(Constants.TARGET, TrackUtils.getNotation(track));
                 startActivity(intent);
             }

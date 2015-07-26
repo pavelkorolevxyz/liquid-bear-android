@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.modes.LocalPlaylistTracksActivity;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.GetPlaylistListCallback;
 import com.pillowapps.liqear.components.ResultActivity;
@@ -94,9 +95,7 @@ public class PlaylistsActivity extends ResultActivity {
                     case SHOW_PLAYLISTS: {
                         Intent intent = new Intent(
                                 PlaylistsActivity.this,
-                                SearchActivity.class);
-                        intent.putExtra(SearchActivity.SEARCH_MODE,
-                                SearchActivity.SearchMode.PLAYLIST_TRACKLIST);
+                                LocalPlaylistTracksActivity.class);
                         Playlist playlist = (Playlist) adapter.get(position);
                         intent.putExtra("title", playlist.getTitle());
                         intent.putExtra("pid", playlist.getId());

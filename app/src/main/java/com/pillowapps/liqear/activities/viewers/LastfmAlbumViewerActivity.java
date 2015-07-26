@@ -42,7 +42,7 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
     public static final String ALBUM = "album";
     public static final String ARTIST = "artist";
     public static final int TRACKS_INDEX = 0;
-    public static final int PAGES_NUMBER = 5;
+    public static final int PAGES_NUMBER = 2;
 
     private View infoTab;
     @InjectView(R.id.album_cover_image_view)

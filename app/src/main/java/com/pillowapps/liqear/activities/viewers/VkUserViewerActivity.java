@@ -15,6 +15,7 @@ import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerAdapter;
+import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
@@ -29,7 +30,6 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
-import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,7 +161,11 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 getAlbums(getPageSize(), viewer.getPage(), viewer);
             }
         });
-        viewer.setItemClickListener(vkAlbumClickListener);
+        if (mode == Mode.USER) {
+            viewer.setItemClickListener(vkAlbumClickListener);
+        } else {
+            viewer.setItemClickListener(vkGroupAlbumClickListener);
+        }
         addViewer(viewer);
         return viewer;
     }
@@ -293,7 +297,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
             vkWallModel.getVkUserWallAudio(user.getUid(), limit,
                     limit * page, callback);
         } else {
-            vkWallModel.getVkGroupWallAudio(group.getGid(), TRACKS_IN_TOP_COUNT,
+            vkWallModel.getVkGroupWallAudio(group.getGid(), getPageSize(),
                     limit * page, callback);
         }
     }
@@ -341,9 +345,9 @@ public class VkUserViewerActivity extends PagerResultActivity {
             }
             return true;
             case R.id.to_playlist: {
-                LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(currentItem);
+                VkTracksViewerPage viewer = (VkTracksViewerPage) getViewer(currentItem);
                 if (viewer.isNotLoaded()) return true;
-                addToMainPlaylist(Converter.convertLastfmTrackList(viewer.getItems()));
+                addToMainPlaylist(Converter.convertVkTrackList(viewer.getItems()));
                 Toast.makeText(VkUserViewerActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
             }
             return true;
