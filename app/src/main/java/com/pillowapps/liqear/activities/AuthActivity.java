@@ -2,6 +2,8 @@ package com.pillowapps.liqear.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -14,8 +16,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.AuthActivityAdapter;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmSession;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
@@ -30,8 +35,6 @@ import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAuthModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.models.vk.VkUserModel;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
@@ -134,6 +137,7 @@ public class AuthActivity extends TrackedActivity {
         views.add(lastfmTab);
         pager = (ViewPager) findViewById(R.id.pager);
         AuthActivityAdapter adapter = new AuthActivityAdapter(views);
+
         pager.setAdapter(adapter);
         TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
@@ -142,6 +146,13 @@ public class AuthActivity extends TrackedActivity {
         indicator.setFooterColor(getResources().getColor(R.color.accent));
         indicator.setTextColor(getResources().getColor(R.color.icons));
         indicator.setSelectedColor(getResources().getColor(R.color.icons));
+
+        Resources resources = LBApplication.getAppContext().getResources();
+        boolean isTablet = resources.getBoolean(R.bool.isTablet);
+        if (isTablet && resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            indicator.setVisibility(View.GONE);
+        }
+
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {

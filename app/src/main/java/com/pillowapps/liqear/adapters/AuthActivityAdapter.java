@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.adapters;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
@@ -69,4 +71,13 @@ public class AuthActivityAdapter extends PagerAdapter {
     public void startUpdate(ViewGroup view) {
     }
 
+    @Override
+    public float getPageWidth(int position) {
+        Resources resources = LBApplication.getAppContext().getResources();
+        boolean isTablet = resources.getBoolean(R.bool.isTablet);
+        if (isTablet && resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return 0.5f;
+        }
+        return super.getPageWidth(position);
+    }
 }

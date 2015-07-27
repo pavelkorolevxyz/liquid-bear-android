@@ -171,7 +171,7 @@ public class LastfmUserModel {
     }
 
     public void getUserInfo(String name, final SimpleCallback<LastfmUser> callback) {
-        lastfmService.getUserInfo(name, new SimpleCallback<LastfmUserRoot>() {
+        lastfmService.getUserInfo(name, new LastfmCallback<LastfmUserRoot>() {
             @Override
             public void success(LastfmUserRoot data) {
                 callback.success(data.getUser());

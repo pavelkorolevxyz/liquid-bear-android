@@ -1,7 +1,6 @@
 package com.pillowapps.liqear.network.service;
 
 import com.pillowapps.liqear.callbacks.LastfmCallback;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
@@ -158,7 +157,7 @@ public interface LastfmApiService {
 
     @GET("/?method=user.getInfo")
     public void getUserInfo(@Query("user") String user,
-                            SimpleCallback<LastfmUserRoot> callback);
+                            LastfmCallback<LastfmUserRoot> callback);
 
     @GET("/?method=track.getInfo")
     public void getTrackInfo(@Query("artist") String artist,
