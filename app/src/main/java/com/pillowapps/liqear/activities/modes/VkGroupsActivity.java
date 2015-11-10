@@ -34,7 +34,7 @@ public class VkGroupsActivity extends ListBaseActivity {
                 openGroup(adapter.getItem(position));
             }
         });
-        recyclerView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
 

@@ -3,13 +3,15 @@ package com.pillowapps.liqear.components.viewers;
 import android.content.Context;
 import android.view.View;
 
-import com.pillowapps.liqear.adapters.LastfmTracksAdapter;
+import com.pillowapps.liqear.adapters.TrackAdapter;
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
+import com.pillowapps.liqear.helpers.Converter;
 
 import java.util.List;
 
-public class LastfmTracksViewerPage extends ViewerPage<LastfmTrack> {
-    private LastfmTracksAdapter adapter;
+public class LastfmTracksViewerPage extends ViewerPage<Track> {
+    private TrackAdapter adapter;
 
     public LastfmTracksViewerPage(Context context,
                                   View view,
@@ -28,17 +30,17 @@ public class LastfmTracksViewerPage extends ViewerPage<LastfmTrack> {
         return adapter == null;
     }
 
-    public void setAdapter(LastfmTracksAdapter adapter) {
+    public void setAdapter(TrackAdapter adapter) {
         this.adapter = adapter;
     }
 
 
-    public List<LastfmTrack> getItems() {
+    public List<Track> getItems() {
         return adapter.getItems();
     }
 
     public void clear() {
-        adapter.clear();
+//        adapter.clear(adapter.getItems());
     }
 
     @Override
@@ -53,18 +55,19 @@ public class LastfmTracksViewerPage extends ViewerPage<LastfmTrack> {
     }
 
     public void fill(List<LastfmTrack> tracks) {
-        int adapterSize = adapter == null ? 0 : adapter.getCount();
-        if (tracks == null) return;
+        int adapterSize = adapter == null ? 0 : adapter.getItemCount();
+
         int count = adapterSize + tracks.size();
+        filledFull = (adapterSize == count);
         showEmptyPlaceholder(count == 0);
         showProgressBar(false);
-        updateAdapter(tracks);
+        updateAdapter(Converter.convertLastfmTrackList(tracks));
     }
 
-    private void updateAdapter(List<LastfmTrack> tracks) {
+    private void updateAdapter(List<Track> tracks) {
         if (adapter == null) {
-            adapter = new LastfmTracksAdapter(getContext(), tracks);
-            listView.setAdapter(adapter);
+            adapter = new TrackAdapter(getContext(), tracks, listener, longClickListener);
+            recyclerView.setAdapter(adapter);
         } else {
             adapter.addAll(tracks);
             onLoadMoreComplete();

@@ -32,7 +32,7 @@ public class SearchArtistActivity extends SearchBaseActivity {
         editText.setHint(getString(R.string.artist_radio));
         editText.setFloatingLabelText(getString(R.string.artist_radio));
         progressBar.setVisibility(View.GONE);
-        recyclerView.setOnCreateContextMenuListener(this);
+        recycler.setOnCreateContextMenuListener(this);
         loadArtistPresets();
 
         initWatcher();
@@ -103,7 +103,7 @@ public class SearchArtistActivity extends SearchBaseActivity {
                 openArtistByName(artist.getName());
             }
         });
-        recyclerView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
 

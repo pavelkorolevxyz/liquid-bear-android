@@ -1,12 +1,15 @@
 buildscript {
+    ext.kotlin_version = '1.0.0-beta-1038'
     repositories {
         jcenter()
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:1.3.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
-
+        classpath 'io.fabric.tools:gradle:1.20.1'
     }
 }
 
@@ -15,11 +18,18 @@ repositories {
     maven {
         url "https://jitpack.io"
     }
+    maven {
+        url 'https://dl.bintray.com/drummer-aidan/maven'
+    }
+    maven {
+        url 'https://maven.fabric.io/public'
+    }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
-
+apply plugin: 'io.fabric'
+apply plugin: 'kotlin-android'
 
 def getDate() {
     def date = new Date()
@@ -28,12 +38,12 @@ def getDate() {
 }
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion '22.0.1'
 
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 22
+        targetSdkVersion 23
 
         applicationId "com.pillowapps.liqear"
         versionCode 51
@@ -49,6 +59,7 @@ android {
         main {
             manifest.srcFile 'src/main/AndroidManifest.xml'
             java.srcDirs = ['src/main/java']
+            java.srcDirs += 'src/main/kotlin'
             res.srcDirs = ['src/main/res']
             assets.srcDirs = ['src/main/assets']
         }
@@ -77,9 +88,17 @@ android {
     }
 }
 
+kapt {
+    generateStubs = true
+}
+
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:palette-v7:22.2.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'org.jetbrains.anko:anko-sdk15:0.7.2'
+
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:palette-v7:23.1.0'
+    compile 'com.android.support:design:23.1.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.jakewharton.timber:timber:2.7.1'
@@ -94,22 +113,24 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
     compile 'com.github.medyo:fancybuttons:1.4@aar'
-    compile 'com.melnykov:floatingactionbutton:1.3.0'
+    compile 'com.afollestad:material-dialogs:0.7.7.0'
+    compile 'asia.ivity.android:drag-sort-listview:1.0'
 
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
-    compile 'com.marshalchen.ultimaterecyclerview:library:0.3.11'
 
     apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
     compile "com.raizlabs.android:DBFlow-Core:2.2.1"
     compile "com.raizlabs.android:DBFlow:2.2.1"
 
     compile project(':libraries:PullToRefreshLibrary')
-    compile project(':libraries:DragSortListLibrary')
     compile project(':libraries:StickyGridHeaders')
     compile project(':libraries:NumberPicker')
     compile project(':libraries:PanningViewLibrary')
     compile project(':libraries:PhotoView')
     compile project(':libraries:ViewPagerIndicatorLibrary')
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
+        transitive = true;
+    }
 
     compile files('libs/crashlytics.jar')
     compile files('libs/httpcore-4.3.jar')

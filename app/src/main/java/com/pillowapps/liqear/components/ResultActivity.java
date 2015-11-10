@@ -91,6 +91,8 @@ public class ResultActivity extends TrackedActivity {
             return;
         }
         Timeline.getInstance().addToPlaylist(track);
+
+        Toast.makeText(ResultActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
     }
 
     public void saveAsPlaylist(List<Track> tracks) {
@@ -127,11 +129,20 @@ public class ResultActivity extends TrackedActivity {
         startActivityForResult(userViewerIntent, Constants.MAIN_REQUEST_CODE);
     }
 
-    protected void openAlbum(Album album) {
+    protected void openLastfmAlbum(Album album) {
         Intent intent = new Intent(ResultActivity.this, LastfmAlbumViewerActivity.class);
         intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
         intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+    }
+
+    protected void openVkAlbum(Album vkAlbum) {
+        Intent searchIntent = new Intent(ResultActivity.this,
+                VkAlbumTracksActivity.class);
+        searchIntent.putExtra("title", vkAlbum.getTitle());
+        searchIntent.putExtra("uid", vkAlbum.getOwnerId());
+        searchIntent.putExtra("album_id", vkAlbum.getAlbumId());
+        startActivityForResult(searchIntent, Constants.MAIN_REQUEST_CODE);
     }
 
     protected void openVkAlbum(VkAlbum vkAlbum) {
@@ -143,7 +154,7 @@ public class ResultActivity extends TrackedActivity {
         startActivityForResult(searchIntent, Constants.MAIN_REQUEST_CODE);
     }
 
-    protected void openGroupVkAlbum(VkAlbum vkAlbum) {
+    protected void openGroupVkAlbum(Album vkAlbum) {
         Intent searchIntent = new Intent(ResultActivity.this,
                 VkAlbumTracksActivity.class);
         searchIntent.putExtra("title", vkAlbum.getTitle());

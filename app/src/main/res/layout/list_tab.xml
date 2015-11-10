@@ -5,11 +5,14 @@
     android:orientation="vertical">
 
 
-    <com.costum.android.widget.LoadMoreListView
+    <com.pillowapps.liqear.components.LoadMoreRecyclerView
         android:id="@+id/list"
+        android:scrollbars="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:longClickable="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/edit_part_quick_search_layout"
+        android:layout_marginLeft="0dp" />
 
     <ProgressBar
         android:id="@+id/pageProgressBar"

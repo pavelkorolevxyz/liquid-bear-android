@@ -1,36 +1,29 @@
 package com.pillowapps.liqear.activities.modes;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.adapters.NewcomersAdapter;
 import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
+import com.pillowapps.liqear.components.LoadMoreRecyclerView;
+import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.SharedPreferencesManager;
-import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.portals.AlterportalAlbumModel;
 import com.pillowapps.liqear.models.portals.FunkySoulsAlbumModel;
 
@@ -45,8 +38,20 @@ public class NewcomersActivity extends ResultActivity {
     private NewcomersAdapter adapter;
     private ProgressBar progressBar;
     private int visiblePages = 1;
-    private LoadMoreListView listView;
+    private LoadMoreRecyclerView recycler;
     private TextView emptyTextView;
+    private OnRecyclerItemClickListener clickListener = new OnRecyclerItemClickListener() {
+        @Override
+        public void onItemClicked(View view, int position) {
+            Intent intent = new Intent(NewcomersActivity.this,
+                    NewcomersTracksActivity.class);
+            Album album = adapter.getItem(position);
+            intent.putExtra("artist", album.getArtist());
+            intent.putStringArrayListExtra("tracks", new ArrayList<>(album.getTracks()));
+            intent.putExtra("title", album.getTitle());
+            startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -75,7 +80,7 @@ public class NewcomersActivity extends ResultActivity {
                 break;
             case R.id.play:
                 if (adapter == null) break;
-                List<Album> albumsInList = adapter.getValues();
+                List<Album> albumsInList = adapter.getItems();
                 List<Track> tracks = new ArrayList<Track>(albumsInList.size() * 10);
                 for (Album album : albumsInList) {
                     for (String title : album.getTracks()) {
@@ -103,7 +108,7 @@ public class NewcomersActivity extends ResultActivity {
                 item = menu.add(getResources().getString(R.string.alterportal));
                 break;
         }
-        MenuItemCompat.setShowAsAction(item, 0);
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
 
@@ -123,7 +128,7 @@ public class NewcomersActivity extends ResultActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         searchLinearLayout.setVisibility(View.GONE);
         mode = (Mode) getIntent().getSerializableExtra(MODE);
-        listView = (LoadMoreListView) findViewById(R.id.list);
+        recycler = (LoadMoreRecyclerView) findViewById(R.id.list);
         emptyTextView = (TextView) findViewById(R.id.empty);
         switch (mode) {
             case FUNKYSOULS:
@@ -137,11 +142,16 @@ public class NewcomersActivity extends ResultActivity {
             default:
                 break;
         }
+        initUi();
         initListeners();
     }
 
+    private void initUi() {
+        recycler.enableLoadMore(true);
+    }
+
     private void initListeners() {
-        listView.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+        recycler.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
                 switch (mode) {
@@ -156,18 +166,6 @@ public class NewcomersActivity extends ResultActivity {
                 }
             }
         });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(NewcomersActivity.this,
-                        NewcomersTracksActivity.class);
-                Album album = (Album) adapter.getValues().get(position);
-                intent.putExtra("artist", album.getArtist());
-                intent.putStringArrayListExtra("tracks", new ArrayList<>(album.getTracks()));
-                intent.putExtra("title", album.getTitle());
-                startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-            }
-        });
     }
 
     private void getNewcomersFunky(int page) {
@@ -175,8 +173,8 @@ public class NewcomersActivity extends ResultActivity {
             @Override
             public void success(List<Album> albums) {
                 fillAlbums(albums);
-                listView.onLoadMoreComplete();
-                if (listView.getCount() < NEWCOMERS_START_ITEMS) {
+//                recycler.onLoadMoreComplete();
+                if (adapter.getItemCount() < NEWCOMERS_START_ITEMS) {
                     getNewcomersFunky(visiblePages++);
                 }
             }
@@ -194,8 +192,7 @@ public class NewcomersActivity extends ResultActivity {
                     @Override
                     public void success(List<Album> albums) {
                         fillAlbums(albums);
-                        listView.onLoadMoreComplete();
-                        if (listView.getCount() < NEWCOMERS_START_ITEMS) {
+                        if (adapter.getItemCount() < NEWCOMERS_START_ITEMS) {
                             getNewcomersAlterportal(visiblePages++);
                         }
                     }
@@ -212,10 +209,10 @@ public class NewcomersActivity extends ResultActivity {
             if (albums.size() == 0) {
                 emptyTextView.setVisibility(View.VISIBLE);
             }
-            adapter = new NewcomersAdapter<Album>(this, albums);
-            listView.setAdapter(adapter);
+            adapter = new NewcomersAdapter(albums, clickListener);
+            recycler.setAdapter(adapter);
         } else {
-            adapter.getValues().addAll(albums);
+            adapter.getItems().addAll(albums);
             adapter.notifyDataSetChanged();
         }
         progressBar.setVisibility(View.GONE);
@@ -224,64 +221,5 @@ public class NewcomersActivity extends ResultActivity {
     public enum Mode {
         FUNKYSOULS,
         ALTERPORTAL
-    }
-
-    static class ViewHolder {
-        TextView artistAlbum;
-        TextView genre;
-        ImageView cover;
-        boolean loadImages;
-    }
-
-    private class NewcomersAdapter<T> extends ArrayAdapter<T> {
-
-        private final Context context;
-        private final List<T> values;
-
-        public NewcomersAdapter(Context context, List<T> values) {
-            super(context, R.layout.album_item, values);
-            this.context = context;
-            this.values = values;
-        }
-
-        public T get(int position) {
-            return values.get(position);
-        }
-
-        public List<T> getValues() {
-            return values;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater =
-                    (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            ViewHolder holder;
-            if (convertView == null) {
-                convertView = inflater.inflate(R.layout.album_item, null);
-                holder = new ViewHolder();
-                holder.artistAlbum = (TextView) convertView.findViewById(R.id.text_list_item);
-                holder.genre = (TextView) convertView.findViewById(R.id.genre_list_item);
-                holder.cover = (ImageView) convertView.findViewById(
-                        R.id.cover_image_view_album_list_item);
-                holder.loadImages = SharedPreferencesManager.getPreferences()
-                        .getBoolean("download_images_check_box_preferences", true);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-                holder.cover.setImageBitmap(null);
-            }
-
-            Album album = (Album) values.get(position);
-            holder.artistAlbum.setText(Html.fromHtml(album.getNotation()));
-            holder.genre.setText(Html.fromHtml(album.getGenre()));
-            if (holder.loadImages) {
-                new ImageModel().loadAlbumListImage(album.getImageUrl(), holder.cover);
-            } else {
-                holder.cover.setVisibility(View.GONE);
-            }
-            return convertView;
-        }
-
     }
 }

@@ -12,6 +12,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -29,7 +30,7 @@ public class LBApplication extends Application {
         LBApplication.context = getApplicationContext();
 
         if (!BuildConfig.DEBUG) {
-            Crashlytics.start(this);
+            Fabric.with(this, new Crashlytics());
         } else {
             Timber.plant(new Timber.DebugTree());
         }

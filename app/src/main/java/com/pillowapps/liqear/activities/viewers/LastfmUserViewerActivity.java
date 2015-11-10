@@ -16,22 +16,23 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.SpinnerLastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.SpinnerLastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
+import com.pillowapps.liqear.entities.Artist;
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
@@ -189,12 +190,14 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.recent
         );
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getRecent(getPageSize(), viewer.getPage(), viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Track>() {
+                    @Override
+                    public void onLoadMore() {
+                        getRecent(getPageSize(), viewer.getPage(), viewer);
+                    }
+                }
+        );
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -205,12 +208,14 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         final SpinnerLastfmArtistViewerPage viewer = new SpinnerLastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_spinner_tab, null),
                 R.string.top_artists);
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), false, viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Artist>() {
+                    @Override
+                    public void onLoadMore() {
+                        getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), false, viewer);
+                    }
+                }
+        );
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);
         return viewer;
@@ -221,12 +226,14 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_spinner_tab, null),
                 R.string.top_tracks
         );
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), false, viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Track>() {
+                    @Override
+                    public void onLoadMore() {
+                        getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), false, viewer);
+                    }
+                }
+        );
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -238,12 +245,13 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.loved_tracks
         );
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getLoved(getPageSize(), viewer.getPage(), viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Track>() {
+                    @Override
+                    public void onLoadMore() {
+                        getLoved(getPageSize(), viewer.getPage(), viewer);
+                    }
+                });
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -358,7 +366,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
             case R.id.to_playlist: {
                 LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(pager.getCurrentItem());
                 if (viewer.isNotLoaded()) return true;
-                addToMainPlaylist(Converter.convertLastfmTrackList(viewer.getItems()));
+                addToMainPlaylist(viewer.getItems());
                 Toast.makeText(LastfmUserViewerActivity.this, R.string.added,
                         Toast.LENGTH_SHORT).show();
             }
@@ -366,7 +374,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
             case R.id.save_as_playlist: {
                 LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(pager.getCurrentItem());
                 if (viewer.isNotLoaded()) return true;
-                saveAsPlaylist(Converter.convertLastfmTrackList(viewer.getItems()));
+                saveAsPlaylist(viewer.getItems());
             }
             return true;
         }

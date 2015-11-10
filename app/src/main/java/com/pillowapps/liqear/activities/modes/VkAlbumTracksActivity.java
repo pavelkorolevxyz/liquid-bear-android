@@ -20,6 +20,10 @@ import java.util.List;
 
 public class VkAlbumTracksActivity extends ListBaseActivity {
 
+    public static final String TITLE = "title";
+    public static final String UID = "uid";
+    public static final String GID = "gid";
+    public static final String ALBUM_ID = "album_id";
     private TrackAdapter adapter;
 
     @Override
@@ -27,13 +31,13 @@ public class VkAlbumTracksActivity extends ListBaseActivity {
         super.onCreate(savedInstanceState);
 
         Bundle extras = getIntent().getExtras();
-        actionBar.setTitle(extras.getString("title"));
-        long uid = extras.getLong("uid", -1);
+        actionBar.setTitle(extras.getString(TITLE));
+        long uid = extras.getLong(UID, -1);
         if (uid == -1) {
-            long gid = extras.getLong("gid", -1);
-            getVkGroupAudioFromAlbum(gid, extras.getLong("album_id"));
+            long gid = extras.getLong(GID, -1);
+            getVkGroupAudioFromAlbum(gid, extras.getLong(ALBUM_ID));
         } else {
-            getVkUserAudioFromAlbum(uid, extras.getLong("album_id"));
+            getVkUserAudioFromAlbum(uid, extras.getLong(ALBUM_ID));
         }
     }
 
@@ -41,20 +45,21 @@ public class VkAlbumTracksActivity extends ListBaseActivity {
         final List<Track> trackList = Converter.convertVkTrackList(vkTracks);
         if (adapter == null || adapter.getItemCount() == 0) {
             emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
-            adapter = new TrackAdapter(trackList, new OnRecyclerItemClickListener() {
+            adapter = new TrackAdapter(this, trackList, new OnRecyclerItemClickListener() {
                 @Override
                 public void onItemClicked(View view, int position) {
                     openMainPlaylist(adapter.getItems(), position, getToolbarTitle());
                 }
             }, new OnRecyclerLongItemClickListener() {
                 @Override
-                public void onItemLongClicked(View view, int position) {
+                public boolean onItemLongClicked(View view, int position) {
                     trackLongClick(adapter.getItems(), position);
+                    return true;
                 }
             });
-            recyclerView.setAdapter(adapter);
+            recycler.setAdapter(adapter);
         } else {
-            adapter.addItems(trackList);
+            adapter.addAll(trackList);
         }
         progressBar.setVisibility(View.GONE);
     }

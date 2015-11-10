@@ -34,14 +34,12 @@
         <activity android:name=".activities.viewers.VkUserViewerActivity" />
         <activity android:name=".activities.viewers.LastfmUserViewerActivity" />
         <activity android:name=".activities.viewers.LastfmChartsViewerActivity" />
-        <activity android:name=".activities.SearchActivity" />
         <activity android:name=".activities.viewers.LastfmArtistViewerActivity" />
         <activity android:name=".activities.viewers.LastfmAlbumViewerActivity" />
         <activity android:name=".activities.ImagePagerActivity" />
         <activity android:name=".activities.EqualizerActivity" />
         <activity android:name=".activities.TextActivity" />
-        <activity
-            android:name=".activities.PreferencesActivity"/>
+        <activity android:name=".activities.PreferencesActivity" />
         <activity android:name=".activities.modes.LastfmRecommendationsActivity" />
         <activity android:name=".activities.viewers.LastfmTagViewerActivity" />
         <activity android:name=".activities.PlaylistsActivity" />
@@ -64,6 +62,7 @@
         <activity android:name=".activities.modes.LocalArtistsActivity" />
         <activity android:name=".activities.modes.LocalTracksActivity" />
         <activity android:name=".activities.modes.LocalAlbumsActivity" />
+        <activity android:name=".activities.modes.SetlistsResultActivity" />
 
         <receiver android:name=".audio.MediaButtonReceiver">
             <intent-filter>

@@ -25,7 +25,7 @@ public class Album implements Parcelable {
     private long albumId;
     private long listeners;
     private long playcount;
-    private String id;
+    private long ownerId;
     private String publishDate;
 
     public Album(String artist, String title, long albumId) {
@@ -53,7 +53,7 @@ public class Album implements Parcelable {
         this.artist = artist;
         this.genre = genre;
         tracks = new ArrayList<String>();
-        this.id = albumId;
+        this.ownerId = Long.valueOf(albumId);
         this.imageUrl = urlImage;
     }
 
@@ -66,7 +66,7 @@ public class Album implements Parcelable {
         parcel.readStringList(tracks);
         albumId = parcel.readLong();
         genre = parcel.readString();
-        id = parcel.readString();
+        ownerId = parcel.readLong();
         publishDate = parcel.readString();
     }
 
@@ -74,12 +74,12 @@ public class Album implements Parcelable {
         tracks = new ArrayList<String>();
     }
 
-    public String getId() {
-        return id;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setOwnerId(long id) {
+        this.ownerId = id;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class Album implements Parcelable {
                 ", imageUrl='" + imageUrl + '\'' +
                 ", genre='" + genre + '\'' +
                 ", albumId=" + albumId +
-                ", id='" + id + '\'' +
+                ", id='" + ownerId + '\'' +
                 '}';
     }
 
@@ -214,7 +214,7 @@ public class Album implements Parcelable {
         parcel.writeStringList(tracks);
         parcel.writeLong(albumId);
         parcel.writeString(genre);
-        parcel.writeString(id);
+        parcel.writeLong(ownerId);
         parcel.writeString(publishDate);
     }
 }

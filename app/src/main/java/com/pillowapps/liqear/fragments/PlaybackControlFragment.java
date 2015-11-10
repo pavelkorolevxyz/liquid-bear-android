@@ -15,7 +15,8 @@ import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
-import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.helpers.ButtonStateUtils;
+import com.pillowapps.liqear.helpers.TimeUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -54,23 +55,23 @@ public class PlaybackControlFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        shuffleButton.setImageResource(Utils.getShuffleButtonImage());
-        repeatButton.setImageResource(Utils.getRepeatButtonImage());
+        shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+        repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
     }
 
     private void initListeners() {
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Timeline.getInstance().toggleShuffle();
-                shuffleButton.setImageResource(Utils.getShuffleButtonImage());
-                mainActivity.getMusicPlaybackService().updateWidgets();
+                shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+                mainActivity.getMusicService().updateWidgets();
             }
         });
         repeatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Timeline.getInstance().toggleRepeat();
-                repeatButton.setImageResource(Utils.getRepeatButtonImage());
-                mainActivity.getMusicPlaybackService().updateWidgets();
+                repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
+                mainActivity.getMusicService().updateWidgets();
             }
         });
 
@@ -83,35 +84,35 @@ public class PlaybackControlFragment extends Fragment {
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mainActivity.getMusicPlaybackService().next();
+                mainActivity.getMusicService().next();
             }
         });
 
         prevButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mainActivity.getMusicPlaybackService().prev();
+                mainActivity.getMusicService().prev();
             }
         });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mainActivity.getMusicPlaybackService().seekTo(seekBar.getProgress()
-                        * mainActivity.getMusicPlaybackService().getDuration() / 100);
-                mainActivity.getMusicPlaybackService().startPlayProgressUpdater();
+                mainActivity.getMusicService().seekTo(seekBar.getProgress()
+                        * mainActivity.getMusicService().getDuration() / 100);
+                mainActivity.getMusicService().startPlayProgressUpdater();
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
-                mainActivity.getMusicPlaybackService().stopPlayProgressUpdater();
+                mainActivity.getMusicService().stopPlayProgressUpdater();
             }
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (!fromUser) return;
                 int timeFromBeginning = seekBar.getProgress() *
-                        mainActivity.getMusicPlaybackService().getDuration() / 100000;
-                int timeToEnd = mainActivity.getMusicPlaybackService().getDuration() / 1000
+                        mainActivity.getMusicService().getDuration() / 100000;
+                int timeToEnd = mainActivity.getMusicService().getDuration() / 1000
                         - timeFromBeginning;
-                timeTextView.setText("-" + Utils.secondsToString(timeToEnd));
+                timeTextView.setText(String.format("-%s", TimeUtils.secondsToMinuteString(timeToEnd)));
             }
         });
 

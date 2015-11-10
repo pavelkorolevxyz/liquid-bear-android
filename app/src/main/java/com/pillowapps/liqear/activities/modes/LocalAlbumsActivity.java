@@ -22,7 +22,7 @@ public class LocalAlbumsActivity extends ListBaseActivity {
         actionBar.setTitle(getString(R.string.album));
         loadLocalAlbums();
 
-        recyclerView.setOnCreateContextMenuListener(this);
+        recycler.setOnCreateContextMenuListener(this);
     }
 
     private void fillWithAlbums(List<Album> albums) {
@@ -33,7 +33,7 @@ public class LocalAlbumsActivity extends ListBaseActivity {
                 //todo
             }
         });
-        recyclerView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011-2013 Sergey Tarasevich
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,13 +37,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.TouchImageView;
 import com.pillowapps.liqear.helpers.FileUtils;
-import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.network.ImageLoadingListener;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -68,6 +68,7 @@ public class ImagePagerActivity extends TrackedActivity {
     private int page = 1;
     private ImagePagerActivity.ImagePagerAdapter adapter;
     private ImageModel imageModel = new ImageModel();
+    private ProgressBar pageProgressBar;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +89,7 @@ public class ImagePagerActivity extends TrackedActivity {
         actionBar = getSupportActionBar();
         actionBar.setTitle(artist);
 
+        pageProgressBar = (ProgressBar) findViewById(R.id.pageProgressBar);
         pager = (ViewPager) findViewById(R.id.pager);
         adapter = new ImagePagerAdapter(imageUrls);
         pager.setAdapter(adapter);
@@ -134,8 +136,8 @@ public class ImagePagerActivity extends TrackedActivity {
                 }
                 String imageUrl = imageUrls.get(pager.getCurrentItem());
 
-                String root = Environment.getExternalStorageDirectory() + "/" +
-                        Environment.DIRECTORY_PICTURES;
+                String root = String.format("%s/%s", Environment.getExternalStorageDirectory(),
+                        Environment.DIRECTORY_PICTURES);
                 File myDir = new File(root);
                 if (!myDir.exists()) {
                     boolean directoryCreated = myDir.mkdirs();
@@ -143,8 +145,8 @@ public class ImagePagerActivity extends TrackedActivity {
                         break;
                     }
                 }
-                String fileName = artist + "_" +
-                        Utils.formatMillisToFileName(System.currentTimeMillis()) + ".jpg";
+                String fileName = String.format("%s_%s.jpg", artist,
+                        TimeUtils.formatMillisForFileName(System.currentTimeMillis()));
 
                 File fileForImage = new File(myDir, fileName);
 
@@ -152,9 +154,9 @@ public class ImagePagerActivity extends TrackedActivity {
                 OutputStream targetStream = null;
                 File cachedImage = ImageLoader.getInstance().getDiskCache().get(imageUrl);
                 try {
-                    if (cachedImage.exists()) { // if image was cached by UIL
+                    if (cachedImage.exists()) {
                         sourceStream = new FileInputStream(cachedImage);
-                    } else { // otherwise - download image
+                    } else {
                         ImageDownloader downloader = new BaseImageDownloader(ImagePagerActivity.this);
                         sourceStream = downloader.getStream(imageUrl, null);
                     }
@@ -196,10 +198,11 @@ public class ImagePagerActivity extends TrackedActivity {
 
     private void getImages(final int page) {
         loading = true;
-        Toast.makeText(this, R.string.wait, Toast.LENGTH_SHORT).show();
+        pageProgressBar.setVisibility(View.VISIBLE);
         new LastfmArtistModel().getArtistImages(artist, this.page++, new SimpleCallback<List<String>>() {
             @Override
             public void success(List<String> images) {
+                pageProgressBar.setVisibility(View.GONE);
                 if (images == null) return;
                 if (imageUrls == null) {
                     imageUrls = images;
@@ -212,7 +215,7 @@ public class ImagePagerActivity extends TrackedActivity {
 
             @Override
             public void failure(String errorMessage) {
-
+                pageProgressBar.setVisibility(View.GONE);
             }
         });
     }

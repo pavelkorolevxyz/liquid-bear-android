@@ -18,7 +18,7 @@ import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.TrackUtils;
-import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.helpers.ButtonStateUtils;
 
 public class TrackNotification {
     public Notification create(Context context, Track track) {
@@ -36,17 +36,21 @@ public class TrackNotification {
     }
 
     private Notification createSimpleNotification(Context context, Track track) {
-        Notification notification = new Notification();
-        notification.tickerText = Html.fromHtml(TrackUtils.getNotation(track));
-        notification.icon = R.drawable.ic_stat_liquid_bear_logotype_revision;
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
         Intent intent = new Intent(context, MainActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pi = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
-        notification.setLatestEventInfo(context, Html.fromHtml(track.getArtist()),
-                Html.fromHtml(track.getTitle()), pi);
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                context);
+        Notification notification = builder.setContentIntent(pi)
+                .setSmallIcon(R.drawable.ic_stat_liquid_bear_logotype_revision)
+                .setTicker(Html.fromHtml(TrackUtils.getNotation(track)))
+                .build();
+        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+
         return notification;
     }
 
@@ -129,7 +133,7 @@ public class TrackNotification {
 
             Intent loveIntent = new Intent(MusicService.ACTION_LOVE);
             loveIntent.setComponent(service);
-            int loveButton = Utils.getLoveButtonImage();
+            int loveButton = ButtonStateUtils.getLoveButtonImage();
             bigView.setInt(R.id.love_button, "setImageResource", loveButton);
             bigView.setOnClickPendingIntent(R.id.love_button,
                     PendingIntent.getService(context, 0, loveIntent, 0));

@@ -5,10 +5,9 @@ import android.support.v4.view.ViewPager;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
-import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
-import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
-import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
-import com.pillowapps.liqear.entities.vk.VkAlbum;
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Artist;
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.Converter;
 import com.viewpagerindicator.TitlePageIndicator;
@@ -21,11 +20,11 @@ public class PagerResultActivity extends ResultActivity {
     protected TitlePageIndicator indicator;
     private List<ViewerPage> viewers = new ArrayList<>();
 
-    public OnViewerItemClickListener<LastfmTrack> trackClickListener = new OnViewerItemClickListener<LastfmTrack>() {
+    public OnViewerItemClickListener<Track> trackClickListener = new OnViewerItemClickListener<Track>() {
         @Override
-        public void onViewerClicked(List<LastfmTrack> tracks, int position) {
+        public void onViewerClicked(List<Track> tracks, int position) {
             String title = String.format("%s / %s", getViewer(pager.getCurrentItem()).getTitle(), getToolbarTitle());
-            openMainPlaylist(Converter.convertLastfmTrackList(tracks), position, title);
+            openMainPlaylist(tracks, position, title);
         }
     };
 
@@ -37,10 +36,10 @@ public class PagerResultActivity extends ResultActivity {
         }
     };
 
-    public OnViewerItemClickListener<LastfmTrack> trackLongClickListener = new OnViewerItemClickListener<LastfmTrack>() {
+    public OnViewerItemClickListener<Track> trackLongClickListener = new OnViewerItemClickListener<Track>() {
         @Override
-        public void onViewerClicked(List<LastfmTrack> tracks, int position) {
-            trackLongClick(Converter.convertTrack(tracks.get(position)));
+        public void onViewerClicked(List<Track> tracks, int position) {
+            trackLongClick(tracks.get(position));
         }
     };
     public OnViewerItemClickListener<VkTrack> vkTrackLongClickListener = new OnViewerItemClickListener<VkTrack>() {
@@ -50,27 +49,27 @@ public class PagerResultActivity extends ResultActivity {
         }
     };
 
-    public OnViewerItemClickListener<LastfmArtist> artistClickListener = new OnViewerItemClickListener<LastfmArtist>() {
+    public OnViewerItemClickListener<Artist> artistClickListener = new OnViewerItemClickListener<Artist>() {
         @Override
-        public void onViewerClicked(List<LastfmArtist> artists, int position) {
+        public void onViewerClicked(List<Artist> artists, int position) {
             openArtistByName(artists.get(position).getName());
         }
     };
-    public OnViewerItemClickListener<LastfmAlbum> albumClickListener = new OnViewerItemClickListener<LastfmAlbum>() {
+    public OnViewerItemClickListener<Album> albumClickListener = new OnViewerItemClickListener<Album>() {
         @Override
-        public void onViewerClicked(List<LastfmAlbum> albums, int position) {
-            openAlbum(Converter.convertAlbum(albums.get(position)));
+        public void onViewerClicked(List<Album> albums, int position) {
+            openLastfmAlbum(albums.get(position));
         }
     };
-    public OnViewerItemClickListener<VkAlbum> vkAlbumClickListener = new OnViewerItemClickListener<VkAlbum>() {
+    public OnViewerItemClickListener<Album> vkAlbumClickListener = new OnViewerItemClickListener<Album>() {
         @Override
-        public void onViewerClicked(List<VkAlbum> albums, int position) {
+        public void onViewerClicked(List<Album> albums, int position) {
             openVkAlbum(albums.get(position));
         }
     };
-    public OnViewerItemClickListener<VkAlbum> vkGroupAlbumClickListener = new OnViewerItemClickListener<VkAlbum>() {
+    public OnViewerItemClickListener<Album> vkGroupAlbumClickListener = new OnViewerItemClickListener<Album>() {
         @Override
-        public void onViewerClicked(List<VkAlbum> albums, int position) {
+        public void onViewerClicked(List<Album> albums, int position) {
             openGroupVkAlbum(albums.get(position));
         }
     };

@@ -19,6 +19,7 @@ public class Constants {
 
     public static final int AUTH_VK_REQUEST = 2;
     public static final int MAIN_REQUEST_CODE = 1;
+    public static final int VK_ADD_REQUEST_CODE = 7463;
     public static final int CAPTCHA_NEEDED = 14;
     public static final int PRESET_WANTED_COUNT = 21;
 

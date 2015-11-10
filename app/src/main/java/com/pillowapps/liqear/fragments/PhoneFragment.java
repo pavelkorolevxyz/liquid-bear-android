@@ -3,12 +3,17 @@ package com.pillowapps.liqear.fragments;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -31,6 +36,7 @@ import com.mobeta.android.dslv.DragSortListView;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.ModeAdapter;
@@ -39,12 +45,13 @@ import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.CompletionCallback;
 import com.pillowapps.liqear.components.ModeClickListener;
+import com.pillowapps.liqear.components.OnItemStartDragListener;
+import com.pillowapps.liqear.components.OnTopToBottomSwipeListener;
 import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.events.AlbumInfoEvent;
 import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
 import com.pillowapps.liqear.entities.events.BufferizationEvent;
 import com.pillowapps.liqear.entities.events.ExitEvent;
@@ -55,13 +62,16 @@ import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
 import com.pillowapps.liqear.entities.events.PreparedEvent;
 import com.pillowapps.liqear.entities.events.ShowProgressEvent;
 import com.pillowapps.liqear.entities.events.TimeEvent;
+import com.pillowapps.liqear.entities.events.TrackAndAlbumInfoUpdatedEvent;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
+import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
+import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
-import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.PlayingState;
 import com.pillowapps.liqear.models.Tutorial;
@@ -73,12 +83,36 @@ import com.viewpagerindicator.UnderlinePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhoneFragment extends Fragment {
+public class PhoneFragment extends MainFragment {
     private ViewPager pager;
+    private UnderlinePageIndicator indicator;
     private View playlistTab;
     private View playbackTab;
     private View modeTab;
-    private DragSortListView playlistsListView;
+
+    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            return mainActivity.onOptionsItemSelected(menuItem);
+        }
+    };
+
+    /**
+     * Playlists tab
+     **/
+
+    private ListView playlistListView;
+    private EditText searchPlaylistEditText;
+    private Toolbar playlistToolbar;
+    private TextView emptyPlaylistTextView;
+    private ItemTouchHelper mItemTouchHelper;
+
+
+    /**
+     * Play tab
+     */
+
+    private Toolbar playbackToolbar;
     private TextView artistTextView;
     private TextView titleTextView;
     private ImageButton playPauseButton;
@@ -93,27 +127,20 @@ public class PhoneFragment extends Fragment {
     private ImageView artistImageView;
     private ImageView albumImageView;
     private TextView albumTextView;
+    private FloatingActionButton loveFloatingActionButton;
     private View blackView;
-    private MainActivity mainActivity;
-    private UnderlinePageIndicator indicator;
-    private EditText searchPlaylistEditText;
     private View tutorialLayout;
     private Animation tutorialBlinkAnimation;
     private ViewGroup backLayout;
     private ViewGroup bottomControlsLayout;
 
-    private Tutorial tutorial = new Tutorial();
-    private Toolbar modeToolbar;
-    private Toolbar playbackToolbar;
-    private Toolbar playlistToolbar;
+    /**
+     * Modes tab
+     */
 
-    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            return mainActivity.onOptionsItemSelected(menuItem);
-        }
-    };
-    private TextView emptyTextView;
+    private Toolbar modeToolbar;
+
+    private Tutorial tutorial = new Tutorial();
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.handset_fragment_layout, container, false);
@@ -126,10 +153,113 @@ public class PhoneFragment extends Fragment {
         return v;
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         LBApplication.bus.unregister(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        StateManager.savePlaylistState(mainActivity.getMusicService());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+        repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
+        ModeAdapter adapter = mainActivity.getModeAdapter();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void initUi(View v) {
+        initViewPager(v);
+        changeViewPagerItem(PhoneFragmentAdapter.PLAY_TAB_INDEX);
+
+        mainActivity.init();
+
+        initModeTab();
+        initPlaylistsTab();
+        initPlaybackTab();
+
+        if (tutorial.isEnabled()) {
+            showTutorial();
+        }
+    }
+
+    private void initPlaylistsTab() {
+        playlistListView = (DragSortListView) playlistTab.findViewById(R.id.playlist_list_view_playlist_tab);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        View.OnCreateContextMenuListener contextMenuListener = new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                PopupMenu popup = new PopupMenu(mainActivity, v);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater()
+                        .inflate(R.menu.menu_main_playlist_track, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        mainActivity.onContextItemSelected(item);
+                        return true;
+                    }
+                });
+
+                popup.show();
+            }
+        };
+        OnItemStartDragListener onStartDragListener = new OnItemStartDragListener() {
+            @Override
+            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+                mItemTouchHelper.startDrag(viewHolder);
+            }
+        };
+        PlaylistItemsAdapter playlistItemsAdapter = new PlaylistItemsAdapter(getActivity());
+        mainActivity.setPlaylistItemsAdapter(playlistItemsAdapter);
+        playlistListView.setAdapter(playlistItemsAdapter);
+        searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
+        searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
+                .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ? View.VISIBLE : View.GONE);
+        emptyPlaylistTextView = (TextView) playlistTab.findViewById(R.id.empty);
+    }
+
+    private void initPlaybackTab() {
+        artistTextView = (TextView) playbackTab.findViewById(R.id.artist_text_view_playback_tab);
+        titleTextView = (TextView) playbackTab.findViewById(R.id.title_text_view_playback_tab);
+        playPauseButton = (ImageButton) playbackTab.findViewById(R.id.play_pause_button_playback_tab);
+        backLayout = (ViewGroup) playbackTab.findViewById(R.id.back_layout);
+        bottomControlsLayout = (ViewGroup) playbackTab.findViewById(R.id.bottom_controls_layout);
+        seekBar = (SeekBar) playbackTab.findViewById(R.id.seek_bar_playback_tab);
+        timeTextView = (TextView) playbackTab.findViewById(R.id.time_text_view_playback_tab);
+        timeDurationTextView = (TextView) playbackTab.findViewById(R.id.time_inverted_text_view_playback_tab);
+        nextButton = (ImageButton) playbackTab.findViewById(R.id.next_button_playback_tab);
+        prevButton = (ImageButton) playbackTab.findViewById(R.id.prev_button_playback_tab);
+        shuffleButton = (ImageButton) playbackTab.findViewById(R.id.shuffle_button_playback_tab);
+        repeatButton = (ImageButton) playbackTab.findViewById(R.id.repeat_button_playback_tab);
+        artistImageView = (ImageView) playbackTab.findViewById(R.id.artist_image_view_headset);
+        artistImageView.setImageResource(R.drawable.artist_placeholder);
+        timePlateTextView = (TextView) playbackTab.findViewById(R.id.time_plate_text_view_playback_tab);
+        albumImageView = (ImageView) playbackTab.findViewById(R.id.album_cover_image_view);
+        albumTextView = (TextView) playbackTab.findViewById(R.id.album_title_text_view);
+
+        loveFloatingActionButton = (FloatingActionButton) playbackTab.findViewById(R.id.love_button);
+
+        blackView = playbackTab.findViewById(R.id.view);
+    }
+
+    private void initModeTab() {
+        StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
+        modeGridView.setOnItemClickListener(new ModeClickListener(mainActivity));
+        modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
+        modeGridView.setAdapter(mainActivity.getModeAdapter());
     }
 
     private void initViewPager(View v) {
@@ -180,6 +310,16 @@ public class PhoneFragment extends Fragment {
         });
     }
 
+    private void showTutorial() {
+        ImageView swipeLeftImageView = (ImageView) playbackTab.findViewById(R.id.swipe_left_image_view);
+        ImageView swipeRightImageView = (ImageView) playbackTab.findViewById(R.id.swipe_right_image_view);
+        tutorialLayout = playbackTab.findViewById(R.id.tutorial_layout);
+        tutorialLayout.setVisibility(View.VISIBLE);
+        tutorialBlinkAnimation = AnimationUtils.loadAnimation(mainActivity, R.anim.blink_animation);
+        swipeLeftImageView.startAnimation(tutorialBlinkAnimation);
+        swipeRightImageView.startAnimation(tutorialBlinkAnimation);
+    }
+
     private void updateToolbars() {
         playlistToolbar.getMenu().clear();
         modeToolbar.getMenu().clear();
@@ -195,136 +335,13 @@ public class PhoneFragment extends Fragment {
         int menuLayout = R.menu.menu_play_tab_no_current_track;
         if (Timeline.getInstance().getCurrentTrack() != null) {
             menuLayout = R.menu.menu_play_tab;
-            if (Timeline.getInstance().getCurrentTrack().isLoved()) {
-                menuLayout = R.menu.menu_play_tab_loved;
-            }
         }
         playbackToolbar.inflateMenu(menuLayout);
         playbackToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
         mainActivity.setMainMenu(playbackToolbar.getMenu());
     }
 
-    private void initUi(View v) {
-        initViewPager(v);
-        changeViewPagerItem(PhoneFragmentAdapter.PLAY_TAB_INDEX);
-
-        mainActivity.init();
-
-        initModeTab();
-        initPlaylistsTab();
-        initPlaybackTab();
-
-        if (tutorial.isEnabled()) {
-            showTutorial();
-        }
-    }
-
-    private void initPlaylistsTab() {
-        playlistsListView = (DragSortListView) playlistTab.findViewById(R.id.playlist_list_view_playlist_tab);
-        playlistsListView.setAdapter(mainActivity.getPlaylistItemsAdapter());
-        searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
-        searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
-                .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ? View.VISIBLE : View.GONE);
-        emptyTextView = (TextView) playlistTab.findViewById(R.id.empty);
-    }
-
-    private void initPlaybackTab() {
-        artistTextView = (TextView) playbackTab.findViewById(R.id.artist_text_view_playback_tab);
-        titleTextView = (TextView) playbackTab.findViewById(R.id.title_text_view_playback_tab);
-        playPauseButton = (ImageButton) playbackTab.findViewById(R.id.play_pause_button_playback_tab);
-        backLayout = (ViewGroup) playbackTab.findViewById(R.id.back_layout);
-        bottomControlsLayout = (ViewGroup) playbackTab.findViewById(R.id.bottom_controls_layout);
-        seekBar = (SeekBar) playbackTab.findViewById(R.id.seek_bar_playback_tab);
-        timeTextView = (TextView) playbackTab.findViewById(R.id.time_text_view_playback_tab);
-        timeDurationTextView = (TextView) playbackTab.findViewById(R.id.time_inverted_text_view_playback_tab);
-        nextButton = (ImageButton) playbackTab.findViewById(R.id.next_button_playback_tab);
-        prevButton = (ImageButton) playbackTab.findViewById(R.id.prev_button_playback_tab);
-        shuffleButton = (ImageButton) playbackTab.findViewById(R.id.shuffle_button_playback_tab);
-        repeatButton = (ImageButton) playbackTab.findViewById(R.id.repeat_button_playback_tab);
-        artistImageView = (ImageView) playbackTab.findViewById(R.id.artist_image_view_headset);
-        artistImageView.setImageResource(R.drawable.artist_placeholder);
-        timePlateTextView = (TextView) playbackTab.findViewById(R.id.time_plate_text_view_playback_tab);
-        albumImageView = (ImageView) playbackTab.findViewById(R.id.album_cover_image_view);
-        albumTextView = (TextView) playbackTab.findViewById(R.id.album_title_text_view);
-        blackView = playbackTab.findViewById(R.id.view);
-    }
-
-    private void initModeTab() {
-        StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
-        modeGridView.setOnItemClickListener(new ModeClickListener(mainActivity));
-        modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
-        modeGridView.setAdapter(mainActivity.getModeAdapter());
-    }
-
-    private void showTutorial() {
-        ImageView swipeLeftImageView = (ImageView) playbackTab.findViewById(R.id.swipe_left_image_view);
-        ImageView swipeRightImageView = (ImageView) playbackTab.findViewById(R.id.swipe_right_image_view);
-        tutorialLayout = playbackTab.findViewById(R.id.tutorial_layout);
-        tutorialLayout.setVisibility(View.VISIBLE);
-        tutorialBlinkAnimation = AnimationUtils.loadAnimation(mainActivity, R.anim.blink_animation);
-        swipeLeftImageView.startAnimation(tutorialBlinkAnimation);
-        swipeRightImageView.startAnimation(tutorialBlinkAnimation);
-    }
-
     private void initListeners() {
-        playlistsListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-                menu.setHeaderTitle(mainActivity.getPlaylistItemsAdapter().getItem(info.position).getTitle());
-                String[] menuItems = getResources().getStringArray(R.array.playlist_item_menu);
-                for (int i = 0; i < menuItems.length; i++) {
-                    menu.add(android.view.Menu.NONE, i, i, menuItems[i]);
-                }
-            }
-        });
-        playlistsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Track track = mainActivity.getPlaylistItemsAdapter().getItem(position);
-                if (mainActivity.getPlaylistItemsAdapter().isEditMode()) {
-                    mainActivity.showRenameDialog(track, position);
-                } else {
-                    artistTextView.setText(track.getArtist());
-                    titleTextView.setText(track.getTitle());
-                    playPauseButton.setImageResource(R.drawable.pause_button);
-                    Timeline.getInstance().setStartPlayingOnPrepared(true);
-                    mainActivity.getMusicPlaybackService().play(track.getRealPosition());
-                }
-            }
-        });
-        playlistsListView.setRemoveListener(new DragSortListView.RemoveListener() {
-            @Override
-            public void remove(int which) {
-                mainActivity.removeTrack(which);
-                updateEmptyTextView();
-            }
-        });
-        playlistsListView.setDropListener(new DragSortListView.DropListener() {
-            @Override
-            public void drop(int from, int to) {
-                if (from == to) return;
-                Timeline timeline = Timeline.getInstance();
-                List<Track> playlist = timeline.getPlaylistTracks();
-                int currentIndex = timeline.getIndex();
-                if (from == currentIndex) {
-                    timeline.setIndex(to);
-                } else if (from < to && currentIndex < to && currentIndex > from) {
-                    timeline.setIndex(currentIndex - 1);
-                } else if (from > to && currentIndex < from && currentIndex > to) {
-                    timeline.setIndex(currentIndex + 1);
-                } else if (to == currentIndex && currentIndex > from) {
-                    timeline.setIndex(currentIndex - 1);
-                } else if (to == currentIndex && currentIndex < from) {
-                    timeline.setIndex(currentIndex + 1);
-                }
-                Track item = playlist.get(from);
-                playlist.remove(from);
-                playlist.add(to, item);
-                mainActivity.updateAdapter();
-                mainActivity.changePlaylistWithoutTrackChange();
-            }
-        });
-
         searchPlaylistEditText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
             }
@@ -340,19 +357,19 @@ public class PhoneFragment extends Fragment {
             }
         });
 
-
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Timeline.getInstance().toggleShuffle();
-                shuffleButton.setImageResource(Utils.getShuffleButtonImage());
-                mainActivity.getMusicPlaybackService().updateWidgets();
+                shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+                mainActivity.getMusicService().updateWidgets();
             }
         });
+
         repeatButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Timeline.getInstance().toggleRepeat();
-                repeatButton.setImageResource(Utils.getRepeatButtonImage());
-                mainActivity.getMusicPlaybackService().updateWidgets();
+                repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
+                mainActivity.getMusicService().updateWidgets();
             }
         });
 
@@ -367,6 +384,7 @@ public class PhoneFragment extends Fragment {
             }
         });
 
+
         // Playback controlling.
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -376,39 +394,39 @@ public class PhoneFragment extends Fragment {
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mainActivity.getMusicPlaybackService().next();
+                mainActivity.getMusicService().next();
             }
         });
 
         prevButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mainActivity.getMusicPlaybackService().prev();
+                mainActivity.getMusicService().prev();
             }
         });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mainActivity.getMusicPlaybackService().seekTo(seekBar.getProgress()
-                        * mainActivity.getMusicPlaybackService().getDuration() / 100);
+                mainActivity.getMusicService().seekTo(seekBar.getProgress()
+                        * mainActivity.getMusicService().getDuration() / 100);
                 timePlateTextView.setVisibility(View.GONE);
-                mainActivity.getMusicPlaybackService().startPlayProgressUpdater();
+                mainActivity.getMusicService().startPlayProgressUpdater();
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
                 timePlateTextView.setVisibility(View.VISIBLE);
                 timePlateTextView.setText(timeTextView.getText().toString());
-                mainActivity.getMusicPlaybackService().stopPlayProgressUpdater();
+                mainActivity.getMusicService().stopPlayProgressUpdater();
             }
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (!fromUser) return;
                 int timeFromBeginning = seekBar.getProgress() *
-                        mainActivity.getMusicPlaybackService().getDuration() / 100000;
-                String time = Utils.secondsToString(timeFromBeginning);
+                        mainActivity.getMusicService().getDuration() / 100000;
+                String time = TimeUtils.secondsToMinuteString(timeFromBeginning);
                 timePlateTextView.setText(time);
-                int timeToEnd = mainActivity.getMusicPlaybackService().getDuration() / 1000 -
+                int timeToEnd = mainActivity.getMusicService().getDuration() / 1000 -
                         timeFromBeginning;
-                timeTextView.setText("-" + Utils.secondsToString(timeToEnd));
+                timeTextView.setText(String.format("-%s", TimeUtils.secondsToMinuteString(timeToEnd)));
             }
         });
 
@@ -436,14 +454,20 @@ public class PhoneFragment extends Fragment {
                 updateTime();
             }
         });
-        SwipeDetector swipeDetector = new SwipeDetector(mainActivity);
+        SwipeDetector swipeDetector = new SwipeDetector(new OnTopToBottomSwipeListener() {
+            @Override
+            public void onTopToBottomSwipe() {
+                openDropButton();
+            }
+        });
         blackView.setOnTouchListener(swipeDetector);
-    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        StateManager.savePlaylistState(mainActivity.getMusicService());
+        loveFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleLoveCurrentTrack();
+            }
+        });
     }
 
     public void changeViewPagerItem(int currentItem) {
@@ -461,26 +485,26 @@ public class PhoneFragment extends Fragment {
     }
 
     private void updateTime() {
-        if (!mainActivity.getMusicPlaybackService().isPrepared()) return;
-        seekBar.setProgress(mainActivity.getMusicPlaybackService().getCurrentPositionPercent());
+        if (!mainActivity.getMusicService().isPrepared()) return;
+        seekBar.setProgress(mainActivity.getMusicService().getCurrentPositionPercent());
         String text;
-        int timeFromBeginning = mainActivity.getMusicPlaybackService().getCurrentPosition() / 1000;
-        int duration = mainActivity.getMusicPlaybackService().getDuration();
+        int timeFromBeginning = mainActivity.getMusicService().getCurrentPosition() / 1000;
+        int duration = mainActivity.getMusicService().getDuration();
         if (duration > 0) {
             if (SharedPreferencesManager.getPreferences().getBoolean(Constants.TIME_INVERTED, false)) {
                 int timeToEnd = duration / 1000 - timeFromBeginning;
-                text = "-" + Utils.secondsToString(timeToEnd);
+                text = String.format("-%s", TimeUtils.secondsToMinuteString(timeToEnd));
             } else {
-                text = Utils.secondsToString(timeFromBeginning);
+                text = TimeUtils.secondsToMinuteString(timeFromBeginning);
             }
             timeTextView.setText(text);
-            timeDurationTextView.setText(String.format(" / %s", Utils.secondsToString(duration / 1000)));
+            timeDurationTextView.setText(String.format(" / %s", TimeUtils.secondsToMinuteString(duration / 1000)));
         }
     }
 
     private void restorePreviousState() {
-        shuffleButton.setImageResource(Utils.getShuffleButtonImage());
-        repeatButton.setImageResource(Utils.getRepeatButtonImage());
+        shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+        repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
 
         StateManager.restorePlaylistState(new CompletionCallback() {
             @Override
@@ -527,7 +551,7 @@ public class PhoneFragment extends Fragment {
 
                         Timeline.getInstance().setTimePosition(position);
                         mainActivity.restorePreviousState();
-                        if (!Utils.isOnline()) {
+                        if (!NetworkUtils.isOnline()) {
                             artistImageView.setImageResource(R.drawable.artist_placeholder);
                             albumImageView.setImageDrawable(null);
                             albumTextView.setVisibility(View.GONE);
@@ -589,32 +613,17 @@ public class PhoneFragment extends Fragment {
                     ? R.drawable.pause_button
                     : R.drawable.play_button);
             if (playing) {
-                mainActivity.getMusicPlaybackService().showTrackInNotification();
+                mainActivity.getMusicService().showTrackInNotification();
             }
             playPauseButton.setEnabled(true);
-//            mainActivity.getMusicPlaybackService().startPlayProgressUpdater();
             seekBar.setEnabled(true);
             updateTime();
         }
     }
 
+
     public int getCurrentItem() {
         return pager.getCurrentItem();
-    }
-
-    public ListView getPlaylistListView() {
-        return playlistsListView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        shuffleButton.setImageResource(Utils.getShuffleButtonImage());
-        repeatButton.setImageResource(Utils.getRepeatButtonImage());
-        ModeAdapter adapter = mainActivity.getModeAdapter();
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
     }
 
     public void clearFilter() {
@@ -622,9 +631,9 @@ public class PhoneFragment extends Fragment {
     }
 
     public void updateEmptyTextView() {
-        emptyTextView.setVisibility(
-                playlistsListView.getAdapter() != null
-                        && playlistsListView.getAdapter().getCount() > 0
+        emptyPlaylistTextView.setVisibility(
+                playlistListView.getAdapter() != null
+                        && playlistListView.getAdapter().getCount() > 0
                         ? View.GONE : View.VISIBLE);
     }
 
@@ -634,6 +643,32 @@ public class PhoneFragment extends Fragment {
             title = getString(R.string.playlist_tab);
         }
         playlistToolbar.setTitle(title);
+    }
+
+    public OnRecyclerItemClickListener getPlaylistItemClickListener() {
+        return new OnRecyclerItemClickListener() {
+            @Override
+            public void onItemClicked(View view, int position) {
+                playTrack(position);
+            }
+        };
+    }
+
+    public void playTrack(int position) {
+        Track track = mainActivity.getPlaylistItemsAdapter().getItem(position);
+        if (mainActivity.getPlaylistItemsAdapter().isEditMode()) {
+            mainActivity.showRenameDialog(track, position);
+        } else {
+            artistTextView.setText(track.getArtist());
+            titleTextView.setText(track.getTitle());
+            playPauseButton.setImageResource(R.drawable.pause_button);
+            Timeline.getInstance().setStartPlayingOnPrepared(true);
+            mainActivity.getMusicService().play(track.getRealPosition());
+        }
+    }
+
+    public void updateLoveButton() {
+        loveFloatingActionButton.setImageResource(ButtonStateUtils.getLoveButtonImage());
     }
 
     public class ModeLongClickListener implements AdapterView.OnItemLongClickListener {
@@ -649,10 +684,9 @@ public class PhoneFragment extends Fragment {
     public void trackInfoEvent(TrackInfoEvent event) {
         Track track = Timeline.getInstance().getCurrentTrack();
         if (track == null) return;
-        if (SharedPreferencesManager.getPreferences()
-                .getBoolean("scroll_to_current", false)) {
-            playlistsListView.requestFocusFromTouch();
-            playlistsListView.setSelection(Timeline.getInstance().getIndex());
+        if (SharedPreferencesManager.getPreferences().getBoolean("scroll_to_current", false)) {
+            playlistListView.requestFocusFromTouch();
+//            playlistListView.setSelection(Timeline.getInstance().getIndex());
         }
         Timeline.getInstance().setCurrentAlbum(null);
 //        track.setCurrent(true);
@@ -661,7 +695,7 @@ public class PhoneFragment extends Fragment {
         List<Integer> indexesToUpdate = new ArrayList<>(Timeline.getInstance().getPreviousTracksIndexes());
         indexesToUpdate.addAll(Timeline.getInstance().getQueueIndexes());
         mainActivity.updateView(indexesToUpdate);
-        if (!Utils.isOnline()) {
+        if (!NetworkUtils.isOnline()) {
             artistImageView.setImageResource(R.drawable.artist_placeholder);
             albumImageView.setImageDrawable(null);
             albumTextView.setVisibility(View.GONE);
@@ -709,7 +743,7 @@ public class PhoneFragment extends Fragment {
     }
 
     @Subscribe
-    public void albumInfoEvent(AlbumInfoEvent event) {
+    public void albumInfoEvent(TrackAndAlbumInfoUpdatedEvent event) {
         Album album = event.getAlbum();
         if (album != null && !album.equals(Timeline.getInstance().getPreviousAlbum())) {
             String imageUrl = album.getImageUrl();
@@ -732,7 +766,7 @@ public class PhoneFragment extends Fragment {
             albumImageView.setVisibility(View.GONE);
             albumTextView.setVisibility(View.GONE);
         }
-        mainActivity.invalidateMenu();
+        updateLoveButton();
     }
 
     @Subscribe
@@ -780,28 +814,27 @@ public class PhoneFragment extends Fragment {
             bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_light));
             return;
         }
-        Palette.generateAsync(bitmap,
-                new Palette.PaletteAsyncListener() {
-                    @Override
-                    public void onGenerated(Palette palette) {
-                        Palette.Swatch backSwatch =
-                                palette.getDarkMutedSwatch();
-                        if (backSwatch == null) {
-                            backLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono_dark));
-                            return;
-                        }
-                        backLayout.setBackgroundColor(
-                                backSwatch.getRgb());
+        Palette.Builder builder = new Palette.Builder(bitmap);
+        builder.generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                Palette.Swatch backSwatch = palette.getDarkMutedSwatch();
+                if (backSwatch == null) {
+                    backLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono_dark));
+                    return;
+                }
+                backLayout.setBackgroundColor(backSwatch.getRgb());
 
-                        Palette.Swatch bottomSwatch =
-                                palette.getDarkVibrantSwatch();
-                        if (bottomSwatch == null) {
-                            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_light));
-                            return;
-                        }
-                        bottomControlsLayout.setBackgroundColor(
-                                bottomSwatch.getRgb());
-                    }
-                });
+                Palette.Swatch bottomSwatch = palette.getDarkVibrantSwatch();
+                if (bottomSwatch == null) {
+                    bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_light));
+                    loveFloatingActionButton.setBackgroundTintList(
+                            ColorStateList.valueOf(getResources().getColor(R.color.accent_light)));
+                    return;
+                }
+                bottomControlsLayout.setBackgroundColor(bottomSwatch.getRgb());
+                loveFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(bottomSwatch.getRgb()));
+            }
+        });
     }
 }

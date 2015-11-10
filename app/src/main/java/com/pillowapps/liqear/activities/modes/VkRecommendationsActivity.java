@@ -7,10 +7,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.TrackAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
+import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
@@ -18,8 +18,6 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 
 import java.util.List;
-
-import timber.log.Timber;
 
 public class VkRecommendationsActivity extends ListBaseActivity {
 
@@ -32,11 +30,10 @@ public class VkRecommendationsActivity extends ListBaseActivity {
 
         actionBar.setTitle(getResources().getString(R.string.recommendations));
         searchVkRecommendations(getPageSize(), page++);
-        recyclerView.enableLoadmore();
-        recyclerView.setOnLoadMoreListener(new UltimateRecyclerView.OnLoadMoreListener() {
+        recycler.enableLoadMore(true);
+        recycler.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
-            public void loadMore(int itemsCount, final int maxLastVisiblePosition) {
-                Timber.d("loadMore");
+            public void onLoadMore() {
                 searchVkRecommendations(getPageSize(), page++);
             }
         });
@@ -46,20 +43,21 @@ public class VkRecommendationsActivity extends ListBaseActivity {
         final List<Track> trackList = Converter.convertVkTrackList(vkTracks);
         if (adapter == null || adapter.getItemCount() == 0) {
             emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
-            adapter = new TrackAdapter(trackList, new OnRecyclerItemClickListener() {
+            adapter = new TrackAdapter(this, trackList, new OnRecyclerItemClickListener() {
                 @Override
                 public void onItemClicked(View view, int position) {
                     openMainPlaylist(adapter.getItems(), position, getToolbarTitle());
                 }
             }, new OnRecyclerLongItemClickListener() {
                 @Override
-                public void onItemLongClicked(View view, int position) {
+                public boolean onItemLongClicked(View view, int position) {
                     trackLongClick(adapter.getItems(), position);
+                    return true;
                 }
             });
-            recyclerView.setAdapter(adapter);
+            recycler.setAdapter(adapter);
         } else {
-            adapter.addItems(trackList);
+            adapter.addAll(trackList);
         }
         progressBar.setVisibility(View.GONE);
     }

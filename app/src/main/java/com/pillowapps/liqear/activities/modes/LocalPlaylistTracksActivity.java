@@ -30,27 +30,33 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
 
         loadPlaylistTracks(extras.getLong("pid"));
 
-        recyclerView.setOnCreateContextMenuListener(this);
+        recycler.setOnCreateContextMenuListener(this);
     }
 
     private void fillWithTracklist(List<Track> trackList) {
         if (adapter == null || adapter.getItemCount() == 0) {
             emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
-            adapter = new TrackAdapter(trackList, new OnRecyclerItemClickListener() {
-                @Override
-                public void onItemClicked(View view, int position) {
-                    openMainPlaylist(adapter.getItems(), position, getToolbarTitle());
-                }
-            }, new OnRecyclerLongItemClickListener() {
-                @Override
-                public void onItemLongClicked(View view, int position) {
-                    trackLongClick(adapter.getItems(), position);
-                }
-            });
-            recyclerView.setAdapter(adapter);
+            adapter = new TrackAdapter(getApplicationContext(), trackList);
+            recycler.setAdapter(adapter);
         } else {
-            adapter.addItems(trackList);
+            adapter.addAll(trackList);
         }
+
+//        recycler.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                openMainPlaylist(adapter.getItems(), position, getToolbarTitle());
+//            }
+//        });
+//
+//        recycler.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                trackLongClick(adapter.getItems(), position);
+//                return true;
+//            }
+//        });
+
         progressBar.setVisibility(View.GONE);
     }
 
@@ -66,7 +72,7 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (v == recyclerView) {
+        if (v == recycler) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             Track track = adapter.getItem(info.position);
             menu.setHeaderTitle(TrackUtils.getNotation(track));

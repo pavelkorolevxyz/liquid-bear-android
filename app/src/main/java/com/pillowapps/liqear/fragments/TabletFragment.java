@@ -4,15 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -33,11 +31,11 @@ import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.CompletionCallback;
+import com.pillowapps.liqear.components.OnTopToBottomSwipeListener;
 import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.events.AlbumInfoEvent;
 import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
 import com.pillowapps.liqear.entities.events.BufferizationEvent;
 import com.pillowapps.liqear.entities.events.ExitEvent;
@@ -48,19 +46,22 @@ import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
 import com.pillowapps.liqear.entities.events.PreparedEvent;
 import com.pillowapps.liqear.entities.events.ShowProgressEvent;
 import com.pillowapps.liqear.entities.events.TimeEvent;
+import com.pillowapps.liqear.entities.events.TrackAndAlbumInfoUpdatedEvent;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
+import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
-import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.models.PlayingState;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TabletFragment extends Fragment {
+public class TabletFragment extends MainFragment {
     public TextView artistTextView;
     public TextView titleTextView;
     public ImageButton playPauseButton;
@@ -71,7 +72,6 @@ public class TabletFragment extends Fragment {
     public ImageButton prevButton;
     public ImageButton shuffleButton;
     public ImageButton repeatButton;
-    private MainActivity mainActivity;
     private DragSortListView listView;
     private EditText searchPlaylistEditText;
     private ImageButton clearEditTextButton;
@@ -89,7 +89,7 @@ public class TabletFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.tablet_fragment_layout, null);
+        View v = inflater.inflate(R.layout.tablet_fragment_layout, container, false);
         mainActivity = (MainActivity) getActivity();
         LBApplication.bus.register(this);
         return v;
@@ -110,6 +110,8 @@ public class TabletFragment extends Fragment {
     private void initUi(View v) {
         listView = (DragSortListView) v.findViewById(R.id.playlist_list_view_playlist_tab);
         listView.setAdapter(mainActivity.getPlaylistItemsAdapter());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         searchPlaylistEditText = (EditText) v.findViewById(R.id.search_edit_text_playlist_tab);
         searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
                 .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false)
@@ -171,71 +173,71 @@ public class TabletFragment extends Fragment {
         albumImageView.setOnClickListener(albumClickListener);
         albumTextView.setOnClickListener(albumClickListener);
 
-        listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                if (v.getId() == R.id.playlist_list_view_playlist_tab) {
-                    AdapterView.AdapterContextMenuInfo info =
-                            (AdapterView.AdapterContextMenuInfo) menuInfo;
-                    menu.setHeaderTitle(((Track) listView.getAdapter()
-                            .getItem(info.position)).getTitle());
-                    String[] menuItems = getResources().getStringArray(R.array.playlist_item_menu);
-                    for (int i = 0; i < menuItems.length; i++) {
-                        menu.add(android.view.Menu.NONE, i, i, menuItems[i]);
-                    }
-                }
-            }
-        });
-        listView.setClickable(true);
-        listView.setFocusable(true);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
-                Track track = playlist.get(mainActivity.getPlaylistItemsAdapter()
-                        .getItem(position).getRealPosition());
-                if (mainActivity.getPlaylistItemsAdapter().isEditMode()) {
-                    mainActivity.showRenameDialog(track, position);
-                } else {
-                    artistTextView.setText(Html.fromHtml(track.getArtist()));
-                    titleTextView.setText(Html.fromHtml(track.getTitle()));
-                    playPauseButton.setImageResource(R.drawable.pause_button);
-                    Timeline.getInstance().setStartPlayingOnPrepared(true);
-                    mainActivity.getMusicPlaybackService().play(track.getRealPosition());
-                }
-            }
-        });
-        listView.setRemoveListener(new DragSortListView.RemoveListener() {
-            @Override
-            public void remove(int which) {
-                mainActivity.removeTrack(which);
-            }
-        });
-        listView.setDropListener(new DragSortListView.DropListener() {
-            @Override
-            public void drop(int from, int to) {
-                if (from == to) return;
-                List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
-                int currentIndex = Timeline.getInstance().getIndex();
-                int index = 0;
-                if (from == currentIndex) {
-                    index = to;
-                } else if (from < to && currentIndex < to && currentIndex > from) {
-                    index = currentIndex - 1;
-                } else if (from > to && currentIndex < from && currentIndex > to) {
-                    index = currentIndex + 1;
-                } else if (to == currentIndex && currentIndex > from) {
-                    index = currentIndex - 1;
-                } else if (to == currentIndex && currentIndex < from) {
-                    index = currentIndex + 1;
-                }
-                Timeline.getInstance().setIndex(index);
-                Track item = playlist.get(from);
-                playlist.remove(from);
-                playlist.add(to, item);
-                mainActivity.updateAdapter();
-                mainActivity.changePlaylistWithoutTrackChange();
-            }
-        });
+//        recycler.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() { todo
+//            @Override
+//            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//                if (v.getId() == R.id.playlist_list_view_playlist_tab) {
+//                    AdapterView.AdapterContextMenuInfo info =
+//                            (AdapterView.AdapterContextMenuInfo) menuInfo;
+//                    menu.setHeaderTitle(((Track) recycler.getAdapter()
+//                            .getItem(info.position)).getTitle());
+//                    String[] menuItems = getResources().getStringArray(R.array.playlist_item_menu);
+//                    for (int i = 0; i < menuItems.length; i++) {
+//                        menu.add(android.view.Menu.NONE, i, i, menuItems[i]);
+//                    }
+//                }
+//            }
+//        });
+//        recycler.setClickable(true);
+//        recycler.setFocusable(true);
+//        recycler.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
+//                Track track = playlist.get(mainActivity.getPlaylistItemsAdapter()
+//                        .getItem(position).getRealPosition());
+//                if (mainActivity.getPlaylistItemsAdapter().isEditMode()) {
+//                    mainActivity.showRenameDialog(track, position);
+//                } else {
+//                    artistTextView.setText(Html.fromHtml(track.getArtist()));
+//                    titleTextView.setText(Html.fromHtml(track.getTitle()));
+//                    playPauseButton.setImageResource(R.drawable.pause_button);
+//                    Timeline.getInstance().setStartPlayingOnPrepared(true);
+//                    mainActivity.getMusicService().play(track.getRealPosition());
+//                }
+//            }
+//        });
+//        recycler.setRemoveListener(new DragSortListView.RemoveListener() {
+//            @Override
+//            public void remove(int which) {
+//                mainActivity.removeTrack(which);
+//            }
+//        });
+//        recycler.setDropListener(new DragSortListView.DropListener() {
+//            @Override
+//            public void drop(int from, int to) {
+//                if (from == to) return;
+//                List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
+//                int currentIndex = Timeline.getInstance().getIndex();
+//                int index = 0;
+//                if (from == currentIndex) {
+//                    index = to;
+//                } else if (from < to && currentIndex < to && currentIndex > from) {
+//                    index = currentIndex - 1;
+//                } else if (from > to && currentIndex < from && currentIndex > to) {
+//                    index = currentIndex + 1;
+//                } else if (to == currentIndex && currentIndex > from) {
+//                    index = currentIndex - 1;
+//                } else if (to == currentIndex && currentIndex < from) {
+//                    index = currentIndex + 1;
+//                }
+//                Timeline.getInstance().setIndex(index);
+//                Track item = playlist.get(from);
+//                playlist.remove(from);
+//                playlist.add(to, item);
+//                mainActivity.updateAdapter();
+//                mainActivity.changePlaylistWithoutTrackChange();
+//            }
+//        });
         clearEditTextButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 searchPlaylistEditText.setText("");
@@ -257,25 +259,30 @@ public class TabletFragment extends Fragment {
                 }
             }
         });
-        SwipeDetector swipeDetector = new SwipeDetector(mainActivity);
+        SwipeDetector swipeDetector = new SwipeDetector(new OnTopToBottomSwipeListener() {
+            @Override
+            public void onTopToBottomSwipe() {
+                openDropButton();
+            }
+        });
         blackView.setOnTouchListener(swipeDetector);
     }
 
     private void updateTime() {
-        if (!mainActivity.getMusicPlaybackService().isPrepared()) return;
-        seekBar.setProgress(mainActivity.getMusicPlaybackService().getCurrentPositionPercent());
+        if (!mainActivity.getMusicService().isPrepared()) return;
+        seekBar.setProgress(mainActivity.getMusicService().getCurrentPositionPercent());
         String text;
-        int timeFromBeginning = mainActivity.getMusicPlaybackService().getCurrentPosition() / 1000;
-        int duration = mainActivity.getMusicPlaybackService().getDuration();
+        int timeFromBeginning = mainActivity.getMusicService().getCurrentPosition() / 1000;
+        int duration = mainActivity.getMusicService().getDuration();
         if (duration > 0) {
             if (SharedPreferencesManager.getPreferences().getBoolean(Constants.TIME_INVERTED, false)) {
                 int timeToEnd = duration / 1000 - timeFromBeginning;
-                text = "-" + Utils.secondsToString(timeToEnd);
+                text = String.format("-%s", TimeUtils.secondsToMinuteString(timeToEnd));
             } else {
-                text = Utils.secondsToString(timeFromBeginning);
+                text = TimeUtils.secondsToMinuteString(timeFromBeginning);
             }
             timeTextView.setText(text);
-            timeDurationTextView.setText(Utils.secondsToString(duration / 1000));
+            timeDurationTextView.setText(TimeUtils.secondsToMinuteString(duration / 1000));
         }
     }
 
@@ -285,11 +292,11 @@ public class TabletFragment extends Fragment {
             playPauseButton.setImageResource(isPlaying ?
                     R.drawable.pause_button : R.drawable.play_button);
             playPauseButton.setEnabled(true);
-            mainActivity.getMusicPlaybackService().startPlayProgressUpdater();
+            mainActivity.getMusicService().startPlayProgressUpdater();
             seekBar.setEnabled(true);
             updateTime();
             if (isPlaying)
-                mainActivity.getMusicPlaybackService().showTrackInNotification();
+                mainActivity.getMusicService().showTrackInNotification();
 
         }
         if (isPlaying) {
@@ -314,8 +321,8 @@ public class TabletFragment extends Fragment {
     }
 
     private void restorePreviousState() {
-        shuffleButton.setImageResource(Utils.getShuffleButtonImage());
-        repeatButton.setImageResource(Utils.getRepeatButtonImage());
+        shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+        repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
 
         StateManager.restorePlaylistState(new CompletionCallback() {
             @Override
@@ -325,10 +332,7 @@ public class TabletFragment extends Fragment {
 
                 mainActivity.runOnUiThread(new Runnable() {
                     public void run() {
-
                         List<Track> tracks = playlist.getTracks();
-
-                        tracks = Timeline.getInstance().getPlaylistTracks();
                         SharedPreferences preferences = SharedPreferencesManager.getPreferences();
                         String artist = preferences.getString(Constants.ARTIST, "");
                         String title = preferences.getString(Constants.TITLE, "");
@@ -375,18 +379,18 @@ public class TabletFragment extends Fragment {
         if (SharedPreferencesManager.getPreferences()
                 .getBoolean("scroll_to_current", false)) {
             listView.requestFocusFromTouch();
-            listView.setSelection(Timeline.getInstance().getIndex());
+//            recycler.setSelection(Timeline.getInstance().getIndex());
         }
         Timeline.getInstance().setCurrentAlbum(null);
 //        track.setCurrent(true);
         artistTextView.setText(Html.fromHtml(track.getArtist()));
         titleTextView.setText(Html.fromHtml(track.getTitle()));
-        List<Integer> listToUpdate = new ArrayList<Integer>(
+        List<Integer> playlistItemsIndexesToUpdate = new ArrayList<>(
                 Timeline.getInstance().getPreviousTracksIndexes());
-        listToUpdate.addAll(Timeline.getInstance().getQueueIndexes());
+        playlistItemsIndexesToUpdate.addAll(Timeline.getInstance().getQueueIndexes());
         Timeline.getInstance().clearPreviousIndexes();
-        mainActivity.updateView(listToUpdate);
-        if (!Utils.isOnline()) {
+        mainActivity.updateView(playlistItemsIndexesToUpdate);
+        if (!NetworkUtils.isOnline()) {
             artistImageView.setImageResource(R.drawable.artist_placeholder);
             albumImageView.setImageDrawable(null);
             albumTextView.setVisibility(View.INVISIBLE);
@@ -417,7 +421,7 @@ public class TabletFragment extends Fragment {
     }
 
     @Subscribe
-    public void albumInfoEvent(AlbumInfoEvent event) {
+    public void albumInfoEvent(TrackAndAlbumInfoUpdatedEvent event) {
         Album album = event.getAlbum();
         if (album != null && !album.equals(Timeline.getInstance().getPreviousAlbum())) {
             String imageUrl = album.getImageUrl();
@@ -437,7 +441,7 @@ public class TabletFragment extends Fragment {
                 albumTextView.setText(title);
             }
         }
-        mainActivity.invalidateMenu();
+        updateLoveButton();
     }
 
     @Subscribe
@@ -509,5 +513,13 @@ public class TabletFragment extends Fragment {
 //                                bottomSwatch.getRgb());
 //                    }
 //                });
+    }
+
+    public void updateLoveButton() {
+        //todo
+    }
+
+    public void playTrack(int position) {
+        //todo
     }
 }

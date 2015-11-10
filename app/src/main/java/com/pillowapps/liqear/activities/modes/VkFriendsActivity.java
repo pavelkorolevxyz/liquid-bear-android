@@ -34,7 +34,7 @@ public class VkFriendsActivity extends ListBaseActivity {
                 openLastfmUser(adapter.getItem(position));
             }
         });
-        recyclerView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
 

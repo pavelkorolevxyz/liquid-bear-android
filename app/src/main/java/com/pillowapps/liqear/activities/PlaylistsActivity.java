@@ -1,8 +1,6 @@
 package com.pillowapps.liqear.activities;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -18,19 +16,22 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.LocalPlaylistTracksActivity;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.GetPlaylistListCallback;
+import com.pillowapps.liqear.components.HintMaterialEditText;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.models.PlaylistModel;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +77,13 @@ public class PlaylistsActivity extends ResultActivity {
             public void onCompleted(List<Playlist> playlistList) {
                 adapter = new PlaylistsArrayAdapter<>(
                         PlaylistsActivity.this, playlistList, Playlist.class);
-                listView.setAdapter(adapter);
-                updateEmptyTextView();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listView.setAdapter(adapter);
+                        updateEmptyTextView();
+                    }
+                });
             }
         });
 
@@ -173,105 +179,108 @@ public class PlaylistsActivity extends ResultActivity {
     }
 
     private void showNewDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 
-        dialog.setTitle(getResources().getString(R.string.playlist));
-        dialog.setMessage(getResources()
-                .getString(R.string.enter_title_here));
+        final HintMaterialEditText input = new HintMaterialEditText(this);
+        input.setFloatingLabel(MaterialEditText.FLOATING_LABEL_NORMAL);
+        input.updateHint(getString(R.string.enter_title_here));
 
-        final EditText input = new EditText(this);
-        dialog.setView(input);
+        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(R.string.playlist)
+                .customView(input, true)
+                .positiveText(R.string.save)
+                .negativeText(android.R.string.cancel)
+                .build();
 
-        dialog.setPositiveButton(getResources().getString(R.string.save),
-                new DialogInterface.OnClickListener() {
-                    @SuppressWarnings("unchecked")
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String title = input.getText().toString();
-                        if (title.length() < 1) {
-                            title = getResources().getString(R.string.new_playlist);
-                        }
-                        long pid = new PlaylistModel().addPlaylist(title,
-                                new ArrayList<Track>());
-                        if (pid != -1) {
-                            ((List<Playlist>) adapter.getValues()).add(0, new Playlist(pid, title));
-                            adapter.notifyDataSetChanged();
-                            updateEmptyTextView();
-                        }
-                    }
-                });
-        dialog.setNegativeButton(
-                getResources().getString(android.R.string.cancel), null);
-
+        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = input.getText().toString();
+                if (title.length() < 1) {
+                    title = getResources().getString(R.string.new_playlist);
+                }
+                long pid = new PlaylistModel().addPlaylist(title,
+                        new ArrayList<Track>());
+                if (pid != -1) {
+                    ((List<Playlist>) adapter.getValues()).add(0, new Playlist(pid, title));
+                    adapter.notifyDataSetChanged();
+                    updateEmptyTextView();
+                }
+                dialog.dismiss();
+            }
+        });
         dialog.show();
     }
 
     private void showSavePlaylistDialog(final boolean isRenaming, final int position) {
-        AlertDialog.Builder editAlert = new AlertDialog.Builder(this);
+        final HintMaterialEditText input = new HintMaterialEditText(this);
+        input.setFloatingLabel(MaterialEditText.FLOATING_LABEL_NORMAL);
+        input.updateHint(getString(R.string.enter_title_here));
 
-        editAlert.setTitle(getResources().getString(R.string.playlist));
-        editAlert.setMessage(getResources()
-                .getString(R.string.enter_title_here));
+        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(R.string.playlist)
+                .customView(input, true)
+                .positiveText(R.string.save)
+                .negativeText(android.R.string.cancel)
+                .build();
 
-        final EditText input = new EditText(this);
-        editAlert.setView(input);
+        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = input.getText().toString();
+                if (title.length() < 1) {
+                    title = getResources().getString(R.string.new_playlist);
+                }
 
-        editAlert.setPositiveButton(getResources().getString(R.string.save),
-                new DialogInterface.OnClickListener() {
-                    @SuppressWarnings("unchecked")
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String title = input.getText().toString();
-                        if (title.length() < 1) {
-                            title = getResources().getString(R.string.new_playlist);
-                        }
-
-                        if (isRenaming) {
-                            new PlaylistModel().renamePlaylist(
-                                    ((Playlist) adapter.get(position)).getId(), title);
-                            ((Playlist) adapter.get(position)).setTitle(title);
-                            adapter.notifyDataSetChanged();
-                            updateEmptyTextView();
-                        } else {
-                            long pid = new PlaylistModel().addPlaylist(title,
-                                    Timeline.getInstance().getPlaylistTracks());
-                            if (pid != -1) {
-                                ((List<Playlist>) adapter.getValues()).add(0,
-                                        new Playlist(pid, title));
-                                adapter.notifyDataSetChanged();
-                                updateEmptyTextView();
-                            }
-                        }
+                if (isRenaming) {
+                    new PlaylistModel().renamePlaylist(
+                            ((Playlist) adapter.get(position)).getId(), title);
+                    ((Playlist) adapter.get(position)).setTitle(title);
+                    adapter.notifyDataSetChanged();
+                    updateEmptyTextView();
+                } else {
+                    long pid = new PlaylistModel().addPlaylist(title,
+                            Timeline.getInstance().getPlaylistTracks());
+                    if (pid != -1) {
+                        ((List<Playlist>) adapter.getValues()).add(0,
+                                new Playlist(pid, title));
+                        adapter.notifyDataSetChanged();
+                        updateEmptyTextView();
                     }
-                });
-        editAlert.setNegativeButton(getResources().getString(android.R.string.cancel), null);
+                }
+                dialog.dismiss();
+            }
+        });
 
-        editAlert.show();
+        dialog.show();
     }
 
     private void saveAsPlaylist(final boolean isRenaming, final int position) {
-        AlertDialog.Builder editAlert = new AlertDialog.Builder(this);
+        final HintMaterialEditText input = new HintMaterialEditText(this);
+        input.setFloatingLabel(MaterialEditText.FLOATING_LABEL_NORMAL);
+        input.updateHint(getString(R.string.enter_title_here));
 
-        editAlert.setTitle(getResources().getString(R.string.playlist));
-        editAlert.setMessage(getResources().getString(R.string.enter_title_here));
+        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(R.string.playlist)
+                .customView(input, true)
+                .positiveText(R.string.save)
+                .negativeText(android.R.string.cancel)
+                .build();
 
-        final EditText input = new EditText(this);
-        editAlert.setView(input);
+        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = input.getText().toString();
+                if (title.length() < 1) {
+                    title = getResources().getString(R.string.new_playlist);
+                }
 
-        editAlert.setPositiveButton(getResources().getString(R.string.save),
-                new DialogInterface.OnClickListener() {
-                    @SuppressWarnings("unchecked")
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String title = input.getText().toString();
-                        if (title.length() < 1) {
-                            title = getResources().getString(R.string.new_playlist);
-                        }
-
-                        if (isRenaming) {
-                            new PlaylistModel().renamePlaylist(
-                                    ((Playlist) adapter.get(position)).getId(), title);
-                            ((Playlist) adapter.get(position)).setTitle(title);
-                            adapter.notifyDataSetChanged();
-                            updateEmptyTextView();
-                        } else {
+                if (isRenaming) {
+                    new PlaylistModel().renamePlaylist(
+                            ((Playlist) adapter.get(position)).getId(), title);
+                    ((Playlist) adapter.get(position)).setTitle(title);
+                    adapter.notifyDataSetChanged();
+                    updateEmptyTextView();
+                } else {
 //                            List<Track> tracklist = getIntent()
 //                                    .getParcelableArrayListExtra(Constants.TRACKLIST);
 //                            long pid = new PlaylistModel().addPlaylist(title, tracklist);
@@ -281,12 +290,13 @@ public class PlaylistsActivity extends ResultActivity {
 //                                adapter.notifyDataSetChanged();
 //                            }
 //                            //todo with otto
-                        }
-                    }
-                });
-        editAlert.setNegativeButton(getResources().getString(android.R.string.cancel), null);
+                }
 
-        editAlert.show();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     public enum Aim {

@@ -6,15 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.viewholders.TagViewHolder;
 import com.pillowapps.liqear.entities.Tag;
+import com.pillowapps.liqear.viewholders.TagViewHolder;
 
 import java.util.List;
 
-public class TagAdapter extends UltimateViewAdapter<TagViewHolder> {
+public class TagAdapter extends RecyclerView.Adapter<TagViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
     private TagViewHolder holder;
@@ -35,36 +34,16 @@ public class TagAdapter extends UltimateViewAdapter<TagViewHolder> {
     }
 
     @Override
-    public TagViewHolder getViewHolder(View view) {
-        return holder;
-    }
-
-    @Override
-    public TagViewHolder onCreateViewHolder(ViewGroup parent) {
+    public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
         holder = new TagViewHolder(v, clickListener);
         return holder;
     }
 
     @Override
-    public int getAdapterItemCount() {
+    public int getItemCount() {
         if (items == null) return 0;
         return items.size();
-    }
-
-    @Override
-    public long generateHeaderId(int i) {
-        return 0;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
-        return null;
-    }
-
-    @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-
     }
 
     public Tag getItem(int position) {

@@ -1,10 +1,9 @@
 package com.pillowapps.liqear.models.lastfm;
 
-import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;
-import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +16,13 @@ import rx.schedulers.Schedulers;
 
 public class LastfmDiscographyModel {
 
-    public void getDiscographyTracks(List<LastfmAlbum> albums, final SimpleCallback<List<LastfmTrack>> callback) {
+    public void getDiscographyTracks(List<Album> albums, final SimpleCallback<List<LastfmTrack>> callback) {
         if (albums == null || albums.size() == 0) callback.success(new ArrayList<LastfmTrack>(0));
 
         final LastfmAlbumModel albumModel = new LastfmAlbumModel();
         List<Observable<LastfmAlbumRoot>> observableList = new ArrayList<>(albums.size());
-        for (LastfmAlbum album : albums) {
-            Observable<LastfmAlbumRoot> albumInfoObservable = albumModel.getAlbumInfo(Converter.convertAlbum(album));
+        for (Album album : albums) {
+            Observable<LastfmAlbumRoot> albumInfoObservable = albumModel.getAlbumInfo(album);
             observableList.add(albumInfoObservable);
         }
         Observable.zip(observableList, new FuncN<List<LastfmTrack>>() {

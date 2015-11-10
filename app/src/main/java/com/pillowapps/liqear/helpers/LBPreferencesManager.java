@@ -37,4 +37,8 @@ public class LBPreferencesManager {
     public static int getPageSize() {
         return SharedPreferencesManager.getPreferences().getInt("page_size", 50);
     }
+
+    public static boolean isVkAddSlow() {
+        return SharedPreferencesManager.getPreferences().getBoolean("add_to_vk_slow", true);
+    }
 }

@@ -106,10 +106,10 @@ public class SearchAlbumActivity extends SearchBaseActivity {
                         album.getTitle());
                 editor.putString(Constants.IMAGE + albumsLastNumberMod, album.getImageUrl());
                 editor.apply();
-                openAlbum(album);
+                openLastfmAlbum(album);
             }
         });
-        recyclerView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
 

@@ -1,51 +1,59 @@
 package com.pillowapps.liqear.components.viewers;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
+import com.pillowapps.liqear.activities.modes.OnRecyclerLongItemClickListener;
+import com.pillowapps.liqear.components.EndlessRecyclerOnScrollListener;
 import com.pillowapps.liqear.components.OnViewerItemClickListener;
+import com.pillowapps.liqear.components.OnLoadMoreListener;
+import com.pillowapps.liqear.helpers.DividerItemDecoration;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 public abstract class ViewerPage<T> {
+    private final LinearLayoutManager layoutManager;
     @InjectView(R.id.list)
-    protected LoadMoreListView listView;
+    protected RecyclerView recyclerView;
     @InjectView(R.id.pageProgressBar)
     protected ProgressBar progressBar;
     @InjectView(R.id.empty)
     protected TextView emptyTextView;
-    private Context context;
+    protected boolean filledFull = false;
 
+    private Context context;
     private boolean singlePage = false;
     private int page = 0;
-    private int totalPages = Integer.MAX_VALUE;
     private View view;
     private String title;
 
-    private final AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
+    public final OnRecyclerItemClickListener listener = new OnRecyclerItemClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-            onItemClicked(position);
+        public void onItemClicked(View view, int position) {
+            ViewerPage.this.onItemClicked(position);
         }
     };
-    private final AdapterView.OnItemLongClickListener longClickListener = new AdapterView.OnItemLongClickListener() {
+    public final OnRecyclerLongItemClickListener longClickListener = new OnRecyclerLongItemClickListener() {
         @Override
-        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-            return onItemLongClicked(position);
+        public boolean onItemLongClicked(View view, int position) {
+            return ViewerPage.this.onItemLongClicked(position);
         }
     };
 
     private OnViewerItemClickListener<T> itemClickListener;
     private OnViewerItemClickListener<T> itemLongClickListener;
+    private OnLoadMoreListener<T> onLoadMoreListener;
 
     public ViewerPage(Context context,
                       View view,
@@ -54,8 +62,24 @@ public abstract class ViewerPage<T> {
         this.view = view;
         this.title = title;
         ButterKnife.inject(this, view);
-        listView.setOnItemClickListener(listener);
-        listView.setOnItemLongClickListener(longClickListener);
+
+        recyclerView.setHasFixedSize(true);
+
+        layoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
+//        recycler.setOnItemClickListener(listener);
+//        recycler.setOnItemLongClickListener(longClickListener);
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page) {
+                if (onLoadMoreListener != null) {
+                    Timber.d("onLoadMore " + ViewerPage.this.title);
+                    onLoadMoreListener.onLoadMore();
+                }
+            }
+        });
     }
 
     public ViewerPage(Context context,
@@ -65,16 +89,33 @@ public abstract class ViewerPage<T> {
         this.view = view;
         this.title = LBApplication.getAppContext().getString(titleRes);
         ButterKnife.inject(this, view);
-        listView.setOnItemClickListener(listener);
-        listView.setOnItemLongClickListener(longClickListener);
+
+        recyclerView.setHasFixedSize(true);
+
+        layoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
+//        recycler.setOnItemClickListener(listener);
+//        recycler.setOnItemLongClickListener(longClickListener);
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page) {
+                if (onLoadMoreListener != null) {
+                    Timber.d("onLoadMore " + title);
+                    onLoadMoreListener.onLoadMore();
+                }
+            }
+        });
     }
 
     public void onLoadMoreComplete() {
-        listView.onLoadMoreComplete();
+//        recycler.onLoadMoreComplete();
     }
 
     public int getPage() {
-        return page;
+        Timber.d(page + " - PAGE of viewer " + title);
+        return page++;
     }
 
     public void setPage(int page) {
@@ -83,10 +124,6 @@ public abstract class ViewerPage<T> {
 
     public Context getContext() {
         return context;
-    }
-
-    public void setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
     }
 
     public void showProgressBar(boolean show) {
@@ -117,8 +154,8 @@ public abstract class ViewerPage<T> {
         this.singlePage = singlePage;
     }
 
-    public void setOnLoadMoreListener(LoadMoreListView.OnLoadMoreListener listener) {
-        listView.setOnLoadMoreListener(listener);
+    public void setOnLoadMoreListener(OnLoadMoreListener<T> listener) {
+        this.onLoadMoreListener = listener;
     }
 
     public void setItemClickListener(OnViewerItemClickListener<T> itemClickListener) {
@@ -138,13 +175,13 @@ public abstract class ViewerPage<T> {
     }
 
     public void onLoadMore() {
-        listView.onLoadMore();
+        onLoadMoreListener.onLoadMore();
     }
 
     protected abstract void onItemClicked(int position);
 
     protected boolean onItemLongClicked(int position) {
-        return false;
+        return true;
     }
 
     public abstract boolean isNotLoaded();

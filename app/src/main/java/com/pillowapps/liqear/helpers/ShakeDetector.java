@@ -4,7 +4,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.FloatMath;
 
 public class ShakeDetector implements SensorEventListener {
 
@@ -41,15 +40,15 @@ public class ShakeDetector implements SensorEventListener {
             float gY = y / SensorManager.GRAVITY_EARTH;
             float gZ = z / SensorManager.GRAVITY_EARTH;
 
-            float gForce = FloatMath.sqrt(gX * gX + gY * gY + gZ * gZ);
+            float gForce = (float) Math.sqrt(gX * gX + gY * gY + gZ * gZ);
 
             if (gForce > SHAKE_THRESHOLD_GRAVITY) {
                 final long now = System.currentTimeMillis();
-                if (mShakeTimestamp + SHAKE_SLOP_TIME_MS > now ) {
+                if (mShakeTimestamp + SHAKE_SLOP_TIME_MS > now) {
                     return;
                 }
 
-                if (mShakeTimestamp + SHAKE_COUNT_RESET_TIME_MS < now ) {
+                if (mShakeTimestamp + SHAKE_COUNT_RESET_TIME_MS < now) {
                     mShakeCount = 0;
                 }
 

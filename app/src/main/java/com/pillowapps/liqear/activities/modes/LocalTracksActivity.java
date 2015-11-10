@@ -56,26 +56,27 @@ public class LocalTracksActivity extends ListBaseActivity {
         }
         actionBar.setTitle(getString(R.string.tracks));
 
-        recyclerView.setOnCreateContextMenuListener(this);
+        recycler.setOnCreateContextMenuListener(this);
     }
 
     private void fillWithTracklist(List<Track> trackList) {
         if (adapter == null || adapter.getItemCount() == 0) {
             emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
-            adapter = new TrackAdapter(trackList, new OnRecyclerItemClickListener() {
+            adapter = new TrackAdapter(this, trackList, new OnRecyclerItemClickListener() {
                 @Override
                 public void onItemClicked(View view, int position) {
                     openMainPlaylist(adapter.getItems(), position, getToolbarTitle());
                 }
             }, new OnRecyclerLongItemClickListener() {
                 @Override
-                public void onItemLongClicked(View view, int position) {
+                public boolean onItemLongClicked(View view, int position) {
                     trackLongClick(adapter.getItems(), position);
+                    return true;
                 }
             });
-            recyclerView.setAdapter(adapter);
+            recycler.setAdapter(adapter);
         } else {
-            adapter.addItems(trackList);
+            adapter.addAll(trackList);
         }
         progressBar.setVisibility(View.GONE);
     }

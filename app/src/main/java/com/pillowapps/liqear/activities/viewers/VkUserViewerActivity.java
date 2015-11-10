@@ -11,22 +11,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
+import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.components.viewers.VkAlbumViewerPage;
 import com.pillowapps.liqear.components.viewers.VkTracksViewerPage;
+import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Group;
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
-import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
@@ -121,14 +122,15 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_feed
         );
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getNewsFeedTracks(getPageSize(), viewer.getPage(), viewer);
-            }
-        });
-        viewer.setItemClickListener(vkTrackClickListener);
-        viewer.setItemLongClickListener(vkTrackLongClickListener);
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Track>() {
+                    @Override
+                    public void onLoadMore() {
+                        getNewsFeedTracks(getPageSize(), viewer.getPage(), viewer);
+                    }
+                });
+        viewer.setItemClickListener(trackClickListener);
+        viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
         return viewer;
     }
@@ -138,14 +140,15 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_favorites
         );
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getFavoritesTracks(getPageSize(), viewer.getPage(), viewer);
-            }
-        });
-        viewer.setItemClickListener(vkTrackClickListener);
-        viewer.setItemLongClickListener(vkTrackLongClickListener);
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Track>() {
+                    @Override
+                    public void onLoadMore() {
+                        getFavoritesTracks(getPageSize(), viewer.getPage(), viewer);
+                    }
+                });
+        viewer.setItemClickListener(trackClickListener);
+        viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
         return viewer;
     }
@@ -155,7 +158,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_albums
         );
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+        viewer.setOnLoadMoreListener(new OnLoadMoreListener<Album>() {
             @Override
             public void onLoadMore() {
                 getAlbums(getPageSize(), viewer.getPage(), viewer);
@@ -175,14 +178,14 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.user_audio
         );
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+        viewer.setOnLoadMoreListener(new OnLoadMoreListener<Track>() {
             @Override
             public void onLoadMore() {
                 getUserAudio(getPageSize(), viewer.getPage(), viewer);
             }
         });
-        viewer.setItemClickListener(vkTrackClickListener);
-        viewer.setItemLongClickListener(vkTrackLongClickListener);
+        viewer.setItemClickListener(trackClickListener);
+        viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
         return viewer;
     }
@@ -192,14 +195,15 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_wall
         );
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
+        viewer.setOnLoadMoreListener(new OnLoadMoreListener<Track>() {
             @Override
             public void onLoadMore() {
                 getWallTracks(getPageSize(), viewer.getPage(), viewer);
+
             }
         });
-        viewer.setItemClickListener(vkTrackClickListener);
-        viewer.setItemLongClickListener(vkTrackLongClickListener);
+        viewer.setItemClickListener(trackClickListener);
+        viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
         return viewer;
     }
@@ -347,14 +351,14 @@ public class VkUserViewerActivity extends PagerResultActivity {
             case R.id.to_playlist: {
                 VkTracksViewerPage viewer = (VkTracksViewerPage) getViewer(currentItem);
                 if (viewer.isNotLoaded()) return true;
-                addToMainPlaylist(Converter.convertVkTrackList(viewer.getItems()));
+                addToMainPlaylist(viewer.getItems());
                 Toast.makeText(VkUserViewerActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
             }
             return true;
             case R.id.save_as_playlist: {
                 LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(currentItem);
                 if (viewer.isNotLoaded()) return true;
-                saveAsPlaylist(Converter.convertLastfmTrackList(viewer.getItems()));
+                saveAsPlaylist(viewer.getItems());
             }
             return true;
         }

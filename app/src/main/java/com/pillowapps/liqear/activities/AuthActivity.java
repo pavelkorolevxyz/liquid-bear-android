@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -12,13 +13,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.AuthActivityAdapter;
+import com.pillowapps.liqear.callbacks.LastfmErrorCodeCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
@@ -30,7 +35,6 @@ import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
-import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAuthModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
@@ -64,6 +68,7 @@ public class AuthActivity extends TrackedActivity {
     private ImageModel imageModel = new ImageModel();
     private View signOutVkButton;
     private View signOutLastfmButton;
+    private ProgressBar lastfmProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +191,7 @@ public class AuthActivity extends TrackedActivity {
         avatarLastfmImageView = (ImageView) lastfmTab.findViewById(R.id.avatar);
         errorVkTextView = (TextView) vkTab.findViewById(R.id.auth_error_text_view);
         errorLastfmTextView = (TextView) lastfmTab.findViewById(R.id.auth_error_text_view);
+        lastfmProgressBar = (ProgressBar) lastfmTab.findViewById(R.id.lastfm_progress_bar);
     }
 
     @Override
@@ -200,7 +206,7 @@ public class AuthActivity extends TrackedActivity {
                             invalidateOptionsMenu();
                             showSaves();
                             if (firstStart && AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-                                Utils.startMainActivity(AuthActivity.this);
+                                startMainActivity(AuthActivity.this);
                                 finish();
                             }
                         }
@@ -255,14 +261,29 @@ public class AuthActivity extends TrackedActivity {
                 authLastfmPanel.setVisibility(View.INVISIBLE);
                 loginLastfmEditText.setVisibility(View.VISIBLE);
                 passwordLastfmEditText.setVisibility(View.VISIBLE);
-                String username = loginLastfmEditText.getText().toString();
-                String password = passwordLastfmEditText.getText().toString();
+
+                hideKeyBoard();
+
+                String username = loginLastfmEditText.getText().toString().trim();
+                String password = passwordLastfmEditText.getText().toString().trim();
+                if (username.isEmpty() || password.isEmpty()) {
+                    new MaterialDialog.Builder(AuthActivity.this)
+                            .title(R.string.last_fm)
+                            .content(R.string.enter_login_password)
+                            .positiveText(android.R.string.ok)
+                            .show();
+                    return;
+                }
+
+
+                lastfmProgressBar.setVisibility(View.VISIBLE);
                 authModel.getMobileSession(
                         username,
                         password,
-                        new SimpleCallback<LastfmSession>() {
+                        new LastfmErrorCodeCallback<LastfmSession>() {
                             @Override
                             public void success(LastfmSession session) {
+                                lastfmProgressBar.setVisibility(View.GONE);
                                 String name = session.getName();
                                 SharedPreferences.Editor editor = SharedPreferencesManager
                                         .getLastfmPreferences(AuthActivity.this).edit();
@@ -289,17 +310,36 @@ public class AuthActivity extends TrackedActivity {
                                 invalidateOptionsMenu();
                                 if (firstStart && AuthorizationInfoManager.isAuthorizedOnVk()) {
                                     finish();
-                                    Utils.startMainActivity(AuthActivity.this);
+                                    startMainActivity(AuthActivity.this);
                                 }
                             }
 
                             @Override
-                            public void failure(String errorMessage) {
+                            public void failure(int code, String errorMessage) {
+                                lastfmProgressBar.setVisibility(View.GONE);
+                                if (code == 4) { // Lastfm Invalid Password
+                                    ErrorNotifier.showError(AuthActivity.this, getString(R.string.invalid_password));
+                                    return;
+                                }
                                 ErrorNotifier.showError(AuthActivity.this, errorMessage);
                             }
                         });
             }
         });
+    }
+
+    public void startMainActivity(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
+
+    public void hideKeyBoard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     private void signUpVk() {
@@ -358,7 +398,7 @@ public class AuthActivity extends TrackedActivity {
             return true;
             case R.id.skip_button: {
                 AuthorizationInfoManager.skipAuth();
-                Utils.startMainActivity(AuthActivity.this);
+                startMainActivity(AuthActivity.this);
                 finish();
             }
             return true;

@@ -30,7 +30,9 @@ public class Converter {
     public static Track convertTrack(LastfmTrack lastfmTrack) {
         String artist = lastfmTrack.getArtist().getName();
         String title = lastfmTrack.getName();
-        return new Track(artist, title);
+        Track track = new Track(artist, title);
+        track.setLoved(lastfmTrack.isLoved());
+        return track;
     }
 
     public static Track convertVkTrack(VkTrack vkTrack) {
@@ -47,7 +49,11 @@ public class Converter {
         List<LastfmImage> images = lastfmArtist.getImages();
         Artist artist = new Artist(artistName);
         if (images != null) {
-            String previewUrl = images.get(images.size() - 1).getUrl();
+            LastfmImage lastImage = images.get(images.size() - 1);
+            if (lastImage.getSize().isEmpty() && images.size() > 1) {
+                lastImage = images.get(images.size() - 2);
+            }
+            String previewUrl = lastImage.getUrl();
             artist.setPreviewUrl(previewUrl);
         }
         return artist;
@@ -59,7 +65,11 @@ public class Converter {
         List<LastfmImage> images = lastfmUser.getImages();
         user.setMatch(lastfmUser.getMatch());
         if (images != null) {
-            user.setImageUrl(images.get(images.size() - 1).getUrl());
+            LastfmImage lastImage = images.get(images.size() - 1);
+            if (lastImage.getSize().isEmpty() && images.size() > 1) {
+                lastImage = images.get(images.size() - 2);
+            }
+            user.setImageUrl(lastImage.getUrl());
         }
         return user;
     }
@@ -78,7 +88,11 @@ public class Converter {
         List<LastfmImage> images = lastfmAlbum.getImages();
         String imageUrl = null;
         if (images != null && images.size() > 0) {
-            imageUrl = images.get(images.size() - 1).getUrl();
+            LastfmImage lastImage = images.get(images.size() - 1);
+            if (lastImage.getSize().isEmpty() && images.size() > 1) {
+                lastImage = images.get(images.size() - 2);
+            }
+            imageUrl = lastImage.getUrl();
         }
         album.setImageUrl(imageUrl);
         return album;
@@ -93,7 +107,11 @@ public class Converter {
         List<LastfmImage> images = lastfmAlbum.getImages();
         String imageUrl = null;
         if (images != null && images.size() > 0) {
-            imageUrl = images.get(images.size() - 1).getUrl();
+            LastfmImage lastImage = images.get(images.size() - 1);
+            if (lastImage.getSize().isEmpty() && images.size() > 1) {
+                lastImage = images.get(images.size() - 2);
+            }
+            imageUrl = lastImage.getUrl();
         }
         album.setImageUrl(imageUrl);
         return album;
@@ -238,6 +256,17 @@ public class Converter {
     public static Album convertVkAlbum(VkAlbum vkAlbum) {
         Album album = new Album();
         album.setTitle(vkAlbum.getTitle());
+        album.setOwnerId(vkAlbum.getOwnerId());
+        album.setAlbumId(vkAlbum.getAlbumId());
         return album;
+    }
+
+    public static List<Album> convertVkAlbums(List<VkAlbum> vkAlbums) {
+        List<Album> albums = new ArrayList<>();
+        if (vkAlbums == null) return albums;
+        for (VkAlbum topAlbum : vkAlbums) {
+            albums.add(convertVkAlbum(topAlbum));
+        }
+        return albums;
     }
 }

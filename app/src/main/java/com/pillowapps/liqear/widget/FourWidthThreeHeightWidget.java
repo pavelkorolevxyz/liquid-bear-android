@@ -19,7 +19,7 @@ import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
-import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.models.PlayingState;
 
 public class FourWidthThreeHeightWidget extends AppWidgetProvider {
@@ -58,13 +58,13 @@ public class FourWidthThreeHeightWidget extends AppWidgetProvider {
         int playButton = playing ? R.drawable.pause_button : R.drawable.play_button;
         views.setInt(R.id.play_pause, "setImageResource", playButton);
 
-        int shuffleButton = Utils.getShuffleButtonImage();
+        int shuffleButton = ButtonStateUtils.getShuffleButtonImage();
         views.setInt(R.id.shuffle_button, "setImageResource", shuffleButton);
 
-        int repeatButton = Utils.getRepeatButtonImage();
+        int repeatButton = ButtonStateUtils.getRepeatButtonImage();
         views.setInt(R.id.repeat_button, "setImageResource", repeatButton);
 
-        int loveButton = Utils.getLoveButtonImage();
+        int loveButton = ButtonStateUtils.getLoveButtonImage();
         views.setInt(R.id.love_button, "setImageResource", loveButton);
 
 

@@ -7,15 +7,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.entities.Tag;
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
 
@@ -64,12 +65,13 @@ public class LastfmTagViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.tracks);
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getTagTopTracks(tag, getPageSize(), viewer.getPage(), viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Track>() {
+                    @Override
+                    public void onLoadMore() {
+                        getTagTopTracks(tag, getPageSize(), viewer.getPage(), viewer);
+                    }
+                });
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);

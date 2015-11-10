@@ -3,10 +3,11 @@
     android:id="@android:id/widget_frame"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="5dp"
-    android:paddingLeft="15dp"
-    android:paddingRight="10dp"
-    android:paddingTop="5dp">
+    android:gravity="center_vertical"
+    android:paddingBottom="8dp"
+    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+    android:paddingRight="?attr/listPreferredItemPaddingRight"
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@android:id/title"
@@ -14,17 +15,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:textColor="@color/primary_text"
-        android:textSize="16sp" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/primary" />
 
     <TextView
         android:id="@android:id/summary"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/secondary_text"
         android:layout_alignParentLeft="true"
-        android:textSize="14sp"
-        android:layout_below="@android:id/title" />
+        android:layout_below="@android:id/title"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/primary" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -47,9 +48,9 @@
         <TextView
             android:id="@+id/seekBarPrefValue"
             android:layout_width="wrap_content"
-            android:textColor="@color/secondary_text"
             android:layout_height="wrap_content"
-            android:gravity="right" />
+            android:gravity="right"
+            android:textColor="@color/secondary_text" />
 
         <TextView
             android:id="@+id/seekBarPrefUnitsRight"

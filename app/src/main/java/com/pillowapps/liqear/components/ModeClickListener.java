@@ -8,14 +8,14 @@ import android.widget.Toast;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.modes.LastfmRecommendationsActivity;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.activities.modes.NewcomersActivity;
 import com.pillowapps.liqear.activities.SetlistsActivity;
 import com.pillowapps.liqear.activities.modes.LastfmNeighboursActivity;
+import com.pillowapps.liqear.activities.modes.LastfmRecommendationsActivity;
 import com.pillowapps.liqear.activities.modes.LocalAlbumsActivity;
 import com.pillowapps.liqear.activities.modes.LocalArtistsActivity;
 import com.pillowapps.liqear.activities.modes.LocalTracksActivity;
+import com.pillowapps.liqear.activities.modes.NewcomersActivity;
 import com.pillowapps.liqear.activities.modes.SearchAlbumActivity;
 import com.pillowapps.liqear.activities.modes.SearchArtistActivity;
 import com.pillowapps.liqear.activities.modes.SearchLastfmUserActivity;
@@ -34,7 +34,7 @@ import com.pillowapps.liqear.entities.ModeEnum;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapterWrapper;
 
@@ -66,10 +66,10 @@ public class ModeClickListener implements android.widget.AdapterView.OnItemClick
             return;
         } else if ((mode.getCategory() == Category.VK || mode.getModeEnum() == ModeEnum.RADIOMIX
                 || mode.getModeEnum() == ModeEnum.LIBRARY)
-                && Utils.isOnline() && !AuthorizationInfoManager.isAuthorizedOnVk()) {
+                && NetworkUtils.isOnline() && !AuthorizationInfoManager.isAuthorizedOnVk()) {
             Toast.makeText(activity, R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
             return;
-        } else if (mode.getCategory() != Category.LOCAL && !Utils.isOnline()) {
+        } else if (mode.getCategory() != Category.LOCAL && !NetworkUtils.isOnline()) {
             Toast.makeText(activity, R.string.no_internet, Toast.LENGTH_SHORT).show();
             return;
         }

@@ -65,7 +65,7 @@ public class SearchLastfmUserActivity extends SearchBaseActivity {
                 openLastfmUser(adapter.getItem(position));
             }
         });
-        recyclerView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
 

@@ -27,7 +27,6 @@ import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
-import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.network.ImageLoadingListener;
@@ -160,14 +159,14 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
             case R.id.to_playlist: {
                 LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(TRACKS_INDEX);
                 if (viewer.isNotLoaded()) return true;
-                addToMainPlaylist(Converter.convertLastfmTrackList(viewer.getItems()));
+                addToMainPlaylist(viewer.getItems());
                 Toast.makeText(LastfmAlbumViewerActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
             }
             return true;
             case R.id.save_as_playlist: {
                 LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(TRACKS_INDEX);
                 if (viewer.isNotLoaded()) return true;
-                saveAsPlaylist(Converter.convertLastfmTrackList(viewer.getItems()));
+                saveAsPlaylist(viewer.getItems());
             }
         }
         return false;
@@ -182,7 +181,11 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
                 List<LastfmImage> images = album.getImages();
                 String imageUrl = null;
                 if (images != null) {
-                    imageUrl = images.get(images.size() - 1).getUrl();
+                    LastfmImage lastImage = images.get(images.size() - 1);
+                    if (lastImage.getSize().isEmpty() && images.size() > 1) {
+                        lastImage = images.get(images.size() - 2);
+                    }
+                    imageUrl = lastImage.getUrl();
                 }
                 new ImageModel().loadImage(imageUrl, albumCoverImageView, new ImageLoadingListener() {
                     @Override

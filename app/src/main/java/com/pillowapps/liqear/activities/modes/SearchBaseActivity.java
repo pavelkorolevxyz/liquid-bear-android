@@ -3,7 +3,6 @@ package com.pillowapps.liqear.activities.modes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -11,22 +10,20 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.components.HintMaterialEditText;
+import com.pillowapps.liqear.components.LoadMoreRecyclerView;
 import com.pillowapps.liqear.components.ResultActivity;
-import com.pillowapps.liqear.helpers.DividerItemDecoration;
 
 public abstract class SearchBaseActivity extends ResultActivity {
 
     protected HintMaterialEditText editText;
-    protected UltimateRecyclerView recyclerView;
+    protected LoadMoreRecyclerView recycler;
     protected TextView emptyTextView;
     protected ProgressBar progressBar;
     protected ActionBar actionBar;
 
-    private LinearLayoutManager layoutManager;
     public View searchLayout;
 
     @Override
@@ -39,16 +36,9 @@ public abstract class SearchBaseActivity extends ResultActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         editText = (HintMaterialEditText) findViewById(R.id.search_edit_text_quick_search_layout);
         searchLayout = findViewById(R.id.edit_part_quick_search_layout);
-        recyclerView = (UltimateRecyclerView) findViewById(R.id.list);
+        recycler = (LoadMoreRecyclerView) findViewById(R.id.list);
         emptyTextView = (TextView) findViewById(R.id.empty);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-        recyclerView.setHasFixedSize(true);
-
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
     }
 
     protected abstract void initWatcher();

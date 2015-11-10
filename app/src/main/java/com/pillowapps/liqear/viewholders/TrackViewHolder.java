@@ -6,19 +6,19 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.activities.modes.OnRecyclerLongItemClickListener;
 
-public class TrackViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+public class TrackViewHolder extends RecyclerView.ViewHolder {
 
     public final View mainLayout;
     public final TextView textView;
     public final TextView secondTextView;
     public final TextView positionTextView;
+    private final View itemLayoutView;
+    public final View handleView;
 
     public OnRecyclerItemClickListener clickListener;
-    private OnRecyclerLongItemClickListener longItemClickListener;
 
-    public TrackViewHolder(View itemLayoutView, OnRecyclerItemClickListener listener) {
+    public TrackViewHolder(View itemLayoutView, final OnRecyclerItemClickListener clickListener) {
         super(itemLayoutView);
         textView = (TextView) itemLayoutView.findViewById(R.id.artist_list_item);
         secondTextView = (TextView) itemLayoutView.findViewById(
@@ -27,29 +27,15 @@ public class TrackViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 R.id.position_text_view_list_item);
         mainLayout = itemLayoutView.findViewById(
                 R.id.playlist_tab_item_main_layout);
-
-        this.clickListener = listener;
-        itemLayoutView.setOnClickListener(this);
-    }
-
-    public TrackViewHolder(View itemLayoutView, OnRecyclerItemClickListener clickListener,
-                           OnRecyclerLongItemClickListener longItemClickListener) {
-        this(itemLayoutView, clickListener);
-
-        if (longItemClickListener == null) return;
-        this.longItemClickListener = longItemClickListener;
-        itemLayoutView.setOnLongClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        clickListener.onItemClicked(v, getAdapterPosition());
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        longItemClickListener.onItemLongClicked(v, getAdapterPosition());
-        return true;
+        handleView = itemLayoutView.findViewById(
+                R.id.grabber_list_item);
+        this.itemLayoutView = itemLayoutView;
+        itemLayoutView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickListener.onItemClicked(v, getAdapterPosition());
+            }
+        });
     }
 }
 

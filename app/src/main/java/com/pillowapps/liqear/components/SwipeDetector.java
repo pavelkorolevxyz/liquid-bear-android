@@ -2,21 +2,18 @@ package com.pillowapps.liqear.components;
 
 import android.view.MotionEvent;
 import android.view.View;
-import com.pillowapps.liqear.activities.MainActivity;
 
 public class SwipeDetector implements View.OnTouchListener {
     static final int MIN_DISTANCE = 100;
-    private MainActivity activity;
     private float downY;
+    private OnTopToBottomSwipeListener listener;
 
-    public SwipeDetector(MainActivity activity) {
-        this.activity = activity;
+    public SwipeDetector(OnTopToBottomSwipeListener listener) {
+        this.listener = listener;
     }
+
     public void onTopToBottomSwipe() {
-        activity.openDropButton();
-    }
-
-    public void onBottomToTopSwipe() {
+        if (listener != null) listener.onTopToBottomSwipe();
     }
 
     public boolean onTouch(View v, MotionEvent event) {
@@ -33,10 +30,6 @@ public class SwipeDetector implements View.OnTouchListener {
                 if (Math.abs(deltaY) > MIN_DISTANCE) {
                     if (deltaY < 0) {
                         this.onTopToBottomSwipe();
-                        return true;
-                    }
-                    if (deltaY > 0) {
-                        this.onBottomToTopSwipe();
                         return true;
                     }
                 } else {

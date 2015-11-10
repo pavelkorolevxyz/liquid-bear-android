@@ -18,8 +18,7 @@
         android:longClickable="true"
         android:scrollbars="none"
         android:visibility="visible"
-        app:drag_handle_id="@+id/grabber_list_item"
-        app:remove_enabled="true" />
+        app:drag_handle_id="@+id/grabber_list_item" />
 
     <RelativeLayout
         android:id="@+id/search_layout"
@@ -47,16 +46,16 @@
             app:met_iconLeft="@drawable/ic_search_dark" />
 
         <!--<ImageButton-->
-            <!--android:id="@+id/clear_edit_text_button_playlist_tab"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignBottom="@+id/search_edit_text_playlist_tab"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_alignParentTop="true"-->
-            <!--android:background="@null"-->
-            <!--android:padding="2dp"-->
-            <!--android:src="@drawable/clear_button"-->
-            <!--android:visibility="gone" />-->
+        <!--android:id="@+id/clear_edit_text_button_playlist_tab"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignBottom="@+id/search_edit_text_playlist_tab"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:background="@null"-->
+        <!--android:padding="2dp"-->
+        <!--android:src="@drawable/clear_button"-->
+        <!--android:visibility="gone" />-->
     </RelativeLayout>
 
     <TextView

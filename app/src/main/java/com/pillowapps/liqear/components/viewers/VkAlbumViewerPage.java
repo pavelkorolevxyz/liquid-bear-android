@@ -3,13 +3,15 @@ package com.pillowapps.liqear.components.viewers;
 import android.content.Context;
 import android.view.View;
 
-import com.pillowapps.liqear.adapters.VkAlbumAdapter;
+import com.pillowapps.liqear.adapters.AlbumAdapter;
+import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
+import com.pillowapps.liqear.helpers.Converter;
 
 import java.util.List;
 
-public class VkAlbumViewerPage extends ViewerPage<VkAlbum> {
-    private VkAlbumAdapter adapter;
+public class VkAlbumViewerPage extends ViewerPage<Album> {
+    private AlbumAdapter adapter;
 
     public VkAlbumViewerPage(Context context,
                              View view,
@@ -28,17 +30,17 @@ public class VkAlbumViewerPage extends ViewerPage<VkAlbum> {
         return adapter == null;
     }
 
-    public void setAdapter(VkAlbumAdapter adapter) {
+    public void setAdapter(AlbumAdapter adapter) {
         this.adapter = adapter;
     }
 
 
-    public List<VkAlbum> getItems() {
+    public List<Album> getItems() {
         return adapter.getItems();
     }
 
     public void clear() {
-        adapter.clear();
+//        adapter.clear(adapter.getItems());
     }
 
     @Override
@@ -53,18 +55,19 @@ public class VkAlbumViewerPage extends ViewerPage<VkAlbum> {
     }
 
     public void fill(List<VkAlbum> albums) {
-        int adapterSize = adapter == null ? 0 : adapter.getCount();
+        int adapterSize = adapter == null ? 0 : adapter.getItemCount();
 
         int count = adapterSize + albums.size();
+        filledFull = (adapterSize == count);
         showEmptyPlaceholder(count == 0);
         showProgressBar(false);
-        updateAdapter(albums);
+        updateAdapter(Converter.convertVkAlbums(albums));
     }
 
-    private void updateAdapter(List<VkAlbum> albums) {
+    private void updateAdapter(List<Album> albums) {
         if (adapter == null) {
-            adapter = new VkAlbumAdapter(getContext(), albums);
-            listView.setAdapter(adapter);
+            adapter = new AlbumAdapter(albums, listener);
+            recyclerView.setAdapter(adapter);
         } else {
             adapter.addAll(albums);
             onLoadMoreComplete();

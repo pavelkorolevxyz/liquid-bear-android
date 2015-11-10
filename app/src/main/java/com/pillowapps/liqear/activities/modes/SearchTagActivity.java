@@ -91,7 +91,7 @@ public class SearchTagActivity extends SearchBaseActivity {
                 openTag(adapter.getItem(position));
             }
         });
-        recyclerView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
 

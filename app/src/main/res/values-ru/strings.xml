@@ -222,4 +222,10 @@
     <string name="shake_to_next_summary">Потрясите устройство для переключения трека</string>
     <string name="show_track_choice_dialog_on_add_to_vk">Продвинутое добавление трека ВКонтакте</string>
     <string name="show_track_choice_dialog_on_add_to_vk_summary">Показывать окно поиска трека при добавлении трека ВКонтакте</string>
+    <string name="enter_login_password">Пожалуйста, введите логин и пароль</string>
+    <string name="invalid_password">Неверный пароль. Пожалуйста, проверьте введенный логин/пароль.</string>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="add_to_queue">Add to queue</string>
+    <string name="remove_from_list">Remove from list</string>
+    <string name="add_to">Add to...</string>
 </resources>

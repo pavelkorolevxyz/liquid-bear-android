@@ -38,7 +38,7 @@ public class LastfmNeighboursActivity extends ListBaseActivity {
                 openLastfmUser(adapter.getItem(position));
             }
         });
-        recyclerView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
 

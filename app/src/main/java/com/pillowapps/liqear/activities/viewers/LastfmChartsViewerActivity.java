@@ -11,20 +11,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.costum.android.widget.LoadMoreListView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.ViewerAdapter;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
+import com.pillowapps.liqear.entities.Artist;
+import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
-import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.models.lastfm.LastfmChartModel;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,12 +91,14 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.loved_tracks);
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getMostLoved(viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Track>() {
+                    @Override
+                    public void onLoadMore() {
+                        getMostLoved(viewer);
+                    }
+                }
+        );
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -106,12 +109,13 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.top_artists);
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getTopArtists(viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Artist>() {
+                    @Override
+                    public void onLoadMore() {
+                        getTopArtists(viewer);
+                    }
+                });
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);
         return viewer;
@@ -121,12 +125,13 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.top_tracks);
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getTopTracks(viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Track>() {
+                    @Override
+                    public void onLoadMore() {
+                        getTopTracks(viewer);
+                    }
+                });
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -137,12 +142,13 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.hyped_artists);
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getHypedTracks(viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Track>() {
+                    @Override
+                    public void onLoadMore() {
+                        getHypedTracks(viewer);
+                    }
+                });
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -153,12 +159,13 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.hyped_artists);
-        viewer.setOnLoadMoreListener(new LoadMoreListView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                getHypedArtists(viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(
+                new OnLoadMoreListener<Artist>() {
+                    @Override
+                    public void onLoadMore() {
+                        getHypedArtists(viewer);
+                    }
+                });
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);
         return viewer;
@@ -208,16 +215,16 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
             case R.id.to_playlist: {
                 LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(pager.getCurrentItem());
                 if (viewer.isNotLoaded()) return true;
-                List<LastfmTrack> items = viewer.getItems();
-                addToMainPlaylist(Converter.convertLastfmTrackList(items));
+                List<Track> items = viewer.getItems();
+                addToMainPlaylist(items);
                 Toast.makeText(LastfmChartsViewerActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
             }
             return true;
             case R.id.save_as_playlist: {
                 LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(pager.getCurrentItem());
                 if (viewer.isNotLoaded()) return true;
-                List<LastfmTrack> items = viewer.getItems();
-                saveAsPlaylist(Converter.convertLastfmTrackList(items));
+                List<Track> items = viewer.getItems();
+                saveAsPlaylist(items);
             }
             return true;
         }

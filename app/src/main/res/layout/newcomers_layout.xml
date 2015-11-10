@@ -10,14 +10,14 @@
         android:id="@+id/toolbar"
         layout="@layout/lb_toolbar" />
 
-    <com.costum.android.widget.LoadMoreListView
+    <com.pillowapps.liqear.components.LoadMoreRecyclerView
         android:id="@+id/list"
+        android:scrollbars="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/edit_part_quick_search_layout"
-        android:layout_marginLeft="0dp"
-        app:recyclerviewScrollbars="vertical" />
+        android:layout_marginLeft="0dp" />
 
     <TextView
         android:id="@+id/empty"

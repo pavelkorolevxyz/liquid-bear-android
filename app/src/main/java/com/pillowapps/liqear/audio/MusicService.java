@@ -35,7 +35,6 @@ import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.events.AlbumInfoEvent;
 import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
 import com.pillowapps.liqear.entities.events.BufferizationEvent;
 import com.pillowapps.liqear.entities.events.ExitEvent;
@@ -45,6 +44,7 @@ import com.pillowapps.liqear.entities.events.PlayEvent;
 import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
 import com.pillowapps.liqear.entities.events.PreparedEvent;
 import com.pillowapps.liqear.entities.events.TimeEvent;
+import com.pillowapps.liqear.entities.events.TrackAndAlbumInfoUpdatedEvent;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
@@ -58,10 +58,11 @@ import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.ShakeDetector;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
+import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.helpers.TrackUtils;
-import com.pillowapps.liqear.helpers.Utils;
 import com.pillowapps.liqear.models.PlayingState;
 import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.TrackNotification;
@@ -541,6 +542,7 @@ public class MusicService extends Service implements
 
     public void showTrackInNotification() {
         Track track = Timeline.getInstance().getCurrentTrack();
+        if (track == null) return;
         Notification notification = new TrackNotification().create(this, track);
         bluetoothNotifyChange(AVRCP_META_CHANGED, track);
         startForeground(LIQUID_BEAR_ID, notification);
@@ -596,7 +598,7 @@ public class MusicService extends Service implements
         hasDataSource = true;
         scrobbled = false;
         secondsTrackPlayed = 0;
-        if (Utils.isOnline()) {
+        if (NetworkUtils.isOnline()) {
             if (!currentTrack.getArtist().equals(Timeline.getInstance().getPreviousArtist())) {
                 getArtistInfo(currentTrack.getArtist(), AuthorizationInfoManager.getLastfmName());
             }
@@ -857,7 +859,7 @@ public class MusicService extends Service implements
         if (nowplayingSubscriber != null && !nowplayingSubscriber.isUnsubscribed()) {
             nowplayingSubscriber.unsubscribe();
         }
-        if (Utils.isOnline() && AuthorizationInfoManager.isAuthorizedOnLastfm()
+        if (NetworkUtils.isOnline() && AuthorizationInfoManager.isAuthorizedOnLastfm()
                 && LBPreferencesManager.isNowplayingEnabled()
                 && Timeline.getInstance().getPlaylistTracks().size() > Timeline.getInstance()
                 .getIndex()) {
@@ -977,7 +979,7 @@ public class MusicService extends Service implements
             }
             return;
         }
-        if (!Utils.isOnline()) {
+        if (!NetworkUtils.isOnline()) {
             LBApplication.bus.post(new NetworkStateChangeEvent());
             return;
         }
@@ -1024,7 +1026,6 @@ public class MusicService extends Service implements
                         Intent intent = new Intent();
                         intent.setAction(Constants.ACTION_SERVICE);
                         Timeline.getInstance().setCurrentAlbum(album);
-                        LBApplication.bus.post(new AlbumInfoEvent(album));
                         new LastfmAlbumModel().getCover(album, new CompletionCallback() {
                             @Override
                             public void onCompleted() {
@@ -1032,6 +1033,7 @@ public class MusicService extends Service implements
                             }
                         });
                         Timeline.getInstance().getCurrentTrack().setLoved(loved);
+                        LBApplication.bus.post(new TrackAndAlbumInfoUpdatedEvent(album));
                         updateWidgets();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                             CompatIcs.updateRemote(MusicService.this,
@@ -1050,7 +1052,7 @@ public class MusicService extends Service implements
         String album = track.getAlbum();
         scrobbled = true;
         new LastfmTrackModel().scrobble(track.getArtist(), track.getTitle(), album,
-                Utils.getCurrentTime(),
+                TimeUtils.getCurrentTimeInSeconds(),
                 new PassiveCallback());
     }
 
@@ -1063,6 +1065,9 @@ public class MusicService extends Service implements
                 String imageUrl = null;
                 if (list.size() != 0) {
                     LastfmImage lastfmImage = list.get(list.size() - 1);
+                    if (lastfmImage.getSize().isEmpty() && list.size() > 1) {
+                        lastfmImage = list.get(list.size() - 2);
+                    }
                     imageUrl = lastfmImage != null ? lastfmImage.getUrl() : null;
                 }
                 LBApplication.bus.post(new ArtistInfoEvent(imageUrl));

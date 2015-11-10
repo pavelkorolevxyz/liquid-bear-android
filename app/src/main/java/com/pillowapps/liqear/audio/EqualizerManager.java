@@ -10,20 +10,20 @@ public class EqualizerManager {
     private static BassBoost bassBoost;
 
     public static CompatEq getEqualizer() {
-//        if (AudioTimeline.getMusicPlaybackService() == null
-//                || AudioTimeline.getMusicPlaybackService().getMediaPlayer() == null) {
+//        if (AudioTimeline.getMusicService() == null
+//                || AudioTimeline.getMusicService().getMediaPlayer() == null) {
 //            return null;
 //        }
-//        equalizer = new CompatEq(AudioTimeline.getMusicPlaybackService().getMediaPlayer());
+//        equalizer = new CompatEq(AudioTimeline.getMusicService().getMediaPlayer());
         return equalizer;
     }
 
     public static BassBoost getBassBoost() {
-//        if (AudioTimeline.getMusicPlaybackService() == null
-//                || AudioTimeline.getMusicPlaybackService().getMediaPlayer() == null) {
+//        if (AudioTimeline.getMusicService() == null
+//                || AudioTimeline.getMusicService().getMediaPlayer() == null) {
 //            return null;
 //        }
-//        int audioSessionId = AudioTimeline.getMusicPlaybackService()
+//        int audioSessionId = AudioTimeline.getMusicService()
 //                .getMediaPlayer().getAudioSessionId();
 //        bassBoost = new BassBoost(0, audioSessionId);
         return bassBoost;

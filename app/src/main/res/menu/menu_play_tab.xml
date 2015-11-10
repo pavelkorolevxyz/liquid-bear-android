@@ -41,10 +41,6 @@
                   android:title="@string/add_to_vk"
                   android:icon="@drawable/ic_add_dark"
                   app:showAsAction="always|withText"/>
-            <item android:id="@+id/love_button"
-                  android:icon="@drawable/ic_love_dark"
-                  android:title="@string/add_to_loved_lastfm"
-                  app:showAsAction="always|withText"/>
         </menu>
     </item>
     <item android:id="@+id/more_button"

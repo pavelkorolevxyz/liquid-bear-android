@@ -6,16 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.viewholders.NeighbourViewHolder;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.models.ImageModel;
+import com.pillowapps.liqear.viewholders.NeighbourViewHolder;
 
 import java.util.List;
 
-public class NeighbourAdapter extends UltimateViewAdapter<NeighbourViewHolder> {
+public class NeighbourAdapter extends RecyclerView.Adapter<NeighbourViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
     private NeighbourViewHolder holder;
@@ -24,6 +23,13 @@ public class NeighbourAdapter extends UltimateViewAdapter<NeighbourViewHolder> {
     public NeighbourAdapter(List<User> items, OnRecyclerItemClickListener clickListener) {
         this.clickListener = clickListener;
         this.items = items;
+    }
+
+    @Override
+    public NeighbourViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.neighbour_image_list_item, parent, false);
+        holder = new NeighbourViewHolder(v, clickListener);
+        return holder;
     }
 
     @Override
@@ -40,37 +46,10 @@ public class NeighbourAdapter extends UltimateViewAdapter<NeighbourViewHolder> {
     }
 
     @Override
-    public NeighbourViewHolder getViewHolder(View view) {
-        return holder;
-    }
-
-    @Override
-    public NeighbourViewHolder onCreateViewHolder(ViewGroup parent) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.neighbour_image_list_item, parent, false);
-        holder = new NeighbourViewHolder(v, clickListener);
-        return holder;
-    }
-
-    @Override
-    public int getAdapterItemCount() {
-        if (items == null) return 0;
-        return items.size();
-    }
-
-    @Override
-    public long generateHeaderId(int i) {
+    public int getItemCount() {
         return 0;
     }
 
-    @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
-        return null;
-    }
-
-    @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-
-    }
 
     public User getItem(int position) {
         return items.get(position);

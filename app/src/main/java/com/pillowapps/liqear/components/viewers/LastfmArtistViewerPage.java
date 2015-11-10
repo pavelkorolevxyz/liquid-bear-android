@@ -3,13 +3,15 @@ package com.pillowapps.liqear.components.viewers;
 import android.content.Context;
 import android.view.View;
 
-import com.pillowapps.liqear.adapters.LastfmArtistAdapter;
+import com.pillowapps.liqear.adapters.ArtistAdapter;
+import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.helpers.Converter;
 
 import java.util.List;
 
-public class LastfmArtistViewerPage extends ViewerPage<LastfmArtist> {
-    private LastfmArtistAdapter adapter;
+public class LastfmArtistViewerPage extends ViewerPage<Artist> {
+    private ArtistAdapter adapter;
 
     public LastfmArtistViewerPage(Context context,
                                   View view,
@@ -23,12 +25,12 @@ public class LastfmArtistViewerPage extends ViewerPage<LastfmArtist> {
         super(context, view, titleRes);
     }
 
-    public LastfmArtistAdapter getAdapter() {
+    public ArtistAdapter getAdapter() {
         return adapter;
     }
 
     public void clear() {
-        adapter.clear();
+//        adapter.clear(adapter.getItems());
     }
 
     @Override
@@ -42,23 +44,24 @@ public class LastfmArtistViewerPage extends ViewerPage<LastfmArtist> {
     }
 
     @Override
-    public List<LastfmArtist> getItems() {
+    public List<Artist> getItems() {
         return adapter.getItems();
     }
 
     public void fill(List<LastfmArtist> artists) {
-        int adapterSize = adapter == null ? 0 : adapter.getCount();
+        int adapterSize = adapter == null ? 0 : adapter.getItemCount();
 
         int count = adapterSize + artists.size();
+        filledFull = (adapterSize == count);
         showEmptyPlaceholder(count == 0);
         showProgressBar(false);
-        updateAdapter(artists);
+        updateAdapter(Converter.convertArtistList(artists));
     }
 
-    private void updateAdapter(List<LastfmArtist> artists) {
+    private void updateAdapter(List<Artist> artists) {
         if (adapter == null) {
-            adapter = new LastfmArtistAdapter(getContext(), artists);
-            listView.setAdapter(adapter);
+            adapter = new ArtistAdapter(artists, listener);
+            recyclerView.setAdapter(adapter);
         } else {
             adapter.addAll(artists);
             onLoadMoreComplete();

@@ -49,7 +49,7 @@ public class SetlistsResultActivity extends ListBaseActivity {
                     startActivityForResult(searchIntent, Constants.MAIN_REQUEST_CODE);
                 }
             });
-            recyclerView.setAdapter(adapter);
+            recycler.setAdapter(adapter);
         }
         progressBar.setVisibility(View.GONE);
     }

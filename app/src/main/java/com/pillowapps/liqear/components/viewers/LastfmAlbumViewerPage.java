@@ -3,13 +3,15 @@ package com.pillowapps.liqear.components.viewers;
 import android.content.Context;
 import android.view.View;
 
-import com.pillowapps.liqear.adapters.LastfmAlbumAdapter;
+import com.pillowapps.liqear.adapters.AlbumAdapter;
+import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
+import com.pillowapps.liqear.helpers.Converter;
 
 import java.util.List;
 
-public class LastfmAlbumViewerPage extends ViewerPage<LastfmAlbum> {
-    private LastfmAlbumAdapter adapter;
+public class LastfmAlbumViewerPage extends ViewerPage<Album> {
+    private AlbumAdapter adapter;
 
     public LastfmAlbumViewerPage(Context context,
                                  View view,
@@ -23,7 +25,7 @@ public class LastfmAlbumViewerPage extends ViewerPage<LastfmAlbum> {
         super(context, view, titleRes);
     }
 
-    public LastfmAlbumAdapter getAdapter() {
+    public AlbumAdapter getAdapter() {
         return adapter;
     }
 
@@ -38,23 +40,24 @@ public class LastfmAlbumViewerPage extends ViewerPage<LastfmAlbum> {
     }
 
     @Override
-    public List<LastfmAlbum> getItems() {
+    public List<Album> getItems() {
         return adapter.getItems();
     }
 
     public void fill(List<LastfmAlbum> albums) {
-        int adapterSize = adapter == null ? 0 : adapter.getCount();
+        int adapterSize = adapter == null ? 0 : adapter.getItemCount();
 
         int count = adapterSize + albums.size();
+        filledFull = (adapterSize == count);
         showEmptyPlaceholder(count == 0);
         showProgressBar(false);
-        updateAdapter(albums);
+        updateAdapter(Converter.convertAlbums(albums));
     }
 
-    private void updateAdapter(List<LastfmAlbum> albums) {
+    private void updateAdapter(List<Album> albums) {
         if (adapter == null) {
-            adapter = new LastfmAlbumAdapter(getContext(), albums);
-            listView.setAdapter(adapter);
+            adapter = new AlbumAdapter(albums, listener);
+            recyclerView.setAdapter(adapter);
         } else {
             adapter.addAll(albums);
             onLoadMoreComplete();

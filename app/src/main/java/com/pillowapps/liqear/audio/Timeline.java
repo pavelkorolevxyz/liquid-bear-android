@@ -254,4 +254,11 @@ public class Timeline {
     public void setStartPlayingOnPrepared(boolean startPlayingOnPrepared) {
         this.startPlayingOnPrepared = startPlayingOnPrepared;
     }
+
+    public void updateRealTrackPositions() {
+        List<Track> playlist = getPlaylistTracks();
+        for (int i = 0; i < playlist.size(); i++) {
+            playlist.get(i).setRealPosition(i);
+        }
+    }
 }

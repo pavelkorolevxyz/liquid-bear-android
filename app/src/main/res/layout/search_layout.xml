@@ -10,8 +10,9 @@
         android:id="@+id/toolbar"
         layout="@layout/lb_toolbar" />
 
-    <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
+    <com.pillowapps.liqear.components.LoadMoreRecyclerView
         android:id="@+id/list"
+        android:scrollbars="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"

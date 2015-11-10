@@ -6,16 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.viewholders.UserViewHolder;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.models.ImageModel;
+import com.pillowapps.liqear.viewholders.UserViewHolder;
 
 import java.util.List;
 
-public class UserAdapter extends UltimateViewAdapter<UserViewHolder> {
+public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
     private UserViewHolder holder;
@@ -40,36 +39,16 @@ public class UserAdapter extends UltimateViewAdapter<UserViewHolder> {
     }
 
     @Override
-    public UserViewHolder getViewHolder(View view) {
-        return holder;
-    }
-
-    @Override
-    public UserViewHolder onCreateViewHolder(ViewGroup parent) {
+    public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
         holder = new UserViewHolder(v, clickListener);
         return holder;
     }
 
     @Override
-    public int getAdapterItemCount() {
+    public int getItemCount() {
         if (items == null) return 0;
         return items.size();
-    }
-
-    @Override
-    public long generateHeaderId(int i) {
-        return 0;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
-        return null;
-    }
-
-    @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-
     }
 
     public User getItem(int position) {

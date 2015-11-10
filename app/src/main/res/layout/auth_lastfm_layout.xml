@@ -1,156 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:background="@color/primary">
 
     <RelativeLayout
-        android:id="@+id/auth_panel"
-        android:layout_width="fill_parent"
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/avatar"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/avatar"
-        android:layout_toStartOf="@+id/avatar"
-        android:visibility="invisible">
+        android:orientation="vertical"
+        android:padding="20dp">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/auth_panel"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/avatar"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/avatar"
+            android:layout_toStartOf="@+id/avatar"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="@string/authorized_as"
+                android:textColor="@color/icons"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/textView2"
+                android:layout_alignRight="@+id/textView2"
+                android:layout_below="@+id/textView2"
+                android:gravity="right"
+                android:textColor="@color/icons"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/avatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_alignParentTop="true"
-            android:text="@string/authorized_as"
-            android:textColor="@color/icons"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/name_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/textView2"
-            android:layout_alignRight="@+id/textView2"
-            android:layout_below="@+id/textView2"
-            android:gravity="right"
-            android:textColor="@color/icons"
-            android:textSize="18sp" />
-    </RelativeLayout>
-
-
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/avatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        app:riv_border_color="#fff"
-        app:riv_border_width="2dip"
-        app:riv_oval="true" />
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/avatar">
-
-
-        <LinearLayout
-            android:id="@+id/buttons_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/password_edit_text"
             android:layout_centerHorizontal="true"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true">
+            app:riv_border_color="#fff"
+            app:riv_border_width="2dip"
+            app:riv_oval="true" />
 
-            <mehdi.sakout.fancybuttons.FancyButton
-                android:id="@+id/authorize_lastfm_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/avatar"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:paddingBottom="16dp"
-                android:paddingLeft="40dp"
-                android:paddingRight="40dp"
-                android:paddingTop="16dp"
-                app:fb_textSize="8sp"
-                app:fb_defaultColor="@color/success_green"
-                app:fb_focusColor="@color/success_green_shaded"
-                app:fb_text="@string/authorize"
-                app:fb_textColor="@color/inverted_primary_text" />
-
-            <mehdi.sakout.fancybuttons.FancyButton
-                android:id="@+id/sign_out_lastfm_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/avatar"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:paddingBottom="16dp"
-                android:paddingLeft="40dp"
-                android:paddingRight="40dp"
-                android:paddingTop="16dp"
-                app:fb_textSize="8sp"
-                app:fb_defaultColor="@color/error_red"
-                app:fb_focusColor="@color/error_red_shaded"
-                app:fb_text="@string/sign_out"
-                app:fb_textColor="@color/inverted_primary_text" />
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/password_edit_text"
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/login_edit_text"
-            android:hint="@string/password"
-            android:password="true"
-            android:visibility="visible"
-            android:background="@color/accent"
-            android:layout_marginTop="20dp"
-            android:padding="10dp"
-            android:textCursorDrawable="@null"
-            android:textColor="@color/inverted_primary_text"
-            android:textColorHint="@color/inverted_secondary_text"
-            android:singleLine="true" />
+            android:layout_below="@+id/avatar"
+            android:layout_centerHorizontal="true">
 
-        <EditText
-            android:id="@+id/login_edit_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="center"
-            android:hint="@string/login"
-            android:visibility="visible"
-            android:background="@color/accent"
-            android:padding="10dp"
-            android:textCursorDrawable="@null"
-            android:textColor="@color/inverted_primary_text"
-            android:textColorHint="@color/inverted_secondary_text"
-            android:layout_marginTop="20dp"
-            android:singleLine="true" />
 
-        <TextView
-            android:id="@+id/auth_error_text_view"
+            <LinearLayout
+                android:id="@+id/buttons_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/password_edit_text"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/authorize_lastfm_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/avatar"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:paddingTop="16dp"
+                    app:fb_defaultColor="@color/success_green"
+                    app:fb_focusColor="@color/success_green_shaded"
+                    app:fb_text="@string/authorize"
+                    app:fb_textColor="@color/inverted_primary_text"
+                    app:fb_textSize="8sp" />
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/sign_out_lastfm_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/avatar"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:paddingTop="16dp"
+                    app:fb_defaultColor="@color/error_red"
+                    app:fb_focusColor="@color/error_red_shaded"
+                    app:fb_text="@string/sign_out"
+                    app:fb_textColor="@color/inverted_primary_text"
+                    app:fb_textSize="8sp" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/password_edit_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/login_edit_text"
+                android:layout_marginTop="20dp"
+                android:background="@color/accent"
+                android:hint="@string/password"
+                android:padding="10dp"
+                android:password="true"
+                android:singleLine="true"
+                android:textColor="@color/inverted_primary_text"
+                android:textColorHint="@color/inverted_secondary_text"
+                android:textCursorDrawable="@null"
+                android:visibility="visible" />
+
+            <EditText
+                android:id="@+id/login_edit_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@color/accent"
+                android:hint="@string/login"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="@color/inverted_primary_text"
+                android:textColorHint="@color/inverted_secondary_text"
+                android:textCursorDrawable="@null"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/auth_error_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/buttons_layout"
+                android:background="@color/error_red"
+                android:padding="4dp"
+                android:text="@string/auth_error_happened"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/lastfm_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/buttons_layout"
-            android:background="@color/error_red"
-            android:padding="4dp"
-            android:text="@string/auth_error_happened"
+            android:layout_below="@+id/relativeLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
             android:visibility="gone" />
 
     </RelativeLayout>
-
-</RelativeLayout>
+</ScrollView>

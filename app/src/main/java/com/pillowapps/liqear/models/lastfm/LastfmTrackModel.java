@@ -9,7 +9,7 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmTrackRoot;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.LastfmApiHelper;
 import com.pillowapps.liqear.helpers.LastfmCallbackUtils;
-import com.pillowapps.liqear.helpers.Utils;
+import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
@@ -168,7 +168,7 @@ public class LastfmTrackModel {
         List<Observable<LastfmResponse>> observableList = new ArrayList<>(tracks.size());
         for (Track track : tracks) {
             Observable<LastfmResponse> topTracksRootObservable = scrobble(track.getArtist(),
-                    track.getTitle(), track.getAlbum(), Utils.getCurrentTime());
+                    track.getTitle(), track.getAlbum(), TimeUtils.getCurrentTimeInSeconds());
             observableList.add(topTracksRootObservable);
         }
         Observable.zip(observableList, new FuncN<Object>() {

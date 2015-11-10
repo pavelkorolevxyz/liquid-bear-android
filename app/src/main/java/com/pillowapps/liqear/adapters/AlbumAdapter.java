@@ -6,16 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.viewholders.AlbumViewHolder;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.models.ImageModel;
+import com.pillowapps.liqear.viewholders.AlbumViewHolder;
 
 import java.util.List;
 
-public class AlbumAdapter extends UltimateViewAdapter<AlbumViewHolder> {
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
     private AlbumViewHolder holder;
@@ -40,36 +39,16 @@ public class AlbumAdapter extends UltimateViewAdapter<AlbumViewHolder> {
     }
 
     @Override
-    public AlbumViewHolder getViewHolder(View view) {
-        return holder;
-    }
-
-    @Override
-    public AlbumViewHolder onCreateViewHolder(ViewGroup parent) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        holder = new AlbumViewHolder(v, clickListener);
-        return holder;
-    }
-
-    @Override
-    public int getAdapterItemCount() {
+    public int getItemCount() {
         if (items == null) return 0;
         return items.size();
     }
 
     @Override
-    public long generateHeaderId(int i) {
-        return 0;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup viewGroup) {
-        return null;
-    }
-
-    @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-
+    public AlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
+        holder = new AlbumViewHolder(v, clickListener);
+        return holder;
     }
 
     public Album getItem(int position) {
@@ -79,5 +58,10 @@ public class AlbumAdapter extends UltimateViewAdapter<AlbumViewHolder> {
 
     public List<Album> getItems() {
         return items;
+    }
+
+    public void addAll(List<Album> albums) {
+        items.addAll(albums);
+        notifyDataSetChanged();
     }
 }

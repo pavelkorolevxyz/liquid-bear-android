@@ -12,7 +12,7 @@
         android:id="@+id/text_list_item"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/primary_text"
+        android:textColor="@drawable/list_item_text_color"
         android:textSize="16sp" />
 
 </RelativeLayout>

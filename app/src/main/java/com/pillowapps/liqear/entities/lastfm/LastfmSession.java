@@ -2,7 +2,7 @@ package com.pillowapps.liqear.entities.lastfm;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LastfmSession {
+public class LastfmSession extends LastfmResponse {
     @SerializedName("name")
     String name;
     @SerializedName("key")

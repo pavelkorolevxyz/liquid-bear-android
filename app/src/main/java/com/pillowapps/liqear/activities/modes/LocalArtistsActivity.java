@@ -22,7 +22,7 @@ public class LocalArtistsActivity extends ListBaseActivity {
         actionBar.setTitle(getString(R.string.artist));
         loadLocalArtists();
 
-        recyclerView.setOnCreateContextMenuListener(this);
+        recycler.setOnCreateContextMenuListener(this);
     }
 
     private void fillWithArtists(List<Artist> artists) {
@@ -33,7 +33,7 @@ public class LocalArtistsActivity extends ListBaseActivity {
                 //todo
             }
         });
-        recyclerView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
 
