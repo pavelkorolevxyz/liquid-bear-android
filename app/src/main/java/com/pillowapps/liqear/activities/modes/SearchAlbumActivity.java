@@ -48,7 +48,7 @@ public class SearchAlbumActivity extends SearchBaseActivity {
                             loadAlbumPresets();
                             return;
                         }
-                        searchAlbum(searchQuery, getPageSize(), 0);
+                        searchAlbum(searchQuery, getPageSize(), 1);
                     }
                 });
             }

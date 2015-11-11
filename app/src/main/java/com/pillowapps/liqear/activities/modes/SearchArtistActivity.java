@@ -49,7 +49,7 @@ public class SearchArtistActivity extends SearchBaseActivity {
                             loadArtistPresets();
                             return;
                         }
-                        searchArtist(searchQuery, getPageSize(), 0);
+                        searchArtist(searchQuery, getPageSize(), 1);
                     }
                 });
             }

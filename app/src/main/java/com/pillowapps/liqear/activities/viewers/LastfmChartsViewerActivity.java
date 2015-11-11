@@ -31,10 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LastfmChartsViewerActivity extends PagerResultActivity {
-    public static final int MOST_LOVED = 4;
-    public static final int TOP_TRACKS = 2;
-    public static final int HYPED_TRACKS = 1;
-    public static final int PAGES_NUMBER = 5;
+    public static final int TOP_TRACKS = 1;
+    public static final int TOP_ARTISTS = 2;
+//    public static final int HYPED_TRACKS = 1;
+//    public static final int MOST_LOVED = 4;
+    public static final int PAGES_NUMBER = 2;
     private LastfmChartModel chartsModel = new LastfmChartModel();
 
     @Override
@@ -58,11 +59,11 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
 
     private void initViewPager() {
         List<ViewerPage> pages = new ArrayList<>(PAGES_NUMBER);
-        pages.add(createHypedArtistsPage());
-        pages.add(createHypedTracksPage());
+//        pages.add(createHypedArtistsPage());
+//        pages.add(createHypedTracksPage());
         pages.add(createTopTracksPage());
         pages.add(createTopArtistsPage());
-        pages.add(createLovedTracksPage());
+//        pages.add(createLovedTracksPage());
         setViewers(pages);
         final ViewerAdapter adapter = new ViewerAdapter(pages);
         injectViewPager(adapter);
@@ -185,9 +186,9 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         MenuInflater inflater = getMenuInflater();
         final int index = pager.getCurrentItem();
         switch (index) {
-            case HYPED_TRACKS:
-            case TOP_TRACKS:
-            case MOST_LOVED: {
+//            case HYPED_TRACKS:
+//            case MOST_LOVED:
+            case TOP_TRACKS:{
                 inflater.inflate(R.menu.to_playlist_menu, menu);
             }
             break;

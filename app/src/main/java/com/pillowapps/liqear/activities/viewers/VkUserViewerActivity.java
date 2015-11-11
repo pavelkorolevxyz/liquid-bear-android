@@ -126,7 +126,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 new OnLoadMoreListener<Track>() {
                     @Override
                     public void onLoadMore() {
-                        getNewsFeedTracks(getPageSize(), viewer.getPage(), viewer);
+                        getNewsFeedTracks(getPageSize(), viewer.getVkPage(), viewer);
                     }
                 });
         viewer.setItemClickListener(trackClickListener);
@@ -144,7 +144,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 new OnLoadMoreListener<Track>() {
                     @Override
                     public void onLoadMore() {
-                        getFavoritesTracks(getPageSize(), viewer.getPage(), viewer);
+                        getFavoritesTracks(getPageSize(), viewer.getVkPage(), viewer);
                     }
                 });
         viewer.setItemClickListener(trackClickListener);
@@ -161,7 +161,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
         viewer.setOnLoadMoreListener(new OnLoadMoreListener<Album>() {
             @Override
             public void onLoadMore() {
-                getAlbums(getPageSize(), viewer.getPage(), viewer);
+                getAlbums(getPageSize(), viewer.getVkPage(), viewer);
             }
         });
         if (mode == Mode.USER) {
@@ -181,7 +181,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
         viewer.setOnLoadMoreListener(new OnLoadMoreListener<Track>() {
             @Override
             public void onLoadMore() {
-                getUserAudio(getPageSize(), viewer.getPage(), viewer);
+                getUserAudio(getPageSize(), viewer.getVkPage(), viewer);
             }
         });
         viewer.setItemClickListener(trackClickListener);
@@ -198,7 +198,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
         viewer.setOnLoadMoreListener(new OnLoadMoreListener<Track>() {
             @Override
             public void onLoadMore() {
-                getWallTracks(getPageSize(), viewer.getPage(), viewer);
+                getWallTracks(getPageSize(), viewer.getVkPage(), viewer);
 
             }
         });
@@ -234,7 +234,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
                         public void success(List<VkTrack> tracks) {
                             viewer.fill(tracks);
                             if (getViewer(NEWS_FEED).getItems().size() < 20) {
-                                getNewsFeedTracks(limit, viewer.getPage(), viewer);
+                                getNewsFeedTracks(limit, viewer.getVkPage(), viewer);
                             }
                         }
 
@@ -298,11 +298,9 @@ public class VkUserViewerActivity extends PagerResultActivity {
             }
         };
         if (mode == Mode.USER) {
-            vkWallModel.getVkUserWallAudio(user.getUid(), limit,
-                    limit * page, callback);
+            vkWallModel.getVkUserWallAudio(user.getUid(), limit, limit * page, callback);
         } else {
-            vkWallModel.getVkGroupWallAudio(group.getGid(), getPageSize(),
-                    limit * page, callback);
+            vkWallModel.getVkGroupWallAudio(group.getGid(), limit, limit * page, callback);
         }
     }
 

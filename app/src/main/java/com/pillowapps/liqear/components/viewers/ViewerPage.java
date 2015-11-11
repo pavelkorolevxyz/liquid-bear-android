@@ -12,8 +12,8 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.activities.modes.OnRecyclerLongItemClickListener;
 import com.pillowapps.liqear.components.EndlessRecyclerOnScrollListener;
-import com.pillowapps.liqear.components.OnViewerItemClickListener;
 import com.pillowapps.liqear.components.OnLoadMoreListener;
+import com.pillowapps.liqear.components.OnViewerItemClickListener;
 import com.pillowapps.liqear.helpers.DividerItemDecoration;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public abstract class ViewerPage<T> {
 
     private Context context;
     private boolean singlePage = false;
-    private int page = 0;
+    private int page = 1;
     private View view;
     private String title;
 
@@ -116,6 +116,12 @@ public abstract class ViewerPage<T> {
     public int getPage() {
         Timber.d(page + " - PAGE of viewer " + title);
         return page++;
+    }
+
+    public int getVkPage() {
+        int vkPage = page - 1;
+        page++;
+        return vkPage;
     }
 
     public void setPage(int page) {

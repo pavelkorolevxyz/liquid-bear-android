@@ -27,7 +27,11 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:id="@+id/spinner"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp" />
 
     <TextView
         android:layout_width="wrap_content"

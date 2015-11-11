@@ -27,7 +27,7 @@ public class SearchLastfmUserActivity extends SearchBaseActivity {
 
         actionBar.setTitle(getResources().getString(R.string.friends));
         if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-            getLastfmFriends(AuthorizationInfoManager.getLastfmName(), getPageSize(), 0);
+            getLastfmFriends(AuthorizationInfoManager.getLastfmName(), getPageSize(), 1);
         } else {
             progressBar.setVisibility(View.GONE);
         }
