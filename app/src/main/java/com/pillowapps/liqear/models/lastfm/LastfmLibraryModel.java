@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.models.lastfm;
 
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrackArtistStruct;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmLovedTracksRoot;
@@ -8,9 +9,6 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmWeeklyTrackChartRoot;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
-import com.pillowapps.liqear.network.ServiceHelper;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +24,6 @@ import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 public class LastfmLibraryModel {
-    private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
 
     public void getRadiomix(final String user, final SimpleCallback<List<LastfmTrack>> callback) {
         Observable<LastfmWeeklyTrackChartRoot> weeklyObservable = new LastfmUserModel().getWeeklyTracksChart(user);

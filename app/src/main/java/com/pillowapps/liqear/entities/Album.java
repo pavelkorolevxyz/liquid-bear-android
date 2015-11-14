@@ -53,7 +53,7 @@ public class Album implements Parcelable {
         this.artist = artist;
         this.genre = genre;
         tracks = new ArrayList<String>();
-        this.ownerId = Long.valueOf(albumId);
+        this.ownerId = albumId == null ? -1 : Long.valueOf(albumId);
         this.imageUrl = urlImage;
     }
 

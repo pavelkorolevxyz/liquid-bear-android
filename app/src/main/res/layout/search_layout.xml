@@ -53,6 +53,7 @@
             android:inputType="none"
             android:maxLength="50"
             android:singleLine="true"
+            app:met_primaryColor="@color/accent"
             app:met_clearButton="true"
             app:met_floatingLabel="normal"
             app:met_iconLeft="@drawable/ic_search_dark" />

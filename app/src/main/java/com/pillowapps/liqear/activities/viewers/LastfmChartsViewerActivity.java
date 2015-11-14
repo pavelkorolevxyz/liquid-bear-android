@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LastfmChartsViewerActivity extends PagerResultActivity {
-    public static final int TOP_TRACKS = 1;
-    public static final int TOP_ARTISTS = 2;
+    public static final int TOP_TRACKS = 0;
+    public static final int TOP_ARTISTS = 1;
 //    public static final int HYPED_TRACKS = 1;
 //    public static final int MOST_LOVED = 4;
     public static final int PAGES_NUMBER = 2;
