@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.TrackAdapter;
 import com.pillowapps.liqear.callbacks.GetPlaylistCallback;
 import com.pillowapps.liqear.entities.Playlist;

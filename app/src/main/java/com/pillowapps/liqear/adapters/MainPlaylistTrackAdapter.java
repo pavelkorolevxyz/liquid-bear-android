@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.activities.modes.OnRecyclerLongItemClickListener;
+import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
+import com.pillowapps.liqear.components.OnRecyclerLongItemClickListener;
 import com.pillowapps.liqear.components.OnItemStartDragListener;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.viewholders.TrackViewHolder;

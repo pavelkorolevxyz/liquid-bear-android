@@ -279,9 +279,9 @@ public class VkUserViewerActivity extends PagerResultActivity {
             }
         };
         if (mode == Mode.USER) {
-            vkAudioModel.getVkUserAudio(user.getUid(), limit, page, callback);
+            vkAudioModel.getVkUserAudio(user.getUid(), limit, limit * page, callback);
         } else {
-            vkAudioModel.getVkGroupAudio(group.getGid(), limit, page, callback);
+            vkAudioModel.getVkGroupAudio(group.getGid(), limit, limit * page, callback);
         }
     }
 

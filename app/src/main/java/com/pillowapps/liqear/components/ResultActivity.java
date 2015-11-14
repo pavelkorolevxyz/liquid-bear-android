@@ -129,6 +129,12 @@ public class ResultActivity extends TrackedActivity {
         startActivityForResult(userViewerIntent, Constants.MAIN_REQUEST_CODE);
     }
 
+    protected void openVkUser(User user) {
+        Intent userViewerIntent = new Intent(ResultActivity.this, VkUserViewerActivity.class);
+        userViewerIntent.putExtra(VkUserViewerActivity.USER, user);
+        startActivityForResult(userViewerIntent, Constants.MAIN_REQUEST_CODE);
+    }
+
     protected void openLastfmAlbum(Album album) {
         Intent intent = new Intent(ResultActivity.this, LastfmAlbumViewerActivity.class);
         intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());

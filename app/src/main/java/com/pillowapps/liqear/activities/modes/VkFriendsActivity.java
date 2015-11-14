@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.UserAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
+import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkUser;
@@ -31,7 +33,7 @@ public class VkFriendsActivity extends ListBaseActivity {
         adapter = new UserAdapter(users, new OnRecyclerItemClickListener() {
             @Override
             public void onItemClicked(View view, int position) {
-                openLastfmUser(adapter.getItem(position));
+                openVkUser(adapter.getItem(position));
             }
         });
         recycler.setAdapter(adapter);

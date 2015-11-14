@@ -9,10 +9,10 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.activities.modes.OnRecyclerLongItemClickListener;
 import com.pillowapps.liqear.components.EndlessRecyclerOnScrollListener;
 import com.pillowapps.liqear.components.OnLoadMoreListener;
+import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
+import com.pillowapps.liqear.components.OnRecyclerLongItemClickListener;
 import com.pillowapps.liqear.components.OnViewerItemClickListener;
 import com.pillowapps.liqear.helpers.DividerItemDecoration;
 
@@ -55,9 +55,7 @@ public abstract class ViewerPage<T> {
     private OnViewerItemClickListener<T> itemLongClickListener;
     private OnLoadMoreListener<T> onLoadMoreListener;
 
-    public ViewerPage(Context context,
-                      View view,
-                      String title) {
+    public ViewerPage(Context context, View view, String title) {
         this.context = context;
         this.view = view;
         this.title = title;
@@ -69,44 +67,19 @@ public abstract class ViewerPage<T> {
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
-//        recycler.setOnItemClickListener(listener);
-//        recycler.setOnItemLongClickListener(longClickListener);
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page) {
+                Timber.d("onLoadMore " + ViewerPage.this.title + " " + onLoadMoreListener);
                 if (onLoadMoreListener != null) {
-                    Timber.d("onLoadMore " + ViewerPage.this.title);
                     onLoadMoreListener.onLoadMore();
                 }
             }
         });
     }
 
-    public ViewerPage(Context context,
-                      View view,
-                      int titleRes) {
-        this.context = context;
-        this.view = view;
-        this.title = LBApplication.getAppContext().getString(titleRes);
-        ButterKnife.inject(this, view);
-
-        recyclerView.setHasFixedSize(true);
-
-        layoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
-//        recycler.setOnItemClickListener(listener);
-//        recycler.setOnItemLongClickListener(longClickListener);
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page) {
-                if (onLoadMoreListener != null) {
-                    Timber.d("onLoadMore " + title);
-                    onLoadMoreListener.onLoadMore();
-                }
-            }
-        });
+    public ViewerPage(Context context, View view, int titleRes) {
+        this(context, view, LBApplication.getAppContext().getString(titleRes));
     }
 
     public void onLoadMoreComplete() {

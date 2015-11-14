@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
+import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.helpers.LBPreferencesManager;
 
 public class SetlistViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

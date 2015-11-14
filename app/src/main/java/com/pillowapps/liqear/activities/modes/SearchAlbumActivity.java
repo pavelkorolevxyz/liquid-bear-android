@@ -8,6 +8,7 @@ import android.view.View;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.AlbumAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.helpers.Constants;

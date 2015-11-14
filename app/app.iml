@@ -130,8 +130,8 @@
     <orderEntry type="library" exported="" name="anko-common-0.7.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.1.0" level="project" />
     <orderEntry type="library" exported="" name="kotlin-stdlib-1.0.0-beta-1038" level="project" />
-    <orderEntry type="library" exported="" name="okio-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.1.0" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="httpmime-4.3" level="project" />
     <orderEntry type="library" exported="" name="crashlytics-2.5.2" level="project" />
     <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
@@ -146,7 +146,6 @@
     <orderEntry type="library" exported="" name="rxjava-1.0.4" level="project" />
     <orderEntry type="library" exported="" name="roundedimageview-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="design-23.1.0" level="project" />
-    <orderEntry type="library" exported="" name="crashlytics" level="project" />
     <orderEntry type="library" exported="" name="discreetapprate-2.0.3" level="project" />
     <orderEntry type="library" exported="" name="tinytask-v1" level="project" />
     <orderEntry type="library" exported="" name="calligraphy-2.1.0" level="project" />

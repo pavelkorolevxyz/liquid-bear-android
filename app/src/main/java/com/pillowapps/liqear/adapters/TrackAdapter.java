@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.activities.modes.OnRecyclerLongItemClickListener;
+import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
+import com.pillowapps.liqear.components.OnRecyclerLongItemClickListener;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.viewholders.TrackViewHolder;
 
@@ -74,6 +74,11 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackViewHolder> {
 
     public void addAll(final List<Track> trackList) {
         items.addAll(trackList);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        items.clear();
         notifyDataSetChanged();
     }
 }

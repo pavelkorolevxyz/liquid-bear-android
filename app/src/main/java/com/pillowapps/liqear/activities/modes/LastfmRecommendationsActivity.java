@@ -161,7 +161,7 @@ public class LastfmRecommendationsActivity extends ResultActivity {
                 progressBar.setVisibility(View.GONE);
                 List<Artist> artists = Converter.convertArtistList(data);
                 if (adapter == null) {
-                    adapter = new RecommendationsArrayAdapter<>(LastfmRecommendationsActivity.this, artists, Artist.class);
+                    adapter = new RecommendationsArrayAdapter<>(LastfmRecommendationsActivity.this, artists);
                     if (gridMode) {
                         gridView.setAdapter(adapter);
                     } else {
@@ -205,12 +205,10 @@ public class LastfmRecommendationsActivity extends ResultActivity {
 
     private class RecommendationsArrayAdapter<T> extends ArrayAdapter<T> {
         private final List<T> values;
-        private final Class<T> clazz;
 
-        public RecommendationsArrayAdapter(Context context, List<T> values, Class<T> clazz) {
+        public RecommendationsArrayAdapter(Context context, List<T> values) {
             super(context, R.layout.image_text_tile, values);
             this.values = values;
-            this.clazz = clazz;
         }
 
         public T get(int position) {

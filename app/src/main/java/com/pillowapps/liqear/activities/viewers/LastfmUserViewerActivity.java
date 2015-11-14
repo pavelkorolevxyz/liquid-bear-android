@@ -39,6 +39,8 @@ import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class LastfmUserViewerActivity extends PagerResultActivity {
     public static final String USER = "user";
     public static final int RECENT_INDEX = 3;
@@ -230,6 +232,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 new OnLoadMoreListener<Track>() {
                     @Override
                     public void onLoadMore() {
+                        Timber.d("onLoadMore LastmfUser top tracks");
                         getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), false, viewer);
                     }
                 }
@@ -259,11 +262,8 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     }
 
     private void getTopArtists(String period, int limit, int page, boolean force, final LastfmArtistViewerPage viewer) {
-        if (!viewer.isNotLoaded() && !force) {
-            return;
-        } else {
-            viewer.showProgressBar(true);
-        }
+//        if (!viewer.isNotLoaded() && !force) return;
+        viewer.showProgressBar(true);
         userModel.getUserTopArtists(user.getName(), period, limit, page,
                 new SimpleCallback<List<LastfmArtist>>() {
                     @Override
@@ -279,11 +279,9 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     }
 
     private void getRecent(int limit, int page, final LastfmTracksViewerPage viewer) {
-        if (!viewer.isNotLoaded()) {
-            return;
-        } else {
-            viewer.showProgressBar(true);
-        }
+//        if (!viewer.isNotLoaded()) return;
+
+        viewer.showProgressBar(true);
         userModel.getUserRecentTracks(user.getName(), limit, page,
                 new SimpleCallback<List<LastfmTrack>>() {
                     @Override
@@ -299,9 +297,10 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     }
 
     private void getTopTracks(final String period, int limit, int page, boolean force, final LastfmTracksViewerPage viewer) {
-        if (!viewer.isNotLoaded() && !force) {
-            return;
-        }
+//        if (!viewer.isNotLoaded() && !force) {
+//            return;
+//        }
+        viewer.showProgressBar(true);
         userModel.getUserTopTracks(user.getName(), period,
                 limit, page, new SimpleCallback<List<LastfmTrack>>() {
                     @Override
@@ -317,11 +316,9 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     }
 
     private void getLoved(int limit, int page, final LastfmTracksViewerPage viewer) {
-        if (!viewer.isNotLoaded()) {
-            return;
-        } else {
-            viewer.showProgressBar(true);
-        }
+//        if (!viewer.isNotLoaded()) return;
+
+        viewer.showProgressBar(true);
         userModel.getLovedTracks(user.getName(), limit, page,
                 new SimpleCallback<List<LastfmTrack>>() {
                     @Override

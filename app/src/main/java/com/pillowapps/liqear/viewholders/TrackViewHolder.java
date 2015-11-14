@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.modes.OnRecyclerItemClickListener;
+import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 
 public class TrackViewHolder extends RecyclerView.ViewHolder {
 

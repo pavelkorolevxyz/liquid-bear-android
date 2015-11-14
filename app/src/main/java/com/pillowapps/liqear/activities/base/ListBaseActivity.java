@@ -1,7 +1,9 @@
-package com.pillowapps.liqear.activities.modes;
+package com.pillowapps.liqear.activities.base;
 
 import android.os.Bundle;
 import android.view.View;
+
+import com.pillowapps.liqear.activities.modes.SearchBaseActivity;
 
 public abstract class ListBaseActivity extends SearchBaseActivity {
 

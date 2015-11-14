@@ -20,6 +20,7 @@ import com.pillowapps.liqear.adapters.NewcomersAdapter;
 import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 import com.pillowapps.liqear.components.LoadMoreRecyclerView;
 import com.pillowapps.liqear.components.OnLoadMoreListener;
+import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;

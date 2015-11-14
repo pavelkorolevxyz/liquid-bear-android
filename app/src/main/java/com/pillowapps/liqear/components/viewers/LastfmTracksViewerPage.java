@@ -27,7 +27,7 @@ public class LastfmTracksViewerPage extends ViewerPage<Track> {
 
     @Override
     public boolean isNotLoaded() {
-        return adapter == null;
+        return adapter == null || adapter.getItemCount() == 0;
     }
 
     public void setAdapter(TrackAdapter adapter) {
@@ -40,7 +40,8 @@ public class LastfmTracksViewerPage extends ViewerPage<Track> {
     }
 
     public void clear() {
-//        adapter.clear(adapter.getItems());
+        setPage(1);
+        adapter.clear();
     }
 
     @Override

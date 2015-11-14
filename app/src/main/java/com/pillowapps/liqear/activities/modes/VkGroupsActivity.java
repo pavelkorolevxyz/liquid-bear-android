@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.GroupAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
+import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.Group;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkGroup;

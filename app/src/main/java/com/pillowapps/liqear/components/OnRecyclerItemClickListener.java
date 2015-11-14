@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.activities.modes;
+package com.pillowapps.liqear.components;
 
 import android.view.View;
 

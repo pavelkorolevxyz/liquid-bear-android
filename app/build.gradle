@@ -132,7 +132,6 @@ dependencies {
         transitive = true;
     }
 
-    compile files('libs/crashlytics.jar')
     compile files('libs/httpcore-4.3.jar')
     compile files('libs/httpmime-4.3.jar')
     compile files('libs/jsoup-1.7.2.jar')

@@ -13,15 +13,11 @@ import java.util.List;
 public class LastfmArtistViewerPage extends ViewerPage<Artist> {
     private ArtistAdapter adapter;
 
-    public LastfmArtistViewerPage(Context context,
-                                  View view,
-                                  String title) {
+    public LastfmArtistViewerPage(Context context, View view, String title) {
         super(context, view, title);
     }
 
-    public LastfmArtistViewerPage(Context context,
-                                  View view,
-                                  int titleRes) {
+    public LastfmArtistViewerPage(Context context, View view, int titleRes) {
         super(context, view, titleRes);
     }
 
@@ -30,7 +26,8 @@ public class LastfmArtistViewerPage extends ViewerPage<Artist> {
     }
 
     public void clear() {
-//        adapter.clear(adapter.getItems());
+        setPage(1);
+        adapter.clear();
     }
 
     @Override

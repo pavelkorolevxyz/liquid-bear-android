@@ -33,10 +33,10 @@ public class LastfmLibraryModel {
         Observable<LastfmTopTracksRoot> topTracksObservable = new LastfmUserModel().getTopTracks(user,
                 Constants.PERIODS_ARRAY[0],
                 SharedPreferencesManager.getModePreferences().getInt(Constants.TOP_IN_RADIOMIX, 100),
-                0);
+                1);
         Observable<LastfmLovedTracksRoot> lovedObservable = new LastfmUserModel().getLovedTracks(user,
                 SharedPreferencesManager.getModePreferences().getInt(Constants.TOP_IN_RADIOMIX, 100),
-                0);
+                1);
         Observable.zip(weeklyObservable, topTracksObservable, lovedObservable,
                 new Func3<LastfmWeeklyTrackChartRoot, LastfmTopTracksRoot, LastfmLovedTracksRoot, List<LastfmTrack>>() {
                     @Override
@@ -73,10 +73,10 @@ public class LastfmLibraryModel {
         Observable<LastfmTopTracksRoot> topTracksObservable = new LastfmUserModel().getTopTracks(user,
                 Constants.PERIODS_ARRAY[0],
                 SharedPreferencesManager.getModePreferences().getInt(Constants.TOP_IN_RADIOMIX, 100),
-                0);
+                1);
         Observable<LastfmLovedTracksRoot> lovedObservable = new LastfmUserModel().getLovedTracks(user,
                 SharedPreferencesManager.getModePreferences().getInt(Constants.TOP_IN_RADIOMIX, 100),
-                0);
+                1);
         Observable.zip(topTracksObservable, lovedObservable,
                 new Func2<LastfmTopTracksRoot, LastfmLovedTracksRoot, List<LastfmTrack>>() {
                     @Override

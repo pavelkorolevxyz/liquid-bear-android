@@ -13,15 +13,11 @@ import java.util.List;
 public class LastfmAlbumViewerPage extends ViewerPage<Album> {
     private AlbumAdapter adapter;
 
-    public LastfmAlbumViewerPage(Context context,
-                                 View view,
-                                 String title) {
+    public LastfmAlbumViewerPage(Context context, View view, String title) {
         super(context, view, title);
     }
 
-    public LastfmAlbumViewerPage(Context context,
-                                 View view,
-                                 int titleRes) {
+    public LastfmAlbumViewerPage(Context context, View view, int titleRes) {
         super(context, view, titleRes);
     }
 
