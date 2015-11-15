@@ -35,6 +35,8 @@ public class NewcomersAdapter extends RecyclerView.Adapter<NewcomersViewHolder> 
         } else {
             holder.cover.setVisibility(View.GONE);
         }
+        holder.mainLayout.setBackgroundResource(position % 2 == 0 ?
+                R.drawable.list_item_background : R.drawable.list_item_background_tinted);
     }
 
     @Override

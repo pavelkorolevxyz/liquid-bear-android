@@ -228,6 +228,9 @@ public class PlaylistsActivity extends ResultActivity {
             public void onClick(View v) {
                 String title = input.getText().toString();
                 if (title.length() < 1) {
+                    title = Timeline.getInstance().getPlaylist().getTitle();
+                }
+                if (title.length() < 1) {
                     title = getResources().getString(R.string.new_playlist);
                 }
 

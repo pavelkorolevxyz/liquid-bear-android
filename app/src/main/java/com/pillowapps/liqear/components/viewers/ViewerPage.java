@@ -14,7 +14,6 @@ import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.components.OnRecyclerLongItemClickListener;
 import com.pillowapps.liqear.components.OnViewerItemClickListener;
-import com.pillowapps.liqear.helpers.DividerItemDecoration;
 
 import java.util.List;
 
@@ -66,7 +65,7 @@ public abstract class ViewerPage<T> {
         layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
+//        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page) {

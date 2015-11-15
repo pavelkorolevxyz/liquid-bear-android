@@ -47,12 +47,12 @@ import butterknife.InjectView;
 
 public class LastfmArtistViewerActivity extends PagerResultActivity {
     public static final String ARTIST = "artist";
-    public static final int PERSONAL_TOP_INDEX = 2;
+//    public static final int PERSONAL_TOP_INDEX = 2;
     public static final int TOP_TRACKS_INDEX = 1;
     public static final int ALBUMS_INDEX = 0;
-    public static final int PAGES_NUMBER = 5;
-    public int ARTIST_INFO_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 4 : 3;
-    public int SIMILAR_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 3 : 2;
+    public static final int PAGES_NUMBER = 4;
+    public int ARTIST_INFO_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 3 : 2;
+    public int SIMILAR_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 2 : 1;
     private Artist artist;
     private boolean infoLoaded = false;
     private LastfmArtistModel artistModel = new LastfmArtistModel();
@@ -98,12 +98,12 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         views.add(topTracksPage.getView());
         titles.add(topTracksPage.getTitle());
         pages.add(topTracksPage);
-        if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-            ViewerPage personalTopTracksPage = createPersonalTopTracksPage();
-            views.add(personalTopTracksPage.getView());
-            titles.add(personalTopTracksPage.getTitle());
-            pages.add(personalTopTracksPage);
-        }
+//        if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
+//            ViewerPage personalTopTracksPage = createPersonalTopTracksPage();
+//            views.add(personalTopTracksPage.getView());
+//            titles.add(personalTopTracksPage.getTitle());
+//            pages.add(personalTopTracksPage);
+//        } not working due to Last.fm changes
         ViewerPage similarArtistsPage = createSimilarArtistsPage();
         views.add(similarArtistsPage.getView());
         titles.add(similarArtistsPage.getTitle());
@@ -225,9 +225,9 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         final int index = pager.getCurrentItem();
-        if (index == PERSONAL_TOP_INDEX) {
+        /*if (index == PERSONAL_TOP_INDEX) {
             inflater.inflate(R.menu.to_playlist_menu, menu);
-        } else if (index == TOP_TRACKS_INDEX) {
+        } else*/ if (index == TOP_TRACKS_INDEX) {
             inflater.inflate(R.menu.to_playlist_menu, menu);
         } else if (index == SIMILAR_INDEX) {
             inflater.inflate(R.menu.empty_menu, menu);
