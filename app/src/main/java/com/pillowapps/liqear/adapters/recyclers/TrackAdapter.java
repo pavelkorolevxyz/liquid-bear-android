@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.adapters;
+package com.pillowapps.liqear.adapters.recyclers;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

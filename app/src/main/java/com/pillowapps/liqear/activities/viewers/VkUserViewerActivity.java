@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.adapters.ViewerAdapter;
+import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
@@ -29,6 +29,7 @@ import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
+import com.pillowapps.liqear.models.Page;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
 
@@ -85,7 +86,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
     }
 
     private void initViewPager() {
-        List<ViewerPage> pages = new ArrayList<>(PAGES_NUMBER);
+        List<Page> pages = new ArrayList<>(PAGES_NUMBER);
         pages.add(createWallTracksPage());
         pages.add(createAudioTracksPage());
         pages.add(createAlbumsTracksPage());
@@ -93,8 +94,8 @@ public class VkUserViewerActivity extends PagerResultActivity {
             pages.add(createFavoritesArtistsPage());
             pages.add(createFeedTracksPage());
         }
-        setViewers(pages);
-        final ViewerAdapter adapter = new ViewerAdapter(pages);
+        setPages(pages);
+        final PagesPagerAdapter adapter = new PagesPagerAdapter(pages);
         injectViewPager(adapter);
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

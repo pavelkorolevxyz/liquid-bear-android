@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -32,10 +33,9 @@ import com.michaelnovakjr.numberpicker.NumberPicker;
 import com.pillowapps.liqear.BuildConfig;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
-import com.pillowapps.liqear.adapters.ModeAdapter;
+import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.MusicService;
@@ -45,6 +45,7 @@ import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.components.ActivityResult;
 import com.pillowapps.liqear.components.ArtistTrackComparator;
 import com.pillowapps.liqear.components.HintMaterialEditText;
+import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
@@ -85,7 +86,7 @@ import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
 
 public class MainActivity extends TrackedActivity {
 
-    private ModeAdapter modeAdapter;
+    private ModeGridAdapter modeAdapter;
     private ProgressBar progressBar;
     private Menu mainMenu;
 
@@ -617,7 +618,7 @@ public class MainActivity extends TrackedActivity {
     }
 
     public void init() {
-        modeAdapter = new ModeAdapter(MainActivity.this);
+        modeAdapter = new ModeGridAdapter(MainActivity.this);
     }
 
     private OnRecyclerItemClickListener getPlaylistItemsClickListener() {
@@ -772,7 +773,7 @@ public class MainActivity extends TrackedActivity {
     private void findCurrentTrack() {
         int currentIndex = Timeline.getInstance().getIndex();
         if (currentIndex >= 0 && currentIndex < Timeline.getInstance().getPlaylistTracks().size()) {
-//            getListView().setSelection(currentIndex);
+            getListView().setSelection(currentIndex);
         }
     }
 
@@ -1024,11 +1025,21 @@ public class MainActivity extends TrackedActivity {
         return playbackControlFragment;
     }
 
-    public ModeAdapter getModeAdapter() {
+    public ModeGridAdapter getModeAdapter() {
         return modeAdapter;
     }
 
     public void setPlaylistItemsAdapter(PlaylistItemsAdapter playlistItemsAdapter) {
         this.playlistItemsAdapter = playlistItemsAdapter;
+    }
+
+    private ListView getListView() {
+        ListView listView;
+        if (isTablet()) {
+            listView = tabletFragment.getPlaylistListView();
+        } else {
+            listView = phoneFragment.getPlaylistListView();
+        }
+        return listView;
     }
 }

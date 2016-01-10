@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.adapters.ViewerViewAdapter;
+import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
@@ -36,6 +36,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
+import com.pillowapps.liqear.models.Page;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmDiscographyModel;
 
@@ -87,16 +88,10 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     }
 
     private void initViewPager() {
-        List<ViewerPage> pages = new ArrayList<>(PAGES_NUMBER);
-        List<View> views = new ArrayList<>(PAGES_NUMBER);
-        List<String> titles = new ArrayList<>(PAGES_NUMBER);
+        List<Page> pages = new ArrayList<>(PAGES_NUMBER);
         ViewerPage albumsPage = createAlbumsPage();
-        views.add(albumsPage.getView());
-        titles.add(albumsPage.getTitle());
         pages.add(albumsPage);
         ViewerPage topTracksPage = createTopTracksPage();
-        views.add(topTracksPage.getView());
-        titles.add(topTracksPage.getTitle());
         pages.add(topTracksPage);
 //        if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
 //            ViewerPage personalTopTracksPage = createPersonalTopTracksPage();
@@ -105,15 +100,11 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
 //            pages.add(personalTopTracksPage);
 //        } not working due to Last.fm changes
         ViewerPage similarArtistsPage = createSimilarArtistsPage();
-        views.add(similarArtistsPage.getView());
-        titles.add(similarArtistsPage.getTitle());
         pages.add(similarArtistsPage);
         ViewPage bioPage = createBioPage();
         infoTab = bioPage.getView();
-        views.add(infoTab);
-        titles.add(bioPage.getTitle());
-        setViewers(pages);
-        final ViewerViewAdapter adapter = new ViewerViewAdapter(views, titles);
+        setPages(pages);
+        final PagesPagerAdapter adapter = new PagesPagerAdapter(pages);
 
         injectViewPager(adapter);
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {

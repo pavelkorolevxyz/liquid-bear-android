@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.adapters.ViewerViewAdapter;
+import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.ViewPage;
@@ -28,6 +28,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.ImageModel;
+import com.pillowapps.liqear.models.Page;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.network.ImageLoadingListener;
 
@@ -83,19 +84,14 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
     }
 
     private void initViewPager() {
-        List<ViewerPage> pages = new ArrayList<>(PAGES_NUMBER);
-        List<View> views = new ArrayList<>(PAGES_NUMBER);
-        List<String> titles = new ArrayList<>(PAGES_NUMBER);
+        List<Page> pages = new ArrayList<>(PAGES_NUMBER);
         ViewerPage albumsPage = createTracksPage();
-        views.add(albumsPage.getView());
-        titles.add(albumsPage.getTitle());
         pages.add(albumsPage);
         ViewPage albumInfoPage = createAlbumInfoPage();
+        pages.add(albumInfoPage);
         infoTab = albumInfoPage.getView();
-        views.add(infoTab);
-        titles.add(albumInfoPage.getTitle());
-        setViewers(pages);
-        final ViewerViewAdapter adapter = new ViewerViewAdapter(views, titles);
+        setPages(pages);
+        final PagesPagerAdapter adapter = new PagesPagerAdapter(pages);
         injectViewPager(adapter);
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

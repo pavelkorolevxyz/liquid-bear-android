@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.adapters.ViewerAdapter;
+import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
@@ -34,6 +34,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
+import com.pillowapps.liqear.models.Page;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
 import java.util.ArrayList;
@@ -158,13 +159,13 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     }
 
     private void initViewPager() {
-        List<ViewerPage> pages = new ArrayList<>(PAGES_NUMBER);
+        List<Page> pages = new ArrayList<>(PAGES_NUMBER);
         pages.add(createLovedTracksPage());
         pages.add(createTopTracksPage());
         pages.add(createTopArtistsPage());
         pages.add(createRecentTracksPage());
-        setViewers(pages);
-        final ViewerAdapter adapter = new ViewerAdapter(pages);
+        setPages(pages);
+        final PagesPagerAdapter adapter = new PagesPagerAdapter(pages);
         injectViewPager(adapter);
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

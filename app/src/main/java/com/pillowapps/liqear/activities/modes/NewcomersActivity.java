@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.adapters.NewcomersAdapter;
+import com.pillowapps.liqear.adapters.recyclers.NewcomersAdapter;
 import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 import com.pillowapps.liqear.components.LoadMoreRecyclerView;
 import com.pillowapps.liqear.components.OnLoadMoreListener;

@@ -3,7 +3,7 @@ package com.pillowapps.liqear.components.viewers;
 import android.content.Context;
 import android.view.View;
 
-import com.pillowapps.liqear.adapters.AlbumAdapter;
+import com.pillowapps.liqear.adapters.recyclers.AlbumAdapter;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.helpers.Converter;

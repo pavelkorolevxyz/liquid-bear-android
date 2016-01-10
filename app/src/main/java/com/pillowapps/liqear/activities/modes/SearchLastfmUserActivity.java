@@ -5,7 +5,7 @@ import android.text.Editable;
 import android.view.View;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.adapters.UserAdapter;
+import com.pillowapps.liqear.adapters.recyclers.UserAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.User;

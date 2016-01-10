@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.adapters.AuthActivityAdapter;
+import com.pillowapps.liqear.adapters.pagers.AuthPagerAdapter;
 import com.pillowapps.liqear.callbacks.LastfmErrorCodeCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
@@ -141,7 +141,7 @@ public class AuthActivity extends TrackedActivity {
         lastfmTab = View.inflate(this, R.layout.auth_lastfm_layout, null);
         views.add(lastfmTab);
         pager = (ViewPager) findViewById(R.id.pager);
-        AuthActivityAdapter adapter = new AuthActivityAdapter(views);
+        AuthPagerAdapter adapter = new AuthPagerAdapter(views);
 
         pager.setAdapter(adapter);
         TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);

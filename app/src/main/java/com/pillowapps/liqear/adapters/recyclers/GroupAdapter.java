@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.adapters;
+package com.pillowapps.liqear.adapters.recyclers;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -8,29 +8,29 @@ import android.view.ViewGroup;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.entities.Artist;
+import com.pillowapps.liqear.entities.Group;
 import com.pillowapps.liqear.models.ImageModel;
-import com.pillowapps.liqear.viewholders.ArtistsViewHolder;
+import com.pillowapps.liqear.viewholders.GroupViewHolder;
 
 import java.util.List;
 
-public class ArtistAdapter extends RecyclerView.Adapter<ArtistsViewHolder> {
+public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
-    private ArtistsViewHolder holder;
-    private List<Artist> items;
+    private GroupViewHolder holder;
+    private List<Group> items;
 
-    public ArtistAdapter(List<Artist> items, OnRecyclerItemClickListener clickListener) {
+    public GroupAdapter(List<Group> items, OnRecyclerItemClickListener clickListener) {
         this.clickListener = clickListener;
         this.items = items;
     }
 
     @Override
-    public void onBindViewHolder(ArtistsViewHolder holder, int position) {
-        Artist artist = items.get(position);
-        holder.textView.setText(Html.fromHtml(artist.getName()));
+    public void onBindViewHolder(GroupViewHolder holder, int position) {
+        Group group = items.get(position);
+        holder.textView.setText(Html.fromHtml(group.getName()));
         if (holder.loadImages) {
-            new ImageModel().loadArtistListImage(artist.getPreviewUrl(), holder.imageView);
+            new ImageModel().loadGroupListImage(group.getImageUrl(), holder.imageView);
         } else {
             holder.imageView.setVisibility(View.GONE);
         }
@@ -39,9 +39,9 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistsViewHolder> {
     }
 
     @Override
-    public ArtistsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GroupViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        holder = new ArtistsViewHolder(v, clickListener);
+        holder = new GroupViewHolder(v, clickListener);
         return holder;
     }
 
@@ -51,24 +51,12 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistsViewHolder> {
         return items.size();
     }
 
-    public Artist getItem(int position) {
+    public Group getItem(int position) {
         return items.get(position);
     }
 
 
-    public List<Artist> getItems() {
+    public List<Group> getItems() {
         return items;
-    }
-
-
-    public void addAll(List<Artist> artists) {
-        items.addAll(artists);
-        notifyDataSetChanged();
-    }
-
-
-    public void clear() {
-        items.clear();
-        notifyDataSetChanged();
     }
 }

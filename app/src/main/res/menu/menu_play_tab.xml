@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/artist_button"
-          android:icon="@drawable/ic_artists_mode"
-          android:title="@string/artist"
-          app:showAsAction="always|collapseActionView">
-        <menu>
-            <item android:id="@+id/show_artist_button"
-                  android:title="@string/show_artist"
-                  android:icon="@drawable/ic_artist_dark"
-                  app:showAsAction="always|withText"/>
-            <!--<item android:id="@+id/photo_artist_button"-->
-            <!--android:title="@string/photo_artist"-->
-            <!--android:icon="@drawable/ic_photo_dark"-->
-            <!--app:showAsAction="always|withText"/> Removed due to Lastfm site changes-->
-        </menu>
-    </item>
     <item android:id="@+id/track_button"
           android:title="@string/track"
           android:icon="@drawable/drop_normal"

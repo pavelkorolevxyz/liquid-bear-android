@@ -4,13 +4,12 @@ import android.content.Context;
 import android.view.View;
 
 import com.pillowapps.liqear.LBApplication;
+import com.pillowapps.liqear.models.Page;
 
 import butterknife.ButterKnife;
 
-public class ViewPage {
+public class ViewPage extends Page{
     private Context context;
-    private View view;
-    private String title;
 
     public ViewPage(Context context,
                     View view,

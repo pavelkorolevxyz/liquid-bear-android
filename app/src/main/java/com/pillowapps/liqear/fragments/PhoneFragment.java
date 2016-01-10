@@ -39,12 +39,11 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
-import com.pillowapps.liqear.adapters.ModeAdapter;
-import com.pillowapps.liqear.adapters.PhoneFragmentAdapter;
+import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
+import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.CompletionCallback;
-import com.pillowapps.liqear.components.ModeClickListener;
 import com.pillowapps.liqear.components.OnItemStartDragListener;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.components.OnTopToBottomSwipeListener;
@@ -76,6 +75,7 @@ import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.PlayingState;
 import com.pillowapps.liqear.models.Tutorial;
+import com.pillowapps.liqear.network.ImageLoadingCompletionListener;
 import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.squareup.otto.Subscribe;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
@@ -172,7 +172,7 @@ public class PhoneFragment extends MainFragment {
         super.onResume();
         shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
         repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
-        ModeAdapter adapter = mainActivity.getModeAdapter();
+        ModeGridAdapter adapter = mainActivity.getModeAdapter();
         if (adapter != null) {
             adapter.notifyDataSetChanged();
         }
@@ -180,7 +180,7 @@ public class PhoneFragment extends MainFragment {
 
     private void initUi(View v) {
         initViewPager(v);
-        changeViewPagerItem(PhoneFragmentAdapter.PLAY_TAB_INDEX);
+        changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX);
 
         mainActivity.init();
 
@@ -258,9 +258,9 @@ public class PhoneFragment extends MainFragment {
 
     private void initModeTab() {
         StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
-        modeGridView.setOnItemClickListener(new ModeClickListener(mainActivity));
+//        modeGridView.setOnItemClickListener(new ModeClickListener(mainActivity));
         modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
-        modeGridView.setAdapter(mainActivity.getModeAdapter());
+//        modeGridView.setAdapter(mainActivity.getModeAdapter());
     }
 
     private void initViewPager(View v) {
@@ -273,7 +273,7 @@ public class PhoneFragment extends MainFragment {
         pages.add(new ViewPage(mainActivity, modeTab, R.string.mode_tab));
         pager = (ViewPager) v.findViewById(R.id.viewpager);
         pager.setOffscreenPageLimit(pages.size());
-        pager.setAdapter(new PhoneFragmentAdapter(pages));
+        pager.setAdapter(new PhoneFragmentPagerAdapter(pages));
 
         playlistToolbar = (Toolbar) playlistTab.findViewById(R.id.toolbar);
         playbackToolbar = (Toolbar) playbackTab.findViewById(R.id.toolbar);
@@ -301,7 +301,7 @@ public class PhoneFragment extends MainFragment {
             @Override
             public void onPageSelected(int index) {
                 mainActivity.invalidateOptionsMenu();
-                if (index != PhoneFragmentAdapter.PLAY_TAB_INDEX) {
+                if (index != PhoneFragmentPagerAdapter.PLAY_TAB_INDEX) {
                     if (tutorial.isEnabled() && tutorialBlinkAnimation != null) {
                         tutorialBlinkAnimation.cancel();
                         tutorialLayout.setVisibility(View.GONE);
@@ -693,7 +693,7 @@ public class PhoneFragment extends MainFragment {
         if (track == null) return;
         if (SharedPreferencesManager.getPreferences().getBoolean("scroll_to_current", false)) {
             playlistListView.requestFocusFromTouch();
-//            playlistListView.setSelection(Timeline.getInstance().getIndex());
+            playlistListView.setSelection(Timeline.getInstance().getIndex());
         }
         Timeline.getInstance().setCurrentAlbum(null);
 //        track.setCurrent(true);
@@ -725,25 +725,10 @@ public class PhoneFragment extends MainFragment {
                 Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
             String imageUrl = event.getImageUrl();
             Timeline.getInstance().setCurrentArtistImageUrl(imageUrl);
-            new ImageModel().loadImage(imageUrl, artistImageView, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted() {
-
-                }
-
-                @Override
-                public void onLoadingFailed(String message) {
-
-                }
-
+            new ImageModel().loadImage(imageUrl, artistImageView, new ImageLoadingCompletionListener() {
                 @Override
                 public void onLoadingComplete(Bitmap bitmap) {
                     updatePaletteWithBitmap(bitmap);
-                }
-
-                @Override
-                public void onLoadingCancelled() {
-
                 }
             });
         }
@@ -843,5 +828,9 @@ public class PhoneFragment extends MainFragment {
                 loveFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(bottomSwatch.getRgb()));
             }
         });
+    }
+
+    public ListView getPlaylistListView() {
+        return playlistListView;
     }
 }

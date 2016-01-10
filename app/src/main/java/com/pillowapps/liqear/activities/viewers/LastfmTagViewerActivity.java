@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.adapters.ViewerAdapter;
+import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
@@ -18,6 +18,7 @@ import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
+import com.pillowapps.liqear.models.Page;
 import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
 
 import java.util.ArrayList;
@@ -54,10 +55,10 @@ public class LastfmTagViewerActivity extends PagerResultActivity {
     }
 
     protected void initViewPager() {
-        List<ViewerPage> pages = new ArrayList<>();
+        List<Page> pages = new ArrayList<>();
         pages.add(createTagTopTracksPage());
-        setViewers(pages);
-        final ViewerAdapter adapter = new ViewerAdapter(pages);
+        setPages(pages);
+        final PagesPagerAdapter adapter = new PagesPagerAdapter(pages);
         injectViewPager(adapter);
     }
 

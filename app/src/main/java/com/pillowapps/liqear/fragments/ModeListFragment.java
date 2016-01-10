@@ -16,8 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
-import com.pillowapps.liqear.components.ModeClickListener;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
 import com.pillowapps.liqear.components.UpdateAdapterCallback;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
@@ -47,7 +45,7 @@ public class ModeListFragment extends ListFragment {
         setListAdapter(adapter);
         getListView().setBackgroundColor(getResources().getColor(R.color.icons));
         getListView().setOnItemLongClickListener(new ModeLongClickListener());
-        getListView().setOnItemClickListener(new ModeClickListener((MainActivity) getActivity()));
+//        getListView().setOnItemClickListener(new ModeClickListener((MainActivity) getActivity())); todo for tablet
     }
 
     public ModeListAdapter getAdapter() {

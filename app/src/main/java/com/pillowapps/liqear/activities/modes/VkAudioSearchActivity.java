@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
-import com.pillowapps.liqear.adapters.TrackAdapter;
+import com.pillowapps.liqear.adapters.recyclers.TrackAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;

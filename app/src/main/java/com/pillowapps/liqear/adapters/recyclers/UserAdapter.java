@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.adapters;
+package com.pillowapps.liqear.adapters.recyclers;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -10,30 +10,23 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.models.ImageModel;
-import com.pillowapps.liqear.viewholders.NeighbourViewHolder;
+import com.pillowapps.liqear.viewholders.UserViewHolder;
 
 import java.util.List;
 
-public class NeighbourAdapter extends RecyclerView.Adapter<NeighbourViewHolder> {
+public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
-    private NeighbourViewHolder holder;
+    private UserViewHolder holder;
     private List<User> items;
 
-    public NeighbourAdapter(List<User> items, OnRecyclerItemClickListener clickListener) {
+    public UserAdapter(List<User> items, OnRecyclerItemClickListener clickListener) {
         this.clickListener = clickListener;
         this.items = items;
     }
 
     @Override
-    public NeighbourViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.neighbour_image_list_item, parent, false);
-        holder = new NeighbourViewHolder(v, clickListener);
-        return holder;
-    }
-
-    @Override
-    public void onBindViewHolder(NeighbourViewHolder holder, int position) {
+    public void onBindViewHolder(UserViewHolder holder, int position) {
         User user = items.get(position);
         holder.textView.setText(Html.fromHtml(user.getName()));
         if (holder.loadImages) {
@@ -46,10 +39,17 @@ public class NeighbourAdapter extends RecyclerView.Adapter<NeighbourViewHolder> 
     }
 
     @Override
-    public int getItemCount() {
-        return 0;
+    public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
+        holder = new UserViewHolder(v, clickListener);
+        return holder;
     }
 
+    @Override
+    public int getItemCount() {
+        if (items == null) return 0;
+        return items.size();
+    }
 
     public User getItem(int position) {
         return items.get(position);

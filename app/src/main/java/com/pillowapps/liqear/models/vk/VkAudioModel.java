@@ -1,5 +1,11 @@
 package com.pillowapps.liqear.models.vk;
 
+import android.content.Context;
+import android.content.Intent;
+import android.widget.Toast;
+
+import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.callbacks.VkCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.Track;
@@ -10,6 +16,8 @@ import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.entities.vk.roots.VkAlbumsResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkTrackUrlResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkTracksResponseRoot;
+import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.StringUtils;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.VkCallbackUtils;
@@ -136,6 +144,27 @@ public class VkAudioModel {
                         callback.failure(error);
                     }
                 });
+    }
+
+    public void addToVk(final Context context, Track track) {
+        if (LBPreferencesManager.isVkAddSlow()) {
+            if (track == null) return;
+            Intent intent = new Intent(context, VkAudioSearchActivity.class);
+            intent.putExtra(Constants.TARGET, TrackUtils.getNotation(track));
+            context.startActivity(intent);
+        } else {
+            addToUserAudioFast(TrackUtils.getNotation(track), new VkSimpleCallback<VkResponse>() {
+                @Override
+                public void success(VkResponse data) {
+                    Toast.makeText(context, R.string.added, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void failure(VkError error) {
+
+                }
+            });
+        }
     }
 
     public void addToUserAudio(long audioId, long ownerId, VkSimpleCallback<VkResponse> callback) {

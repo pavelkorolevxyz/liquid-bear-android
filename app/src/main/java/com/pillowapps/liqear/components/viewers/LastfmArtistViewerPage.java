@@ -3,7 +3,7 @@ package com.pillowapps.liqear.components.viewers;
 import android.content.Context;
 import android.view.View;
 
-import com.pillowapps.liqear.adapters.ArtistAdapter;
+import com.pillowapps.liqear.adapters.recyclers.ArtistAdapter;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.helpers.Converter;

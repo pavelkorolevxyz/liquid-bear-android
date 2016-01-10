@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.adapters;
+package com.pillowapps.liqear.adapters.pagers;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -12,7 +12,7 @@ import com.pillowapps.liqear.R;
 
 import java.util.List;
 
-public class AuthActivityAdapter extends PagerAdapter {
+public class AuthPagerAdapter extends PagerAdapter {
     public static final int LASTFM_TAB_INDEX = 1;
     public static final int VK_TAB_INDEX = 0;
 
@@ -24,7 +24,7 @@ public class AuthActivityAdapter extends PagerAdapter {
         titles[LASTFM_TAB_INDEX] = LBApplication.getAppContext().getString(R.string.last_fm);
     }
 
-    public AuthActivityAdapter(List<View> inViews) {
+    public AuthPagerAdapter(List<View> inViews) {
         views = inViews;
     }
 

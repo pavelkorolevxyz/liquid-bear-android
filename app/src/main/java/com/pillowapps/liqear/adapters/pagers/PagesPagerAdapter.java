@@ -1,27 +1,19 @@
-package com.pillowapps.liqear.adapters;
+package com.pillowapps.liqear.adapters.pagers;
 
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pillowapps.liqear.components.ViewPage;
+import com.pillowapps.liqear.models.Page;
 
 import java.util.List;
 
-public class PhoneFragmentAdapter extends PagerAdapter {
-    public static final int PLAY_TAB_INDEX = 1;
-    public static final int PLAYLIST_TAB_INDEX = 0;
-    public static final int MODE_TAB_INDEX = 2;
-    private List<ViewPage> pages;
+public class PagesPagerAdapter extends PagerAdapter {
+    private List<Page> pages;
 
-
-    public PhoneFragmentAdapter(List<ViewPage> pages) {
+    public PagesPagerAdapter(List<Page> pages) {
         this.pages = pages;
-    }
-
-    public String getTitle(int position) {
-        return pages.get(position).getTitle();
     }
 
     @Override
@@ -34,6 +26,11 @@ public class PhoneFragmentAdapter extends PagerAdapter {
         View v = pages.get(position).getView();
         pager.addView(v, 0);
         return v;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return pages.get(position).getTitle();
     }
 
     @Override
@@ -59,13 +56,7 @@ public class PhoneFragmentAdapter extends PagerAdapter {
         return null;
     }
 
-    public int getItemPosition(Object object) {
-        return POSITION_NONE;
-    }
-
     @Override
     public void startUpdate(ViewGroup view) {
     }
-
-
 }

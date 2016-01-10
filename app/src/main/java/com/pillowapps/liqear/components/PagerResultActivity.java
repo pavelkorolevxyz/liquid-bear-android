@@ -10,6 +10,7 @@ import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.models.Page;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
 public class PagerResultActivity extends ResultActivity {
     protected ViewPager pager;
     protected TitlePageIndicator indicator;
-    private List<ViewerPage> viewers = new ArrayList<>();
+    private List<Page> pages = new ArrayList<>();
 
     public OnViewerItemClickListener<Track> trackClickListener = new OnViewerItemClickListener<Track>() {
         @Override
@@ -75,23 +76,23 @@ public class PagerResultActivity extends ResultActivity {
     };
 
     protected int viewersCount() {
-        return viewers.size();
+        return pages.size();
     }
 
     protected ViewerPage getViewer(int i) {
         if (viewersCount() > i) {
-            return viewers.get(i);
+            return (ViewerPage) pages.get(i);
         } else {
             return null;
         }
     }
 
     protected void addViewer(ViewerPage viewerPage) {
-        viewers.add(viewerPage);
+        pages.add(viewerPage);
     }
 
-    protected void setViewers(List<ViewerPage> viewers) {
-        this.viewers = viewers;
+    protected void setPages(List<Page> pages) {
+        this.pages = pages;
     }
 
     protected void injectViewPager(PagerAdapter adapter) {

@@ -14,6 +14,7 @@ import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.components.OnRecyclerLongItemClickListener;
 import com.pillowapps.liqear.components.OnViewerItemClickListener;
+import com.pillowapps.liqear.models.Page;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public abstract class ViewerPage<T> {
+public abstract class ViewerPage<T> extends Page {
     private final LinearLayoutManager layoutManager;
     @InjectView(R.id.list)
     protected RecyclerView recyclerView;
@@ -34,8 +35,6 @@ public abstract class ViewerPage<T> {
     private Context context;
     private boolean singlePage = false;
     private int page = 1;
-    private View view;
-    private String title;
 
     public final OnRecyclerItemClickListener listener = new OnRecyclerItemClickListener() {
         @Override

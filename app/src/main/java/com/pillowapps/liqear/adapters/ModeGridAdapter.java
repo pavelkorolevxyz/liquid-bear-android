@@ -23,7 +23,7 @@ import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModeAdapter implements StickyGridHeadersBaseAdapter {
+public class ModeGridAdapter implements StickyGridHeadersBaseAdapter {
     private final LayoutInflater inflater;
     private final Context context;
     private final SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences();
@@ -31,7 +31,7 @@ public class ModeAdapter implements StickyGridHeadersBaseAdapter {
     private List<DataSetObserver> observers = new ArrayList<DataSetObserver>();
     private ModeItemsHelper modeItemsHelper = new ModeItemsHelper();
 
-    public ModeAdapter(Context context) {
+    public ModeGridAdapter(Context context) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         modeItemsHelper.calcNewModesList();
