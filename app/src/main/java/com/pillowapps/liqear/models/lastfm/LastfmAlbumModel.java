@@ -1,8 +1,12 @@
 package com.pillowapps.liqear.models.lastfm;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.pillowapps.liqear.audio.Timeline;
+import com.pillowapps.liqear.callbacks.CompletionCallback;
+import com.pillowapps.liqear.callbacks.LastfmCallback;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;
@@ -10,9 +14,6 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumSearchResultsRoot;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.pillowapps.liqear.network.ServiceHelper;
-import com.pillowapps.liqear.callbacks.CompletionCallback;
-import com.pillowapps.liqear.callbacks.LastfmCallback;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
@@ -62,32 +63,17 @@ public class LastfmAlbumModel {
         });
     }
 
-    public void getCover(final Album album, final CompletionCallback callback) {
+    public void getCover(Context context, final Album album, final CompletionCallback callback) {
         if (album == null) {
             Timeline.getInstance().setAlbumCoverBitmap(null);
             callback.onCompleted();
             return;
         }
-        new ImageModel().loadImage(album.getImageUrl(), new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted() {
-
-            }
-
-            @Override
-            public void onLoadingFailed(String message) {
-
-            }
-
+        new ImageModel().loadImage(context, album.getImageUrl(), new ImageLoadingListener() {
             @Override
             public void onLoadingComplete(Bitmap bitmap) {
                 Timeline.getInstance().setAlbumCoverBitmap(bitmap);
                 callback.onCompleted();
-            }
-
-            @Override
-            public void onLoadingCancelled() {
-
             }
         });
     }

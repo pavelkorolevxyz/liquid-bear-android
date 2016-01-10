@@ -23,10 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -56,13 +52,6 @@ public class LastfmRecommendationsActivity extends ResultActivity {
     private boolean loading = false;
     private ListView listView;
     private boolean gridMode = true;
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc(true)
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .displayer(new FadeInBitmapDisplayer(500))
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .build();
-    private ImageLoader imageLoader = ImageLoader.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,16 +237,6 @@ public class LastfmRecommendationsActivity extends ResultActivity {
                 if (holder.loadImages) {
                     new ImageModel().loadImage(artist.getPreviewUrl(), holder.image, new ImageLoadingListener() {
                         @Override
-                        public void onLoadingStarted() {
-
-                        }
-
-                        @Override
-                        public void onLoadingFailed(String message) {
-
-                        }
-
-                        @Override
                         public void onLoadingComplete(Bitmap bitmap) {
                             Palette.generateAsync(bitmap,
                                     new Palette.PaletteAsyncListener() {
@@ -269,11 +248,6 @@ public class LastfmRecommendationsActivity extends ResultActivity {
                                                     vibrantSwatch.getRgb());
                                         }
                                     });
-                        }
-
-                        @Override
-                        public void onLoadingCancelled() {
-
                         }
                     });
                 } else {
@@ -295,7 +269,7 @@ public class LastfmRecommendationsActivity extends ResultActivity {
                 holder.text = (TextView) convertView.findViewById(R.id.text_list_item);
                 holder.text.setText(artist.getName());
                 if (holder.loadImages) {
-                    imageLoader.displayImage(artist.getPreviewUrl(), holder.image, options);
+                    new ImageModel().loadImage(artist.getPreviewUrl(), holder.image);
                 } else {
                     holder.image.setVisibility(View.GONE);
                 }

@@ -28,6 +28,7 @@ public class HintMaterialEditText extends MaterialEditText {
 
     public void updateHint() {
         CharSequence hint = getHint();
+        if (hint == null) return;
         updateHint(hint.toString());
     }
 }

@@ -185,23 +185,8 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
                 }
                 new ImageModel().loadImage(imageUrl, albumCoverImageView, new ImageLoadingListener() {
                     @Override
-                    public void onLoadingStarted() {
-                        progressBar.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String message) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
                     public void onLoadingComplete(Bitmap bitmap) {
                         albumCoverImageView.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadingCancelled() {
                         progressBar.setVisibility(View.GONE);
                     }
                 });

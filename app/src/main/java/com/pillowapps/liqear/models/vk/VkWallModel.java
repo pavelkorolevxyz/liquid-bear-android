@@ -1,6 +1,7 @@
 package com.pillowapps.liqear.models.vk;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.pillowapps.liqear.callbacks.VkCallback;
+import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkPhotoUploadResult;
@@ -11,19 +12,12 @@ import com.pillowapps.liqear.entities.vk.VkWallMessage;
 import com.pillowapps.liqear.entities.vk.roots.VkSavePhotoRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkUploadServerRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkWallMessagesResponseRoot;
-import com.pillowapps.liqear.helpers.FileUtils;
-import com.pillowapps.liqear.helpers.StringUtils;
 import com.pillowapps.liqear.helpers.VkTracksUtils;
-import com.pillowapps.liqear.models.CustomTypedFile;
 import com.pillowapps.liqear.network.ServiceHelper;
-import com.pillowapps.liqear.callbacks.VkCallback;
-import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.network.service.VkApiService;
 
-import java.io.File;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -188,12 +182,14 @@ public class VkWallModel {
     }
 
     private Observable<VkPhotoUploadResult> uploadWallImage(String imageUrl, URL uploadUrl) {
-        final File imageFile = ImageLoader.getInstance().getDiscCache().get(imageUrl);
-        CustomTypedFile typedFile = new CustomTypedFile(FileUtils.getMimeType(imageUrl),
-                imageFile, "photo.jpg");
-        Map<String, String> params = StringUtils.parseUrlParams(uploadUrl);
-        String endpoint = String.format("%s://%s", uploadUrl.getProtocol(), uploadUrl.getHost());
-        return ServiceHelper.getVkUploadService(endpoint).uploadPhoto(typedFile, params);
+
+//        final File imageFile = ImageLoader.getInstance().getDiscCache().get(imageUrl);
+//        CustomTypedFile typedFile = new CustomTypedFile(FileUtils.getMimeType(imageUrl),
+//                imageFile, "photo.jpg");
+//        Map<String, String> params = StringUtils.parseUrlParams(uploadUrl);
+//        String endpoint = String.format("%s://%s", uploadUrl.getProtocol(), uploadUrl.getHost());
+//        return ServiceHelper.getVkUploadService(endpoint).uploadPhoto(typedFile, params);
+        return Observable.empty(); // todo change from UIL to Glide cache
     }
 
     private Observable<VkSavePhotoRoot> saveWallPhoto(VkPhotoUploadResult result) {

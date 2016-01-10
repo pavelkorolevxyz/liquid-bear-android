@@ -569,20 +569,8 @@ public class PhoneFragment extends MainFragment {
                             new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
                                     artistImageView, new ImageLoadingListener() {
                                         @Override
-                                        public void onLoadingStarted() {
-                                        }
-
-                                        @Override
-                                        public void onLoadingFailed(String message) {
-                                        }
-
-                                        @Override
                                         public void onLoadingComplete(Bitmap bitmap) {
                                             updatePaletteWithBitmap(bitmap);
-                                        }
-
-                                        @Override
-                                        public void onLoadingCancelled() {
                                         }
                                     });
                         }

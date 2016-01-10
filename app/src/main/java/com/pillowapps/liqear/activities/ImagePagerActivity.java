@@ -18,7 +18,6 @@ package com.pillowapps.liqear.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -31,27 +30,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.TrackedActivity;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.TouchImageView;
-import com.pillowapps.liqear.helpers.FileUtils;
-import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.network.ImageLoadingListener;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,56 +121,56 @@ public class ImagePagerActivity extends TrackedActivity {
                 startActivity(intent);
                 break;
             case R.id.download_image_button: {
-                if (imageUrls.size() <= pager.getCurrentItem()) {
-                    break;
-                }
-                String imageUrl = imageUrls.get(pager.getCurrentItem());
-
-                String root = String.format("%s/%s", Environment.getExternalStorageDirectory(),
-                        Environment.DIRECTORY_PICTURES);
-                File myDir = new File(root);
-                if (!myDir.exists()) {
-                    boolean directoryCreated = myDir.mkdirs();
-                    if (!directoryCreated) {
-                        break;
-                    }
-                }
-                String fileName = String.format("%s_%s.jpg", artist,
-                        TimeUtils.formatMillisForFileName(System.currentTimeMillis()));
-
-                File fileForImage = new File(myDir, fileName);
-
-                InputStream sourceStream = null;
-                OutputStream targetStream = null;
-                File cachedImage = ImageLoader.getInstance().getDiskCache().get(imageUrl);
-                try {
-                    if (cachedImage.exists()) {
-                        sourceStream = new FileInputStream(cachedImage);
-                    } else {
-                        ImageDownloader downloader = new BaseImageDownloader(ImagePagerActivity.this);
-                        sourceStream = downloader.getStream(imageUrl, null);
-                    }
-
-                    targetStream = new FileOutputStream(fileForImage);
-                    FileUtils.copyStream(sourceStream, targetStream);
-                    Toast.makeText(ImagePagerActivity.this, getString(R.string.saved),
-                            Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (targetStream != null) {
-                        try {
-                            targetStream.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
-                    if (sourceStream != null) {
-                        try {
-                            sourceStream.close();
-                        } catch (IOException ignored) {
-                        }
-                    }
-                }
+//                if (imageUrls.size() <= pager.getCurrentItem()) {
+//                    break;
+//                }
+//                String imageUrl = imageUrls.get(pager.getCurrentItem());
+//
+//                String root = String.format("%s/%s", Environment.getExternalStorageDirectory(),
+//                        Environment.DIRECTORY_PICTURES);
+//                File myDir = new File(root);
+//                if (!myDir.exists()) {
+//                    boolean directoryCreated = myDir.mkdirs();
+//                    if (!directoryCreated) {
+//                        break;
+//                    }
+//                }
+//                String fileName = String.format("%s_%s.jpg", artist,
+//                        TimeUtils.formatMillisForFileName(System.currentTimeMillis()));
+//
+//                File fileForImage = new File(myDir, fileName);
+//
+//                InputStream sourceStream = null;
+//                OutputStream targetStream = null;
+//                File cachedImage = ImageLoader.getInstance().getDiskCache().get(imageUrl);
+//                try {
+//                    if (cachedImage.exists()) {
+//                        sourceStream = new FileInputStream(cachedImage);
+//                    } else {
+//                        ImageDownloader downloader = new BaseImageDownloader(ImagePagerActivity.this);
+//                        sourceStream = downloader.getStream(imageUrl, null);
+//                    }
+//
+//                    targetStream = new FileOutputStream(fileForImage);
+//                    FileUtils.copyStream(sourceStream, targetStream);
+//                    Toast.makeText(ImagePagerActivity.this, getString(R.string.saved),
+//                            Toast.LENGTH_SHORT).show();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    if (targetStream != null) {
+//                        try {
+//                            targetStream.close();
+//                        } catch (IOException ignored) {
+//                        }
+//                    }
+//                    if (sourceStream != null) {
+//                        try {
+//                            sourceStream.close();
+//                        } catch (IOException ignored) {
+//                        }
+//                    }
+//                } todo remove if not useless due to lastfm changes
             }
             break;
             default:
@@ -254,28 +241,13 @@ public class ImagePagerActivity extends TrackedActivity {
             TouchImageView imageView = (TouchImageView) imageLayout.findViewById(R.id.image);
             final ProgressBar spinner = (ProgressBar) imageLayout.findViewById(R.id.loading);
 
-            imageModel.loadImage(images.get(position), imageView, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted() {
-                    spinner.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onLoadingFailed(String message) {
-                    Toast.makeText(ImagePagerActivity.this, message, Toast.LENGTH_SHORT).show();
-                    spinner.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onLoadingComplete(Bitmap bitmap) {
-                    spinner.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onLoadingCancelled() {
-                    spinner.setVisibility(View.GONE);
-                }
-            });
+            imageModel.loadImage(images.get(position), imageView,
+                    new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingComplete(Bitmap bitmap) {
+                            spinner.setVisibility(View.GONE);
+                        }
+                    });
             view.addView(imageLayout, 0);
             return imageLayout;
         }

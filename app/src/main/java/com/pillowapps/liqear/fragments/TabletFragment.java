@@ -19,10 +19,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.mobeta.android.dslv.DragSortListView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
@@ -55,6 +51,7 @@ import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TimeUtils;
+import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.PlayingState;
 import com.squareup.otto.Subscribe;
 
@@ -76,13 +73,6 @@ public class TabletFragment extends MainFragment {
     private EditText searchPlaylistEditText;
     private ImageButton clearEditTextButton;
     private ImageView artistImageView;
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisk(true)
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .displayer(new FadeInBitmapDisplayer(300))
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .build();
-    private ImageLoader imageLoader = ImageLoader.getInstance();
     private ImageView albumImageView;
     private TextView albumTextView;
     private View blackView;
@@ -415,7 +405,7 @@ public class TabletFragment extends MainFragment {
                     Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
                 String imageUrl = event.getImageUrl();
                 Timeline.getInstance().setCurrentArtistImageUrl(imageUrl);
-                imageLoader.displayImage(imageUrl, artistImageView, options);
+                new ImageModel().loadImage(imageUrl, artistImageView);
             }
         }
     }
@@ -431,7 +421,7 @@ public class TabletFragment extends MainFragment {
                 albumImageView.setVisibility(View.INVISIBLE);
             } else {
                 albumImageView.setVisibility(View.VISIBLE);
-                imageLoader.displayImage(imageUrl, albumImageView, options);
+                new ImageModel().loadImage(imageUrl, artistImageView);
             }
             String title = album.getTitle();
             if (title == null) {

@@ -1030,7 +1030,7 @@ public class MusicService extends Service implements
                         Intent intent = new Intent();
                         intent.setAction(Constants.ACTION_SERVICE);
                         Timeline.getInstance().setCurrentAlbum(album);
-                        new LastfmAlbumModel().getCover(album, new CompletionCallback() {
+                        new LastfmAlbumModel().getCover(MusicService.this, album, new CompletionCallback() {
                             @Override
                             public void onCompleted() {
                                 showTrackInNotification();
