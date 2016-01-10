@@ -66,4 +66,48 @@ public class MusicServiceManager {
     public void play(int index) {
         musicService.play(index);
     }
+
+    public boolean isPrepared() {
+        return musicService.isPrepared();
+    }
+
+    public int getCurrentPositionPercent() {
+        return musicService.getCurrentPositionPercent();
+    }
+
+    public int getCurrentPosition() {
+        return musicService.getCurrentPosition();
+    }
+
+    public int getDuration() {
+        return musicService.getDuration();
+    }
+
+    public void updateWidgets() {
+        musicService.updateWidgets();
+    }
+
+    public void playPause() {
+        musicService.playPause();
+    }
+
+    public void next() {
+        musicService.next();
+    }
+
+    public void prev() {
+        musicService.prev();
+    }
+
+    public void seekTo(int position) {
+        musicService.seekTo(position);
+    }
+
+    public void startPlayProgressUpdater() {
+        musicService.startPlayProgressUpdater();
+    }
+
+    public void stopPlayProgressUpdater() {
+        musicService.stopPlayProgressUpdater();
+    }
 }

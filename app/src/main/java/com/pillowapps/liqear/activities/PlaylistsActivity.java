@@ -68,15 +68,16 @@ public class PlaylistsActivity extends ResultActivity {
         listView = (ListView) findViewById(android.R.id.list);
         emptyTextView = (TextView) findViewById(R.id.empty);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(getResources().getString(R.string.playlist_tab));
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getResources().getString(R.string.playlist_tab));
+        }
         listView.setOnCreateContextMenuListener(this);
 
         new PlaylistModel().getSavedPlaylists(new GetPlaylistListCallback() {
             @Override
             public void onCompleted(List<Playlist> playlistList) {
-                adapter = new PlaylistsArrayAdapter<>(
-                        PlaylistsActivity.this, playlistList, Playlist.class);
+                adapter = new PlaylistsArrayAdapter(PlaylistsActivity.this, playlistList);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -93,8 +94,8 @@ public class PlaylistsActivity extends ResultActivity {
                 switch (aim) {
                     case ADD_TO_PLAYLIST: {
                         Playlist playlist = (Playlist) adapter.get(position);
-                        new PlaylistModel().addTrackToPlaylist(playlist, new Track(extras.getString("artist"),
-                                extras.getString("title")));
+                        new PlaylistModel().addTrackToPlaylist(playlist,
+                                new Track(extras.getString("artist"), extras.getString("title")));
                         finish();
                         break;
                     }
@@ -128,7 +129,7 @@ public class PlaylistsActivity extends ResultActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         if (v.getId() == android.R.id.list) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            menu.setHeaderTitle(((Playlist) adapter.getItem(info.position)).getTitle());
+            menu.setHeaderTitle(adapter.getItem(info.position).getTitle());
             String[] menuItems = getResources().getStringArray(R.array.playlists_item_menu);
             for (int i = 0; i < menuItems.length; i++) {
                 menu.add(android.view.Menu.NONE, i, i, menuItems[i]);
@@ -140,7 +141,7 @@ public class PlaylistsActivity extends ResultActivity {
     public boolean onContextItemSelected(android.view.MenuItem item) {
         AdapterView.AdapterContextMenuInfo info =
                 (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Playlist playlist = (Playlist) adapter.getItem(info.position);
+        Playlist playlist = adapter.getItem(info.position);
         switch (item.getItemId()) {
             case 0:
                 adapter.getValues().remove(info.position);
@@ -179,7 +180,6 @@ public class PlaylistsActivity extends ResultActivity {
     }
 
     private void showNewDialog() {
-
         final HintMaterialEditText input = new HintMaterialEditText(this);
         input.setFloatingLabel(MaterialEditText.FLOATING_LABEL_NORMAL);
         input.updateHint(getString(R.string.enter_title_here));
@@ -201,7 +201,7 @@ public class PlaylistsActivity extends ResultActivity {
                 long pid = new PlaylistModel().addPlaylist(title,
                         new ArrayList<Track>());
                 if (pid != -1) {
-                    ((List<Playlist>) adapter.getValues()).add(0, new Playlist(pid, title));
+                    adapter.getValues().add(0, new Playlist(pid, title));
                     adapter.notifyDataSetChanged();
                     updateEmptyTextView();
                 }
@@ -236,16 +236,15 @@ public class PlaylistsActivity extends ResultActivity {
 
                 if (isRenaming) {
                     new PlaylistModel().renamePlaylist(
-                            ((Playlist) adapter.get(position)).getId(), title);
-                    ((Playlist) adapter.get(position)).setTitle(title);
+                            adapter.get(position).getId(), title);
+                    adapter.get(position).setTitle(title);
                     adapter.notifyDataSetChanged();
                     updateEmptyTextView();
                 } else {
                     long pid = new PlaylistModel().addPlaylist(title,
                             Timeline.getInstance().getPlaylistTracks());
                     if (pid != -1) {
-                        ((List<Playlist>) adapter.getValues()).add(0,
-                                new Playlist(pid, title));
+                        adapter.getValues().add(0, new Playlist(pid, title));
                         adapter.notifyDataSetChanged();
                         updateEmptyTextView();
                     }
@@ -306,23 +305,21 @@ public class PlaylistsActivity extends ResultActivity {
         ADD_TO_PLAYLIST, SHOW_PLAYLISTS, SAVE_AS_PLAYLIST
     }
 
-    private class PlaylistsArrayAdapter<T> extends ArrayAdapter<T> {
+    private class PlaylistsArrayAdapter extends ArrayAdapter<Playlist> {
         private final Context context;
-        private final List<T> values;
-        private final Class<T> clazz;
+        private final List<Playlist> values;
 
-        public PlaylistsArrayAdapter(Context context, List<T> values, Class<T> clazz) {
+        public PlaylistsArrayAdapter(Context context, List<Playlist> values) {
             super(context, R.layout.search_hint_item, values);
             this.context = context;
             this.values = values;
-            this.clazz = clazz;
         }
 
-        public T get(int position) {
+        public Playlist get(int position) {
             return values.get(position);
         }
 
-        public List<T> getValues() {
+        public List<Playlist> getValues() {
             return values;
         }
 
@@ -332,9 +329,7 @@ public class PlaylistsActivity extends ResultActivity {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.search_hint_item, parent, false);
             TextView textView = (TextView) rowView.findViewById(R.id.text_list_item);
-            if (clazz == Playlist.class) {
-                textView.setText(((Playlist) values.get(position)).getTitle());
-            }
+            textView.setText(values.get(position).getTitle());
             if (position % 2 == 0) {
                 rowView.setBackgroundResource(R.drawable.list_item_background);
             } else {

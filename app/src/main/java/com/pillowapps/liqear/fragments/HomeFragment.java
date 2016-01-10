@@ -6,18 +6,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.michaelnovakjr.numberpicker.NumberPicker;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.EqualizerActivity;
 import com.pillowapps.liqear.activities.HomeActivity;
@@ -29,8 +28,11 @@ import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.events.ExitEvent;
+import com.pillowapps.liqear.entities.events.ShowProgressEvent;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
@@ -45,7 +47,9 @@ import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
 import com.pillowapps.liqear.models.TrackModel;
 import com.pillowapps.liqear.models.VideoModel;
+import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
+import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
@@ -57,9 +61,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     protected MusicServiceManager musicServiceManager;
 
-    private ProgressBar progressBar;
+    protected ProgressBar progressBar;
 
     protected PlaylistItemsAdapter playlistItemsAdapter;
+
+    protected Menu mainMenu;
 
 
     @Override
@@ -80,17 +86,14 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                 activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
             }
         });
+
+        LBApplication.bus.register(this);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        if (view == null) return null;
-
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-
-        return view;
+    public void onDestroy() {
+        LBApplication.bus.unregister(this);
+        super.onDestroy();
     }
 
     @Override
@@ -236,8 +239,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             }
             return true;
             case R.id.exit_button: {
-                MusicServiceManager.getInstance().stopService(activity);
-                activity.finish();
+                exit();
             }
             return true;
             case R.id.playlists_button: {
@@ -297,6 +299,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         }
     }
 
+    private void exit() {
+        MusicServiceManager.getInstance().stopService(activity);
+        activity.finish();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) return;
@@ -309,7 +316,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                         if (playlistItemsAdapter.isEditMode())
                             playlistItemsAdapter.setEditMode(false);
                         int positionToPlay = data.getIntExtra(Constants.POSITION_TO_PLAY, 0);
-//                        if (!isTablet()) phoneFragment.changeViewPagerItem(0);
+                        changeViewPagerItem(0);
                         updateAdapter();
                         changePlaylist(positionToPlay, true);
                     }
@@ -358,6 +365,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             }
             new PlaylistModel().saveMainPlaylist();
         }
+        updateEmptyPlaylistTextView();
     }
 
     @Override
@@ -365,11 +373,75 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         ErrorNotifier.showError(activity, errorMessage);
     }
 
+    @Override
+    public abstract void updateEmptyPlaylistTextView();
+
     public void openRadiomix() {
         presenter.openRadiomix();
     }
 
     public void openLibrary() {
         presenter.openLibrary();
+    }
+
+    @Subscribe
+    public void exitEvent(ExitEvent event) {
+        exit();
+    }
+
+    @Subscribe
+    public void showProgressEvent(ShowProgressEvent event) {
+    }
+
+    public void openDropButton() {
+        if (mainMenu == null) return;
+        mainMenu.performIdentifierAction(R.id.track_button, 0);
+    }
+
+    public void toggleLoveCurrentTrack() {
+        if (!AuthorizationInfoManager.isAuthorizedOnLastfm()) {
+            toast(R.string.last_fm_not_authorized);
+            return;
+        }
+        if (!NetworkUtils.isOnline()) {
+            toast(R.string.no_internet);
+            return;
+        }
+        showLoading(true);
+        final Track track = Timeline.getInstance().getCurrentTrack();
+        if (!track.isLoved()) {
+            new LastfmTrackModel().love(track, new SimpleCallback<Object>() {
+                @Override
+                public void success(Object data) {
+                    track.setLoved(true);
+                    updateLoveButton();
+                    showLoading(false);
+                }
+
+                @Override
+                public void failure(String errorMessage) {
+                    showLoading(false);
+
+                }
+            });
+        } else {
+            new LastfmTrackModel().unlove(track, new SimpleCallback<Object>() {
+                @Override
+                public void success(Object o) {
+                    showLoading(false);
+                    track.setLoved(false);
+                    updateLoveButton();
+                }
+
+                @Override
+                public void failure(String error) {
+                    showLoading(false);
+                }
+            });
+        }
+    }
+
+    public void updateLoveButton() {
+        // No operations.
     }
 }

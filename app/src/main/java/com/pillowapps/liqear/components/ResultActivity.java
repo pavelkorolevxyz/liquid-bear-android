@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.TrackedActivity;
+import com.pillowapps.liqear.activities.base.TrackedActivity;
 import com.pillowapps.liqear.activities.modes.VkAlbumTracksActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
@@ -29,7 +29,6 @@ import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import java.util.List;
 
 public class ResultActivity extends TrackedActivity {
-    public static final String TAB_INDEX = "tab_index";
 
     protected int getPageSize() {
         return LBPreferencesManager.getPageSize();

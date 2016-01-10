@@ -57,7 +57,7 @@ public class LastfmRecommendationsActivity extends ResultActivity {
     private ListView listView;
     private boolean gridMode = true;
     private DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .cacheOnDisc()
+            .cacheOnDisc(true)
             .bitmapConfig(Bitmap.Config.RGB_565)
             .displayer(new FadeInBitmapDisplayer(500))
             .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
@@ -71,8 +71,10 @@ public class LastfmRecommendationsActivity extends ResultActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(getResources().getString(R.string.recommendations));
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getResources().getString(R.string.recommendations));
+        }
         initUi();
         initListeners();
         getRecommendedArtists(RECOMMENDATIONS_AMOUNT, loadedPages + 1);
@@ -141,7 +143,7 @@ public class LastfmRecommendationsActivity extends ResultActivity {
                     break;
                 }
                 if (adapter != null) {
-                    List values = adapter.getValues();
+                    List<Artist> values = adapter.getValues();
                     getRecommendedTracks(values);
                 }
                 progressBar.setVisibility(View.VISIBLE);

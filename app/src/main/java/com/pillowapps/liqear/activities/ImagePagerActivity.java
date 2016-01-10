@@ -37,6 +37,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.TrackedActivity;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.TouchImageView;
 import com.pillowapps.liqear.helpers.FileUtils;
@@ -87,7 +88,9 @@ public class ImagePagerActivity extends TrackedActivity {
         artist = bundle.getString(ARTIST);
         if (artist == null) artist = "";
         actionBar = getSupportActionBar();
-        actionBar.setTitle(artist);
+        if (actionBar != null) {
+            actionBar.setTitle(artist);
+        }
 
         pageProgressBar = (ProgressBar) findViewById(R.id.pageProgressBar);
         pager = (ViewPager) findViewById(R.id.pager);
@@ -96,7 +99,7 @@ public class ImagePagerActivity extends TrackedActivity {
         pager.setCurrentItem(pagerPosition);
         actionBar.setDisplayHomeAsUpEnabled(true);
         getImages(0);
-        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
 

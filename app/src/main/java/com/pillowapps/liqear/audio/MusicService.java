@@ -341,7 +341,7 @@ public class MusicService extends Service implements
         stopForeground(true);
     }
 
-    private void exit() {
+    public void exit() {
         LBApplication.bus.post(new ExitEvent());
         stopSelf();
     }
@@ -396,50 +396,7 @@ public class MusicService extends Service implements
                     pause();
                     break;
                 case ACTION_PLAY_PAUSE:
-                    Timeline.getInstance().setStartPlayingOnPrepared(true);
-                    if (hasDataSource()) {
-                        togglePlayPause();
-                    } else {
-                        Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
-                        new PlaylistModel().getMainPlaylist(new GetPlaylistCallback() {
-                            @Override
-                            public void onCompleted(Playlist playlist) {
-                                Timeline.getInstance().setPlaylist(playlist);
-                                List<Track> tracks = playlist.getTracks();
-
-                                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                                String artist = preferences.getString(Constants.ARTIST, "");
-                                String title = preferences.getString(Constants.TITLE, "");
-                                int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                                int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
-
-                                boolean currentFits = currentIndex < tracks.size();
-                                if (!currentFits) currentIndex = 0;
-                                if (currentIndex == 0 && tracks.size() == 0) return;
-                                Track currentTrack = tracks.get(currentIndex);
-                                boolean tracksEquals = currentFits
-                                        && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                                        + currentTrack.getTitle());
-                                if (!tracksEquals) {
-                                    currentIndex = 0;
-                                    position = 0;
-                                }
-                                Timeline.getInstance().setIndex(currentIndex);
-                                if (currentIndex > tracks.size()) {
-                                    position = 0;
-                                }
-                                if (!LBPreferencesManager.isContinueFromLastPositionEnabled()) {
-                                    position = 0;
-                                }
-
-                                Timeline.getInstance().setTimePosition(position);
-                                if (tracks.size() != 0
-                                        && Timeline.getInstance().getCurrentTrack() == null) {
-                                    play();
-                                }
-                            }
-                        });
-                    }
+                    playPause();
                     break;
                 case ACTION_CLOSE:
                     exit();
@@ -534,6 +491,53 @@ public class MusicService extends Service implements
         }
 
         return START_STICKY;
+    }
+
+    public void playPause() {
+        Timeline.getInstance().setStartPlayingOnPrepared(true);
+        if (hasDataSource()) {
+            togglePlayPause();
+        } else {
+            Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
+            new PlaylistModel().getMainPlaylist(new GetPlaylistCallback() {
+                @Override
+                public void onCompleted(Playlist playlist) {
+                    Timeline.getInstance().setPlaylist(playlist);
+                    List<Track> tracks = playlist.getTracks();
+
+                    SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                    String artist = preferences.getString(Constants.ARTIST, "");
+                    String title = preferences.getString(Constants.TITLE, "");
+                    int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                    int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+
+                    boolean currentFits = currentIndex < tracks.size();
+                    if (!currentFits) currentIndex = 0;
+                    if (currentIndex == 0 && tracks.size() == 0) return;
+                    Track currentTrack = tracks.get(currentIndex);
+                    boolean tracksEquals = currentFits
+                            && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                            + currentTrack.getTitle());
+                    if (!tracksEquals) {
+                        currentIndex = 0;
+                        position = 0;
+                    }
+                    Timeline.getInstance().setIndex(currentIndex);
+                    if (currentIndex > tracks.size()) {
+                        position = 0;
+                    }
+                    if (!LBPreferencesManager.isContinueFromLastPositionEnabled()) {
+                        position = 0;
+                    }
+
+                    Timeline.getInstance().setTimePosition(position);
+                    if (tracks.size() != 0
+                            && Timeline.getInstance().getCurrentTrack() == null) {
+                        play();
+                    }
+                }
+            });
+        }
     }
 
     private boolean hasDataSource() {

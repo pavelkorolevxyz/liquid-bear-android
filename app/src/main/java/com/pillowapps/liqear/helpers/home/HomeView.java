@@ -13,4 +13,6 @@ public interface HomeView {
     void showError(String errorMessage);
 
     void playTrack(int index);
+
+    void updateEmptyPlaylistTextView();
 }

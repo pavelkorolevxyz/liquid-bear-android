@@ -5,27 +5,27 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.SetlistsResultActivity;
+import com.pillowapps.liqear.components.HintMaterialEditText;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.helpers.Constants;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class SetlistsActivity extends ResultActivity {
     @InjectView(R.id.artist_name_edit_text_setlist)
-    protected EditText artistEditText;
+    protected HintMaterialEditText artistEditText;
     @InjectView(R.id.city_edit_text_setlist)
-    protected EditText venueEditText;
+    protected HintMaterialEditText venueEditText;
     @InjectView(R.id.venue_edit_text_setlist)
-    protected EditText cityEditText;
+    protected HintMaterialEditText cityEditText;
     @InjectView(R.id.search_setlist_button)
-    protected Button searchButton;
+    protected FancyButton searchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +34,12 @@ public class SetlistsActivity extends ResultActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.inject(this);
+
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(getResources().getString(R.string.setlist));
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getResources().getString(R.string.setlist));
+        }
     }
 
     @OnClick(R.id.search_setlist_button)

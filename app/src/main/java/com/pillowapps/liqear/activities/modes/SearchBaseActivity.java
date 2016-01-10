@@ -33,7 +33,9 @@ public abstract class SearchBaseActivity extends ResultActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         editText = (HintMaterialEditText) findViewById(R.id.search_edit_text_quick_search_layout);
         searchLayout = findViewById(R.id.edit_part_quick_search_layout);
         recycler = (LoadMoreRecyclerView) findViewById(R.id.list);

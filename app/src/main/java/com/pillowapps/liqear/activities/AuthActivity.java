@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.TrackedActivity;
 import com.pillowapps.liqear.adapters.pagers.AuthPagerAdapter;
 import com.pillowapps.liqear.callbacks.LastfmErrorCodeCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;

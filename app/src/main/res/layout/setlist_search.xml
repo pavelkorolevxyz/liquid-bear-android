@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/icons">
@@ -11,9 +12,8 @@
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_above="@+id/search_setlist_button"
-        android:layout_below="@id/toolbar"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
         android:padding="12dp">
 
         <LinearLayout
@@ -23,51 +23,63 @@
             android:orientation="vertical"
             android:padding="4dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"
-                android:text="@string/artist_name" />
-
-            <EditText
+            <com.pillowapps.liqear.components.HintMaterialEditText
                 android:id="@+id/artist_name_edit_text_setlist"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
-                android:text="@string/city" />
+                android:hint="@string/artist_name"
+                android:inputType="none"
+                android:maxLength="50"
+                android:singleLine="true"
+                app:met_clearButton="true"
+                app:met_floatingLabel="normal"
+                app:met_primaryColor="@color/accent" />
 
-            <EditText
+            <com.pillowapps.liqear.components.HintMaterialEditText
                 android:id="@+id/city_edit_text_setlist"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
-                android:text="@string/venue" />
+                android:hint="@string/city"
+                android:inputType="none"
+                android:maxLength="50"
+                android:singleLine="true"
+                app:met_clearButton="true"
+                app:met_floatingLabel="normal"
+                app:met_primaryColor="@color/accent" />
 
-            <EditText
+            <com.pillowapps.liqear.components.HintMaterialEditText
                 android:id="@+id/venue_edit_text_setlist"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical" />
-        </LinearLayout>
+                android:layout_gravity="left|center_vertical"
+                android:hint="@string/venue"
+                android:inputType="none"
+                android:maxLength="50"
+                android:singleLine="true"
+                app:met_clearButton="true"
+                app:met_floatingLabel="normal"
+                app:met_primaryColor="@color/accent" />
 
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/search_setlist_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/avatar"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="16dp"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:paddingTop="16dp"
+                app:fb_defaultColor="@color/primary"
+                app:fb_focusColor="@color/primary_dark"
+                app:fb_text="@string/search"
+                app:fb_textColor="@color/inverted_primary_text"
+                app:fb_textSize="8sp" />
+        </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/search_setlist_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/search" />
 </RelativeLayout>

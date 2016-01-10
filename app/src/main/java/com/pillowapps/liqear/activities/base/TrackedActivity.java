@@ -1,7 +1,6 @@
-package com.pillowapps.liqear.activities;
+package com.pillowapps.liqear.activities.base;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 
 import com.google.analytics.tracking.android.EasyTracker;
 import com.pillowapps.liqear.BuildConfig;

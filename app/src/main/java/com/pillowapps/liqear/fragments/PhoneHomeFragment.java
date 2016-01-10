@@ -1,15 +1,17 @@
 package com.pillowapps.liqear.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.ContextMenu;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,26 +23,39 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobeta.android.dslv.DragSortListView;
-import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MusicServiceManager;
+import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
+import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.components.ModeClickListener;
-import com.pillowapps.liqear.components.OnItemStartDragListener;
+import com.pillowapps.liqear.components.OnTopToBottomSwipeListener;
+import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.components.ViewPage;
+import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.events.BufferizationEvent;
+import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
+import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
+import com.pillowapps.liqear.entities.events.PreparedEvent;
+import com.pillowapps.liqear.entities.events.TimeEvent;
+import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
+import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
+import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.helpers.home.PhoneHomePresenter;
 import com.pillowapps.liqear.models.Tutorial;
+import com.squareup.otto.Subscribe;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -65,7 +80,6 @@ public class PhoneHomeFragment extends HomeFragment {
     /**
      * Playlists tab
      **/
-
     private ListView playlistListView;
     private EditText searchPlaylistEditText;
     private Toolbar playlistToolbar;
@@ -76,7 +90,6 @@ public class PhoneHomeFragment extends HomeFragment {
     /**
      * Play tab
      */
-
     private Toolbar playbackToolbar;
     private TextView artistTextView;
     private TextView titleTextView;
@@ -102,7 +115,6 @@ public class PhoneHomeFragment extends HomeFragment {
     /**
      * Modes tab
      */
-
     private Toolbar modeToolbar;
 
     private Tutorial tutorial = new Tutorial();
@@ -113,18 +125,14 @@ public class PhoneHomeFragment extends HomeFragment {
 
         presenter = new PhoneHomePresenter(this);
         initUi(v);
+        initListeners();
 
-        LBApplication.bus.register(this);
         return v;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        LBApplication.bus.unregister(this);
-    }
-
     private void initUi(View v) {
+        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+
         initViewPager(v);
         changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX);
 
@@ -165,19 +173,19 @@ public class PhoneHomeFragment extends HomeFragment {
         updateToolbars();
 
         indicator = (UnderlinePageIndicator) v.findViewById(R.id.indicator);
-        indicator.setSelectedColor(getResources().getColor(R.color.accent));
+        indicator.setSelectedColor(ContextCompat.getColor(activity, R.color.accent));
         indicator.setOnClickListener(null);
         indicator.setViewPager(pager);
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int i, float v, int i2) {
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
             }
 
             @Override
-            public void onPageSelected(int index) {
-//                invalidateOptionsMenu();
+            public void onPageSelected(int position) {
                 setHasOptionsMenu(true);
-                if (index != PhoneFragmentPagerAdapter.PLAY_TAB_INDEX) {
+                if (position != PhoneFragmentPagerAdapter.PLAY_TAB_INDEX) {
                     if (tutorial.isEnabled() && tutorialBlinkAnimation != null) {
                         tutorialBlinkAnimation.cancel();
                         tutorialLayout.setVisibility(View.GONE);
@@ -187,7 +195,7 @@ public class PhoneHomeFragment extends HomeFragment {
             }
 
             @Override
-            public void onPageScrollStateChanged(int i) {
+            public void onPageScrollStateChanged(int state) {
 
             }
         });
@@ -198,31 +206,31 @@ public class PhoneHomeFragment extends HomeFragment {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        View.OnCreateContextMenuListener contextMenuListener = new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                PopupMenu popup = new PopupMenu(getContext(), v);
-                //Inflating the Popup using xml file
-                popup.getMenuInflater()
-                        .inflate(R.menu.menu_main_playlist_track, popup.getMenu());
-
-                //registering popup with OnMenuItemClickListener
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        onContextItemSelected(item);
-                        return true;
-                    }
-                });
-
-                popup.show();
-            }
-        };
-        OnItemStartDragListener onStartDragListener = new OnItemStartDragListener() {
-            @Override
-            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-                mItemTouchHelper.startDrag(viewHolder);
-            }
-        };
+//        View.OnCreateContextMenuListener contextMenuListener = new View.OnCreateContextMenuListener() {
+//            @Override
+//            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//                PopupMenu popup = new PopupMenu(getContext(), v);
+//                //Inflating the Popup using xml file
+//                popup.getMenuInflater()
+//                        .inflate(R.menu.menu_main_playlist_track, popup.getMenu());
+//
+//                //registering popup with OnMenuItemClickListener
+//                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//                    public boolean onMenuItemClick(MenuItem item) {
+//                        onContextItemSelected(item);
+//                        return true;
+//                    }
+//                });
+//
+//                popup.show();
+//            }
+//        };
+//        OnItemStartDragListener onStartDragListener = new OnItemStartDragListener() {
+//            @Override
+//            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+//                mItemTouchHelper.startDrag(viewHolder);
+//            }
+//        };
         playlistListView.setAdapter(playlistItemsAdapter);
         searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
         searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
@@ -261,6 +269,134 @@ public class PhoneHomeFragment extends HomeFragment {
         modeGridView.setOnItemClickListener(new ModeClickListener(this));
         modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
         modeGridView.setAdapter(modeAdapter);
+    }
+
+    private void initListeners() {
+        searchPlaylistEditText.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (playlistItemsAdapter != null) {
+                    playlistItemsAdapter.getFilter().filter(s);
+                }
+            }
+        });
+
+        shuffleButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Timeline.getInstance().toggleShuffle();
+                shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+                MusicServiceManager.getInstance().updateWidgets();
+            }
+        });
+
+        repeatButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Timeline.getInstance().toggleRepeat();
+                repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
+                MusicServiceManager.getInstance().updateWidgets();
+            }
+        });
+
+        artistTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Track currentTrack = Timeline.getInstance().getCurrentTrack();
+                if (currentTrack == null) return;
+                Intent artistInfoIntent = new Intent(activity, LastfmArtistViewerActivity.class);
+                artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, currentTrack.getArtist());
+                startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
+            }
+        });
+
+
+        // Playback controlling.
+        playPauseButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                MusicServiceManager.getInstance().playPause();
+            }
+        });
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                MusicServiceManager.getInstance().next();
+            }
+        });
+
+        prevButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                MusicServiceManager.getInstance().prev();
+            }
+        });
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                MusicServiceManager.getInstance().seekTo(seekBar.getProgress()
+                        * MusicServiceManager.getInstance().getDuration() / 100);
+                timePlateTextView.setVisibility(View.GONE);
+                MusicServiceManager.getInstance().startPlayProgressUpdater();
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                timePlateTextView.setVisibility(View.VISIBLE);
+                timePlateTextView.setText(timeTextView.getText().toString());
+                MusicServiceManager.getInstance().stopPlayProgressUpdater();
+            }
+
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (!fromUser) return;
+                int timeFromBeginning = seekBar.getProgress() *
+                        MusicServiceManager.getInstance().getDuration() / 100000;
+                String time = TimeUtils.secondsToMinuteString(timeFromBeginning);
+                timePlateTextView.setText(time);
+                int timeToEnd = MusicServiceManager.getInstance().getDuration() / 1000 -
+                        timeFromBeginning;
+                timeTextView.setText(String.format("-%s", TimeUtils.secondsToMinuteString(timeToEnd)));
+            }
+        });
+
+        View.OnClickListener albumClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity, LastfmAlbumViewerActivity.class);
+                Album album = Timeline.getInstance().getCurrentAlbum();
+                if (album == null) return;
+                intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
+                intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
+                startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+            }
+        };
+        albumImageView.setOnClickListener(albumClickListener);
+        albumTextView.setOnClickListener(albumClickListener);
+        timeTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean(Constants.TIME_INVERTED,
+                        !preferences.getBoolean(Constants.TIME_INVERTED, false));
+                editor.apply();
+                updateTime();
+            }
+        });
+        SwipeDetector swipeDetector = new SwipeDetector(new OnTopToBottomSwipeListener() {
+            @Override
+            public void onTopToBottomSwipe() {
+                openDropButton();
+            }
+        });
+        blackView.setOnTouchListener(swipeDetector);
+
+        loveFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleLoveCurrentTrack();
+            }
+        });
     }
 
     public void changeViewPagerItem(int currentItem) {
@@ -304,9 +440,32 @@ public class PhoneHomeFragment extends HomeFragment {
         }
         playbackToolbar.inflateMenu(menuLayout);
         playbackToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
-//        mainActivity.setMainMenu(playbackToolbar.getMenu());
+        mainMenu = playbackToolbar.getMenu();
     }
 
+    private void updateTime() {
+        MusicServiceManager musicServiceManager = MusicServiceManager.getInstance();
+        if (musicServiceManager.isPrepared()) return;
+        seekBar.setProgress(musicServiceManager.getCurrentPositionPercent());
+        String text;
+        int timeFromBeginning = musicServiceManager.getCurrentPosition() / 1000;
+        int duration = musicServiceManager.getDuration();
+        if (duration > 0) {
+            if (SharedPreferencesManager.getPreferences().getBoolean(Constants.TIME_INVERTED, false)) {
+                int timeToEnd = duration / 1000 - timeFromBeginning;
+                text = String.format("-%s", TimeUtils.secondsToMinuteString(timeToEnd));
+            } else {
+                text = TimeUtils.secondsToMinuteString(timeFromBeginning);
+            }
+            timeTextView.setText(text);
+            timeDurationTextView.setText(String.format(" / %s", TimeUtils.secondsToMinuteString(duration / 1000)));
+        }
+    }
+
+    @Override
+    public void updateLoveButton() {
+        loveFloatingActionButton.setImageResource(ButtonStateUtils.getLoveButtonImage());
+    }
 
     @Override
     public void changePlaylist(int index, boolean autoPlay) {
@@ -325,6 +484,42 @@ public class PhoneHomeFragment extends HomeFragment {
         playPauseButton.setImageResource(R.drawable.pause_button);
 
         MusicServiceManager.getInstance().play(track.getRealPosition());
+    }
+
+    @Override
+    public void updateEmptyPlaylistTextView() {
+        boolean isEmpty = playlistItemsAdapter == null || playlistItemsAdapter.getCount() == 0;
+        emptyPlaylistTextView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+    }
+
+    @Subscribe
+    public void networkStateEvent(NetworkStateChangeEvent event) {
+        modeAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void preparedEvent(PreparedEvent event) {
+        updateTime();
+    }
+
+    @Subscribe
+    public void bufferizationEvent(BufferizationEvent event) {
+        seekBar.setSecondaryProgress(event.getBuffered());
+    }
+
+    @Subscribe
+    public void playWithoutIconEvent(PlayWithoutIconEvent event) {
+        playPauseButton.setImageResource(R.drawable.play_button);
+    }
+
+    @Subscribe
+    public void timeEvent(TimeEvent event) {
+        updateTime();
+    }
+
+    @Subscribe
+    public void updatePositionEvent(UpdatePositionEvent event) {
+        updateTime();
     }
 
     public class ModeLongClickListener implements AdapterView.OnItemLongClickListener {
