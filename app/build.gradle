@@ -31,7 +31,7 @@ apply plugin: 'io.fabric'
 
 def getDate() {
     def date = new Date()
-    def formattedDate = date.format('(HH:mm, dd.MM.yyyy)')
+    def formattedDate = date.format('(dd.MM.yyyy)')
     return formattedDate
 }
 

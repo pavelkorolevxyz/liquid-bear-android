@@ -3,6 +3,7 @@ package com.pillowapps.liqear.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -11,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -36,11 +38,13 @@ import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.audio.Timeline;
+import com.pillowapps.liqear.callbacks.CompletionCallback;
 import com.pillowapps.liqear.components.ModeClickListener;
 import com.pillowapps.liqear.components.OnTopToBottomSwipeListener;
 import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.events.BufferizationEvent;
 import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
@@ -51,10 +55,14 @@ import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
+import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
+import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.helpers.home.PhoneHomePresenter;
+import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.Tutorial;
+import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.squareup.otto.Subscribe;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
@@ -126,8 +134,101 @@ public class PhoneHomeFragment extends HomeFragment {
         presenter = new PhoneHomePresenter(this);
         initUi(v);
         initListeners();
+        restoreState();
 
         return v;
+    }
+
+    private void restoreState() {
+        shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+        repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
+
+        StateManager.restorePlaylistState(new CompletionCallback() {
+            @Override
+            public void onCompleted() {
+                final Playlist playlist = Timeline.getInstance().getPlaylist();
+                if (playlist == null || playlist.getTracks().size() == 0) return;
+                updateMainPlaylistTitle();
+
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        List<Track> tracks = playlist.getTracks();
+
+                        SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                        String artist = preferences.getString(Constants.ARTIST, "");
+                        String title = preferences.getString(Constants.TITLE, "");
+                        int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                        int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+                        seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
+
+                        boolean currentFits = currentIndex < tracks.size();
+                        if (!currentFits) currentIndex = 0;
+                        Track currentTrack = tracks.get(currentIndex);
+                        boolean tracksEquals = currentFits
+                                && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                                + currentTrack.getTitle());
+                        if (!tracksEquals) {
+                            artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
+                            currentIndex = 0;
+                            artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
+                            titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
+                            position = 0;
+                        } else {
+                            artistTextView.setText(Html.fromHtml(artist));
+                            titleTextView.setText(Html.fromHtml(title));
+                        }
+                        Timeline.getInstance().setIndex(currentIndex);
+                        if (currentIndex > tracks.size()) {
+                            artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
+                            position = 0;
+                        }
+                        if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
+                            position = 0;
+                        }
+
+                        Timeline.getInstance().setTimePosition(position);
+                        updateAdapter();
+                        Timeline.getInstance().updateRealTrackPositions();
+
+                        if (!NetworkUtils.isOnline()) {
+                            artistImageView.setImageResource(R.drawable.artist_placeholder);
+                            albumImageView.setImageDrawable(null);
+                            albumTextView.setVisibility(View.GONE);
+                            return;
+                        }
+                        if (SharedPreferencesManager.getPreferences()
+                                .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                            new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
+                                    artistImageView, new ImageLoadingListener() {
+                                        @Override
+                                        public void onLoadingComplete(Bitmap bitmap) {
+//                                                updatePaletteWithBitmap(bitmap); todo
+                                        }
+                                    });
+                        }
+
+                        Album album = Timeline.getInstance().getCurrentAlbum();
+                        if (album != null) {
+                            String imageUrl = album.getImageUrl();
+                            if (imageUrl == null || !SharedPreferencesManager.getPreferences()
+                                    .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                                albumImageView.setVisibility(View.GONE);
+                            } else {
+                                albumImageView.setVisibility(View.VISIBLE);
+                                new ImageModel().loadImage(imageUrl, albumImageView);
+                            }
+                            String albumTitle = album.getTitle();
+                            if (albumTitle == null) {
+                                albumTextView.setVisibility(View.GONE);
+                            } else {
+                                albumTextView.setVisibility(View.VISIBLE);
+                                albumTextView.setText(albumTitle);
+                            }
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void initUi(View v) {

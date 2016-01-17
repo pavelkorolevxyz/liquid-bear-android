@@ -32,12 +32,6 @@ public class LBApplication extends Application {
             Timber.plant(new Timber.DebugTree());
         }
 
-//        ImageLoaderConfiguration config =
-//                new ImageLoaderConfiguration.Builder(getApplicationContext())
-//                        .memoryCache(new LRULimitedMemoryCache(16 * 1024 * 1024))
-//                        .build();
-//        ImageLoader.getInstance().init(config);
-
         ButterKnife.setDebug(true);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()

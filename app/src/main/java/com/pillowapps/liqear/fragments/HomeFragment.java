@@ -39,6 +39,7 @@ import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.ServiceConnectionListener;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
+import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.home.HomePresenter;
 import com.pillowapps.liqear.helpers.home.HomeView;
@@ -93,6 +94,8 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public void onDestroy() {
         LBApplication.bus.unregister(this);
+        StateManager.savePlaylistState(MusicServiceManager.getInstance().getService());
+
         super.onDestroy();
     }
 

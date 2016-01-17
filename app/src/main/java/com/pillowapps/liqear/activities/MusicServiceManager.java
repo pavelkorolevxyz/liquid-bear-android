@@ -27,6 +27,10 @@ public class MusicServiceManager {
         return instance;
     }
 
+    public MusicService getService() {
+        return musicService;
+    }
+
     public void startService(Context context, final ServiceConnectionListener listener) {
         serviceConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
