@@ -1,69 +1,37 @@
 package com.pillowapps.liqear.entities;
 
-import com.pillowapps.liqear.helpers.db.LiquidBearDatabase;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ModelContainer;
-import com.raizlabs.android.dbflow.annotation.OneToMany;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-
+import java.util.ArrayList;
 import java.util.List;
 
-@ModelContainer
-@Table(databaseName = LiquidBearDatabase.NAME)
-public class Playlist extends BaseModel {
+public class Playlist {
 
-    @Column
-    @PrimaryKey(autoincrement = true)
-    public Long id;
+    private Long id;
 
-    @Column
-    public String title;
+    private String title;
 
-    @Column
-    public boolean mainPlaylist = false;
+    private List<Track> tracks = new ArrayList<>();
 
-    List<Track> tracks;
+    private Boolean mainPlaylist;
 
     public Playlist(long id, String title) {
         this.id = id;
         this.title = title;
     }
 
-    public Playlist() {
-        // No operations.
-    }
-
-    @Override
-    public void save() {
-        super.save();
-        for (Track track : tracks) {
-            track.associatePlaylist(this);
-            track.save();
-        }
-    }
-
-    @Override
-    public void delete() {
-        for (Track track : getTracks()) {
-            track.delete();
-        }
-        super.delete();
-    }
-
     public Playlist(List<Track> tracks) {
         this.tracks = tracks;
+    }
+
+    public Playlist() {
+        // No operations.
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long _id) {
-        this.id = _id;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -74,35 +42,26 @@ public class Playlist extends BaseModel {
         this.title = title;
     }
 
-//    public List<Track> getTracks() {
-//        return tracks;
-//    }
+    public List<Track> getTracks() {
+        return tracks;
+    }
 
     public void setTracks(List<Track> tracks) {
         this.tracks = tracks;
     }
 
-    public void setMainPlaylist(boolean mainPlaylist) {
-        this.mainPlaylist = mainPlaylist;
+    public Boolean isMainPlaylist() {
+        return mainPlaylist;
     }
 
-    @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "tracks")
-    public List<Track> getTracks() {
-        if (tracks == null) {
-            tracks = new Select()
-                    .from(Track.class)
-                    .where(Condition.column(Track$Table.PLAYLISTMODELCONTAINER_PLAYLISTID).is(id))
-                    .queryList();
-        }
-        return tracks;
+    public void setMainPlaylist(Boolean mainPlaylist) {
+        this.mainPlaylist = mainPlaylist;
     }
 
     @Override
     public String toString() {
         return "Playlist{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", mainPlaylist=" + mainPlaylist +
+                "title='" + title + '\'' +
                 ", tracks=" + tracks +
                 '}';
     }

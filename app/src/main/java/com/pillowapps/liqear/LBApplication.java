@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
@@ -39,8 +38,6 @@ public class LBApplication extends Application {
                         .setFontAttrId(R.attr.fontPath)
                         .build()
         );
-
-        FlowManager.init(this);
     }
 
     @Override

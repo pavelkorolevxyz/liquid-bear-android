@@ -1,51 +1,20 @@
 package com.pillowapps.liqear.entities;
 
 import com.pillowapps.liqear.helpers.TrackUtils;
-import com.pillowapps.liqear.helpers.db.LiquidBearDatabase;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ForeignKey;
-import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.raizlabs.android.dbflow.structure.container.ForeignKeyContainer;
 
-@Table(databaseName = LiquidBearDatabase.NAME)
-public class Track extends BaseModel {
+public class Track {
 
-    @Column
-    @PrimaryKey(autoincrement = true)
-    public Long id;
-
-    @Column
     public String title;
-
-    @Column
     public String artist;
-
-    @Column
     public String album;
 
-    @Column
     public long ownerId;
-
-    @Column
     public long audioId;
 
-    @Column
     public boolean local;
-
-    @Column
     public String localUrl;
 
     private String url;
-
-    @Column
-    @ForeignKey(references = {@ForeignKeyReference(columnName = "playlistId",
-            columnType = Long.class,
-            foreignColumnName = "id")},
-            saveForeignKeyModel = false)
-    public ForeignKeyContainer<Playlist> playlistModelContainer;
 
     public int duration;
 
@@ -165,12 +134,6 @@ public class Track extends BaseModel {
 
     public void setDuration(int duration) {
         this.duration = duration;
-    }
-
-    public void associatePlaylist(Playlist playlist) {
-        playlistModelContainer = new ForeignKeyContainer<>(Playlist.class);
-        playlistModelContainer.setModel(playlist);
-        playlistModelContainer.put(Playlist$Table.ID, playlist.id);
     }
 
     @Override
