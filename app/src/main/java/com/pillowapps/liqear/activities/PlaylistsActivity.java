@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,7 +23,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.LocalPlaylistTracksActivity;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.callbacks.GetPlaylistListCallback;
 import com.pillowapps.liqear.components.HintMaterialEditText;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Playlist;
@@ -74,45 +72,36 @@ public class PlaylistsActivity extends ResultActivity {
         }
         listView.setOnCreateContextMenuListener(this);
 
-        new PlaylistModel().getSavedPlaylists(new GetPlaylistListCallback() {
-            @Override
-            public void onCompleted(List<Playlist> playlistList) {
-                adapter = new PlaylistsArrayAdapter(PlaylistsActivity.this, playlistList);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        listView.setAdapter(adapter);
-                        updateEmptyTextView();
-                    }
-                });
-            }
+        new PlaylistModel().getSavedPlaylists(playlistList -> {
+            adapter = new PlaylistsArrayAdapter(PlaylistsActivity.this, playlistList);
+            runOnUiThread(() -> {
+                listView.setAdapter(adapter);
+                updateEmptyTextView();
+            });
         });
 
-        listView.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                switch (aim) {
-                    case ADD_TO_PLAYLIST: {
-                        Playlist playlist = (Playlist) adapter.get(position);
-                        new PlaylistModel().addTrackToPlaylist(playlist,
-                                new Track(extras.getString("artist"), extras.getString("title")));
-                        finish();
-                        break;
-                    }
-                    case SHOW_PLAYLISTS: {
-                        Intent intent = new Intent(
-                                PlaylistsActivity.this,
-                                LocalPlaylistTracksActivity.class);
-                        Playlist playlist = (Playlist) adapter.get(position);
-                        intent.putExtra("title", playlist.getTitle());
-                        intent.putExtra("pid", playlist.getId());
-                        startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-                        break;
-                    }
-                    case SAVE_AS_PLAYLIST: {
-                        saveAsPlaylist(false, -1);
-                        break;
-                    }
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            switch (aim) {
+                case ADD_TO_PLAYLIST: {
+                    Playlist playlist = adapter.get(position);
+                    new PlaylistModel().addTrackToPlaylist(playlist,
+                            new Track(extras.getString("artist"), extras.getString("title")));
+                    finish();
+                    break;
+                }
+                case SHOW_PLAYLISTS: {
+                    Intent intent = new Intent(
+                            PlaylistsActivity.this,
+                            LocalPlaylistTracksActivity.class);
+                    Playlist playlist = adapter.get(position);
+                    intent.putExtra("title", playlist.getTitle());
+                    intent.putExtra("pid", playlist.getId());
+                    startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                    break;
+                }
+                case SAVE_AS_PLAYLIST: {
+                    saveAsPlaylist(false, -1);
+                    break;
                 }
             }
         });
@@ -191,22 +180,18 @@ public class PlaylistsActivity extends ResultActivity {
                 .negativeText(android.R.string.cancel)
                 .build();
 
-        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = input.getText().toString();
-                if (title.length() < 1) {
-                    title = getResources().getString(R.string.new_playlist);
-                }
-                long pid = new PlaylistModel().addPlaylist(title,
-                        new ArrayList<Track>());
-                if (pid != -1) {
-                    adapter.getValues().add(0, new Playlist(pid, title));
-                    adapter.notifyDataSetChanged();
-                    updateEmptyTextView();
-                }
-                dialog.dismiss();
+        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+            String title = input.getText().toString();
+            if (title.length() < 1) {
+                title = getResources().getString(R.string.new_playlist);
             }
+            long pid = new PlaylistModel().addPlaylist(title, new ArrayList<>());
+            if (pid != -1) {
+                adapter.getValues().add(0, new Playlist(pid, title));
+                adapter.notifyDataSetChanged();
+                updateEmptyTextView();
+            }
+            dialog.dismiss();
         });
         dialog.show();
     }
@@ -223,34 +208,31 @@ public class PlaylistsActivity extends ResultActivity {
                 .negativeText(android.R.string.cancel)
                 .build();
 
-        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = input.getText().toString();
-                if (title.length() < 1) {
-                    title = Timeline.getInstance().getPlaylist().getTitle();
-                }
-                if (title.length() < 1) {
-                    title = getResources().getString(R.string.new_playlist);
-                }
+        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+            String title = input.getText().toString();
+            if (title.length() < 1) {
+                title = Timeline.getInstance().getPlaylist().getTitle();
+            }
+            if (title.length() < 1) {
+                title = getResources().getString(R.string.new_playlist);
+            }
 
-                if (isRenaming) {
-                    new PlaylistModel().renamePlaylist(
-                            adapter.get(position).getId(), title);
-                    adapter.get(position).setTitle(title);
+            if (isRenaming) {
+                new PlaylistModel().renamePlaylist(
+                        adapter.get(position).getId(), title);
+                adapter.get(position).setTitle(title);
+                adapter.notifyDataSetChanged();
+                updateEmptyTextView();
+            } else {
+                long pid = new PlaylistModel().addPlaylist(title,
+                        Timeline.getInstance().getPlaylistTracks());
+                if (pid != -1) {
+                    adapter.getValues().add(0, new Playlist(pid, title));
                     adapter.notifyDataSetChanged();
                     updateEmptyTextView();
-                } else {
-                    long pid = new PlaylistModel().addPlaylist(title,
-                            Timeline.getInstance().getPlaylistTracks());
-                    if (pid != -1) {
-                        adapter.getValues().add(0, new Playlist(pid, title));
-                        adapter.notifyDataSetChanged();
-                        updateEmptyTextView();
-                    }
                 }
-                dialog.dismiss();
             }
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -268,21 +250,18 @@ public class PlaylistsActivity extends ResultActivity {
                 .negativeText(android.R.string.cancel)
                 .build();
 
-        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = input.getText().toString();
-                if (title.length() < 1) {
-                    title = getResources().getString(R.string.new_playlist);
-                }
+        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+            String title = input.getText().toString();
+            if (title.length() < 1) {
+                title = getResources().getString(R.string.new_playlist);
+            }
 
-                if (isRenaming) {
-                    new PlaylistModel().renamePlaylist(
-                            ((Playlist) adapter.get(position)).getId(), title);
-                    ((Playlist) adapter.get(position)).setTitle(title);
-                    adapter.notifyDataSetChanged();
-                    updateEmptyTextView();
-                } else {
+            if (isRenaming) {
+                new PlaylistModel().renamePlaylist(adapter.get(position).getId(), title);
+                adapter.get(position).setTitle(title);
+                adapter.notifyDataSetChanged();
+                updateEmptyTextView();
+            } else {
 //                            List<Track> tracklist = getIntent()
 //                                    .getParcelableArrayListExtra(Constants.TRACKLIST);
 //                            long pid = new PlaylistModel().addPlaylist(title, tracklist);
@@ -292,10 +271,9 @@ public class PlaylistsActivity extends ResultActivity {
 //                                adapter.notifyDataSetChanged();
 //                            }
 //                            //todo with otto
-                }
-
-                dialog.dismiss();
             }
+
+            dialog.dismiss();
         });
 
         dialog.show();

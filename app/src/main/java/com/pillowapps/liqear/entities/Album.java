@@ -32,27 +32,27 @@ public class Album implements Parcelable {
         this.artist = artist;
         this.title = title;
         this.albumId = albumId;
-        tracks = new ArrayList<String>();
+        tracks = new ArrayList<>();
     }
 
     public Album(String artist, String title) {
         this.artist = artist;
         this.title = title;
-        tracks = new ArrayList<String>();
+        tracks = new ArrayList<>();
     }
 
     public Album(String artist, String title, String genre) {
         this.artist = artist;
         this.title = title;
         this.genre = genre;
-        tracks = new ArrayList<String>();
+        tracks = new ArrayList<>();
     }
 
     public Album(String artist, String title, String genre, String albumId, String urlImage) {
         this.title = title;
         this.artist = artist;
         this.genre = genre;
-        tracks = new ArrayList<String>();
+        tracks = new ArrayList<>();
         this.ownerId = albumId == null ? -1 : Long.valueOf(albumId);
         this.imageUrl = urlImage;
     }
@@ -62,7 +62,7 @@ public class Album implements Parcelable {
         title = parcel.readString();
         artist = parcel.readString();
         imageUrl = parcel.readString();
-        tracks = new ArrayList<String>();
+        tracks = new ArrayList<>();
         parcel.readStringList(tracks);
         albumId = parcel.readLong();
         genre = parcel.readString();
@@ -71,7 +71,7 @@ public class Album implements Parcelable {
     }
 
     public Album() {
-        tracks = new ArrayList<String>();
+        tracks = new ArrayList<>();
     }
 
     public Long getOwnerId() {

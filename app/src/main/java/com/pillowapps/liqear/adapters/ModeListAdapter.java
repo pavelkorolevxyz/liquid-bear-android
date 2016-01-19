@@ -7,10 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import com.pillowapps.liqear.components.UpdateAdapterCallback;
-import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.entities.Item;
 import com.pillowapps.liqear.entities.Mode;
+import com.pillowapps.liqear.helpers.ModeItemsHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,12 +77,7 @@ public class ModeListAdapter extends ArrayAdapter<Item> {
 
     public void notifyChanges() {
         clear();
-        for (Item item : helper.createItemsList(new UpdateAdapterCallback() {
-            @Override
-            public void onUpdate() {
-                notifyChanges();
-            }
-        })) {
+        for (Item item : helper.createItemsList(this::notifyChanges)) {
             add(item);
         }
         notifyDataSetChanged();

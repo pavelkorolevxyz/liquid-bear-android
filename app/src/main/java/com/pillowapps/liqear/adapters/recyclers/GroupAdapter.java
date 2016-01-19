@@ -17,7 +17,6 @@ import java.util.List;
 public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
-    private GroupViewHolder holder;
     private List<Group> items;
 
     public GroupAdapter(List<Group> items, OnRecyclerItemClickListener clickListener) {
@@ -41,8 +40,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
     @Override
     public GroupViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        holder = new GroupViewHolder(v, clickListener);
-        return holder;
+        return new GroupViewHolder(v, clickListener);
     }
 
     @Override

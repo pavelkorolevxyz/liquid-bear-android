@@ -17,7 +17,6 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
-    private UserViewHolder holder;
     private List<User> items;
 
     public UserAdapter(List<User> items, OnRecyclerItemClickListener clickListener) {
@@ -41,8 +40,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
     @Override
     public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        holder = new UserViewHolder(v, clickListener);
-        return holder;
+        return new UserViewHolder(v, clickListener);
     }
 
     @Override

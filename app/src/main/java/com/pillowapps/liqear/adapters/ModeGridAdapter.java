@@ -2,10 +2,10 @@ package com.pillowapps.liqear.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +28,7 @@ public class ModeGridAdapter implements StickyGridHeadersBaseAdapter {
     private final Context context;
     private final SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences();
     private List<Mode> modes;
-    private List<DataSetObserver> observers = new ArrayList<DataSetObserver>();
+    private List<DataSetObserver> observers = new ArrayList<>();
     private ModeItemsHelper modeItemsHelper = new ModeItemsHelper();
 
     public ModeGridAdapter(Context context) {
@@ -134,12 +134,10 @@ public class ModeGridAdapter implements StickyGridHeadersBaseAdapter {
         final Mode mode = modes.get(i);
         int icon = mode.getIcon();
 
-        Resources res = context.getResources();
-
-        Drawable drawable = res.getDrawable(icon);
+        Drawable drawable = ContextCompat.getDrawable(context, icon);
         boolean modeEnabled = ModeItemsHelper.isModeEnabled(mode);
         int iconsColor = modeEnabled ? R.color.icons : R.color.accent;
-        drawable.setColorFilter(res.getColor(iconsColor), PorterDuff.Mode.MULTIPLY);
+        drawable.setColorFilter(ContextCompat.getColor(context, iconsColor), PorterDuff.Mode.MULTIPLY);
 
         holder.modeButton.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         String label = context.getString(mode.getTitle()).toLowerCase();
@@ -154,14 +152,11 @@ public class ModeGridAdapter implements StickyGridHeadersBaseAdapter {
                         ? R.drawable.minus
                         : R.drawable.plus
         );
-        holder.switchVisibilityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences.Editor editor = modePreferences.edit();
-                editor.putBoolean(Constants.MODE_VISIBLE + mode.getModeEnum(), !modeVisible);
-                editor.apply();
-                notifyChanges();
-            }
+        holder.switchVisibilityButton.setOnClickListener(view -> {
+            SharedPreferences.Editor editor = modePreferences.edit();
+            editor.putBoolean(Constants.MODE_VISIBLE + mode.getModeEnum(), !modeVisible);
+            editor.apply();
+            notifyChanges();
         });
         return convertView;
     }

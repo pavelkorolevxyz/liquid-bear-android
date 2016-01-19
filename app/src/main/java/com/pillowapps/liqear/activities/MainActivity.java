@@ -340,22 +340,16 @@ public class MainActivity extends TrackedActivity {
                         .negativeText(android.R.string.cancel)
                         .build();
 
-                dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        musicService.setTimer(sb.getCurrent() * 60);
-                        SharedPreferences.Editor editor =
-                                SharedPreferencesManager.getPreferences().edit();
-                        editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
-                        editor.apply();
-                    }
+                dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+                    musicService.setTimer(sb.getCurrent() * 60);
+                    SharedPreferences.Editor editor =
+                            SharedPreferencesManager.getPreferences().edit();
+                    editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
+                    editor.apply();
                 });
-                dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        musicService.setTimer(0);
-                        dialog.dismiss();
-                    }
+                dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> {
+                    musicService.setTimer(0);
+                    dialog.dismiss();
                 });
                 dialog.show();
             }
@@ -441,7 +435,7 @@ public class MainActivity extends TrackedActivity {
                 break;
             case R.id.add_to_queue_track_menu_item:
                 Timeline.getInstance().queueTrack(position);
-                updateView(Arrays.asList(position));
+                updateView(Collections.singletonList(position));
                 break;
             case R.id.show_artist_track_menu_item:
                 if (!NetworkUtils.isOnline()) {
@@ -466,29 +460,26 @@ public class MainActivity extends TrackedActivity {
                 final MaterialDialog dialog = new MaterialDialog.Builder(this)
                         .title(R.string.choose_target)
                         .items(R.array.add_targets)
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
-                                switch (which) {
-                                    case 0:
-                                        new LastfmTrackModel().love(targetTrack, new SimpleCallback<Object>() {
-                                            @Override
-                                            public void success(Object o) {
-                                                progressBar.setVisibility(View.GONE);
-                                                targetTrack.setLoved(true);
-                                                updateLoveButton();
-                                            }
+                        .itemsCallback((materialDialog, view, which, charSequence) -> {
+                            switch (which) {
+                                case 0:
+                                    new LastfmTrackModel().love(targetTrack, new SimpleCallback<Object>() {
+                                        @Override
+                                        public void success(Object o) {
+                                            progressBar.setVisibility(View.GONE);
+                                            targetTrack.setLoved(true);
+                                            updateLoveButton();
+                                        }
 
-                                            @Override
-                                            public void failure(String error) {
-                                                progressBar.setVisibility(View.GONE);
-                                            }
-                                        });
-                                        break;
-                                    case 1:
-                                        addToVk(targetTrack);
-                                        break;
-                                }
+                                        @Override
+                                        public void failure(String error) {
+                                            progressBar.setVisibility(View.GONE);
+                                        }
+                                    });
+                                    break;
+                                case 1:
+                                    addToVk(targetTrack);
+                                    break;
                             }
                         })
                         .build();
@@ -651,13 +642,10 @@ public class MainActivity extends TrackedActivity {
                     phoneFragment.setServiceConnected();
                 }
                 setVolumeControlStream(AudioManager.STREAM_MUSIC);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (serviceConnectionProgressDialog != null
-                                && serviceConnectionProgressDialog.isShowing())
-                            serviceConnectionProgressDialog.dismiss();
-                    }
+                runOnUiThread(() -> {
+                    if (serviceConnectionProgressDialog != null
+                            && serviceConnectionProgressDialog.isShowing())
+                        serviceConnectionProgressDialog.dismiss();
                 });
                 if (activityResult != null) {
                     onActivityResult(activityResult.getRequestCode(),
@@ -840,25 +828,22 @@ public class MainActivity extends TrackedActivity {
         titleEditText.setText(track.getTitle());
         titleEditText.updateHint(getString(R.string.title));
 
-        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String title = titleEditText.getText().toString();
-                String artist = artistEditText.getText().toString();
-                if (title.length() == 0 || artist.length() == 0) {
-                    Toast.makeText(MainActivity.this,
-                            R.string.couldnt_be_empty, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                track.setTitle(title);
-                track.setArtist(artist);
-                updateView(Arrays.asList(position));
-                List<Track> playlistTracks = Timeline.getInstance().getPlaylistTracks();
-                if (playlistTracks.size() > 0) {
-                    new PlaylistModel().saveMainPlaylist();
-                }
-                dialog.dismiss();
+        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+            String title = titleEditText.getText().toString();
+            String artist = artistEditText.getText().toString();
+            if (title.length() == 0 || artist.length() == 0) {
+                Toast.makeText(MainActivity.this,
+                        R.string.couldnt_be_empty, Toast.LENGTH_SHORT).show();
+                return;
             }
+            track.setTitle(title);
+            track.setArtist(artist);
+            updateView(Collections.singletonList(position));
+            List<Track> playlistTracks = Timeline.getInstance().getPlaylistTracks();
+            if (playlistTracks.size() > 0) {
+                new PlaylistModel().saveMainPlaylist();
+            }
+            dialog.dismiss();
         });
 
         dialog.show();

@@ -12,26 +12,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inaka.com.tinytask.DoThis;
-import inaka.com.tinytask.Something;
 import inaka.com.tinytask.TinyTask;
 
 public class LocalArtistModel {
 
     @SuppressWarnings("unchecked")
     public void getAllArtists(final LocalDataCallback<List<Artist>> callback) {
-        TinyTask.perform(new Something<List<Artist>>() {
-            @Override
-            public List<Artist> whichDoes() throws Exception {
-                String[] projection = {
-                        MediaStore.Audio.Artists._ID,
-                        MediaStore.Audio.Artists.ARTIST,
-                };
+        TinyTask.perform(() -> {
+            String[] projection = {
+                    MediaStore.Audio.Artists._ID,
+                    MediaStore.Audio.Artists.ARTIST,
+            };
 
-                Cursor cursor = LBApplication.getAppContext().getContentResolver().query(
-                        MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
-                        projection, null, null, null);
-                List<Artist> artists = new ArrayList<Artist>();
+            Cursor cursor = LBApplication.getAppContext().getContentResolver().query(
+                    MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
+                    projection, null, null, null);
+            List<Artist> artists = new ArrayList<>();
 
+            if (cursor != null) {
                 while (cursor.moveToNext()) {
                     String name = cursor.getString(1);
                     String id = cursor.getString(0);
@@ -40,8 +38,8 @@ public class LocalArtistModel {
                         artists.add(artist);
                 }
                 cursor.close();
-                return artists;
             }
+            return artists;
         }).whenDone(new DoThis<List<Artist>>() {
             @Override
             public void ifOK(List<Artist> artists) {
@@ -57,23 +55,22 @@ public class LocalArtistModel {
 
     @SuppressWarnings("unchecked")
     public void getTracksFromArtist(final String artistId, final LocalDataCallback<List<Track>> callback) {
-        TinyTask.perform(new Something<List<Track>>() {
-            @Override
-            public List<Track> whichDoes() throws Exception {
-                String selection = MediaStore.Audio.Media.ARTIST_ID + "=?";
+        TinyTask.perform(() -> {
+            String selection = MediaStore.Audio.Media.ARTIST_ID + "=?";
 
-                String[] projection = {
-                        MediaStore.Audio.Media.ARTIST,
-                        MediaStore.Audio.Media.TITLE,
-                        MediaStore.Audio.Media.DATA,
-                };
+            String[] projection = {
+                    MediaStore.Audio.Media.ARTIST,
+                    MediaStore.Audio.Media.TITLE,
+                    MediaStore.Audio.Media.DATA,
+            };
 
-                String[] whereVal = {artistId};
+            String[] whereVal = {artistId};
 
-                Cursor cursor = LBApplication.getAppContext().getContentResolver().query(
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        projection, selection, whereVal, null);
-                List<Track> tracks = new ArrayList<Track>();
+            Cursor cursor = LBApplication.getAppContext().getContentResolver().query(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    projection, selection, whereVal, null);
+            List<Track> tracks = new ArrayList<>();
+            if (cursor != null) {
                 while (cursor.moveToNext()) {
                     Track track = new Track(cursor.getString(0), cursor.getString(1),
                             cursor.getString(2), true);
@@ -81,8 +78,8 @@ public class LocalArtistModel {
                         tracks.add(track);
                 }
                 cursor.close();
-                return tracks;
             }
+            return tracks;
         }).whenDone(new DoThis<List<Track>>() {
             @Override
             public void ifOK(List<Track> tracks) {

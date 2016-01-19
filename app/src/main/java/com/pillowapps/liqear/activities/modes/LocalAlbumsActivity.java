@@ -7,15 +7,12 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.AlbumAdapter;
 import com.pillowapps.liqear.callbacks.LocalDataCallback;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.models.local.LocalAlbumModel;
 
 import java.util.List;
 
 public class LocalAlbumsActivity extends ListBaseActivity {
-
-    private AlbumAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +26,8 @@ public class LocalAlbumsActivity extends ListBaseActivity {
 
     private void fillWithAlbums(List<Album> albums) {
         emptyTextView.setVisibility(albums.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new AlbumAdapter(albums, new OnRecyclerItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int position) {
-                //todo
-            }
+        AlbumAdapter adapter = new AlbumAdapter(albums, (view, position) -> {
+            //todo
         });
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);

@@ -7,7 +7,6 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.GroupAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.Group;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkGroup;
@@ -30,12 +29,7 @@ public class VkGroupsActivity extends ListBaseActivity {
 
     private void fillWithGroups(List<Group> groups) {
         emptyTextView.setVisibility(groups.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new GroupAdapter(groups, new OnRecyclerItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int position) {
-                openGroup(adapter.getItem(position));
-            }
-        });
+        adapter = new GroupAdapter(groups, (view, position) -> openGroup(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }

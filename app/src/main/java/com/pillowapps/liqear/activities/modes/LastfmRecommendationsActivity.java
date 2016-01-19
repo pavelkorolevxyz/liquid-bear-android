@@ -2,8 +2,9 @@ package com.pillowapps.liqear.activities.modes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.graphics.Palette;
@@ -38,7 +39,6 @@ import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmRecommendationsModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
-import com.pillowapps.liqear.network.ImageLoadingListener;
 
 import java.util.List;
 
@@ -52,6 +52,11 @@ public class LastfmRecommendationsActivity extends ResultActivity {
     private boolean loading = false;
     private ListView listView;
     private boolean gridMode = true;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private com.google.android.gms.common.api.GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,9 @@ public class LastfmRecommendationsActivity extends ResultActivity {
         initUi();
         initListeners();
         getRecommendedArtists(RECOMMENDATIONS_AMOUNT, loadedPages + 1);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new com.google.android.gms.common.api.GoogleApiClient.Builder(this).addApi(com.google.android.gms.appindexing.AppIndex.API).build();
     }
 
     private void initUi() {
@@ -98,14 +106,11 @@ public class LastfmRecommendationsActivity extends ResultActivity {
         };
         gridView.setOnScrollListener(scrollListener);
         listView.setOnScrollListener(scrollListener);
-        AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent artistInfoIntent = new Intent(LastfmRecommendationsActivity.this,
-                        LastfmArtistViewerActivity.class);
-                artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, adapter.get(i).getName());
-                startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
-            }
+        AdapterView.OnItemClickListener clickListener = (adapterView, view, i, l) -> {
+            Intent artistInfoIntent = new Intent(LastfmRecommendationsActivity.this,
+                    LastfmArtistViewerActivity.class);
+            artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, adapter.get(i).getName());
+            startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
         };
         gridView.setOnItemClickListener(clickListener);
         listView.setOnItemClickListener(clickListener);
@@ -188,6 +193,46 @@ public class LastfmRecommendationsActivity extends ResultActivity {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        com.google.android.gms.appindexing.Action viewAction = com.google.android.gms.appindexing.Action.newAction(
+                com.google.android.gms.appindexing.Action.TYPE_VIEW, // TODO: choose an action type.
+                "LastfmRecommendations Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.pillowapps.liqear.activities.modes/http/host/path")
+        );
+        com.google.android.gms.appindexing.AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        com.google.android.gms.appindexing.Action viewAction = com.google.android.gms.appindexing.Action.newAction(
+                com.google.android.gms.appindexing.Action.TYPE_VIEW, // TODO: choose an action type.
+                "LastfmRecommendations Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.pillowapps.liqear.activities.modes/http/host/path")
+        );
+        com.google.android.gms.appindexing.AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
+
     static class ViewHolder {
         TextView text;
         ImageView image;
@@ -233,22 +278,12 @@ public class LastfmRecommendationsActivity extends ResultActivity {
                     holder.image.setImageBitmap(null);
                 }
                 holder.text.setText(artist.getName());
-                holder.text.setBackgroundColor(getResources().getColor(R.color.accent));
+                holder.text.setBackgroundColor(ContextCompat.getColor(LastfmRecommendationsActivity.this, R.color.accent));
                 if (holder.loadImages) {
-                    new ImageModel().loadImage(artist.getPreviewUrl(), holder.image, new ImageLoadingListener() {
-                        @Override
-                        public void onLoadingComplete(Bitmap bitmap) {
-                            Palette.generateAsync(bitmap,
-                                    new Palette.PaletteAsyncListener() {
-                                        @Override
-                                        public void onGenerated(Palette palette) {
-                                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
-                                            if (vibrantSwatch == null) return;
-                                            holder.text.setBackgroundColor(
-                                                    vibrantSwatch.getRgb());
-                                        }
-                                    });
-                        }
+                    new ImageModel().loadImage(artist.getPreviewUrl(), holder.image, bitmap -> {
+                        Palette.Swatch vibrantSwatch = new Palette.Builder(bitmap).generate().getVibrantSwatch(); // todo async
+                        if (vibrantSwatch == null) return;
+                        holder.text.setBackgroundColor(vibrantSwatch.getRgb());
                     });
                 } else {
                     holder.image.setVisibility(View.GONE);

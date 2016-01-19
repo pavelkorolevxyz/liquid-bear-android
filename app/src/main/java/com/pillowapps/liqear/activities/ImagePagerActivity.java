@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011-2013 Sergey Tarasevich
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,6 @@
 package com.pillowapps.liqear.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -37,7 +36,6 @@ import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.TouchImageView;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
-import com.pillowapps.liqear.network.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -241,13 +239,9 @@ public class ImagePagerActivity extends TrackedActivity {
             TouchImageView imageView = (TouchImageView) imageLayout.findViewById(R.id.image);
             final ProgressBar spinner = (ProgressBar) imageLayout.findViewById(R.id.loading);
 
-            imageModel.loadImage(images.get(position), imageView,
-                    new ImageLoadingListener() {
-                        @Override
-                        public void onLoadingComplete(Bitmap bitmap) {
-                            spinner.setVisibility(View.GONE);
-                        }
-                    });
+            imageModel.loadImage(images.get(position), imageView, bitmap -> {
+                spinner.setVisibility(View.GONE);
+            });
             view.addView(imageLayout, 0);
             return imageLayout;
         }

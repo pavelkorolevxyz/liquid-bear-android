@@ -37,7 +37,6 @@ import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.NetworkUtils;
-import com.pillowapps.liqear.helpers.ServiceConnectionListener;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
@@ -80,12 +79,9 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
         musicServiceManager = MusicServiceManager.getInstance();
 
-        musicServiceManager.startService(activity, new ServiceConnectionListener() {
-            @Override
-            public void onServiceConnected() {
-                presenter.setMusicServiceConnected();
-                activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-            }
+        musicServiceManager.startService(activity, () -> {
+            presenter.setMusicServiceConnected();
+            activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         });
 
         LBApplication.BUS.register(this);
@@ -221,22 +217,16 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                         .negativeText(android.R.string.cancel)
                         .build();
 
-                dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MusicServiceManager.getInstance().setTimer(sb.getCurrent() * 60);
-                        SharedPreferences.Editor editor =
-                                SharedPreferencesManager.getPreferences().edit();
-                        editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
-                        editor.apply();
-                    }
+                dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+                    MusicServiceManager.getInstance().setTimer(sb.getCurrent() * 60);
+                    SharedPreferences.Editor editor =
+                            SharedPreferencesManager.getPreferences().edit();
+                    editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
+                    editor.apply();
                 });
-                dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MusicServiceManager.getInstance().setTimer(0);
-                        dialog.dismiss();
-                    }
+                dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> {
+                    MusicServiceManager.getInstance().setTimer(0);
+                    dialog.dismiss();
                 });
                 dialog.show();
             }

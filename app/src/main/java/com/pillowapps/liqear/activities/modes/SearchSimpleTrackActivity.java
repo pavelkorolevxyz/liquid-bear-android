@@ -11,8 +11,6 @@ import android.widget.Toast;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.recyclers.TrackAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.components.OnRecyclerLongItemClickListener;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
@@ -41,13 +39,10 @@ public class SearchSimpleTrackActivity extends SearchBaseActivity {
     protected void initWatcher() {
         editText.addTextChangedListener(new DelayedTextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                runTaskWithDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        String searchQuery = editText.getText().toString().trim();
-                        if (searchQuery.length() == 0) return;
-                        searchVK(searchQuery, getPageSize());
-                    }
+                runTaskWithDelay(() -> {
+                    String searchQuery = editText.getText().toString().trim();
+                    if (searchQuery.length() == 0) return;
+                    searchVK(searchQuery, getPageSize());
                 });
             }
 
@@ -62,18 +57,12 @@ public class SearchSimpleTrackActivity extends SearchBaseActivity {
     private void fillWithVkTracklist(List<VkTrack> vkTracks) {
         List<Track> trackList = Converter.convertVkTrackList(vkTracks);
         emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new TrackAdapter(this, trackList, new OnRecyclerItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int position) {
-                openMainPlaylist(adapter.getItems(), position, getToolbarTitle());
-            }
-        }, new OnRecyclerLongItemClickListener() {
-            @Override
-            public boolean onItemLongClicked(View view, int position) {
-                trackLongClick(adapter.getItems(), position);
-                return true;
-            }
-        });
+        adapter = new TrackAdapter(this, trackList,
+                (view, position) -> openMainPlaylist(adapter.getItems(), position, getToolbarTitle()),
+                (view, position) -> {
+                    trackLongClick(adapter.getItems(), position);
+                    return true;
+                });
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }

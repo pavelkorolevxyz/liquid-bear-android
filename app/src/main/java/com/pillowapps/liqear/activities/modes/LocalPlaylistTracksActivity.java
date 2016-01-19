@@ -9,8 +9,6 @@ import android.widget.AdapterView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.TrackAdapter;
-import com.pillowapps.liqear.callbacks.GetPlaylistCallback;
-import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.PlaylistModel;
@@ -62,12 +60,9 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
     }
 
     private void loadPlaylistTracks(long playlistId) {
-        new PlaylistModel().getPlaylist(playlistId, new GetPlaylistCallback() {
-            @Override
-            public void onCompleted(Playlist playlist) {
-                List<Track> tracks = playlist.getTracks();
-                fillWithTracklist(tracks);
-            }
+        new PlaylistModel().getPlaylist(playlistId, playlist -> {
+            List<Track> tracks = playlist.getTracks();
+            fillWithTracklist(tracks);
         });
     }
 

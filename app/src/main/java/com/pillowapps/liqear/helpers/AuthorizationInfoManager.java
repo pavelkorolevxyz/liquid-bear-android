@@ -43,7 +43,7 @@ public class AuthorizationInfoManager {
     }
 
     public static boolean isAuthorizedOnLastfm() {
-        return getLastfmKey() != null && getLastfmName() != null && getLastfmKey() != null;
+        return getLastfmKey() != null && getLastfmName() != null;
     }
 
     public static boolean isAuthorizedOnVk() {

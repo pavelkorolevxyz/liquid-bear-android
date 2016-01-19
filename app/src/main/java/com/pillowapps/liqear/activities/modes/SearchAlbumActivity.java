@@ -8,7 +8,6 @@ import android.view.View;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.recyclers.AlbumAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.helpers.Constants;
@@ -41,16 +40,13 @@ public class SearchAlbumActivity extends SearchBaseActivity {
     protected void initWatcher() {
         editText.addTextChangedListener(new DelayedTextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                runTaskWithDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        String searchQuery = editText.getText().toString().trim();
-                        if (searchQuery.length() == 0) {
-                            loadAlbumPresets();
-                            return;
-                        }
-                        searchAlbum(searchQuery, getPageSize(), 1);
+                runTaskWithDelay(() -> {
+                    String searchQuery = editText.getText().toString().trim();
+                    if (searchQuery.length() == 0) {
+                        loadAlbumPresets();
+                        return;
                     }
+                    searchAlbum(searchQuery, getPageSize(), 1);
                 });
             }
 
@@ -92,23 +88,20 @@ public class SearchAlbumActivity extends SearchBaseActivity {
 
     private void fillWithAlbums(List<Album> albums) {
         emptyTextView.setVisibility(albums.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new AlbumAdapter(albums, new OnRecyclerItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int position) {
-                SharedPreferences albumPreferences = SharedPreferencesManager.getAlbumPreferences();
-                SharedPreferences.Editor editor = albumPreferences.edit();
-                int albumLastNumberAll = albumPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
-                int albumsLastNumberMod = albumLastNumberAll % Constants.PRESET_WANTED_COUNT;
-                editor.putInt(Constants.PRESET_LAST_NUMBER, albumLastNumberAll + 1);
-                Album album = adapter.getItem(position);
-                editor.putString(Constants.ALBUM_ARTIST_NUMBER + albumsLastNumberMod,
-                        album.getArtist());
-                editor.putString(Constants.ALBUM_TITLE_NUMBER + albumsLastNumberMod,
-                        album.getTitle());
-                editor.putString(Constants.IMAGE + albumsLastNumberMod, album.getImageUrl());
-                editor.apply();
-                openLastfmAlbum(album);
-            }
+        adapter = new AlbumAdapter(albums, (view, position) -> {
+            SharedPreferences albumPreferences = SharedPreferencesManager.getAlbumPreferences();
+            SharedPreferences.Editor editor = albumPreferences.edit();
+            int albumLastNumberAll = albumPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
+            int albumsLastNumberMod = albumLastNumberAll % Constants.PRESET_WANTED_COUNT;
+            editor.putInt(Constants.PRESET_LAST_NUMBER, albumLastNumberAll + 1);
+            Album album = adapter.getItem(position);
+            editor.putString(Constants.ALBUM_ARTIST_NUMBER + albumsLastNumberMod,
+                    album.getArtist());
+            editor.putString(Constants.ALBUM_TITLE_NUMBER + albumsLastNumberMod,
+                    album.getTitle());
+            editor.putString(Constants.IMAGE + albumsLastNumberMod, album.getImageUrl());
+            editor.apply();
+            openLastfmAlbum(album);
         });
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);

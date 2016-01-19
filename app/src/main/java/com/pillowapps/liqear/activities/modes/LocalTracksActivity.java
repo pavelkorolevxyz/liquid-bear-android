@@ -11,8 +11,6 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.TrackAdapter;
 import com.pillowapps.liqear.callbacks.LocalDataCallback;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.components.OnRecyclerLongItemClickListener;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.models.local.LocalAlbumModel;
 import com.pillowapps.liqear.models.local.LocalArtistModel;
@@ -65,18 +63,12 @@ public class LocalTracksActivity extends ListBaseActivity {
     private void fillWithTracklist(List<Track> trackList) {
         if (adapter == null || adapter.getItemCount() == 0) {
             emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
-            adapter = new TrackAdapter(this, trackList, new OnRecyclerItemClickListener() {
-                @Override
-                public void onItemClicked(View view, int position) {
-                    openMainPlaylist(adapter.getItems(), position, getToolbarTitle());
-                }
-            }, new OnRecyclerLongItemClickListener() {
-                @Override
-                public boolean onItemLongClicked(View view, int position) {
-                    trackLongClick(adapter.getItems(), position);
-                    return true;
-                }
-            });
+            adapter = new TrackAdapter(this, trackList,
+                    (view, position) -> openMainPlaylist(adapter.getItems(), position, getToolbarTitle()),
+                    (view, position) -> {
+                        trackLongClick(adapter.getItems(), position);
+                        return true;
+                    });
             recycler.setAdapter(adapter);
         } else {
             adapter.addAll(trackList);

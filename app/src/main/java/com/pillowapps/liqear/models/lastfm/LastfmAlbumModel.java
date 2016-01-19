@@ -1,7 +1,6 @@
 package com.pillowapps.liqear.models.lastfm;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.CompletionCallback;
@@ -12,7 +11,6 @@ import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumSearchResultsRoot;
 import com.pillowapps.liqear.models.ImageModel;
-import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
@@ -69,12 +67,9 @@ public class LastfmAlbumModel {
             callback.onCompleted();
             return;
         }
-        new ImageModel().loadImage(context, album.getImageUrl(), new ImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(Bitmap bitmap) {
-                Timeline.getInstance().setAlbumCoverBitmap(bitmap);
-                callback.onCompleted();
-            }
+        new ImageModel().loadImage(context, album.getImageUrl(), bitmap -> {
+            Timeline.getInstance().setAlbumCoverBitmap(bitmap);
+            callback.onCompleted();
         });
     }
 

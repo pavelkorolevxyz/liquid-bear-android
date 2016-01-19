@@ -5,10 +5,11 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,16 +35,11 @@ public class ModeListFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        UpdateAdapterCallback callback = new UpdateAdapterCallback() {
-            @Override
-            public void onUpdate() {
-                adapter.notifyChanges();
-            }
-        };
+        UpdateAdapterCallback callback = adapter::notifyChanges;
         ModeItemsHelper modeItemsHelper = new ModeItemsHelper();
         adapter = new ModeListAdapter(getActivity(), modeItemsHelper.createItemsList(callback), modeItemsHelper);
         setListAdapter(adapter);
-        getListView().setBackgroundColor(getResources().getColor(R.color.icons));
+        getListView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.icons));
         getListView().setOnItemLongClickListener(new ModeLongClickListener());
 //        getListView().setOnItemClickListener(new ModeClickListener((MainActivity) getActivity())); todo for tablet
     }
@@ -114,7 +110,7 @@ public class ModeListFragment extends ListFragment {
     }
 
     private ActionBar getActionBar() {
-        return ((ActionBarActivity) getActivity()).getSupportActionBar();
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
 
     public interface NavigationDrawerCallbacks {

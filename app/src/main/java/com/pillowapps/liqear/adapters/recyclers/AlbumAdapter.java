@@ -17,7 +17,6 @@ import java.util.List;
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
-    private AlbumViewHolder holder;
     private List<Album> items;
 
     public AlbumAdapter(List<Album> items, OnRecyclerItemClickListener clickListener) {
@@ -47,8 +46,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> {
     @Override
     public AlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        holder = new AlbumViewHolder(v, clickListener);
-        return holder;
+        return new AlbumViewHolder(v, clickListener);
     }
 
     public Album getItem(int position) {

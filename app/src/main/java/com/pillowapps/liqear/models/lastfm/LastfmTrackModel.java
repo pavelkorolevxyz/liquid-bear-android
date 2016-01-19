@@ -20,7 +20,6 @@ import java.util.TreeMap;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.FuncN;
 import rx.schedulers.Schedulers;
 
 public class LastfmTrackModel {
@@ -171,12 +170,7 @@ public class LastfmTrackModel {
                     track.getTitle(), track.getAlbum(), TimeUtils.getCurrentTimeInSeconds());
             observableList.add(topTracksRootObservable);
         }
-        Observable.zip(observableList, new FuncN<Object>() {
-            @Override
-            public Object call(Object... response) {
-                return response;
-            }
-        }).subscribeOn(Schedulers.newThread())
+        Observable.zip(observableList, response -> response).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 }

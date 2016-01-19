@@ -11,12 +11,10 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.entities.Tag;
-import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.Page;
 import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
@@ -40,8 +38,10 @@ public class LastfmTagViewerActivity extends PagerResultActivity {
         Bundle extras = getIntent().getExtras();
         tag = new Tag(extras.getString((TAG)));
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(tag.getName());
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(tag.getName());
+        }
         initUi();
         ViewerPage viewer = getViewer(TRACKS_INDEX);
         if (viewer.isNotLoaded()) {
@@ -66,13 +66,7 @@ public class LastfmTagViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.tracks);
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Track>() {
-                    @Override
-                    public void onLoadMore() {
-                        getTagTopTracks(tag, getPageSize(), viewer.getPage(), viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getTagTopTracks(tag, getPageSize(), viewer.getPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);

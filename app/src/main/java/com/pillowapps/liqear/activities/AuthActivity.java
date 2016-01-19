@@ -7,7 +7,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -97,7 +99,10 @@ public class AuthActivity extends TrackedActivity {
                 break;
         }
         if (!firstStart) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
         }
     }
 
@@ -148,10 +153,10 @@ public class AuthActivity extends TrackedActivity {
         TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
         indicator.setCurrentItem(0);
-        indicator.setBackgroundColor(getResources().getColor(R.color.primary));
-        indicator.setFooterColor(getResources().getColor(R.color.accent));
-        indicator.setTextColor(getResources().getColor(R.color.icons));
-        indicator.setSelectedColor(getResources().getColor(R.color.icons));
+        indicator.setBackgroundColor(ContextCompat.getColor(AuthActivity.this, R.color.primary));
+        indicator.setFooterColor(ContextCompat.getColor(AuthActivity.this, R.color.accent));
+        indicator.setTextColor(ContextCompat.getColor(AuthActivity.this, R.color.icons));
+        indicator.setSelectedColor(ContextCompat.getColor(AuthActivity.this, R.color.icons));
 
         Resources resources = LBApplication.getAppContext().getResources();
         boolean isTablet = resources.getBoolean(R.bool.isTablet);
@@ -222,115 +227,103 @@ public class AuthActivity extends TrackedActivity {
     }
 
     private void initListeners() {
-        authorizeVkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                errorVkTextView.setVisibility(View.GONE);
-                AuthorizationInfoManager.signOutVk();
-                authVkPanel.setVisibility(View.INVISIBLE);
-                Intent intent = new Intent(AuthActivity.this, LoginActivity.class);
-                startActivityForResult(intent, Constants.AUTH_VK_REQUEST);
-            }
+        authorizeVkButton.setOnClickListener(view -> {
+            errorVkTextView.setVisibility(View.GONE);
+            AuthorizationInfoManager.signOutVk();
+            authVkPanel.setVisibility(View.INVISIBLE);
+            Intent intent = new Intent(AuthActivity.this, LoginActivity.class);
+            startActivityForResult(intent, Constants.AUTH_VK_REQUEST);
         });
-        signOutVkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AuthorizationInfoManager.signOutVk();
-                authVkPanel.setVisibility(View.INVISIBLE);
-                invalidateOptionsMenu();
-                showSaves();
-            }
+        signOutVkButton.setOnClickListener(view -> {
+            AuthorizationInfoManager.signOutVk();
+            authVkPanel.setVisibility(View.INVISIBLE);
+            invalidateOptionsMenu();
+            showSaves();
         });
 
-        signOutLastfmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AuthorizationInfoManager.signOutLastfm();
-                authLastfmPanel.setVisibility(View.INVISIBLE);
-                loginLastfmEditText.setVisibility(View.VISIBLE);
-                passwordLastfmEditText.setVisibility(View.VISIBLE);
-                loginLastfmEditText.setText("");
-                passwordLastfmEditText.setText("");
-                showSaves();
-            }
+        signOutLastfmButton.setOnClickListener(view -> {
+            AuthorizationInfoManager.signOutLastfm();
+            authLastfmPanel.setVisibility(View.INVISIBLE);
+            loginLastfmEditText.setVisibility(View.VISIBLE);
+            passwordLastfmEditText.setVisibility(View.VISIBLE);
+            loginLastfmEditText.setText("");
+            passwordLastfmEditText.setText("");
+            showSaves();
         });
-        authorizeLastfmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                errorLastfmTextView.setVisibility(View.GONE);
-                AuthorizationInfoManager.signOutLastfm();
-                authLastfmPanel.setVisibility(View.INVISIBLE);
-                loginLastfmEditText.setVisibility(View.VISIBLE);
-                passwordLastfmEditText.setVisibility(View.VISIBLE);
+        authorizeLastfmButton.setOnClickListener(view -> {
+            errorLastfmTextView.setVisibility(View.GONE);
+            AuthorizationInfoManager.signOutLastfm();
+            authLastfmPanel.setVisibility(View.INVISIBLE);
+            loginLastfmEditText.setVisibility(View.VISIBLE);
+            passwordLastfmEditText.setVisibility(View.VISIBLE);
 
-                hideKeyBoard();
+            hideKeyBoard();
 
-                String username = loginLastfmEditText.getText().toString().trim();
-                String password = passwordLastfmEditText.getText().toString().trim();
-                if (username.isEmpty() || password.isEmpty()) {
-                    new MaterialDialog.Builder(AuthActivity.this)
-                            .title(R.string.last_fm)
-                            .content(R.string.enter_login_password)
-                            .positiveText(android.R.string.ok)
-                            .show();
-                    return;
-                }
+            String username = loginLastfmEditText.getText().toString().trim();
+            String password = passwordLastfmEditText.getText().toString().trim();
+            if (username.isEmpty() || password.isEmpty()) {
+                new MaterialDialog.Builder(AuthActivity.this)
+                        .title(R.string.last_fm)
+                        .content(R.string.enter_login_password)
+                        .positiveText(android.R.string.ok)
+                        .show();
+                return;
+            }
 
 
-                lastfmProgressBar.setVisibility(View.VISIBLE);
-                authModel.getMobileSession(
-                        username,
-                        password,
-                        new LastfmErrorCodeCallback<LastfmSession>() {
-                            @Override
-                            public void success(LastfmSession session) {
-                                lastfmProgressBar.setVisibility(View.GONE);
-                                String name = session.getName();
-                                SharedPreferences.Editor editor = SharedPreferencesManager
-                                        .getLastfmPreferences(AuthActivity.this).edit();
-                                editor.putString(Constants.LASTFM_NAME, name);
-                                editor.putString(Constants.LASTFM_KEY, session.getKey());
-                                editor.apply();
-                                lastfmNameTextView.setText(name);
-                                authLastfmPanel.setVisibility(View.VISIBLE);
-                                new LastfmUserModel().getUserInfo(name, new SimpleCallback<LastfmUser>() {
-                                    @Override
-                                    public void success(LastfmUser user) {
-                                        List<LastfmImage> images = user.getImages();
-                                        String url = images.get(images.size() - 1).getUrl();
-                                        AuthorizationInfoManager.setLastfmAvatar(url);
-                                        imageModel.loadImage(url, avatarLastfmImageView);
-                                        showSaves();
-                                    }
-
-                                    @Override
-                                    public void failure(String errorMessage) {
-
-                                    }
-                                });
-                                invalidateOptionsMenu();
-                                if (firstStart && AuthorizationInfoManager.isAuthorizedOnVk()) {
-                                    finish();
-                                    startMainActivity(AuthActivity.this);
+            lastfmProgressBar.setVisibility(View.VISIBLE);
+            authModel.getMobileSession(
+                    username,
+                    password,
+                    new LastfmErrorCodeCallback<LastfmSession>() {
+                        @Override
+                        public void success(LastfmSession session) {
+                            lastfmProgressBar.setVisibility(View.GONE);
+                            String name = session.getName();
+                            SharedPreferences.Editor editor = SharedPreferencesManager
+                                    .getLastfmPreferences(AuthActivity.this).edit();
+                            editor.putString(Constants.LASTFM_NAME, name);
+                            editor.putString(Constants.LASTFM_KEY, session.getKey());
+                            editor.apply();
+                            lastfmNameTextView.setText(name);
+                            authLastfmPanel.setVisibility(View.VISIBLE);
+                            new LastfmUserModel().getUserInfo(name, new SimpleCallback<LastfmUser>() {
+                                @Override
+                                public void success(LastfmUser user) {
+                                    List<LastfmImage> images = user.getImages();
+                                    String url = images.get(images.size() - 1).getUrl();
+                                    AuthorizationInfoManager.setLastfmAvatar(url);
+                                    imageModel.loadImage(url, avatarLastfmImageView);
+                                    showSaves();
                                 }
-                            }
 
-                            @Override
-                            public void failure(int code, String errorMessage) {
-                                lastfmProgressBar.setVisibility(View.GONE);
-                                if (code == 4) { // Lastfm Invalid Password
-                                    ErrorNotifier.showError(AuthActivity.this, getString(R.string.invalid_password));
-                                    return;
+                                @Override
+                                public void failure(String errorMessage) {
+
                                 }
-                                ErrorNotifier.showError(AuthActivity.this, errorMessage);
+                            });
+                            invalidateOptionsMenu();
+                            if (firstStart && AuthorizationInfoManager.isAuthorizedOnVk()) {
+                                finish();
+                                startMainActivity(AuthActivity.this);
                             }
-                        });
-            }
+                        }
+
+                        @Override
+                        public void failure(int code, String errorMessage) {
+                            lastfmProgressBar.setVisibility(View.GONE);
+                            if (code == 4) { // Lastfm Invalid Password
+                                ErrorNotifier.showError(AuthActivity.this, getString(R.string.invalid_password));
+                                return;
+                            }
+                            ErrorNotifier.showError(AuthActivity.this, errorMessage);
+                        }
+                    });
         });
     }
 
     public void startMainActivity(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }

@@ -7,19 +7,17 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -43,10 +41,8 @@ import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.callbacks.CompletionCallback;
 import com.pillowapps.liqear.components.OnItemStartDragListener;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.components.OnTopToBottomSwipeListener;
 import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.entities.Album;
@@ -91,12 +87,7 @@ public class PhoneFragment extends MainFragment {
     private View playbackTab;
     private View modeTab;
 
-    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            return mainActivity.onOptionsItemSelected(menuItem);
-        }
-    };
+    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = mainActivity::onOptionsItemSelected;
 
     /**
      * Playlists tab
@@ -198,31 +189,21 @@ public class PhoneFragment extends MainFragment {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        View.OnCreateContextMenuListener contextMenuListener = new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                PopupMenu popup = new PopupMenu(mainActivity, v);
-                //Inflating the Popup using xml file
-                popup.getMenuInflater()
-                        .inflate(R.menu.menu_main_playlist_track, popup.getMenu());
+        View.OnCreateContextMenuListener contextMenuListener = (menu, v, menuInfo) -> {
+            PopupMenu popup = new PopupMenu(mainActivity, v);
+            //Inflating the Popup using xml file
+            popup.getMenuInflater()
+                    .inflate(R.menu.menu_main_playlist_track, popup.getMenu());
 
-                //registering popup with OnMenuItemClickListener
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        mainActivity.onContextItemSelected(item);
-                        return true;
-                    }
-                });
+            //registering popup with OnMenuItemClickListener
+            popup.setOnMenuItemClickListener(item -> {
+                mainActivity.onContextItemSelected(item);
+                return true;
+            });
 
-                popup.show();
-            }
+            popup.show();
         };
-        OnItemStartDragListener onStartDragListener = new OnItemStartDragListener() {
-            @Override
-            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-                mItemTouchHelper.startDrag(viewHolder);
-            }
-        };
+        OnItemStartDragListener onStartDragListener = mItemTouchHelper::startDrag;
         PlaylistItemsAdapter playlistItemsAdapter = new PlaylistItemsAdapter(getActivity());
         mainActivity.setPlaylistItemsAdapter(playlistItemsAdapter);
         playlistListView.setAdapter(playlistItemsAdapter);
@@ -279,18 +260,13 @@ public class PhoneFragment extends MainFragment {
         playbackToolbar = (Toolbar) playbackTab.findViewById(R.id.toolbar);
         modeToolbar = (Toolbar) modeTab.findViewById(R.id.toolbar);
         playlistToolbar.setTitle(R.string.playlist_tab);
-        playlistToolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), playlistToolbar.getTitle(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        playlistToolbar.setOnClickListener(v1 -> Toast.makeText(getActivity(), playlistToolbar.getTitle(), Toast.LENGTH_SHORT).show());
         playbackToolbar.setTitle(R.string.app_name);
         modeToolbar.setTitle(R.string.mode_tab);
         updateToolbars();
 
         indicator = (UnderlinePageIndicator) v.findViewById(R.id.indicator);
-        indicator.setSelectedColor(getResources().getColor(R.color.accent));
+        indicator.setSelectedColor(ContextCompat.getColor(getActivity(), R.color.accent));
         indicator.setOnClickListener(null);
         indicator.setViewPager(pager);
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -364,52 +340,33 @@ public class PhoneFragment extends MainFragment {
             }
         });
 
-        shuffleButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Timeline.getInstance().toggleShuffle();
-                shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
-                mainActivity.getMusicService().updateWidgets();
-            }
+        shuffleButton.setOnClickListener(v -> {
+            Timeline.getInstance().toggleShuffle();
+            shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+            mainActivity.getMusicService().updateWidgets();
         });
 
-        repeatButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Timeline.getInstance().toggleRepeat();
-                repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
-                mainActivity.getMusicService().updateWidgets();
-            }
+        repeatButton.setOnClickListener(v -> {
+            Timeline.getInstance().toggleRepeat();
+            repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
+            mainActivity.getMusicService().updateWidgets();
         });
 
-        artistTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Track currentTrack = Timeline.getInstance().getCurrentTrack();
-                if (currentTrack == null) return;
-                Intent artistInfoIntent = new Intent(mainActivity, LastfmArtistViewerActivity.class);
-                artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, currentTrack.getArtist());
-                mainActivity.startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
-            }
+        artistTextView.setOnClickListener(v -> {
+            Track currentTrack = Timeline.getInstance().getCurrentTrack();
+            if (currentTrack == null) return;
+            Intent artistInfoIntent = new Intent(mainActivity, LastfmArtistViewerActivity.class);
+            artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, currentTrack.getArtist());
+            mainActivity.startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
         });
 
 
         // Playback controlling.
-        playPauseButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mainActivity.playPause();
-            }
-        });
+        playPauseButton.setOnClickListener(v -> mainActivity.playPause());
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mainActivity.getMusicService().next();
-            }
-        });
+        nextButton.setOnClickListener(v -> mainActivity.getMusicService().next());
 
-        prevButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mainActivity.getMusicService().prev();
-            }
-        });
+        prevButton.setOnClickListener(v -> mainActivity.getMusicService().prev());
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -437,44 +394,28 @@ public class PhoneFragment extends MainFragment {
             }
         });
 
-        View.OnClickListener albumClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mainActivity, LastfmAlbumViewerActivity.class);
-                Album album = Timeline.getInstance().getCurrentAlbum();
-                if (album == null) return;
-                intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
-                intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
-                mainActivity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-            }
+        View.OnClickListener albumClickListener = view -> {
+            Intent intent = new Intent(mainActivity, LastfmAlbumViewerActivity.class);
+            Album album = Timeline.getInstance().getCurrentAlbum();
+            if (album == null) return;
+            intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
+            intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
+            mainActivity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
         };
         albumImageView.setOnClickListener(albumClickListener);
         albumTextView.setOnClickListener(albumClickListener);
-        timeTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean(Constants.TIME_INVERTED,
-                        !preferences.getBoolean(Constants.TIME_INVERTED, false));
-                editor.apply();
-                updateTime();
-            }
+        timeTextView.setOnClickListener(view -> {
+            SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(Constants.TIME_INVERTED,
+                    !preferences.getBoolean(Constants.TIME_INVERTED, false));
+            editor.apply();
+            updateTime();
         });
-        SwipeDetector swipeDetector = new SwipeDetector(new OnTopToBottomSwipeListener() {
-            @Override
-            public void onTopToBottomSwipe() {
-                openDropButton();
-            }
-        });
+        SwipeDetector swipeDetector = new SwipeDetector(this::openDropButton);
         blackView.setOnTouchListener(swipeDetector);
 
-        loveFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleLoveCurrentTrack();
-            }
-        });
+        loveFloatingActionButton.setOnClickListener(v -> toggleLoveCurrentTrack());
     }
 
     public void changeViewPagerItem(int currentItem) {
@@ -513,89 +454,84 @@ public class PhoneFragment extends MainFragment {
         shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
         repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
 
-        StateManager.restorePlaylistState(new CompletionCallback() {
-            @Override
-            public void onCompleted() {
-                final Playlist playlist = Timeline.getInstance().getPlaylist();
-                if (playlist == null || playlist.getTracks().size() == 0) return;
-                updateMainPlaylistTitle();
+        StateManager.restorePlaylistState(() -> {
+            final Playlist playlist = Timeline.getInstance().getPlaylist();
+            if (playlist == null || playlist.getTracks().size() == 0) return;
+            updateMainPlaylistTitle();
 
-                mainActivity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        List<Track> tracks = playlist.getTracks();
+            mainActivity.runOnUiThread(() -> {
+                List<Track> tracks = playlist.getTracks();
 
-                        SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                        String artist = preferences.getString(Constants.ARTIST, "");
-                        String title = preferences.getString(Constants.TITLE, "");
-                        int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                        int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
-                        seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
+                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                String artist = preferences.getString(Constants.ARTIST, "");
+                String title = preferences.getString(Constants.TITLE, "");
+                int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+                seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
 
-                        boolean currentFits = currentIndex < tracks.size();
-                        if (!currentFits) currentIndex = 0;
-                        Track currentTrack = tracks.get(currentIndex);
-                        boolean tracksEquals = currentFits
-                                && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                                + currentTrack.getTitle());
-                        if (!tracksEquals) {
-                            artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
-                            currentIndex = 0;
-                            artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
-                            titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
-                            position = 0;
-                        } else {
-                            artistTextView.setText(Html.fromHtml(artist));
-                            titleTextView.setText(Html.fromHtml(title));
-                        }
-                        Timeline.getInstance().setIndex(currentIndex);
-                        if (currentIndex > tracks.size()) {
-                            artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
-                            position = 0;
-                        }
-                        if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
-                            position = 0;
-                        }
+                boolean currentFits = currentIndex < tracks.size();
+                if (!currentFits) currentIndex = 0;
+                Track currentTrack = tracks.get(currentIndex);
+                boolean tracksEquals = currentFits
+                        && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                        + currentTrack.getTitle());
+                if (!tracksEquals) {
+                    artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
+                    currentIndex = 0;
+                    artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
+                    titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
+                    position = 0;
+                } else {
+                    artistTextView.setText(Html.fromHtml(artist));
+                    titleTextView.setText(Html.fromHtml(title));
+                }
+                Timeline.getInstance().setIndex(currentIndex);
+                if (currentIndex > tracks.size()) {
+                    artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
+                    position = 0;
+                }
+                if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
+                    position = 0;
+                }
 
-                        Timeline.getInstance().setTimePosition(position);
-                        mainActivity.restorePreviousState();
-                        if (!NetworkUtils.isOnline()) {
-                            artistImageView.setImageResource(R.drawable.artist_placeholder);
-                            albumImageView.setImageDrawable(null);
-                            albumTextView.setVisibility(View.GONE);
-                            return;
-                        }
-                        if (SharedPreferencesManager.getPreferences()
-                                .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                            new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
-                                    artistImageView, new ImageLoadingListener() {
-                                        @Override
-                                        public void onLoadingComplete(Bitmap bitmap) {
-                                            updatePaletteWithBitmap(bitmap);
-                                        }
-                                    });
-                        }
+                Timeline.getInstance().setTimePosition(position);
+                mainActivity.restorePreviousState();
+                if (!NetworkUtils.isOnline()) {
+                    artistImageView.setImageResource(R.drawable.artist_placeholder);
+                    albumImageView.setImageDrawable(null);
+                    albumTextView.setVisibility(View.GONE);
+                    return;
+                }
+                if (SharedPreferencesManager.getPreferences()
+                        .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                    new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
+                            artistImageView, new ImageLoadingListener() {
+                                @Override
+                                public void onLoadingComplete(Bitmap bitmap) {
+                                    updatePaletteWithBitmap(bitmap);
+                                }
+                            });
+                }
 
-                        Album album = Timeline.getInstance().getCurrentAlbum();
-                        if (album != null) {
-                            String imageUrl = album.getImageUrl();
-                            if (imageUrl == null || !SharedPreferencesManager.getPreferences()
-                                    .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                                albumImageView.setVisibility(View.GONE);
-                            } else {
-                                albumImageView.setVisibility(View.VISIBLE);
-                                new ImageModel().loadImage(imageUrl, albumImageView);
-                            }
-                            String albumTitle = album.getTitle();
-                            if (albumTitle == null) {
-                                albumTextView.setVisibility(View.GONE);
-                            } else {
-                                albumTextView.setVisibility(View.VISIBLE);
-                                albumTextView.setText(albumTitle);
-                            }
-                        }
+                Album album = Timeline.getInstance().getCurrentAlbum();
+                if (album != null) {
+                    String imageUrl = album.getImageUrl();
+                    if (imageUrl == null || !SharedPreferencesManager.getPreferences()
+                            .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                        albumImageView.setVisibility(View.GONE);
+                    } else {
+                        albumImageView.setVisibility(View.VISIBLE);
+                        new ImageModel().loadImage(imageUrl, albumImageView);
                     }
-                });
-            }
+                    String albumTitle = album.getTitle();
+                    if (albumTitle == null) {
+                        albumTextView.setVisibility(View.GONE);
+                    } else {
+                        albumTextView.setVisibility(View.VISIBLE);
+                        albumTextView.setText(albumTitle);
+                    }
+                }
+            });
         });
     }
 
@@ -641,12 +577,7 @@ public class PhoneFragment extends MainFragment {
     }
 
     public OnRecyclerItemClickListener getPlaylistItemClickListener() {
-        return new OnRecyclerItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int position) {
-                playTrack(position);
-            }
-        };
+        return (view, position) -> playTrack(position);
     }
 
     public void playTrack(int position) {
@@ -790,31 +721,28 @@ public class PhoneFragment extends MainFragment {
 
     private void updatePaletteWithBitmap(Bitmap bitmap) {
         if (bitmap == null) {
-            backLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono_dark));
-            bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_light));
+            backLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.accent_mono_dark));
+            bottomControlsLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.accent_light));
             return;
         }
         Palette.Builder builder = new Palette.Builder(bitmap);
-        builder.generate(new Palette.PaletteAsyncListener() {
-            @Override
-            public void onGenerated(Palette palette) {
-                Palette.Swatch backSwatch = palette.getDarkMutedSwatch();
-                if (backSwatch == null) {
-                    backLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono_dark));
-                    return;
-                }
-                backLayout.setBackgroundColor(backSwatch.getRgb());
-
-                Palette.Swatch bottomSwatch = palette.getDarkVibrantSwatch();
-                if (bottomSwatch == null) {
-                    bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_light));
-                    loveFloatingActionButton.setBackgroundTintList(
-                            ColorStateList.valueOf(getResources().getColor(R.color.accent_light)));
-                    return;
-                }
-                bottomControlsLayout.setBackgroundColor(bottomSwatch.getRgb());
-                loveFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(bottomSwatch.getRgb()));
+        builder.generate(palette -> {
+            Palette.Swatch backSwatch = palette.getDarkMutedSwatch();
+            if (backSwatch == null) {
+                backLayout.setBackgroundColor(getResources().getColor(R.color.accent_mono_dark));
+                return;
             }
+            backLayout.setBackgroundColor(backSwatch.getRgb());
+
+            Palette.Swatch bottomSwatch = palette.getDarkVibrantSwatch();
+            if (bottomSwatch == null) {
+                bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_light));
+                loveFloatingActionButton.setBackgroundTintList(
+                        ColorStateList.valueOf(getResources().getColor(R.color.accent_light)));
+                return;
+            }
+            bottomControlsLayout.setBackgroundColor(bottomSwatch.getRgb());
+            loveFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(bottomSwatch.getRgb()));
         });
     }
 

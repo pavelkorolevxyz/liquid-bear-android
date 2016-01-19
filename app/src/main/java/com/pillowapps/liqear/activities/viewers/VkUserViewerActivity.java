@@ -15,15 +15,12 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
-import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.components.viewers.VkAlbumViewerPage;
 import com.pillowapps.liqear.components.viewers.VkTracksViewerPage;
-import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Group;
-import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
@@ -68,14 +65,22 @@ public class VkUserViewerActivity extends PagerResultActivity {
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         you = extras.getBoolean(YOU_MODE, false);
         if (user == null) {
             mode = Mode.GROUP;
             group = (Group) extras.getSerializable(GROUP);
-            actionBar.setTitle(group.getName());
+            if (actionBar != null) {
+                if (group != null) {
+                    actionBar.setTitle(group.getName());
+                }
+            }
         } else {
-            actionBar.setTitle(user.getName());
+            if (actionBar != null) {
+                actionBar.setTitle(user.getName());
+            }
         }
         initUi();
     }
@@ -123,13 +128,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_feed
         );
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Track>() {
-                    @Override
-                    public void onLoadMore() {
-                        getNewsFeedTracks(getPageSize(), viewer.getVkPage(), viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getNewsFeedTracks(getPageSize(), viewer.getVkPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -141,13 +140,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_favorites
         );
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Track>() {
-                    @Override
-                    public void onLoadMore() {
-                        getFavoritesTracks(getPageSize(), viewer.getVkPage(), viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getFavoritesTracks(getPageSize(), viewer.getVkPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -159,12 +152,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_albums
         );
-        viewer.setOnLoadMoreListener(new OnLoadMoreListener<Album>() {
-            @Override
-            public void onLoadMore() {
-                getAlbums(getPageSize(), viewer.getVkPage(), viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(() -> getAlbums(getPageSize(), viewer.getVkPage(), viewer));
         if (mode == Mode.USER) {
             viewer.setItemClickListener(vkAlbumClickListener);
         } else {
@@ -179,12 +167,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.user_audio
         );
-        viewer.setOnLoadMoreListener(new OnLoadMoreListener<Track>() {
-            @Override
-            public void onLoadMore() {
-                getUserAudio(getPageSize(), viewer.getVkPage(), viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(() -> getUserAudio(getPageSize(), viewer.getVkPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -196,13 +179,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_wall
         );
-        viewer.setOnLoadMoreListener(new OnLoadMoreListener<Track>() {
-            @Override
-            public void onLoadMore() {
-                getWallTracks(getPageSize(), viewer.getVkPage(), viewer);
-
-            }
-        });
+        viewer.setOnLoadMoreListener(() -> getWallTracks(getPageSize(), viewer.getVkPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);

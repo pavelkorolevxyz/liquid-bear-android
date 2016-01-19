@@ -2,9 +2,9 @@ package com.pillowapps.liqear.entities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -49,9 +49,8 @@ public class ListItem implements Item {
             holder = (ItemsHolder) convertView.getTag();
         }
 
-        Resources res = context.getResources();
-        Drawable drawable = res.getDrawable(mode.getIcon());
-        drawable.setColorFilter(R.color.primary, PorterDuff.Mode.MULTIPLY);
+        Drawable drawable = ContextCompat.getDrawable(context, mode.getIcon());
+        drawable.setColorFilter(ContextCompat.getColor(context, R.color.primary), PorterDuff.Mode.MULTIPLY);
         holder.modeImageView.setImageDrawable(drawable);
         holder.titleTextView.setText(context.getString(mode.getTitle()).toLowerCase());
         final boolean modeVisible = mode.isVisible();
@@ -65,14 +64,11 @@ public class ListItem implements Item {
         holder.mainView.setBackgroundResource(!enabled
                 ? R.drawable.card_view_background_disabled
                 : R.drawable.card_view_background_color);
-        holder.switchVisibilityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences.Editor editor = modePreferences.edit();
-                editor.putBoolean(Constants.MODE_VISIBLE + mode.getModeEnum(), !modeVisible);
-                editor.apply();
-                callback.onUpdate();
-            }
+        holder.switchVisibilityButton.setOnClickListener(view -> {
+            SharedPreferences.Editor editor = modePreferences.edit();
+            editor.putBoolean(Constants.MODE_VISIBLE + mode.getModeEnum(), !modeVisible);
+            editor.apply();
+            callback.onUpdate();
         });
         return convertView;
     }

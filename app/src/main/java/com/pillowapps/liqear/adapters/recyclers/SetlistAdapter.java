@@ -15,7 +15,6 @@ import java.util.List;
 public class SetlistAdapter extends RecyclerView.Adapter<SetlistViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
-    private SetlistViewHolder holder;
     private List<SetlistfmSetlist> items;
 
     public SetlistAdapter(List<SetlistfmSetlist> items, OnRecyclerItemClickListener clickListener) {
@@ -35,8 +34,7 @@ public class SetlistAdapter extends RecyclerView.Adapter<SetlistViewHolder> {
     @Override
     public SetlistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        holder = new SetlistViewHolder(v, clickListener);
-        return holder;
+        return new SetlistViewHolder(v, clickListener);
     }
 
     @Override

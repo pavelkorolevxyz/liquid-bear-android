@@ -20,7 +20,6 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.components.viewers.LastfmAlbumViewerPage;
@@ -48,7 +47,7 @@ import butterknife.InjectView;
 
 public class LastfmArtistViewerActivity extends PagerResultActivity {
     public static final String ARTIST = "artist";
-//    public static final int PERSONAL_TOP_INDEX = 2;
+    //    public static final int PERSONAL_TOP_INDEX = 2;
     public static final int TOP_TRACKS_INDEX = 1;
     public static final int ALBUMS_INDEX = 0;
     public static final int PAGES_NUMBER = 4;
@@ -73,8 +72,10 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         Bundle extras = getIntent().getExtras();
         artist = new Artist(extras.getString(ARTIST));
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(artist.getName());
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(artist.getName());
+        }
         initUi();
     }
 
@@ -144,13 +145,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.similar_artists);
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Artist>() {
-                    @Override
-                    public void onLoadMore() {
-                        getSimilarArtists(artist.getName(), getPageSize(), viewer.getPage(), viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getSimilarArtists(artist.getName(), getPageSize(), viewer.getPage(), viewer));
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);
         return viewer;
@@ -161,13 +156,8 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 String.format("%s %s", getString(R.string.top).toLowerCase(), AuthorizationInfoManager.getLastfmName())
         );
-        viewer.setOnLoadMoreListener(new OnLoadMoreListener<Track>() {
-            @Override
-            public void onLoadMore() {
-                getPersonalTop(artist.getName(), AuthorizationInfoManager.getLastfmName(),
-                        getPageSize(), viewer.getPage(), viewer);
-            }
-        });
+        viewer.setOnLoadMoreListener(() -> getPersonalTop(artist.getName(), AuthorizationInfoManager.getLastfmName(),
+                getPageSize(), viewer.getPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -178,13 +168,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         final LastfmAlbumViewerPage viewer = new LastfmAlbumViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.albums);
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Album>() {
-                    @Override
-                    public void onLoadMore() {
-                        getArtistAlbums(artist.getName(), viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getArtistAlbums(artist.getName(), viewer));
         viewer.setItemClickListener(albumClickListener);
         addViewer(viewer);
         return viewer;
@@ -194,13 +178,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.top_tracks);
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Track>() {
-                    @Override
-                    public void onLoadMore() {
-                        getArtistTopTracks(artist, getPageSize(), viewer.getPage(), viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getArtistTopTracks(artist, getPageSize(), viewer.getPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -218,7 +196,8 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         final int index = pager.getCurrentItem();
         /*if (index == PERSONAL_TOP_INDEX) {
             inflater.inflate(R.menu.to_playlist_menu, menu);
-        } else*/ if (index == TOP_TRACKS_INDEX) {
+        } else*/
+        if (index == TOP_TRACKS_INDEX) {
             inflater.inflate(R.menu.to_playlist_menu, menu);
         } else if (index == SIMILAR_INDEX) {
             inflater.inflate(R.menu.empty_menu, menu);

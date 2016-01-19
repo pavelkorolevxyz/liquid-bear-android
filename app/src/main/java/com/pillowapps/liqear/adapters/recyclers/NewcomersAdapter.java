@@ -17,7 +17,6 @@ import java.util.List;
 public class NewcomersAdapter extends RecyclerView.Adapter<NewcomersViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
-    private NewcomersViewHolder holder;
     private List<Album> items;
 
     public NewcomersAdapter(List<Album> items, OnRecyclerItemClickListener clickListener) {
@@ -48,8 +47,7 @@ public class NewcomersAdapter extends RecyclerView.Adapter<NewcomersViewHolder> 
     @Override
     public NewcomersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.album_item, parent, false);
-        holder = new NewcomersViewHolder(v, clickListener);
-        return holder;
+        return new NewcomersViewHolder(v, clickListener);
     }
 
     public Album getItem(int position) {

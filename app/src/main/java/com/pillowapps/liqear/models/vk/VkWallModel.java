@@ -22,7 +22,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class VkWallModel {
@@ -128,49 +127,29 @@ public class VkWallModel {
                     .subscribe(subscriber);
         } else {
             Observable<VkUploadServerRoot> uploadServerRootObservable = getPhotoUploadServer();
-            uploadServerRootObservable.flatMap(new Func1<VkUploadServerRoot, Observable<VkPhotoUploadResult>>() {
-                @Override
-                public Observable<VkPhotoUploadResult> call(VkUploadServerRoot vkUploadServerRoot) {
-                    URL uploadUrl = vkUploadServerRoot.getUploadServer().getUploadUrl();
-                    return uploadWallImage(imageUrl, uploadUrl);
+            uploadServerRootObservable.flatMap(vkUploadServerRoot -> {
+                URL uploadUrl = vkUploadServerRoot.getUploadServer().getUploadUrl();
+                return uploadWallImage(imageUrl, uploadUrl);
+            }).flatMap(this::saveWallPhoto).flatMap(vkSavePhotoRoot -> {
+                List<VkSavePhotoItem> photoItems = vkSavePhotoRoot.getPhotoItems();
+                long photoId = 0;
+                if (photoItems.size() > 0) {
+                    VkSavePhotoItem photoItem = photoItems.get(0);
+                    photoId = photoItem.getId();
+                    attachmentsBuilder.append("photo").append(photoItem.getOwnerId())
+                            .append("_")
+                            .append(photoId);
                 }
-            }).flatMap(new Func1<VkPhotoUploadResult, Observable<VkSavePhotoRoot>>() {
-                @Override
-                public Observable<VkSavePhotoRoot> call(VkPhotoUploadResult vkPhotoUploadResult) {
-                    return saveWallPhoto(vkPhotoUploadResult);
-                }
-            }).flatMap(new Func1<VkSavePhotoRoot, Observable<VkResponse>>() {
-                @Override
-                public Observable<VkResponse> call(VkSavePhotoRoot vkSavePhotoRoot) {
-                    if (imageUrl != null) {
-                        List<VkSavePhotoItem> photoItems = vkSavePhotoRoot.getPhotoItems();
-                        long photoId = 0;
-                        if (photoItems.size() > 0) {
-                            VkSavePhotoItem photoItem = photoItems.get(0);
-                            photoId = photoItem.getId();
-                            attachmentsBuilder.append("photo").append(photoItem.getOwnerId())
-                                    .append("_")
-                                    .append(photoId);
-                        }
-                        if (track.getOwnerId() != 0) {
-                            if (photoId != 0) {
-                                attachmentsBuilder.append(",");
-                            }
-                            attachmentsBuilder.append("audio")
-                                    .append(track.getOwnerId())
-                                    .append("_")
-                                    .append(track.getAudioId());
-                        }
-                    } else {
-                        if (track.getOwnerId() != 0) {
-                            attachmentsBuilder.append("audio")
-                                    .append(track.getOwnerId())
-                                    .append("_")
-                                    .append(track.getAudioId());
-                        }
+                if (track.getOwnerId() != 0) {
+                    if (photoId != 0) {
+                        attachmentsBuilder.append(",");
                     }
-                    return postWall(message, attachmentsBuilder.toString());
+                    attachmentsBuilder.append("audio")
+                            .append(track.getOwnerId())
+                            .append("_")
+                            .append(track.getAudioId());
                 }
+                return postWall(message, attachmentsBuilder.toString());
             }).subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(subscriber);

@@ -3,7 +3,6 @@ package com.pillowapps.liqear.models;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -46,44 +45,33 @@ public class ShareModel {
         }
         final String shareBody = template.replace("%a%", artist).replace("%t%", trackTitle).replace("%r%", albumTitle);
 
-        vkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-                    Toast.makeText(context, R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                    return;
-                } else if (!NetworkUtils.isOnline()) {
-                    Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                    return;
-                }
+        vkButton.setOnClickListener(view -> {
+            if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+                Toast.makeText(context, R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                return;
+            } else if (!NetworkUtils.isOnline()) {
+                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                return;
+            }
 
-                if (currentTrack == null) return;
+            if (currentTrack == null) return;
 
-                String imageUrl = album != null && album.getArtist().equals(currentTrack.getArtist()) ? album.getImageUrl() : null;
-                new VkWallModel().postMessage(shareBody, imageUrl, currentTrack, new VkPassiveCallback());
-                Toast.makeText(context, R.string.shared, Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
+            String imageUrl = album != null && album.getArtist().equals(currentTrack.getArtist()) ? album.getImageUrl() : null;
+            new VkWallModel().postMessage(shareBody, imageUrl, currentTrack, new VkPassiveCallback());
+            Toast.makeText(context, R.string.shared, Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
         });
-        otherButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                context.startActivity(Intent.createChooser(sharingIntent,
-                        context.getResources().getString(R.string.share_track)));
-                dialog.dismiss();
-            }
+        otherButton.setOnClickListener(view -> {
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+            context.startActivity(Intent.createChooser(sharingIntent,
+                    context.getResources().getString(R.string.share_track)));
+            dialog.dismiss();
         });
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        cancelButton.setOnClickListener(view -> dialog.dismiss());
         dialog.show();
     }
 

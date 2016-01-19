@@ -3,6 +3,7 @@ package com.pillowapps.liqear.activities.viewers;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -20,15 +21,12 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.SpinnerLastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.SpinnerLastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
-import com.pillowapps.liqear.entities.Artist;
-import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
@@ -68,9 +66,11 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         user = (User) extras.getSerializable(USER);
         defaultIndex = extras.getInt(TAB_INDEX);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        if (user != null) {
-            actionBar.setTitle(user.getName());
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            if (user != null) {
+                actionBar.setTitle(user.getName());
+            }
         }
         initUi();
     }
@@ -96,7 +96,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                                        int itemPosition, long l) {
                 TextView selectedText = (TextView) adapterView.getChildAt(0);
                 if (selectedText != null) {
-                    selectedText.setTextColor(getResources().getColor(R.color.primary_text));
+                    selectedText.setTextColor(ContextCompat.getColor(LastfmUserViewerActivity.this, R.color.primary_text));
                 }
                 topTracksPeriod = Constants.PERIODS_WITHOUT_ONEMONTH_ARRAY[itemPosition];
                 SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences();
@@ -134,7 +134,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                                        View view, int itemPosition, long l) {
                 TextView selectedText = (TextView) adapterView.getChildAt(0);
                 if (selectedText != null) {
-                    selectedText.setTextColor(getResources().getColor(R.color.primary_text));
+                    selectedText.setTextColor(ContextCompat.getColor(LastfmUserViewerActivity.this, R.color.primary_text));
                 }
                 topArtistsPeriod = Constants.PERIODS_ARRAY[itemPosition];
                 SharedPreferences.Editor editor = SharedPreferencesManager.getSavePreferences().edit();
@@ -193,13 +193,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.recent
         );
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Track>() {
-                    @Override
-                    public void onLoadMore() {
-                        getRecent(getPageSize(), viewer.getPage(), viewer);
-                    }
-                }
+        viewer.setOnLoadMoreListener(() -> getRecent(getPageSize(), viewer.getPage(), viewer)
         );
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
@@ -211,13 +205,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         final SpinnerLastfmArtistViewerPage viewer = new SpinnerLastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_spinner_tab, null),
                 R.string.top_artists);
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Artist>() {
-                    @Override
-                    public void onLoadMore() {
-                        getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), false, viewer);
-                    }
-                }
+        viewer.setOnLoadMoreListener(() -> getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), false, viewer)
         );
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);
@@ -229,13 +217,9 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_spinner_tab, null),
                 R.string.top_tracks
         );
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Track>() {
-                    @Override
-                    public void onLoadMore() {
-                        Timber.d("onLoadMore LastmfUser top tracks");
-                        getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), false, viewer);
-                    }
+        viewer.setOnLoadMoreListener(() -> {
+                    Timber.d("onLoadMore LastmfUser top tracks");
+                    getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), false, viewer);
                 }
         );
         viewer.setItemClickListener(trackClickListener);
@@ -249,13 +233,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.loved_tracks
         );
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Track>() {
-                    @Override
-                    public void onLoadMore() {
-                        getLoved(getPageSize(), viewer.getPage(), viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getLoved(getPageSize(), viewer.getPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);

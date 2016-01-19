@@ -24,14 +24,11 @@ import android.widget.Toast;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
-import com.pillowapps.liqear.callbacks.CompletionCallback;
-import com.pillowapps.liqear.callbacks.GetPlaylistCallback;
 import com.pillowapps.liqear.callbacks.PassiveCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkPassiveCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.Album;
-import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
@@ -198,30 +195,28 @@ public class MusicService extends Service implements
         IntentFilter receiverFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
         LBApplication.getAppContext().registerReceiver(headsetStateReceiver, receiverFilter);
 
-        focusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
-            public void onAudioFocusChange(int focusChange) {
-                if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-                    if (Timeline.getInstance().getPlayingState() == PlayingState.PLAYING) {
-                        pause();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                            CompatIcs.unregisterRemote(MusicService.this, audioManager);
-                        } else {
-                            MediaButtonReceiver.unregisterMediaButton(MusicService.this);
-                        }
-                    }
-                } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-                    if (Timeline.getInstance().getPlayingStateBeforeCall() == PlayingState.PLAYING) {
-                        play();
-                    }
+        focusChangeListener = focusChange -> {
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                if (Timeline.getInstance().getPlayingState() == PlayingState.PLAYING) {
+                    pause();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                        CompatIcs.registerRemote(MusicService.this, audioManager);
-                        if (Timeline.getInstance().getCurrentTrack() != null) {
-                            CompatIcs.updateRemote(MusicService.this,
-                                    Timeline.getInstance().getCurrentTrack());
-                        }
+                        CompatIcs.unregisterRemote(MusicService.this, audioManager);
                     } else {
-                        MediaButtonReceiver.registerMediaButton(MusicService.this);
+                        MediaButtonReceiver.unregisterMediaButton(MusicService.this);
                     }
+                }
+            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                if (Timeline.getInstance().getPlayingStateBeforeCall() == PlayingState.PLAYING) {
+                    play();
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    CompatIcs.registerRemote(MusicService.this, audioManager);
+                    if (Timeline.getInstance().getCurrentTrack() != null) {
+                        CompatIcs.updateRemote(MusicService.this,
+                                Timeline.getInstance().getCurrentTrack());
+                    }
+                } else {
+                    MediaButtonReceiver.registerMediaButton(MusicService.this);
                 }
             }
         };
@@ -259,12 +254,7 @@ public class MusicService extends Service implements
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor mAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         shakeDetector = new ShakeDetector();
-        shakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
-            @Override
-            public void onShake(int count) {
-                next();
-            }
-        });
+        shakeDetector.setOnShakeListener(count -> next());
         sensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
@@ -499,42 +489,39 @@ public class MusicService extends Service implements
             togglePlayPause();
         } else {
             Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
-            new PlaylistModel().getMainPlaylist(new GetPlaylistCallback() {
-                @Override
-                public void onCompleted(Playlist playlist) {
-                    Timeline.getInstance().setPlaylist(playlist);
-                    List<Track> tracks = playlist.getTracks();
+            new PlaylistModel().getMainPlaylist(playlist -> {
+                Timeline.getInstance().setPlaylist(playlist);
+                List<Track> tracks = playlist.getTracks();
 
-                    SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                    String artist = preferences.getString(Constants.ARTIST, "");
-                    String title = preferences.getString(Constants.TITLE, "");
-                    int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                    int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                String artist = preferences.getString(Constants.ARTIST, "");
+                String title = preferences.getString(Constants.TITLE, "");
+                int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
 
-                    boolean currentFits = currentIndex < tracks.size();
-                    if (!currentFits) currentIndex = 0;
-                    if (currentIndex == 0 && tracks.size() == 0) return;
-                    Track currentTrack = tracks.get(currentIndex);
-                    boolean tracksEquals = currentFits
-                            && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                            + currentTrack.getTitle());
-                    if (!tracksEquals) {
-                        currentIndex = 0;
-                        position = 0;
-                    }
-                    Timeline.getInstance().setIndex(currentIndex);
-                    if (currentIndex > tracks.size()) {
-                        position = 0;
-                    }
-                    if (!LBPreferencesManager.isContinueFromLastPositionEnabled()) {
-                        position = 0;
-                    }
+                boolean currentFits = currentIndex < tracks.size();
+                if (!currentFits) currentIndex = 0;
+                if (currentIndex == 0 && tracks.size() == 0) return;
+                Track currentTrack = tracks.get(currentIndex);
+                boolean tracksEquals = currentFits
+                        && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                        + currentTrack.getTitle());
+                if (!tracksEquals) {
+                    currentIndex = 0;
+                    position = 0;
+                }
+                Timeline.getInstance().setIndex(currentIndex);
+                if (currentIndex > tracks.size()) {
+                    position = 0;
+                }
+                if (!LBPreferencesManager.isContinueFromLastPositionEnabled()) {
+                    position = 0;
+                }
 
-                    Timeline.getInstance().setTimePosition(position);
-                    if (tracks.size() != 0
-                            && Timeline.getInstance().getCurrentTrack() == null) {
-                        play();
-                    }
+                Timeline.getInstance().setTimePosition(position);
+                if (tracks.size() != 0
+                        && Timeline.getInstance().getCurrentTrack() == null) {
+                    play();
                 }
             });
         }
@@ -1030,12 +1017,7 @@ public class MusicService extends Service implements
                         Intent intent = new Intent();
                         intent.setAction(Constants.ACTION_SERVICE);
                         Timeline.getInstance().setCurrentAlbum(album);
-                        new LastfmAlbumModel().getCover(MusicService.this, album, new CompletionCallback() {
-                            @Override
-                            public void onCompleted() {
-                                showTrackInNotification();
-                            }
-                        });
+                        new LastfmAlbumModel().getCover(MusicService.this, album, MusicService.this::showTrackInNotification);
                         Timeline.getInstance().getCurrentTrack().setLoved(loved);
                         LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(album));
                         updateWidgets();

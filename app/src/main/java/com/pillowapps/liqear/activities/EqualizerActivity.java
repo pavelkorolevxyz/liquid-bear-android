@@ -5,6 +5,7 @@ import android.content.SharedPreferences.Editor;
 import android.media.AudioManager;
 import android.media.audiofx.BassBoost;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -14,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -47,7 +47,9 @@ public class EqualizerActivity extends TrackedActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         setTitle(R.string.equalizer);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -67,7 +69,7 @@ public class EqualizerActivity extends TrackedActivity {
                                        int position, long l) {
                 TextView selectedText = (TextView) adapterView.getChildAt(0);
                 if (selectedText != null) {
-                    selectedText.setTextColor(getResources().getColor(R.color.primary_text));
+                    selectedText.setTextColor(ContextCompat.getColor(EqualizerActivity.this, R.color.primary_text));
                 }
             }
 
@@ -112,7 +114,7 @@ public class EqualizerActivity extends TrackedActivity {
             for (int i = 0; i < numberOfPresets; i++) {
                 array[i] = equalizer.getPresetName((short) i);
             }
-            ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,
+            ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_spinner_item, array);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
@@ -170,19 +172,16 @@ public class EqualizerActivity extends TrackedActivity {
         checkBox.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        checkBox.setTextColor(getResources().getColor(R.color.primary_text));
+        checkBox.setTextColor(ContextCompat.getColor(EqualizerActivity.this, R.color.primary_text));
         checkBox.setText(R.string.enable_equalizer);
         checkBox.setChecked(preferences.getBoolean("enabled", true));
         equalizer.setEnabled(checkBox.isChecked());
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                Editor editor = SharedPreferencesManager.getEqualizerPreferences().edit();
-                editor.putBoolean("enabled", isChecked);
-                editor.apply();
-                EqualizerManager.setEnabled(isChecked);
-                checkEnabled();
-            }
+        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            Editor editor = SharedPreferencesManager.getEqualizerPreferences().edit();
+            editor.putBoolean("enabled", isChecked);
+            editor.apply();
+            EqualizerManager.setEnabled(isChecked);
+            checkEnabled();
         });
         mainLinearLayout.addView(checkBox);
         for (short i = 0; i < bands; i++) {
@@ -194,7 +193,7 @@ public class EqualizerActivity extends TrackedActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT));
             freqTextView.setGravity(Gravity.CENTER_HORIZONTAL);
             freqTextView.setTextSize(TEXT_SIZE);
-            freqTextView.setTextColor(getResources().getColor(R.color.primary_text));
+            freqTextView.setTextColor(ContextCompat.getColor(EqualizerActivity.this, R.color.primary_text));
             freqTextView.setText((equalizer.getCenterFreq(band) / 1000) + " Hz");
             mainLinearLayout.addView(freqTextView);
 
@@ -206,7 +205,7 @@ public class EqualizerActivity extends TrackedActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
             minDbTextView.setTextSize(TEXT_SIZE);
-            minDbTextView.setTextColor(getResources().getColor(R.color.primary_text));
+            minDbTextView.setTextColor(ContextCompat.getColor(EqualizerActivity.this, R.color.primary_text));
             minDbTextView.setText((minEQLevel / 100) + " dB");
 
             TextView maxDbTextView = new TextView(this);
@@ -214,7 +213,7 @@ public class EqualizerActivity extends TrackedActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
             maxDbTextView.setText((maxEQLevel / 100) + " dB");
-            maxDbTextView.setTextColor(getResources().getColor(R.color.primary_text));
+            maxDbTextView.setTextColor(ContextCompat.getColor(EqualizerActivity.this, R.color.primary_text));
             maxDbTextView.setTextSize(TEXT_SIZE);
 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -256,7 +255,7 @@ public class EqualizerActivity extends TrackedActivity {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         bassBoostTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         bassBoostTextView.setTextSize(TEXT_SIZE);
-        bassBoostTextView.setTextColor(getResources().getColor(R.color.primary_text));
+        bassBoostTextView.setTextColor(ContextCompat.getColor(EqualizerActivity.this, R.color.primary_text));
         bassBoostTextView.setText("Bass boost");
         mainLinearLayout.addView(bassBoostTextView);
 

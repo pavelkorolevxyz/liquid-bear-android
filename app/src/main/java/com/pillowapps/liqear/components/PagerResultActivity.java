@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.components;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
@@ -37,43 +38,13 @@ public class PagerResultActivity extends ResultActivity {
         }
     };
 
-    public OnViewerItemClickListener<Track> trackLongClickListener = new OnViewerItemClickListener<Track>() {
-        @Override
-        public void onViewerClicked(List<Track> tracks, int position) {
-            trackLongClick(tracks.get(position));
-        }
-    };
-    public OnViewerItemClickListener<VkTrack> vkTrackLongClickListener = new OnViewerItemClickListener<VkTrack>() {
-        @Override
-        public void onViewerClicked(List<VkTrack> tracks, int position) {
-            trackLongClick(Converter.convertVkTrack(tracks.get(position)));
-        }
-    };
+    public OnViewerItemClickListener<Track> trackLongClickListener = (tracks, position) -> trackLongClick(tracks.get(position));
+    public OnViewerItemClickListener<VkTrack> vkTrackLongClickListener = (tracks, position) -> trackLongClick(Converter.convertVkTrack(tracks.get(position)));
 
-    public OnViewerItemClickListener<Artist> artistClickListener = new OnViewerItemClickListener<Artist>() {
-        @Override
-        public void onViewerClicked(List<Artist> artists, int position) {
-            openArtistByName(artists.get(position).getName());
-        }
-    };
-    public OnViewerItemClickListener<Album> albumClickListener = new OnViewerItemClickListener<Album>() {
-        @Override
-        public void onViewerClicked(List<Album> albums, int position) {
-            openLastfmAlbum(albums.get(position));
-        }
-    };
-    public OnViewerItemClickListener<Album> vkAlbumClickListener = new OnViewerItemClickListener<Album>() {
-        @Override
-        public void onViewerClicked(List<Album> albums, int position) {
-            openVkAlbum(albums.get(position));
-        }
-    };
-    public OnViewerItemClickListener<Album> vkGroupAlbumClickListener = new OnViewerItemClickListener<Album>() {
-        @Override
-        public void onViewerClicked(List<Album> albums, int position) {
-            openGroupVkAlbum(albums.get(position));
-        }
-    };
+    public OnViewerItemClickListener<Artist> artistClickListener = (artists, position) -> openArtistByName(artists.get(position).getName());
+    public OnViewerItemClickListener<Album> albumClickListener = (albums, position) -> openLastfmAlbum(albums.get(position));
+    public OnViewerItemClickListener<Album> vkAlbumClickListener = (albums, position) -> openVkAlbum(albums.get(position));
+    public OnViewerItemClickListener<Album> vkGroupAlbumClickListener = (albums, position) -> openGroupVkAlbum(albums.get(position));
 
     protected int viewersCount() {
         return pages.size();
@@ -101,8 +72,8 @@ public class PagerResultActivity extends ResultActivity {
         pager.setAdapter(adapter);
         indicator.setOnClickListener(null);
         indicator.setViewPager(pager);
-        indicator.setTextColor(getResources().getColor(R.color.secondary_text));
-        indicator.setSelectedColor(getResources().getColor(R.color.primary_text));
-        indicator.setFooterColor(getResources().getColor(R.color.accent));
+        indicator.setTextColor(ContextCompat.getColor(PagerResultActivity.this, R.color.secondary_text));
+        indicator.setSelectedColor(ContextCompat.getColor(PagerResultActivity.this, R.color.primary_text));
+        indicator.setFooterColor(ContextCompat.getColor(PagerResultActivity.this, R.color.accent));
     }
 }

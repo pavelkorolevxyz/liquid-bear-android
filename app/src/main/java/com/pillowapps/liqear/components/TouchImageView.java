@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.View;
 import android.widget.ImageView;
 
 public class TouchImageView extends ImageView {
@@ -58,54 +57,49 @@ public class TouchImageView extends ImageView {
         setImageMatrix(matrix);
         setScaleType(ScaleType.MATRIX);
 
-        setOnTouchListener(new OnTouchListener() {
+        setOnTouchListener((v, event) -> {
+            mScaleDetector.onTouchEvent(event);
+            PointF curr = new PointF(event.getX(), event.getY());
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mScaleDetector.onTouchEvent(event);
-                PointF curr = new PointF(event.getX(), event.getY());
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    last.set(curr);
+                    start.set(last);
+                    mode = DRAG;
+                    break;
 
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        last.set(curr);
-                        start.set(last);
-                        mode = DRAG;
-                        break;
+                case MotionEvent.ACTION_MOVE:
+                    if (mode == DRAG) {
+                        float deltaX = curr.x - last.x;
+                        float deltaY = curr.y - last.y;
+                        float fixTransX = getFixDragTrans(deltaX,
+                                viewWidth, origWidth * saveScale);
+                        float fixTransY = getFixDragTrans(deltaY,
+                                viewHeight, origHeight * saveScale);
+                        matrix.postTranslate(fixTransX, fixTransY);
+                        fixTrans();
+                        last.set(curr.x, curr.y);
+                    }
+                    break;
 
-                    case MotionEvent.ACTION_MOVE:
-                        if (mode == DRAG) {
-                            float deltaX = curr.x - last.x;
-                            float deltaY = curr.y - last.y;
-                            float fixTransX = getFixDragTrans(deltaX,
-                                    viewWidth, origWidth * saveScale);
-                            float fixTransY = getFixDragTrans(deltaY,
-                                    viewHeight, origHeight * saveScale);
-                            matrix.postTranslate(fixTransX, fixTransY);
-                            fixTrans();
-                            last.set(curr.x, curr.y);
-                        }
-                        break;
+                case MotionEvent.ACTION_UP:
+                    mode = NONE;
+                    int xDiff = (int) Math.abs(curr.x - start.x);
+                    int yDiff = (int) Math.abs(curr.y - start.y);
+                    if (xDiff < CLICK && yDiff < CLICK)
+                        performClick();
+                    break;
 
-                    case MotionEvent.ACTION_UP:
-                        mode = NONE;
-                        int xDiff = (int) Math.abs(curr.x - start.x);
-                        int yDiff = (int) Math.abs(curr.y - start.y);
-                        if (xDiff < CLICK && yDiff < CLICK)
-                            performClick();
-                        break;
-
-                    case MotionEvent.ACTION_POINTER_UP:
-                        mode = NONE;
-                        break;
-                    default:
-                        break;
-                }
-
-                setImageMatrix(matrix);
-                invalidate();
-                return true; // indicate event was handled
+                case MotionEvent.ACTION_POINTER_UP:
+                    mode = NONE;
+                    break;
+                default:
+                    break;
             }
 
+            setImageMatrix(matrix);
+            invalidate();
+            return true;
         });
     }
 

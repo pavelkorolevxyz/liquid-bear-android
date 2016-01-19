@@ -7,7 +7,6 @@ import android.view.View;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.recyclers.UserAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
@@ -16,6 +15,7 @@ import com.pillowapps.liqear.helpers.DelayedTextWatcher;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SearchLastfmUserActivity extends SearchBaseActivity {
@@ -38,15 +38,12 @@ public class SearchLastfmUserActivity extends SearchBaseActivity {
     protected void initWatcher() {
         editText.addTextChangedListener(new DelayedTextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                runTaskWithDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        String searchQuery = editText.getText().toString().trim();
-                        if (searchQuery.length() == 0) {
-                            return;
-                        }
-                        getUserInfo(searchQuery);
+                runTaskWithDelay(() -> {
+                    String searchQuery = editText.getText().toString().trim();
+                    if (searchQuery.length() == 0) {
+                        return;
                     }
+                    getUserInfo(searchQuery);
                 });
             }
 
@@ -60,12 +57,7 @@ public class SearchLastfmUserActivity extends SearchBaseActivity {
 
     private void fillWithUsers(List<User> users) {
         emptyTextView.setVisibility(users.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new UserAdapter(users, new OnRecyclerItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int position) {
-                openLastfmUser(adapter.getItem(position));
-            }
-        });
+        adapter = new UserAdapter(users, (view, position) -> openLastfmUser(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
@@ -74,7 +66,7 @@ public class SearchLastfmUserActivity extends SearchBaseActivity {
         new LastfmUserModel().getUserInfo(name, new SimpleCallback<LastfmUser>() {
                     @Override
                     public void success(LastfmUser user) {
-                        List<User> users = Arrays.asList(Converter.convertUser(user));
+                        List<User> users = Collections.singletonList(Converter.convertUser(user));
                         fillWithUsers(users);
                     }
 

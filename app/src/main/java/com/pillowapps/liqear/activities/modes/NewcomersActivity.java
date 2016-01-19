@@ -19,7 +19,6 @@ import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.recyclers.NewcomersAdapter;
 import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 import com.pillowapps.liqear.components.LoadMoreRecyclerView;
-import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
@@ -30,6 +29,7 @@ import com.pillowapps.liqear.models.portals.FunkySoulsAlbumModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class NewcomersActivity extends ResultActivity {
@@ -82,7 +82,7 @@ public class NewcomersActivity extends ResultActivity {
             case R.id.play:
                 if (adapter == null) break;
                 List<Album> albumsInList = adapter.getItems();
-                List<Track> tracks = new ArrayList<Track>(albumsInList.size() * 10);
+                List<Track> tracks = new ArrayList<>(albumsInList.size() * 10);
                 for (Album album : albumsInList) {
                     for (String title : album.getTracks()) {
                         tracks.add(new Track(album.getArtist(), title));
@@ -121,8 +121,10 @@ public class NewcomersActivity extends ResultActivity {
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(getResources().getString(R.string.newcomers));
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getResources().getString(R.string.newcomers));
+        }
 
         final LinearLayout searchLinearLayout =
                 (LinearLayout) findViewById(R.id.edit_part_quick_search_layout);
@@ -134,11 +136,15 @@ public class NewcomersActivity extends ResultActivity {
         switch (mode) {
             case FUNKYSOULS:
                 getNewcomersFunky(visiblePages++);
-                actionBar.setTitle(getResources().getString(R.string.funkysouls));
+                if (actionBar != null) {
+                    actionBar.setTitle(getResources().getString(R.string.funkysouls));
+                }
                 break;
             case ALTERPORTAL:
                 getNewcomersAlterportal(visiblePages++);
-                actionBar.setTitle(getResources().getString(R.string.alterportal));
+                if (actionBar != null) {
+                    actionBar.setTitle(getResources().getString(R.string.alterportal));
+                }
                 break;
             default:
                 break;
@@ -152,25 +158,22 @@ public class NewcomersActivity extends ResultActivity {
     }
 
     private void initListeners() {
-        recycler.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                switch (mode) {
-                    case FUNKYSOULS:
-                        getNewcomersFunky(visiblePages++);
-                        break;
-                    case ALTERPORTAL:
-                        getNewcomersAlterportal(visiblePages++);
-                        break;
-                    default:
-                        break;
-                }
+        recycler.setOnLoadMoreListener(() -> {
+            switch (mode) {
+                case FUNKYSOULS:
+                    getNewcomersFunky(visiblePages++);
+                    break;
+                case ALTERPORTAL:
+                    getNewcomersAlterportal(visiblePages++);
+                    break;
+                default:
+                    break;
             }
         });
     }
 
     private void getNewcomersFunky(int page) {
-        new FunkySoulsAlbumModel().getNewcomers(Arrays.asList(page), new NewcomersSimpleCallback<List<Album>>() {
+        new FunkySoulsAlbumModel().getNewcomers(Collections.singletonList(page), new NewcomersSimpleCallback<List<Album>>() {
             @Override
             public void success(List<Album> albums) {
                 fillAlbums(albums);
@@ -188,7 +191,7 @@ public class NewcomersActivity extends ResultActivity {
     }
 
     private void getNewcomersAlterportal(int page) {
-        new AlterportalAlbumModel().getNewcomers(Arrays.asList(page),
+        new AlterportalAlbumModel().getNewcomers(Collections.singletonList(page),
                 new NewcomersSimpleCallback<List<Album>>() {
                     @Override
                     public void success(List<Album> albums) {

@@ -26,8 +26,6 @@ import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.callbacks.CompletionCallback;
-import com.pillowapps.liqear.components.OnTopToBottomSwipeListener;
 import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
@@ -134,32 +132,24 @@ public class TabletFragment extends MainFragment {
     }
 
     private void initListeners() {
-        artistTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Track currentTrack = Timeline.getInstance().getCurrentTrack();
-                if (currentTrack == null) return;
-                Intent artistInfoIntent = new Intent(mainActivity, LastfmArtistViewerActivity.class);
-                artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST,
-                        currentTrack.getArtist());
-                mainActivity.startActivityForResult(artistInfoIntent,
-                        Constants.MAIN_REQUEST_CODE);
-            }
+        artistTextView.setOnClickListener(v -> {
+            Track currentTrack = Timeline.getInstance().getCurrentTrack();
+            if (currentTrack == null) return;
+            Intent artistInfoIntent = new Intent(mainActivity, LastfmArtistViewerActivity.class);
+            artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST,
+                    currentTrack.getArtist());
+            mainActivity.startActivityForResult(artistInfoIntent,
+                    Constants.MAIN_REQUEST_CODE);
         });
 
-        View.OnClickListener albumClickListener = new
-
-                View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(mainActivity, LastfmAlbumViewerActivity.class);
-                        Album album = Timeline.getInstance().getCurrentAlbum();
-                        if (album == null) return;
-                        intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
-                        intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
-                        mainActivity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-                    }
-                };
+        View.OnClickListener albumClickListener = view -> {
+            Intent intent = new Intent(mainActivity, LastfmAlbumViewerActivity.class);
+            Album album = Timeline.getInstance().getCurrentAlbum();
+            if (album == null) return;
+            intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
+            intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
+            mainActivity.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+        };
         albumImageView.setOnClickListener(albumClickListener);
         albumTextView.setOnClickListener(albumClickListener);
 
@@ -228,11 +218,7 @@ public class TabletFragment extends MainFragment {
 //                mainActivity.changePlaylistWithoutTrackChange();
 //            }
 //        });
-        clearEditTextButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                searchPlaylistEditText.setText("");
-            }
-        });
+        clearEditTextButton.setOnClickListener(v -> searchPlaylistEditText.setText(""));
         searchPlaylistEditText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
             }
@@ -249,12 +235,7 @@ public class TabletFragment extends MainFragment {
                 }
             }
         });
-        SwipeDetector swipeDetector = new SwipeDetector(new OnTopToBottomSwipeListener() {
-            @Override
-            public void onTopToBottomSwipe() {
-                openDropButton();
-            }
-        });
+        SwipeDetector swipeDetector = new SwipeDetector(this::openDropButton);
         blackView.setOnTouchListener(swipeDetector);
     }
 
@@ -314,50 +295,45 @@ public class TabletFragment extends MainFragment {
         shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
         repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
 
-        StateManager.restorePlaylistState(new CompletionCallback() {
-            @Override
-            public void onCompleted() {
-                final Playlist playlist = Timeline.getInstance().getPlaylist();
-                if (playlist == null || playlist.getTracks().size() == 0) return;
+        StateManager.restorePlaylistState(() -> {
+            final Playlist playlist = Timeline.getInstance().getPlaylist();
+            if (playlist == null || playlist.getTracks().size() == 0) return;
 
-                mainActivity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        List<Track> tracks = playlist.getTracks();
-                        SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                        String artist = preferences.getString(Constants.ARTIST, "");
-                        String title = preferences.getString(Constants.TITLE, "");
-                        int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                        int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
-                        seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
+            mainActivity.runOnUiThread(() -> {
+                List<Track> tracks = playlist.getTracks();
+                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                String artist = preferences.getString(Constants.ARTIST, "");
+                String title = preferences.getString(Constants.TITLE, "");
+                int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+                seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
 
-                        boolean currentFits = currentIndex < tracks.size();
-                        if (!currentFits) currentIndex = 0;
-                        Track currentTrack = tracks.get(currentIndex);
-                        boolean tracksEquals = currentFits && (artist + title)
-                                .equalsIgnoreCase(currentTrack.getArtist()
-                                        + currentTrack.getTitle());
-                        if (!tracksEquals) {
-                            currentIndex = 0;
-                            artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
-                            titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
-                            position = 0;
-                        } else {
-                            artistTextView.setText(Html.fromHtml(artist));
-                            titleTextView.setText(Html.fromHtml(title));
-                        }
-                        Timeline.getInstance().setIndex(currentIndex);
-                        if (currentIndex > Timeline.getInstance().getPlaylistTracks().size()) {
-                            position = 0;
-                        }
-                        if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
-                            position = 0;
-                        }
+                boolean currentFits = currentIndex < tracks.size();
+                if (!currentFits) currentIndex = 0;
+                Track currentTrack = tracks.get(currentIndex);
+                boolean tracksEquals = currentFits && (artist + title)
+                        .equalsIgnoreCase(currentTrack.getArtist()
+                                + currentTrack.getTitle());
+                if (!tracksEquals) {
+                    currentIndex = 0;
+                    artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
+                    titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
+                    position = 0;
+                } else {
+                    artistTextView.setText(Html.fromHtml(artist));
+                    titleTextView.setText(Html.fromHtml(title));
+                }
+                Timeline.getInstance().setIndex(currentIndex);
+                if (currentIndex > Timeline.getInstance().getPlaylistTracks().size()) {
+                    position = 0;
+                }
+                if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
+                    position = 0;
+                }
 
-                        Timeline.getInstance().setTimePosition(position);
-                        mainActivity.restorePreviousState();
-                    }
-                });
-            }
+                Timeline.getInstance().setTimePosition(position);
+                mainActivity.restorePreviousState();
+            });
         });
     }
 

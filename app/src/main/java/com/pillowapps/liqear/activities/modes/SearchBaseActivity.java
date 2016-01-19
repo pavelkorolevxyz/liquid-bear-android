@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.activities.modes;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -11,7 +10,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.components.HintMaterialEditText;
 import com.pillowapps.liqear.components.LoadMoreRecyclerView;
 import com.pillowapps.liqear.components.ResultActivity;
@@ -61,10 +59,6 @@ public abstract class SearchBaseActivity extends ResultActivity {
         switch (itemId) {
             case android.R.id.home: {
                 finish();
-                Intent intent = new Intent(SearchBaseActivity.this, MainActivity.class);
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
             }
             return true;
             default:

@@ -7,15 +7,12 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.ArtistAdapter;
 import com.pillowapps.liqear.callbacks.LocalDataCallback;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.models.local.LocalArtistModel;
 
 import java.util.List;
 
 public class LocalArtistsActivity extends ListBaseActivity {
-
-    private ArtistAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +26,8 @@ public class LocalArtistsActivity extends ListBaseActivity {
 
     private void fillWithArtists(List<Artist> artists) {
         emptyTextView.setVisibility(artists.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new ArtistAdapter(artists, new OnRecyclerItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int position) {
-                //todo
-            }
+        ArtistAdapter adapter = new ArtistAdapter(artists, (view, position) -> {
+            //todo
         });
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);

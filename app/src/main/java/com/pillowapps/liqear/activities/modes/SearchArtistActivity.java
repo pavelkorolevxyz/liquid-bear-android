@@ -8,7 +8,6 @@ import android.view.View;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.recyclers.ArtistAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.helpers.Constants;
@@ -42,16 +41,13 @@ public class SearchArtistActivity extends SearchBaseActivity {
     protected void initWatcher() {
         editText.addTextChangedListener(new DelayedTextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                runTaskWithDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        String searchQuery = editText.getText().toString().trim();
-                        if (searchQuery.length() == 0) {
-                            loadArtistPresets();
-                            return;
-                        }
-                        searchArtist(searchQuery, getPageSize(), 1);
+                runTaskWithDelay(() -> {
+                    String searchQuery = editText.getText().toString().trim();
+                    if (searchQuery.length() == 0) {
+                        loadArtistPresets();
+                        return;
                     }
+                    searchArtist(searchQuery, getPageSize(), 1);
                 });
             }
 
@@ -88,21 +84,18 @@ public class SearchArtistActivity extends SearchBaseActivity {
 
     private void fillWithArtists(List<Artist> artists) {
         emptyTextView.setVisibility(artists.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new ArtistAdapter(artists, new OnRecyclerItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int position) {
-                SharedPreferences artistPreferences = SharedPreferencesManager.getArtistPreferences();
-                SharedPreferences.Editor editor = artistPreferences.edit();
-                int artistLastNumberAll = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
-                int artistsLastNumberMod = artistLastNumberAll % Constants.PRESET_WANTED_COUNT;
-                editor.putInt(Constants.PRESET_LAST_NUMBER, artistLastNumberAll + 1);
-                Artist artist = adapter.getItem(position);
-                editor.putString(Constants.ARTIST_NUMBER + artistsLastNumberMod, artist.getName());
-                editor.putString(Constants.IMAGE + artistsLastNumberMod,
-                        artist.getPreviewUrl());
-                editor.apply();
-                openArtistByName(artist.getName());
-            }
+        adapter = new ArtistAdapter(artists, (view, position) -> {
+            SharedPreferences artistPreferences = SharedPreferencesManager.getArtistPreferences();
+            SharedPreferences.Editor editor = artistPreferences.edit();
+            int artistLastNumberAll = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
+            int artistsLastNumberMod = artistLastNumberAll % Constants.PRESET_WANTED_COUNT;
+            editor.putInt(Constants.PRESET_LAST_NUMBER, artistLastNumberAll + 1);
+            Artist artist = adapter.getItem(position);
+            editor.putString(Constants.ARTIST_NUMBER + artistsLastNumberMod, artist.getName());
+            editor.putString(Constants.IMAGE + artistsLastNumberMod,
+                    artist.getPreviewUrl());
+            editor.apply();
+            openArtistByName(artist.getName());
         });
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);

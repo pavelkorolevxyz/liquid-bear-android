@@ -40,7 +40,7 @@
             android:maxLength="50"
             android:singleLine="true"
             android:layout_alignRight="@+id/clear_edit_text_button_playlist_tab"
-            android:paddingRight="50dp"></EditText>
+            android:paddingRight="50dp"/>
 
         <ImageButton
             android:id="@+id/clear_edit_text_button_playlist_tab"

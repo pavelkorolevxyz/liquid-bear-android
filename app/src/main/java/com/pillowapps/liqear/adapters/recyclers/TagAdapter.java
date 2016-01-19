@@ -16,7 +16,6 @@ import java.util.List;
 public class TagAdapter extends RecyclerView.Adapter<TagViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
-    private TagViewHolder holder;
     private List<Tag> items;
 
     public TagAdapter(List<Tag> items, OnRecyclerItemClickListener clickListener) {
@@ -36,8 +35,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagViewHolder> {
     @Override
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        holder = new TagViewHolder(v, clickListener);
-        return holder;
+        return new TagViewHolder(v, clickListener);
     }
 
     @Override

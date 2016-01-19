@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.Timeline;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
@@ -29,8 +32,6 @@ import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.vk.VkLyricsModel;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.squareup.otto.Subscribe;
 
 public class TextActivity extends ResultActivity {
@@ -49,11 +50,13 @@ public class TextActivity extends ResultActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         textView = (TextView) findViewById(R.id.text_view_scrollable_text_layout);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_scrollable_text_layout);
         Bundle extras = getIntent().getExtras();
         aim = (Aim) extras.get(TEXT_AIM);
+        if (aim == null) throw new RuntimeException("Aim of TextActivity can't be null");
         switch (aim) {
             case ARTIST_INFO:
                 googleRequest = extras.getString(ARTIST_NAME);
@@ -171,7 +174,7 @@ public class TextActivity extends ResultActivity {
                 break;
             case ARTIST_INFO:
                 MenuItem item = menu.add(getResources().getString(R.string.search_google));
-                item.setIcon(getResources().getDrawable(android.R.drawable.ic_menu_search));
+                item.setIcon(ContextCompat.getDrawable(TextActivity.this, android.R.drawable.ic_menu_search));
                 break;
             default:
                 break;
@@ -249,7 +252,10 @@ public class TextActivity extends ResultActivity {
     public void trackInfoEvent(TrackInfoEvent event) {
         Track track = Timeline.getInstance().getCurrentTrack();
         googleRequest = TrackUtils.getNotation(track);
-        getSupportActionBar().setTitle(googleRequest);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(googleRequest);
+        }
         getTrackLyrics(track, SharedPreferencesManager
                 .getLyricsNumberPreferences().getInt(googleRequest, 0));
         progressBar.setVisibility(View.VISIBLE);

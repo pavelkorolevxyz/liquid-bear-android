@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -34,69 +33,52 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         setTitle(R.string.preferences);
 
         Preference authorizationsPref = findPreference("authorizations_preference_preferences");
-        authorizationsPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                Intent myIntent = new Intent(getApplicationContext(), AuthActivity.class);
-                startActivity(myIntent);
-                return true;
-            }
-
+        authorizationsPref.setOnPreferenceClickListener(preference -> {
+            Intent myIntent = new Intent(getApplicationContext(), AuthActivity.class);
+            startActivity(myIntent);
+            return true;
         });
         Preference disclaimerPref = findPreference("disclaimer");
-        disclaimerPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                Intent myIntent = new Intent(getApplicationContext(),
-                        TextActivity.class);
-                myIntent.putExtra(TextActivity.TEXT_AIM,
-                        TextActivity.Aim.DISCLAIMER);
-                startActivity(myIntent);
-                return true;
-            }
-
+        disclaimerPref.setOnPreferenceClickListener(preference -> {
+            Intent myIntent = new Intent(getApplicationContext(),
+                    TextActivity.class);
+            myIntent.putExtra(TextActivity.TEXT_AIM,
+                    TextActivity.Aim.DISCLAIMER);
+            startActivity(myIntent);
+            return true;
         });
         Preference shakeNext = findPreference("shake_next");
-        shakeNext.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                startService(new Intent(LBApplication.getAppContext(),
-                        MusicService.class)
-                        .setAction(MusicService.CHANGE_SHAKE_PREFERENCE));
-                return true;
-            }
+        shakeNext.setOnPreferenceChangeListener((preference, newValue) -> {
+            startService(new Intent(LBApplication.getAppContext(),
+                    MusicService.class)
+                    .setAction(MusicService.CHANGE_SHAKE_PREFERENCE));
+            return true;
         });
         Preference vkGroup = findPreference("vk_group");
-        vkGroup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                String url = "http://vk.com/liquidbear";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-                return true;
-            }
-
+        vkGroup.setOnPreferenceClickListener(preference -> {
+            String url = "http://vk.com/liquidbear";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+            return true;
         });
         Preference pkTwitter = findPreference("pk_twitter");
-        pkTwitter.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                String url = "https://twitter.com/P_King64";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-                return true;
-            }
-
+        pkTwitter.setOnPreferenceClickListener(preference -> {
+            String url = "https://twitter.com/P_King64";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+            return true;
         });
         Preference versionPref = findPreference("version");
         versionPref.setSummary(AppUtils.getAppVersion());
         Preference thanksPref = findPreference("thanks");
-        thanksPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                Intent myIntent = new Intent(getApplicationContext(),
-                        TextActivity.class);
-                myIntent.putExtra(TextActivity.TEXT_AIM, TextActivity.Aim.THANKS);
-                startActivity(myIntent);
-                return true;
-            }
+        thanksPref.setOnPreferenceClickListener(preference -> {
+            Intent myIntent = new Intent(getApplicationContext(),
+                    TextActivity.class);
+            myIntent.putExtra(TextActivity.TEXT_AIM, TextActivity.Aim.THANKS);
+            startActivity(myIntent);
+            return true;
         });
     }
 

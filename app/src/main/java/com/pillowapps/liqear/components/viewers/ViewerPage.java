@@ -14,6 +14,7 @@ import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.components.OnRecyclerLongItemClickListener;
 import com.pillowapps.liqear.components.OnViewerItemClickListener;
+import com.pillowapps.liqear.helpers.DividerItemDecoration;
 import com.pillowapps.liqear.models.Page;
 
 import java.util.List;
@@ -23,7 +24,6 @@ import butterknife.InjectView;
 import timber.log.Timber;
 
 public abstract class ViewerPage<T> extends Page {
-    private final LinearLayoutManager layoutManager;
     @InjectView(R.id.list)
     protected RecyclerView recyclerView;
     @InjectView(R.id.pageProgressBar)
@@ -36,18 +36,8 @@ public abstract class ViewerPage<T> extends Page {
     private boolean singlePage = false;
     private int page = 1;
 
-    public final OnRecyclerItemClickListener listener = new OnRecyclerItemClickListener() {
-        @Override
-        public void onItemClicked(View view, int position) {
-            ViewerPage.this.onItemClicked(position);
-        }
-    };
-    public final OnRecyclerLongItemClickListener longClickListener = new OnRecyclerLongItemClickListener() {
-        @Override
-        public boolean onItemLongClicked(View view, int position) {
-            return ViewerPage.this.onItemLongClicked(position);
-        }
-    };
+    public final OnRecyclerItemClickListener listener = (view1, position) -> ViewerPage.this.onItemClicked(position);
+    public final OnRecyclerLongItemClickListener longClickListener = (view1, position) -> ViewerPage.this.onItemLongClicked(position);
 
     private OnViewerItemClickListener<T> itemClickListener;
     private OnViewerItemClickListener<T> itemLongClickListener;
@@ -61,10 +51,10 @@ public abstract class ViewerPage<T> extends Page {
 
         recyclerView.setHasFixedSize(true);
 
-        layoutManager = new LinearLayoutManager(context);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
 
-//        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
+        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int currentPage) {

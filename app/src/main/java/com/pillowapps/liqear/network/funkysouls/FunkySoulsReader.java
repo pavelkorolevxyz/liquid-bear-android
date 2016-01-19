@@ -23,7 +23,7 @@ public class FunkySoulsReader {
         try {
             Document albumDoc = Jsoup.parse(new String(
                     Jsoup.connect(url).execute().bodyAsBytes(), "UTF-8"));
-            ArrayList<Album> albums = new ArrayList<Album>();
+            ArrayList<Album> albums = new ArrayList<>();
             Elements albumsTags = albumDoc.select("article");
             for (Element albumsTag : albumsTags) {
                 try {
@@ -42,7 +42,7 @@ public class FunkySoulsReader {
             }
             return albums;
         } catch (IOException e) {
-            return new ArrayList<Album>();
+            return new ArrayList<>();
         }
     }
 
@@ -81,7 +81,8 @@ public class FunkySoulsReader {
     }
 
     public List<Album> selectAlbumsFromPages(List<Integer> pages) {
-        ArrayList<Album> albums = new ArrayList<Album>();
+        ArrayList<Album> albums;
+        albums = new ArrayList<Album>();
         String res;
         for (int i : pages) {
             res = i == 1 ? "index.html" : "page/" + i + ".html";

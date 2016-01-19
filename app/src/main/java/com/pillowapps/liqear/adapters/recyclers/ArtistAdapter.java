@@ -17,7 +17,6 @@ import java.util.List;
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistsViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
-    private ArtistsViewHolder holder;
     private List<Artist> items;
 
     public ArtistAdapter(List<Artist> items, OnRecyclerItemClickListener clickListener) {
@@ -41,8 +40,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistsViewHolder> {
     @Override
     public ArtistsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        holder = new ArtistsViewHolder(v, clickListener);
-        return holder;
+        return new ArtistsViewHolder(v, clickListener);
     }
 
     @Override

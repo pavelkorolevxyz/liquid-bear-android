@@ -14,11 +14,11 @@ public class LastfmTrackListGsonAdapter implements JsonDeserializer<List<LastfmT
         List<LastfmTrack> vals = new ArrayList<>();
         if (json.isJsonArray()) {
             for (JsonElement e : json.getAsJsonArray()) {
-                vals.add((LastfmTrack) ctx.deserialize(e, LastfmTrack.class));
+                vals.add(ctx.deserialize(e, LastfmTrack.class));
             }
         } else if (json.isJsonObject()) {
             if (json.toString().trim().length() == 0) return new ArrayList<>();
-            vals.add((LastfmTrack) ctx.deserialize(json, LastfmTrack.class));
+            vals.add(ctx.deserialize(json, LastfmTrack.class));
         } else {
             throw new RuntimeException("Unexpected JSON type: " + json.getClass());
         }

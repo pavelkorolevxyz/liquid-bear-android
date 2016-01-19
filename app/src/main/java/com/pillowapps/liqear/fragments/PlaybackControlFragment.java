@@ -60,39 +60,23 @@ public class PlaybackControlFragment extends Fragment {
     }
 
     private void initListeners() {
-        shuffleButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Timeline.getInstance().toggleShuffle();
-                shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
-                mainActivity.getMusicService().updateWidgets();
-            }
+        shuffleButton.setOnClickListener(v -> {
+            Timeline.getInstance().toggleShuffle();
+            shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+            mainActivity.getMusicService().updateWidgets();
         });
-        repeatButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Timeline.getInstance().toggleRepeat();
-                repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
-                mainActivity.getMusicService().updateWidgets();
-            }
+        repeatButton.setOnClickListener(v -> {
+            Timeline.getInstance().toggleRepeat();
+            repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
+            mainActivity.getMusicService().updateWidgets();
         });
 
         // Playback controlling.
-        playPauseButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mainActivity.playPause();
-            }
-        });
+        playPauseButton.setOnClickListener(v -> mainActivity.playPause());
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mainActivity.getMusicService().next();
-            }
-        });
+        nextButton.setOnClickListener(v -> mainActivity.getMusicService().next());
 
-        prevButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mainActivity.getMusicService().prev();
-            }
-        });
+        prevButton.setOnClickListener(v -> mainActivity.getMusicService().prev());
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -116,15 +100,12 @@ public class PlaybackControlFragment extends Fragment {
             }
         });
 
-        timeTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean(Constants.TIME_INVERTED,
-                        !preferences.getBoolean(Constants.TIME_INVERTED, false));
-                editor.apply();
-            }
+        timeTextView.setOnClickListener(view -> {
+            SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(Constants.TIME_INVERTED,
+                    !preferences.getBoolean(Constants.TIME_INVERTED, false));
+            editor.apply();
         });
     }
 

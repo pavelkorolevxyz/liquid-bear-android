@@ -17,7 +17,6 @@ import java.util.List;
 public class NeighbourAdapter extends RecyclerView.Adapter<NeighbourViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
-    private NeighbourViewHolder holder;
     private List<User> items;
 
     public NeighbourAdapter(List<User> items, OnRecyclerItemClickListener clickListener) {
@@ -28,8 +27,7 @@ public class NeighbourAdapter extends RecyclerView.Adapter<NeighbourViewHolder> 
     @Override
     public NeighbourViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.neighbour_image_list_item, parent, false);
-        holder = new NeighbourViewHolder(v, clickListener);
-        return holder;
+        return new NeighbourViewHolder(v, clickListener);
     }
 
     @Override

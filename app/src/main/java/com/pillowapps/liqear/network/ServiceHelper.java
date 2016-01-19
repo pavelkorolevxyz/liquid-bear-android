@@ -46,12 +46,9 @@ public class ServiceHelper {
     private static LastfmApiService lastfmApiService;
     private static SetlistfmService setlistfmService;
 
-    private static RequestInterceptor lastfmInterceptor = new RequestInterceptor() {
-        @Override
-        public void intercept(RequestInterceptor.RequestFacade request) {
-            request.addQueryParam("api_key", LASTFM_API_KEY);
-            request.addQueryParam("format", "json");
-        }
+    private static RequestInterceptor lastfmInterceptor = request -> {
+        request.addQueryParam("api_key", LASTFM_API_KEY);
+        request.addQueryParam("format", "json");
     };
 
     private ServiceHelper() {
@@ -60,12 +57,9 @@ public class ServiceHelper {
 
     public static VkApiService getVkService() {
         if (vkApiService == null) {
-            RequestInterceptor vkRequestInterceptor = new RequestInterceptor() {
-                @Override
-                public void intercept(RequestFacade request) {
-                    request.addQueryParam("access_token", AuthorizationInfoManager.getVkAccessToken());
-                    request.addQueryParam("v", "5.28");
-                }
+            RequestInterceptor vkRequestInterceptor = request -> {
+                request.addQueryParam("access_token", AuthorizationInfoManager.getVkAccessToken());
+                request.addQueryParam("v", "5.28");
             };
             OkHttpClient okHttpClient = new OkHttpClient();
 

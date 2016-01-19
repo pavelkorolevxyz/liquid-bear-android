@@ -1,7 +1,6 @@
 package com.pillowapps.liqear.activities.viewers;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -30,7 +29,6 @@ import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.Page;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
-import com.pillowapps.liqear.network.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +54,6 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
     @InjectView(R.id.progressBar)
     protected ProgressBar progressBar;
     private LastfmAlbumModel albumModel = new LastfmAlbumModel();
-    private Album album;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +63,13 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
         setSupportActionBar(toolbar);
 
         Bundle extras = getIntent().getExtras();
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        Album album = new Album(extras.getString((ARTIST)), extras.getString(ALBUM));
 
-        album = new Album(extras.getString((ARTIST)), extras.getString(ALBUM));
-        actionBar.setTitle(album.getNotation());
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(album.getNotation());
+        }
 
         initUi();
 
@@ -183,12 +182,9 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
                     }
                     imageUrl = lastImage.getUrl();
                 }
-                new ImageModel().loadImage(imageUrl, albumCoverImageView, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(Bitmap bitmap) {
-                        albumCoverImageView.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
-                    }
+                new ImageModel().loadImage(imageUrl, albumCoverImageView, bitmap -> {
+                    albumCoverImageView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 });
                 artistTextView.setText(album.getArtistName());
                 titleTextView.setText(album.getTitle());

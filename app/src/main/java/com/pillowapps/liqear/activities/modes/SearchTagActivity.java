@@ -8,7 +8,6 @@ import android.view.View;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.recyclers.TagAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.helpers.Constants;
@@ -41,16 +40,13 @@ public class SearchTagActivity extends SearchBaseActivity {
     protected void initWatcher() {
         editText.addTextChangedListener(new DelayedTextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                runTaskWithDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        String searchQuery = editText.getText().toString().trim();
-                        if (searchQuery.length() == 0) {
-                            loadTagPresets();
-                            return;
-                        }
-                        searchTag(searchQuery, getPageSize(), 0);
+                runTaskWithDelay(() -> {
+                    String searchQuery = editText.getText().toString().trim();
+                    if (searchQuery.length() == 0) {
+                        loadTagPresets();
+                        return;
                     }
+                    searchTag(searchQuery, getPageSize(), 0);
                 });
             }
 
@@ -86,12 +82,7 @@ public class SearchTagActivity extends SearchBaseActivity {
 
     private void fillWithTags(List<Tag> tags) {
         emptyTextView.setVisibility(tags.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new TagAdapter(tags, new OnRecyclerItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int position) {
-                openTag(adapter.getItem(position));
-            }
-        });
+        adapter = new TagAdapter(tags, (view, position) -> openTag(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }

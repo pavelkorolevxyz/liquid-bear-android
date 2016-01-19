@@ -18,9 +18,8 @@ import java.util.List;
 public class TrackAdapter extends RecyclerView.Adapter<TrackViewHolder> {
 
     private final Context context;
-    private OnRecyclerItemClickListener clickListener;
-    private TrackViewHolder holder;
     private List<Track> items;
+    private OnRecyclerItemClickListener clickListener;
     private OnRecyclerLongItemClickListener longClickListener;
 
     public TrackAdapter(Context context, List<Track> values) {
@@ -44,8 +43,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackViewHolder> {
     @Override
     public TrackViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.playlist_tab_list_item, parent, false);
-        holder = new TrackViewHolder(v, clickListener);
-        return holder;
+        return new TrackViewHolder(v, clickListener);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackViewHolder> {
         Track track = items.get(position);
         holder.textView.setText(Html.fromHtml(track.getArtist()));
         holder.secondTextView.setText(Html.fromHtml(track.getTitle()));
-        holder.positionTextView.setText(Integer.toString(position + 1));
+        holder.positionTextView.setText(String.format("%d", position + 1));
         holder.mainLayout.setBackgroundResource(position % 2 == 0 ?
                 R.drawable.list_item_background : R.drawable.list_item_background_tinted);
     }

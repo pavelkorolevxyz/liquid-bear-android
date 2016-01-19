@@ -22,7 +22,7 @@ public class AlterportalReader {
         try {
             Document albumDoc = Jsoup.parse(new String(
                     Jsoup.connect(url).execute().bodyAsBytes(), "CP1251"));
-            ArrayList<Album> albums = new ArrayList<Album>();
+            ArrayList<Album> albums = new ArrayList<>();
             Elements albumsTags = albumDoc.select("div#dle-content")
                     .select("table[width=530][border=0][cellspacing=0][cellpadding=0]");
             for (Element albumsTag : albumsTags) {
@@ -46,7 +46,7 @@ public class AlterportalReader {
             }
             return albums;
         } catch (IOException e) {
-            return new ArrayList<Album>();
+            return new ArrayList<>();
         }
     }
 
@@ -97,7 +97,7 @@ public class AlterportalReader {
     }
 
     public List<Album> selectAlbumsFromPages(List<Integer> pages) {
-        ArrayList<Album> albums = new ArrayList<Album>();
+        ArrayList<Album> albums = new ArrayList<>();
         for (int i : pages) {
             albums.addAll(selectAlbums(HOST + i + "/"));
         }

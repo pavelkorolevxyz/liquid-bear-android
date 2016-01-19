@@ -14,10 +14,10 @@ public class SetlistfmSetListGsonAdapter implements JsonDeserializer<List<Setlis
         List<SetlistfmSet> vals = new ArrayList<>();
         if (json.isJsonArray()) {
             for (JsonElement e : json.getAsJsonArray()) {
-                vals.add((SetlistfmSet) ctx.deserialize(e, SetlistfmSet.class));
+                vals.add(ctx.deserialize(e, SetlistfmSet.class));
             }
         } else if (json.isJsonObject()) {
-            vals.add((SetlistfmSet) ctx.deserialize(json, SetlistfmSet.class));
+            vals.add(ctx.deserialize(json, SetlistfmSet.class));
         } else {
             throw new RuntimeException("Unexpected JSON type: " + json.getClass());
         }

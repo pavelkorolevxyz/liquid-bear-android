@@ -7,7 +7,6 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.NeighbourAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
@@ -34,12 +33,7 @@ public class LastfmNeighboursActivity extends ListBaseActivity {
 
     private void fillWithUsers(List<User> users) {
         emptyTextView.setVisibility(users.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new NeighbourAdapter(users, new OnRecyclerItemClickListener() {
-            @Override
-            public void onItemClicked(View view, int position) {
-                openLastfmUser(adapter.getItem(position));
-            }
-        });
+        adapter = new NeighbourAdapter(users, (view, position) -> openLastfmUser(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }

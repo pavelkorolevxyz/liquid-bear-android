@@ -3,7 +3,6 @@ package com.pillowapps.liqear.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -15,7 +14,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -38,9 +36,7 @@ import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.callbacks.CompletionCallback;
 import com.pillowapps.liqear.components.ModeClickListener;
-import com.pillowapps.liqear.components.OnTopToBottomSwipeListener;
 import com.pillowapps.liqear.components.SwipeDetector;
 import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.entities.Album;
@@ -62,7 +58,6 @@ import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.helpers.home.PhoneHomePresenter;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.Tutorial;
-import com.pillowapps.liqear.network.ImageLoadingListener;
 import com.squareup.otto.Subscribe;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
@@ -78,17 +73,11 @@ public class PhoneHomeFragment extends HomeFragment {
     private View playbackTab;
     private View modeTab;
 
-    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            return onOptionsItemSelected(menuItem);
-        }
-    };
+    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = this::onOptionsItemSelected;
 
     /**
      * Playlists tab
      **/
-    private ListView playlistListView;
     private EditText searchPlaylistEditText;
     private Toolbar playlistToolbar;
     private TextView emptyPlaylistTextView;
@@ -143,91 +132,83 @@ public class PhoneHomeFragment extends HomeFragment {
         shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
         repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
 
-        StateManager.restorePlaylistState(new CompletionCallback() {
-            @Override
-            public void onCompleted() {
-                final Playlist playlist = Timeline.getInstance().getPlaylist();
-                if (playlist == null || playlist.getTracks().size() == 0) return;
-                updateMainPlaylistTitle();
+        StateManager.restorePlaylistState(() -> {
+            final Playlist playlist = Timeline.getInstance().getPlaylist();
+            if (playlist == null || playlist.getTracks().size() == 0) return;
+            updateMainPlaylistTitle();
 
-                getActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-                        List<Track> tracks = playlist.getTracks();
+            getActivity().runOnUiThread(() -> {
+                List<Track> tracks = playlist.getTracks();
 
-                        SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                        String artist = preferences.getString(Constants.ARTIST, "");
-                        String title = preferences.getString(Constants.TITLE, "");
-                        int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                        int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
-                        seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
+                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                String artist = preferences.getString(Constants.ARTIST, "");
+                String title = preferences.getString(Constants.TITLE, "");
+                int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+                seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
 
-                        boolean currentFits = currentIndex < tracks.size();
-                        if (!currentFits) currentIndex = 0;
-                        Track currentTrack = tracks.get(currentIndex);
-                        boolean tracksEquals = currentFits
-                                && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                                + currentTrack.getTitle());
-                        if (!tracksEquals) {
-                            artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
-                            currentIndex = 0;
-                            artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
-                            titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
-                            position = 0;
-                        } else {
-                            artistTextView.setText(Html.fromHtml(artist));
-                            titleTextView.setText(Html.fromHtml(title));
-                        }
-                        Timeline.getInstance().setIndex(currentIndex);
-                        if (currentIndex > tracks.size()) {
-                            artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
-                            position = 0;
-                        }
-                        if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
-                            position = 0;
-                        }
+                boolean currentFits = currentIndex < tracks.size();
+                if (!currentFits) currentIndex = 0;
+                Track currentTrack = tracks.get(currentIndex);
+                boolean tracksEquals = currentFits
+                        && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                        + currentTrack.getTitle());
+                if (!tracksEquals) {
+                    artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
+                    currentIndex = 0;
+                    artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
+                    titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
+                    position = 0;
+                } else {
+                    artistTextView.setText(Html.fromHtml(artist));
+                    titleTextView.setText(Html.fromHtml(title));
+                }
+                Timeline.getInstance().setIndex(currentIndex);
+                if (currentIndex > tracks.size()) {
+                    artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
+                    position = 0;
+                }
+                if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
+                    position = 0;
+                }
 
-                        Timeline.getInstance().setTimePosition(position);
-                        updateAdapter();
-                        Timeline.getInstance().updateRealTrackPositions();
+                Timeline.getInstance().setTimePosition(position);
+                updateAdapter();
+                Timeline.getInstance().updateRealTrackPositions();
 
-                        if (!NetworkUtils.isOnline()) {
-                            artistImageView.setImageResource(R.drawable.artist_placeholder);
-                            albumImageView.setImageDrawable(null);
-                            albumTextView.setVisibility(View.GONE);
-                            return;
-                        }
-                        if (SharedPreferencesManager.getPreferences()
-                                .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                            new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
-                                    artistImageView, new ImageLoadingListener() {
-                                        @Override
-                                        public void onLoadingComplete(Bitmap bitmap) {
+                if (!NetworkUtils.isOnline()) {
+                    artistImageView.setImageResource(R.drawable.artist_placeholder);
+                    albumImageView.setImageDrawable(null);
+                    albumTextView.setVisibility(View.GONE);
+                    return;
+                }
+                if (SharedPreferencesManager.getPreferences()
+                        .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                    new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
+                            artistImageView, bitmap -> {
 //                                                updatePaletteWithBitmap(bitmap); todo
-                                        }
-                                    });
-                        }
+                            });
+                }
 
-                        Album album = Timeline.getInstance().getCurrentAlbum();
-                        if (album != null) {
-                            String imageUrl = album.getImageUrl();
-                            if (imageUrl == null || !SharedPreferencesManager.getPreferences()
-                                    .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                                albumImageView.setVisibility(View.GONE);
-                            } else {
-                                albumImageView.setVisibility(View.VISIBLE);
-                                new ImageModel().loadImage(imageUrl, albumImageView);
-                            }
-                            String albumTitle = album.getTitle();
-                            if (albumTitle == null) {
-                                albumTextView.setVisibility(View.GONE);
-                            } else {
-                                albumTextView.setVisibility(View.VISIBLE);
-                                albumTextView.setText(albumTitle);
-                            }
-                        }
+                Album album = Timeline.getInstance().getCurrentAlbum();
+                if (album != null) {
+                    String imageUrl = album.getImageUrl();
+                    if (imageUrl == null || !SharedPreferencesManager.getPreferences()
+                            .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                        albumImageView.setVisibility(View.GONE);
+                    } else {
+                        albumImageView.setVisibility(View.VISIBLE);
+                        new ImageModel().loadImage(imageUrl, albumImageView);
                     }
-                });
-            }
+                    String albumTitle = album.getTitle();
+                    if (albumTitle == null) {
+                        albumTextView.setVisibility(View.GONE);
+                    } else {
+                        albumTextView.setVisibility(View.VISIBLE);
+                        albumTextView.setText(albumTitle);
+                    }
+                }
+            });
         });
     }
 
@@ -263,12 +244,7 @@ public class PhoneHomeFragment extends HomeFragment {
         playbackToolbar = (Toolbar) playbackTab.findViewById(R.id.toolbar);
         modeToolbar = (Toolbar) modeTab.findViewById(R.id.toolbar);
         playlistToolbar.setTitle(R.string.playlist_tab);
-        playlistToolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), playlistToolbar.getTitle(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        playlistToolbar.setOnClickListener(v1 -> Toast.makeText(getActivity(), playlistToolbar.getTitle(), Toast.LENGTH_SHORT).show());
         playbackToolbar.setTitle(R.string.app_name);
         modeToolbar.setTitle(R.string.mode_tab);
         updateToolbars();
@@ -303,7 +279,7 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     private void initPlaylistsTab() {
-        playlistListView = (DragSortListView) playlistTab.findViewById(R.id.playlist_list_view_playlist_tab);
+        ListView playlistListView = (DragSortListView) playlistTab.findViewById(R.id.playlist_list_view_playlist_tab);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
@@ -387,52 +363,33 @@ public class PhoneHomeFragment extends HomeFragment {
             }
         });
 
-        shuffleButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Timeline.getInstance().toggleShuffle();
-                shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
-                MusicServiceManager.getInstance().updateWidgets();
-            }
+        shuffleButton.setOnClickListener(v -> {
+            Timeline.getInstance().toggleShuffle();
+            shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+            MusicServiceManager.getInstance().updateWidgets();
         });
 
-        repeatButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Timeline.getInstance().toggleRepeat();
-                repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
-                MusicServiceManager.getInstance().updateWidgets();
-            }
+        repeatButton.setOnClickListener(v -> {
+            Timeline.getInstance().toggleRepeat();
+            repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
+            MusicServiceManager.getInstance().updateWidgets();
         });
 
-        artistTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Track currentTrack = Timeline.getInstance().getCurrentTrack();
-                if (currentTrack == null) return;
-                Intent artistInfoIntent = new Intent(activity, LastfmArtistViewerActivity.class);
-                artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, currentTrack.getArtist());
-                startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
-            }
+        artistTextView.setOnClickListener(v -> {
+            Track currentTrack = Timeline.getInstance().getCurrentTrack();
+            if (currentTrack == null) return;
+            Intent artistInfoIntent = new Intent(activity, LastfmArtistViewerActivity.class);
+            artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, currentTrack.getArtist());
+            startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
         });
 
 
         // Playback controlling.
-        playPauseButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                MusicServiceManager.getInstance().playPause();
-            }
-        });
+        playPauseButton.setOnClickListener(v -> MusicServiceManager.getInstance().playPause());
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                MusicServiceManager.getInstance().next();
-            }
-        });
+        nextButton.setOnClickListener(v -> MusicServiceManager.getInstance().next());
 
-        prevButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                MusicServiceManager.getInstance().prev();
-            }
-        });
+        prevButton.setOnClickListener(v -> MusicServiceManager.getInstance().prev());
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -460,44 +417,28 @@ public class PhoneHomeFragment extends HomeFragment {
             }
         });
 
-        View.OnClickListener albumClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(activity, LastfmAlbumViewerActivity.class);
-                Album album = Timeline.getInstance().getCurrentAlbum();
-                if (album == null) return;
-                intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
-                intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
-                startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-            }
+        View.OnClickListener albumClickListener = view -> {
+            Intent intent = new Intent(activity, LastfmAlbumViewerActivity.class);
+            Album album = Timeline.getInstance().getCurrentAlbum();
+            if (album == null) return;
+            intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
+            intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
+            startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
         };
         albumImageView.setOnClickListener(albumClickListener);
         albumTextView.setOnClickListener(albumClickListener);
-        timeTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean(Constants.TIME_INVERTED,
-                        !preferences.getBoolean(Constants.TIME_INVERTED, false));
-                editor.apply();
-                updateTime();
-            }
+        timeTextView.setOnClickListener(view -> {
+            SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(Constants.TIME_INVERTED,
+                    !preferences.getBoolean(Constants.TIME_INVERTED, false));
+            editor.apply();
+            updateTime();
         });
-        SwipeDetector swipeDetector = new SwipeDetector(new OnTopToBottomSwipeListener() {
-            @Override
-            public void onTopToBottomSwipe() {
-                openDropButton();
-            }
-        });
+        SwipeDetector swipeDetector = new SwipeDetector(this::openDropButton);
         blackView.setOnTouchListener(swipeDetector);
 
-        loveFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleLoveCurrentTrack();
-            }
-        });
+        loveFloatingActionButton.setOnClickListener(v -> toggleLoveCurrentTrack());
     }
 
     public void changeViewPagerItem(int currentItem) {

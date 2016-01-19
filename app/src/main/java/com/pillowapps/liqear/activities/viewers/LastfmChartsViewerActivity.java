@@ -15,12 +15,10 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.components.OnLoadMoreListener;
 import com.pillowapps.liqear.components.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
-import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
@@ -34,7 +32,7 @@ import java.util.List;
 public class LastfmChartsViewerActivity extends PagerResultActivity {
     public static final int TOP_TRACKS = 0;
     public static final int TOP_ARTISTS = 1;
-//    public static final int HYPED_TRACKS = 1;
+    //    public static final int HYPED_TRACKS = 1;
 //    public static final int MOST_LOVED = 4;
     public static final int PAGES_NUMBER = 2;
     private LastfmChartModel chartsModel = new LastfmChartModel();
@@ -47,8 +45,10 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.charts);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.charts);
+        }
         initUi();
     }
 
@@ -93,13 +93,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.loved_tracks);
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Track>() {
-                    @Override
-                    public void onLoadMore() {
-                        getMostLoved(viewer);
-                    }
-                }
+        viewer.setOnLoadMoreListener(() -> getMostLoved(viewer)
         );
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
@@ -111,13 +105,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.top_artists);
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Artist>() {
-                    @Override
-                    public void onLoadMore() {
-                        getTopArtists(viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getTopArtists(viewer));
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);
         return viewer;
@@ -127,13 +115,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.top_tracks);
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Track>() {
-                    @Override
-                    public void onLoadMore() {
-                        getTopTracks(viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getTopTracks(viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -144,13 +126,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.hyped_artists);
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Track>() {
-                    @Override
-                    public void onLoadMore() {
-                        getHypedTracks(viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getHypedTracks(viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -161,13 +137,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.hyped_artists);
-        viewer.setOnLoadMoreListener(
-                new OnLoadMoreListener<Artist>() {
-                    @Override
-                    public void onLoadMore() {
-                        getHypedArtists(viewer);
-                    }
-                });
+        viewer.setOnLoadMoreListener(() -> getHypedArtists(viewer));
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);
         return viewer;
@@ -189,7 +159,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         switch (index) {
 //            case HYPED_TRACKS:
 //            case MOST_LOVED:
-            case TOP_TRACKS:{
+            case TOP_TRACKS: {
                 inflater.inflate(R.menu.to_playlist_menu, menu);
             }
             break;
