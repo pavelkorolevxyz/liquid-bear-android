@@ -26,7 +26,7 @@ public class LoginActivity extends TrackedActivity {
             + "scope=%s&"
             + "redirect_uri=%s&"
             + "display=%s&" + "response_type=%s";
-    public static final String allPermission = "friends,photos,audio,status,wall,groups,offline";
+    public static final String ALL_PERMISSION = "friends,photos,audio,status,wall,groups,offline";
     public static final String OAUT_BLANK_URL = "http://api.vkontakte.ru/blank.html";
     public static final String DISPLAY = "touch";
     public static final String RESPONSE = "token";
@@ -51,7 +51,7 @@ public class LoginActivity extends TrackedActivity {
         cookieManager.removeAllCookie();
 
         String url = String.format(OAUTH_REQUEST_FORMAT, ServiceHelper.VK_APP_ID,
-                allPermission, OAUT_BLANK_URL, DISPLAY, RESPONSE);
+                ALL_PERMISSION, OAUT_BLANK_URL, DISPLAY, RESPONSE);
         webview.loadUrl(url);
     }
 

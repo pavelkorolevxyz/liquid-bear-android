@@ -80,13 +80,13 @@ public class TextActivity extends ResultActivity {
                 textView.setText(getResources().getString(R.string.thanks_text));
                 break;
         }
-        LBApplication.bus.register(this);
+        LBApplication.BUS.register(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LBApplication.bus.unregister(this);
+        LBApplication.BUS.unregister(this);
     }
 
     @Override

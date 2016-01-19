@@ -22,6 +22,10 @@ import com.pillowapps.liqear.models.PlayingState;
 public class CompatIcs {
     private static RemoteControlClient sRemote;
 
+    private CompatIcs() {
+        // no-op
+    }
+
     public static void registerRemote(Context context, AudioManager am) {
         MediaButtonReceiver.registerMediaButton(context);
 

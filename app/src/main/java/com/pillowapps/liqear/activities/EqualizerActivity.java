@@ -32,7 +32,7 @@ import java.util.List;
 
 public class EqualizerActivity extends TrackedActivity {
 
-    private static final List<SeekBar> seekBars = new ArrayList<>();
+    private static final List<SeekBar> SEEK_BARS = new ArrayList<>();
     private static final int TEXT_SIZE = 14;
     private CompatEq equalizer;
     private BassBoost bassBoost;
@@ -79,7 +79,7 @@ public class EqualizerActivity extends TrackedActivity {
     }
 
     private void checkEnabled() {
-        for (SeekBar seekBar : seekBars) {
+        for (SeekBar seekBar : SEEK_BARS) {
             seekBar.setEnabled(preferences.getBoolean("enabled", true));
         }
     }
@@ -90,6 +90,8 @@ public class EqualizerActivity extends TrackedActivity {
         switch (itemId) {
             case android.R.id.home:
                 finish();
+                break;
+            default:
                 break;
         }
         return true;
@@ -240,7 +242,7 @@ public class EqualizerActivity extends TrackedActivity {
                 }
             });
 
-            seekBars.add(bar);
+            SEEK_BARS.add(bar);
             row.addView(minDbTextView);
             row.addView(bar);
             row.addView(maxDbTextView);
@@ -286,7 +288,7 @@ public class EqualizerActivity extends TrackedActivity {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.addView(bar);
-        seekBars.add(bar);
+        SEEK_BARS.add(bar);
         mainLinearLayout.addView(row);
     }
 }

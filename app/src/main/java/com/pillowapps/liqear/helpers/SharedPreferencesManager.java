@@ -31,6 +31,10 @@ public class SharedPreferencesManager {
     private static SharedPreferences modePreferences;
     private static SharedPreferences startPreferences;
 
+    private SharedPreferencesManager() {
+        // no-op
+    }
+
     public static SharedPreferences getLastfmPreferences(Context context) {
         if (lastfmPreferences == null) {
             lastfmPreferences = context.getSharedPreferences(LASTFM_PREFERENCES,

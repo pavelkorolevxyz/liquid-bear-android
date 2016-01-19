@@ -5,6 +5,11 @@ import java.util.Date;
 import java.util.Locale;
 
 public class TimeUtils {
+
+    private TimeUtils() {
+        // no-op
+    }
+
     public static String secondsToMinuteString(int seconds) {
         return String.format("%d:%02d", seconds / 60, seconds % 60);
     }

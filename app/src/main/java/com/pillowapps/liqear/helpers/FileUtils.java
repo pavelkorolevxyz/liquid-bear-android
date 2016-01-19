@@ -9,6 +9,10 @@ import java.io.OutputStream;
 public class FileUtils {
     private static final int BUFFER_SIZE = 8 * 1024;
 
+    private FileUtils() {
+        // no-op
+    }
+
     public static String getMimeType(String url) {
         String type = null;
         String extension = MimeTypeMap.getFileExtensionFromUrl(url);

@@ -5,9 +5,13 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DateUtils {
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy", Locale.UK);
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd.MM.yyyy", Locale.UK);
+
+    private DateUtils() {
+        // no-op
+    }
 
     public static String formatDate(Date date) {
-        return formatter.format(date);
+        return FORMATTER.format(date);
     }
 }

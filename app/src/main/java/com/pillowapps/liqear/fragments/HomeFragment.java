@@ -88,12 +88,12 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             }
         });
 
-        LBApplication.bus.register(this);
+        LBApplication.BUS.register(this);
     }
 
     @Override
     public void onDestroy() {
-        LBApplication.bus.unregister(this);
+        LBApplication.BUS.unregister(this);
         StateManager.savePlaylistState(MusicServiceManager.getInstance().getService());
 
         super.onDestroy();

@@ -52,8 +52,8 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     public static final int TOP_TRACKS_INDEX = 1;
     public static final int ALBUMS_INDEX = 0;
     public static final int PAGES_NUMBER = 4;
-    public int ARTIST_INFO_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 3 : 2;
-    public int SIMILAR_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 2 : 1;
+    public static final int ARTIST_INFO_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 3 : 2;
+    public static final int SIMILAR_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 2 : 1;
     private Artist artist;
     private boolean infoLoaded = false;
     private LastfmArtistModel artistModel = new LastfmArtistModel();

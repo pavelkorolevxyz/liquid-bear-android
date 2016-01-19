@@ -10,9 +10,9 @@ import retrofit.http.POST;
 public interface LastfmAuthService {
     @FormUrlEncoded()
     @POST("/?method=auth.getMobileSession")
-    public void getMobileSession(@Field("username") String user,
-                                 @Field("password") String password,
-                                 @Field("api_sig") String apiSig,
-                                 Callback<LastfmSessionRoot> callback);
+    void getMobileSession(@Field("username") String user,
+                          @Field("password") String password,
+                          @Field("api_sig") String apiSig,
+                          Callback<LastfmSessionRoot> callback);
 
 }

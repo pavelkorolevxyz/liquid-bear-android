@@ -1,1 +1,13 @@
-include ':app', ':libraries:DragSortListLibrary', ':libraries:NumberPicker', ':libraries:PanningViewLibrary', ':libraries:PhotoView', ':libraries:PullToRefreshLibrary', ':libraries:StickyGridHeaders', ':libraries:ViewPagerIndicatorLibrary'
+include ':app'
+def String[] modules = ['NumberPicker',
+                        'PanningViewLibrary',
+                        'PhotoView',
+                        'PullToRefreshLibrary',
+                        'StickyGridHeaders',
+                        'ViewPagerIndicatorLibrary']
+include modules
+
+modules.each { name ->
+    def p = findProject(":${name}")
+    p.projectDir = new File("libraries/${name}")
+}

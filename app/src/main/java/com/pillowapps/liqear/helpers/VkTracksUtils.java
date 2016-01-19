@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VkTracksUtils {
+
+    private VkTracksUtils() {
+        // no-op
+    }
+
     public static List<VkTrack> getTracks(List<VkWallMessage> posts) {
         ArrayList<VkTrack> tracks = new ArrayList<>();
         for (VkWallMessage post : posts) {

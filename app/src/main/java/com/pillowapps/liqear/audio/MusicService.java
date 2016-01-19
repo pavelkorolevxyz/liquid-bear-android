@@ -342,7 +342,7 @@ public class MusicService extends Service implements
     }
 
     public void exit() {
-        LBApplication.bus.post(new ExitEvent());
+        LBApplication.BUS.post(new ExitEvent());
         stopSelf();
     }
 
@@ -576,7 +576,7 @@ public class MusicService extends Service implements
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
         this.currentBuffer = percent;
-        LBApplication.bus.post(new BufferizationEvent(percent));
+        LBApplication.BUS.post(new BufferizationEvent(percent));
     }
 
     @Override
@@ -596,7 +596,7 @@ public class MusicService extends Service implements
             return;
         }
         prepared = true;
-        LBApplication.bus.post(new PreparedEvent());
+        LBApplication.BUS.post(new PreparedEvent());
         Track currentTrack = Timeline.getInstance().getCurrentTrack();
         currentTrack.setDuration(mediaPlayer.getDuration());
         hasDataSource = true;
@@ -613,12 +613,12 @@ public class MusicService extends Service implements
             Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
             mediaPlayer.start();
             startUpdaters();
-            LBApplication.bus.post(new PlayEvent());
+            LBApplication.BUS.post(new PlayEvent());
             startPlayProgressUpdater();
             showTrackInNotification();
         } else {
-            LBApplication.bus.post(new PlayWithoutIconEvent());
-            LBApplication.bus.post(new UpdatePositionEvent());
+            LBApplication.BUS.post(new PlayWithoutIconEvent());
+            LBApplication.BUS.post(new UpdatePositionEvent());
         }
         int result = audioManager.requestAudioFocus(focusChangeListener,
                 AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -647,7 +647,7 @@ public class MusicService extends Service implements
             startUpdaters();
             Timeline.getInstance().setStartPlayingOnPrepared(true);
             startPlayProgressUpdater();
-            LBApplication.bus.post(new PlayEvent());
+            LBApplication.BUS.post(new PlayEvent());
         }
     }
 
@@ -659,7 +659,7 @@ public class MusicService extends Service implements
                 mediaPlayer.pause();
             }
             showTrackInNotification();
-            LBApplication.bus.post(new PauseEvent());
+            LBApplication.BUS.post(new PauseEvent());
         }
         stopUpdaters();
     }
@@ -702,11 +702,11 @@ public class MusicService extends Service implements
         if (Timeline.getInstance().isStartPlayingOnPrepared()) {
             showNotificationToast();
             showTrackInNotification();
-            LBApplication.bus.post(new PlayEvent());
+            LBApplication.BUS.post(new PlayEvent());
         } else {
-            LBApplication.bus.post(new PlayWithoutIconEvent());
+            LBApplication.BUS.post(new PlayWithoutIconEvent());
         }
-        LBApplication.bus.post(new TrackInfoEvent());
+        LBApplication.BUS.post(new TrackInfoEvent());
     }
 
     private void playWithUrl() {
@@ -732,11 +732,11 @@ public class MusicService extends Service implements
         if (Timeline.getInstance().isStartPlayingOnPrepared()) {
             showNotificationToast();
             showTrackInNotification();
-            LBApplication.bus.post(new PlayEvent());
+            LBApplication.BUS.post(new PlayEvent());
         } else {
-            LBApplication.bus.post(new PlayWithoutIconEvent());
+            LBApplication.BUS.post(new PlayWithoutIconEvent());
         }
-        LBApplication.bus.post(new TrackInfoEvent());
+        LBApplication.BUS.post(new TrackInfoEvent());
     }
 
     public void next() {
@@ -915,7 +915,7 @@ public class MusicService extends Service implements
 
             @Override
             public void onNext(Long aLong) {
-                LBApplication.bus.post(new TimeEvent());
+                LBApplication.BUS.post(new TimeEvent());
                 if (scrobbled || !LBPreferencesManager.isScrobblingEnabled()) return;
                 secondsTrackPlayed++;
                 int duration = getDuration();
@@ -984,7 +984,7 @@ public class MusicService extends Service implements
             return;
         }
         if (!NetworkUtils.isOnline()) {
-            LBApplication.bus.post(new NetworkStateChangeEvent());
+            LBApplication.BUS.post(new NetworkStateChangeEvent());
             return;
         }
         VkSimpleCallback<VkTrack> callback = new VkSimpleCallback<VkTrack>() {
@@ -1037,7 +1037,7 @@ public class MusicService extends Service implements
                             }
                         });
                         Timeline.getInstance().getCurrentTrack().setLoved(loved);
-                        LBApplication.bus.post(new TrackAndAlbumInfoUpdatedEvent(album));
+                        LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(album));
                         updateWidgets();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                             CompatIcs.updateRemote(MusicService.this,
@@ -1074,7 +1074,7 @@ public class MusicService extends Service implements
                     }
                     imageUrl = lastfmImage != null ? lastfmImage.getUrl() : null;
                 }
-                LBApplication.bus.post(new ArtistInfoEvent(imageUrl));
+                LBApplication.BUS.post(new ArtistInfoEvent(imageUrl));
             }
 
             @Override

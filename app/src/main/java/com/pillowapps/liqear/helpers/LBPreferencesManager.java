@@ -2,6 +2,10 @@ package com.pillowapps.liqear.helpers;
 
 public class LBPreferencesManager {
 
+    private LBPreferencesManager() {
+        // no-op
+    }
+
     public static boolean isShakeEnabled() {
         return SharedPreferencesManager.getPreferences().getBoolean("shake_next", false);
     }

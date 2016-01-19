@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/libraries/DragSortListLibrary/DragSortListLibrary.iml" filepath="$PROJECT_DIR$/libraries/DragSortListLibrary/DragSortListLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/LiquidBearAndroid.iml" filepath="$PROJECT_DIR$/LiquidBearAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/NumberPicker/NumberPicker.iml" filepath="$PROJECT_DIR$/libraries/NumberPicker/NumberPicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/PanningViewLibrary/PanningViewLibrary.iml" filepath="$PROJECT_DIR$/libraries/PanningViewLibrary/PanningViewLibrary.iml" />
@@ -11,7 +10,6 @@
       <module fileurl="file://$PROJECT_DIR$/libraries/StickyGridHeaders/StickyGridHeaders.iml" filepath="$PROJECT_DIR$/libraries/StickyGridHeaders/StickyGridHeaders.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/ViewPagerIndicatorLibrary/ViewPagerIndicatorLibrary.iml" filepath="$PROJECT_DIR$/libraries/ViewPagerIndicatorLibrary/ViewPagerIndicatorLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libraries/libraries.iml" filepath="$PROJECT_DIR$/libraries/libraries.iml" />
     </modules>
   </component>
 </project>

@@ -1,15 +1,108 @@
+import com.android.build.gradle.internal.tasks.AndroidTestTask
+
 buildscript {
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'me.tatarka:gradle-retrolambda:3.2.4'
+        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
     }
+    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
 allprojects {
     repositories {
         jcenter()
     }
+
+    tasks.withType(JavaForkOptions) {
+        jvmArgs '-Djava.awt.headless=true'
+    }
 }
+
+ext {
+    buildToolsVersion = '23.0.2'
+
+    preDexLibs = !project.hasProperty('disablePreDex')
+}
+
+subprojects {
+    project.plugins.whenPluginAdded { plugin ->
+        if ('com.android.build.gradle.AppPlugin'.equals(plugin.class.name) || 'com.android.build.gradle.LibraryPlugin'.equals(plugin.class.name)) {
+            // enable or disable pre-dexing
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        }
+    }
+
+    plugins.apply('pmd')
+
+    pmd {
+        toolVersion = '5.4.0'
+    }
+
+    task pmd(type: Pmd) {
+        ignoreFailures = false
+        ruleSetFiles = project.files(rootProject.file("code_quality_tools/pmd.xml"))
+        ruleSets = []
+
+        source = fileTree('src/main/java')
+    }
+
+    plugins.apply('findbugs')
+
+    task findbugs(type: FindBugs) {
+        ignoreFailures = false
+        effort = 'max'
+        reportLevel = 'low'
+
+        classes = files("${project.projectDir}/build/intermediates/classes")
+        source = fileTree('src/main/java')
+
+        // If somebody has an idea how to make this work with support libraries -> open a PR please.
+        classpath = files()
+
+        excludeFilter = rootProject.file('code_quality_tools/findbugs-filter.xml')
+    }
+
+    plugins.apply('checkstyle')
+
+    task checkstyle(type: Checkstyle) {
+        configFile rootProject.file('code_quality_tools/checkstyle.xml')
+
+        ignoreFailures false // Fail early.
+        showViolations true
+
+        source 'src'
+        include '**/*.java'
+
+        classpath = files()
+    }
+
+    afterEvaluate {
+        tasks.findByName('pmd').dependsOn('assemble')
+        tasks.findByName('findbugs').dependsOn('assemble')
+
+        def checkTask = tasks.findByName('check')
+
+        checkTask.dependsOn('pmd')
+        checkTask.dependsOn('findbugs')
+        checkTask.dependsOn('checkstyle')
+
+        // Log instrumentation tests results.
+        tasks.withType(com.android.build.gradle.internal.tasks.AndroidTestTask) { task ->
+            task.doFirst {
+                logging.level = LogLevel.INFO
+            }
+            task.doLast {
+                logging.level = LogLevel.LIFECYCLE
+            }
+        }
+    }
+}
+
+
+
+

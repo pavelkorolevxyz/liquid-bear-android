@@ -67,7 +67,7 @@ public abstract class ViewerPage<T> extends Page {
 //        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page) {
+            public void onLoadMore(int currentPage) {
                 Timber.d("onLoadMore " + ViewerPage.this.title + " " + onLoadMoreListener);
                 if (onLoadMoreListener != null) {
                     onLoadMoreListener.onLoadMore();

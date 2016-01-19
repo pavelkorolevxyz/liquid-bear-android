@@ -3,6 +3,11 @@ package com.pillowapps.liqear.helpers;
 import com.pillowapps.liqear.entities.Track;
 
 public class TrackUtils {
+
+    private TrackUtils() {
+        // no-op
+    }
+
     public static String getNotation(Track track) {
         return String.format("%s - %s", track.getArtist(), track.getTitle());
     }

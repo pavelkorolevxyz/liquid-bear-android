@@ -11,7 +11,7 @@ import retrofit.http.QueryMap;
 public interface SetlistfmService {
 
     @GET("/search/setlists.json")
-    public void getSetlists(@QueryMap Map<String, String> params,
-                            Callback<SetlistsRoot> callback);
+    void getSetlists(@QueryMap Map<String, String> params,
+                     Callback<SetlistsRoot> callback);
 
 }

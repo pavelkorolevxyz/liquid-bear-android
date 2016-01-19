@@ -1,7 +1,6 @@
 package com.pillowapps.liqear.entities.lastfm;
 
 import com.google.gson.annotations.SerializedName;
-import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 
 import java.util.List;
 

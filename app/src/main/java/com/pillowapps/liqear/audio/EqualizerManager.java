@@ -9,6 +9,10 @@ public class EqualizerManager {
     private static CompatEq equalizer;
     private static BassBoost bassBoost;
 
+    private EqualizerManager() {
+        // no-op
+    }
+
     public static CompatEq getEqualizer() {
 //        if (AudioTimeline.getMusicService() == null
 //                || AudioTimeline.getMusicService().getMediaPlayer() == null) {

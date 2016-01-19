@@ -8,7 +8,11 @@ import com.pillowapps.liqear.entities.storio.DBTrack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StorioEntitiesMapper {
+public class DatabaseEntitiesMapper {
+
+    private DatabaseEntitiesMapper() {
+        // no-op
+    }
 
     public static DBPlaylist map(Playlist playlist) {
         return new DBPlaylist(playlist.getId(), playlist.getTitle(), playlist.isMainPlaylist());

@@ -37,7 +37,7 @@ def getDate() {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '22.0.1'
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 10
@@ -114,12 +114,12 @@ dependencies {
     compile 'com.pushtorefresh.storio:sqlite-annotations:1.7.0'
     apt 'com.pushtorefresh.storio:sqlite-annotations-processor:1.7.0'
 
-    compile project(':libraries:PullToRefreshLibrary')
-    compile project(':libraries:StickyGridHeaders')
-    compile project(':libraries:NumberPicker')
-    compile project(':libraries:PanningViewLibrary')
-    compile project(':libraries:PhotoView')
-    compile project(':libraries:ViewPagerIndicatorLibrary')
+    compile project(':PullToRefreshLibrary')
+    compile project(':StickyGridHeaders')
+    compile project(':NumberPicker')
+    compile project(':PanningViewLibrary')
+    compile project(':PhotoView')
+    compile project(':ViewPagerIndicatorLibrary')
     compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }

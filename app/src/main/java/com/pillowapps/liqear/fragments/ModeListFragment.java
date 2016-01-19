@@ -117,7 +117,7 @@ public class ModeListFragment extends ListFragment {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 
-    public static interface NavigationDrawerCallbacks {
+    public interface NavigationDrawerCallbacks {
         void onNavigationDrawerItemSelected(int position);
     }
 }

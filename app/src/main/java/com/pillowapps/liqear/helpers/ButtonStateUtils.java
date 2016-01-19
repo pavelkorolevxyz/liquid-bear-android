@@ -7,6 +7,10 @@ import com.pillowapps.liqear.entities.Track;
 
 public class ButtonStateUtils {
 
+    private ButtonStateUtils() {
+        // no-op
+    }
+
     public static int getShuffleButtonImage() {
         switch (Timeline.getInstance().getShuffleMode()) {
             case SHUFFLE:

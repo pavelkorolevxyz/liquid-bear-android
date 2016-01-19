@@ -150,7 +150,7 @@ public class PhoneFragment extends MainFragment {
         initListeners();
         restorePreviousState();
 
-        LBApplication.bus.register(this);
+        LBApplication.BUS.register(this);
         return v;
     }
 
@@ -158,7 +158,7 @@ public class PhoneFragment extends MainFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        LBApplication.bus.unregister(this);
+        LBApplication.BUS.unregister(this);
     }
 
     @Override

@@ -10,6 +10,10 @@ public class AuthorizationInfoManager {
     public static final String LASTFM_PREFERENCES = "lastfm_preferences";
     public static final String ADDITIONAL_PREFERENCES = "additional_preferences";
 
+    private AuthorizationInfoManager() {
+        // no-op
+    }
+
     public static String getVkAccessToken() {
         Context context = LBApplication.getAppContext();
         SharedPreferences vkPreferences =

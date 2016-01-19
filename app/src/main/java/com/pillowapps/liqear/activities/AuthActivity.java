@@ -377,6 +377,8 @@ public class AuthActivity extends TrackedActivity {
                     inflater.inflate(R.menu.menu_sign_up, menu);
                 }
                 break;
+            default:
+                break;
         }
         return true;
     }

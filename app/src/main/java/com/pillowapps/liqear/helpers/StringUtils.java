@@ -23,6 +23,10 @@ public class StringUtils {
         }
     }
 
+    private StringUtils() {
+        // no-op
+    }
+
     public static String md5(String s) {
         byte[] bytes;
         try {

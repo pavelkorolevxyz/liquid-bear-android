@@ -13,6 +13,11 @@ import com.pillowapps.liqear.models.PlaylistModel;
 import timber.log.Timber;
 
 public class StateManager {
+
+    private StateManager() {
+        // no-op
+    }
+
     public static void savePlaylistState(MusicService service) {
         saveTrackState();
         SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences().edit();

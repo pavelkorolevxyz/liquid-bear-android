@@ -74,4 +74,9 @@ public class Constants {
     public static final String AUTH_PROBLEMS = "problems";
     public static final String EQUALIZER_BASS = "equalizer_bass";
     public static final String TUTORIAL_DISABLED = "tutorial_disabled";
+
+    private Constants() {
+        // no-op
+    }
+
 }

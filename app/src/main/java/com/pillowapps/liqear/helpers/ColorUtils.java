@@ -8,6 +8,10 @@ import com.pillowapps.liqear.R;
 
 public class ColorUtils {
 
+    private ColorUtils() {
+        // no-op
+    }
+
     public static int getColorForMatch(double match) {
         Context context = LBApplication.getAppContext();
         long percent = Math.round(match * 100);

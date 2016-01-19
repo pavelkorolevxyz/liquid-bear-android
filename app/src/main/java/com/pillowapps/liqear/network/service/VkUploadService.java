@@ -15,7 +15,7 @@ public interface VkUploadService {
 
     @Multipart
     @POST("/upload.php")
-    public Observable<VkPhotoUploadResult> uploadPhoto(@Part("photo") TypedOutput photo,
-                                                       @QueryMap Map<String, String> params);
+    Observable<VkPhotoUploadResult> uploadPhoto(@Part("photo") TypedOutput photo,
+                                                @QueryMap Map<String, String> params);
 
 }

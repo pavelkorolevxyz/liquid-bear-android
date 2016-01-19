@@ -49,7 +49,7 @@ public class LoadMoreRecyclerView extends RecyclerView {
     private void initLoadMore() {
         addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) getLayoutManager()) {
             @Override
-            public void onLoadMore(int current_page) {
+            public void onLoadMore(int currentPage) {
                 onLoadMoreListener.onLoadMore();
             }
         });

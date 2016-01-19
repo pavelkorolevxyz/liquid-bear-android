@@ -8,6 +8,10 @@ import com.pillowapps.liqear.LBApplication;
 
 public class ErrorNotifier {
 
+    private ErrorNotifier() {
+        // no-op
+    }
+
     public static void showError(Activity activity, String message) {
         final MaterialDialog dialog = new MaterialDialog.Builder(activity)
                 .content(message)

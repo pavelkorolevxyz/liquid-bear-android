@@ -6,6 +6,11 @@ import android.net.ConnectivityManager;
 import com.pillowapps.liqear.LBApplication;
 
 public class NetworkUtils {
+
+    private NetworkUtils() {
+        // no-op
+    }
+
     public static boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) LBApplication.getAppContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);

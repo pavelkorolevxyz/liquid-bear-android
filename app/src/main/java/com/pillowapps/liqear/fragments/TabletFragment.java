@@ -81,14 +81,14 @@ public class TabletFragment extends MainFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.tablet_fragment_layout, container, false);
         mainActivity = (MainActivity) getActivity();
-        LBApplication.bus.register(this);
+        LBApplication.BUS.register(this);
         return v;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        LBApplication.bus.unregister(this);
+        LBApplication.BUS.unregister(this);
     }
 
     public void init() {

@@ -6,6 +6,11 @@ import android.content.pm.PackageManager;
 import com.pillowapps.liqear.LBApplication;
 
 public class AppUtils {
+
+    private AppUtils() {
+        // no-op
+    }
+
     public static String getAppVersion() {
         Context context = LBApplication.getAppContext();
         try {

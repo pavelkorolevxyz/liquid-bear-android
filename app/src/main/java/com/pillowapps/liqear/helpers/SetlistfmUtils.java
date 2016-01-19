@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SetlistfmUtils {
+
+    private SetlistfmUtils() {
+        // no-op
+    }
+
     public static List<Track> getTracks(SetlistfmSetlist setlist) {
         List<Track> tracks = new ArrayList<>();
         SetlistfmSets sets = setlist.getSets();

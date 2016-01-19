@@ -27,6 +27,10 @@ import java.util.List;
 
 public class Converter {
 
+    private Converter() {
+        // no-op
+    }
+
     public static Track convertTrack(LastfmTrack lastfmTrack) {
         String artist = lastfmTrack.getArtist().getName();
         String title = lastfmTrack.getName();

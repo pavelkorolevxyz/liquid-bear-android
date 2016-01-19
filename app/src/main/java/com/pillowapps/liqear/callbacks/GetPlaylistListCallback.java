@@ -5,5 +5,5 @@ import com.pillowapps.liqear.entities.Playlist;
 import java.util.List;
 
 public interface GetPlaylistListCallback {
-    public void onCompleted(List<Playlist> playlists);
+    void onCompleted(List<Playlist> playlists);
 }

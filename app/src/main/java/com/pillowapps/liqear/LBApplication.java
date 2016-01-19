@@ -14,7 +14,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class LBApplication extends Application {
     private static Context context;
-    public static final Bus bus = new Bus(ThreadEnforcer.ANY);
+    public static final Bus BUS = new Bus(ThreadEnforcer.ANY);
 
     public static Context getAppContext() {
         return LBApplication.context;

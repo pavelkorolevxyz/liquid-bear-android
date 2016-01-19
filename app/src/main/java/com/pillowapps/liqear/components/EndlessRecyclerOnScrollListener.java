@@ -11,7 +11,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     private int visibleThreshold = 5; // The minimum amount of items to have below your current scroll position before loading more.
     int firstVisibleItem, visibleItemCount, totalItemCount;
 
-    private int current_page = 1;
+    private int currentPage = 1;
 
     private LinearLayoutManager mLinearLayoutManager;
 
@@ -38,13 +38,13 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
             // End has been reached
 
             // Do something
-            current_page++;
+            currentPage++;
 
-            onLoadMore(current_page);
+            onLoadMore(currentPage);
 
             loading = true;
         }
     }
 
-    public abstract void onLoadMore(int current_page);
+    public abstract void onLoadMore(int currentPage);
 }
