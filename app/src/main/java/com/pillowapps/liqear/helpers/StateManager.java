@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.helpers;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.pillowapps.liqear.audio.MusicService;
@@ -10,6 +11,8 @@ import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.models.PlaylistModel;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class StateManager {
@@ -48,14 +51,17 @@ public class StateManager {
         editor.apply();
     }
 
-    public static void restorePlaylistState(final CompletionCallback completionCallback) {
+    public static void restorePlaylistState(Context context, final CompletionCallback completionCallback) {
         Timber.d("restore state");
         final long time = System.currentTimeMillis();
-        new PlaylistModel().getMainPlaylist(playlist -> {
-            Timeline.getInstance().setPlaylist(playlist);
-            Timber.d("time = " + (System.currentTimeMillis() - time));
-            completionCallback.onCompleted();
-        });
+        new PlaylistModel().getMainPlaylist(context)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(playlist -> {
+                    Timeline.getInstance().setPlaylist(playlist);
+                    Timber.d("time = " + (System.currentTimeMillis() - time));
+                    completionCallback.onCompleted();
+                });
     }
 
     public static void restoreTrackState() {

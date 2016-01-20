@@ -81,6 +81,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
@@ -489,41 +490,44 @@ public class MusicService extends Service implements
             togglePlayPause();
         } else {
             Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
-            new PlaylistModel().getMainPlaylist(playlist -> {
-                Timeline.getInstance().setPlaylist(playlist);
-                List<Track> tracks = playlist.getTracks();
+            new PlaylistModel().getMainPlaylist(MusicService.this)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(playlist -> {
+                        Timeline.getInstance().setPlaylist(playlist);
+                        List<Track> tracks = playlist.getTracks();
 
-                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                String artist = preferences.getString(Constants.ARTIST, "");
-                String title = preferences.getString(Constants.TITLE, "");
-                int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+                        SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+                        String artist = preferences.getString(Constants.ARTIST, "");
+                        String title = preferences.getString(Constants.TITLE, "");
+                        int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+                        int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
 
-                boolean currentFits = currentIndex < tracks.size();
-                if (!currentFits) currentIndex = 0;
-                if (currentIndex == 0 && tracks.size() == 0) return;
-                Track currentTrack = tracks.get(currentIndex);
-                boolean tracksEquals = currentFits
-                        && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                        + currentTrack.getTitle());
-                if (!tracksEquals) {
-                    currentIndex = 0;
-                    position = 0;
-                }
-                Timeline.getInstance().setIndex(currentIndex);
-                if (currentIndex > tracks.size()) {
-                    position = 0;
-                }
-                if (!LBPreferencesManager.isContinueFromLastPositionEnabled()) {
-                    position = 0;
-                }
+                        boolean currentFits = currentIndex < tracks.size();
+                        if (!currentFits) currentIndex = 0;
+                        if (currentIndex == 0 && tracks.size() == 0) return;
+                        Track currentTrack = tracks.get(currentIndex);
+                        boolean tracksEquals = currentFits
+                                && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                                + currentTrack.getTitle());
+                        if (!tracksEquals) {
+                            currentIndex = 0;
+                            position = 0;
+                        }
+                        Timeline.getInstance().setIndex(currentIndex);
+                        if (currentIndex > tracks.size()) {
+                            position = 0;
+                        }
+                        if (!LBPreferencesManager.isContinueFromLastPositionEnabled()) {
+                            position = 0;
+                        }
 
-                Timeline.getInstance().setTimePosition(position);
-                if (tracks.size() != 0
-                        && Timeline.getInstance().getCurrentTrack() == null) {
-                    play();
-                }
-            });
+                        Timeline.getInstance().setTimePosition(position);
+                        if (tracks.size() != 0
+                                && Timeline.getInstance().getCurrentTrack() == null) {
+                            play();
+                        }
+                    });
         }
     }
 

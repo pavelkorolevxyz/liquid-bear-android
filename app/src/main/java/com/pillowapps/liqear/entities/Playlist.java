@@ -18,6 +18,11 @@ public class Playlist {
         this.title = title;
     }
 
+    public Playlist(String title, List<Track> tracks) {
+        this.title = title;
+        this.tracks = tracks;
+    }
+
     public Playlist(List<Track> tracks) {
         this.tracks = tracks;
     }

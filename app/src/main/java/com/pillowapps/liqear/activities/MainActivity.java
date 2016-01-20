@@ -77,13 +77,14 @@ import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import fr.nicolaspomepuy.discreetapprate.AppRate;
 import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
 import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends TrackedActivity {
 
@@ -710,7 +711,10 @@ public class MainActivity extends TrackedActivity {
                     phoneFragment.playTrack(position);
                 }
             }
-            new PlaylistModel().saveMainPlaylist();
+            new PlaylistModel().saveMainPlaylist(MainActivity.this)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe();
         }
         if (!isTablet()) {
             phoneFragment.updateMainPlaylistTitle();
@@ -724,7 +728,10 @@ public class MainActivity extends TrackedActivity {
 
         Timeline.getInstance().clearPreviousIndexes();
         if (Timeline.getInstance().getPlaylistTracks().size() > 0) {
-            new PlaylistModel().saveMainPlaylist();
+            new PlaylistModel().saveMainPlaylist(MainActivity.this)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe();
         }
 //        AudioTimeline.setPlaylistChanged(false);
     }
@@ -841,7 +848,10 @@ public class MainActivity extends TrackedActivity {
             updateView(Collections.singletonList(position));
             List<Track> playlistTracks = Timeline.getInstance().getPlaylistTracks();
             if (playlistTracks.size() > 0) {
-                new PlaylistModel().saveMainPlaylist();
+                new PlaylistModel().saveMainPlaylist(MainActivity.this)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe();
             }
             dialog.dismiss();
         });

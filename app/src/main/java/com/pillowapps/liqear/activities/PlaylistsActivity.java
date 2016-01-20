@@ -34,6 +34,9 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class PlaylistsActivity extends ResultActivity {
     public static final String AIM = "aim";
     private PlaylistsArrayAdapter adapter;
@@ -72,20 +75,26 @@ public class PlaylistsActivity extends ResultActivity {
         }
         listView.setOnCreateContextMenuListener(this);
 
-        new PlaylistModel().getSavedPlaylists(playlistList -> {
-            adapter = new PlaylistsArrayAdapter(PlaylistsActivity.this, playlistList);
-            runOnUiThread(() -> {
-                listView.setAdapter(adapter);
-                updateEmptyTextView();
-            });
-        });
+        new PlaylistModel().getPlaylists(PlaylistsActivity.this)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(playlistList -> {
+                    adapter = new PlaylistsArrayAdapter(PlaylistsActivity.this, playlistList);
+                    runOnUiThread(() -> {
+                        listView.setAdapter(adapter);
+                        updateEmptyTextView();
+                    });
+                });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             switch (aim) {
                 case ADD_TO_PLAYLIST: {
                     Playlist playlist = adapter.get(position);
-                    new PlaylistModel().addTrackToPlaylist(playlist,
-                            new Track(extras.getString("artist"), extras.getString("title")));
+                    new PlaylistModel().addTrackToPlaylist(PlaylistsActivity.this, playlist.getId(),
+                            new Track(extras.getString("artist"), extras.getString("title")))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe();
                     finish();
                     break;
                 }
@@ -136,7 +145,10 @@ public class PlaylistsActivity extends ResultActivity {
                 adapter.getValues().remove(info.position);
                 adapter.notifyDataSetChanged();
                 updateEmptyTextView();
-                new PlaylistModel().removePlaylist(playlist.getId());
+                new PlaylistModel().removePlaylist(PlaylistsActivity.this, playlist.getId())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe();
                 break;
             case 1:
                 showSavePlaylistDialog(true, info.position);
@@ -181,16 +193,19 @@ public class PlaylistsActivity extends ResultActivity {
                 .build();
 
         dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
-            String title = input.getText().toString();
-            if (title.length() < 1) {
-                title = getResources().getString(R.string.new_playlist);
-            }
-            long pid = new PlaylistModel().addPlaylist(title, new ArrayList<>());
-            if (pid != -1) {
-                adapter.getValues().add(0, new Playlist(pid, title));
-                adapter.notifyDataSetChanged();
-                updateEmptyTextView();
-            }
+            final String title = input.getText().toString().isEmpty() ? getResources().getString(R.string.new_playlist) : input.getText().toString();
+            new PlaylistModel().savePlaylist(PlaylistsActivity.this, title, new ArrayList<>())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(putResult -> {
+                        Long pid = putResult.insertedId();
+                        if (pid != null) {
+                            adapter.getValues().add(0, new Playlist(pid, title));
+                            adapter.notifyDataSetChanged();
+                            updateEmptyTextView();
+                        }
+                    });
+
             dialog.dismiss();
         });
         dialog.show();
@@ -218,19 +233,26 @@ public class PlaylistsActivity extends ResultActivity {
             }
 
             if (isRenaming) {
-                new PlaylistModel().renamePlaylist(
-                        adapter.get(position).getId(), title);
+                new PlaylistModel().renamePlaylist(PlaylistsActivity.this, adapter.get(position).getId(), title)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe();
                 adapter.get(position).setTitle(title);
                 adapter.notifyDataSetChanged();
                 updateEmptyTextView();
             } else {
-                long pid = new PlaylistModel().addPlaylist(title,
-                        Timeline.getInstance().getPlaylistTracks());
-                if (pid != -1) {
-                    adapter.getValues().add(0, new Playlist(pid, title));
-                    adapter.notifyDataSetChanged();
-                    updateEmptyTextView();
-                }
+                final String finalTitle = title;
+                new PlaylistModel().savePlaylist(PlaylistsActivity.this, title, Timeline.getInstance().getPlaylistTracks())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(putResult -> {
+                            Long pid = putResult.insertedId();
+                            if (pid != null) {
+                                adapter.getValues().add(0, new Playlist(pid, finalTitle));
+                                adapter.notifyDataSetChanged();
+                                updateEmptyTextView();
+                            }
+                        });
             }
             dialog.dismiss();
         });
@@ -257,14 +279,17 @@ public class PlaylistsActivity extends ResultActivity {
             }
 
             if (isRenaming) {
-                new PlaylistModel().renamePlaylist(adapter.get(position).getId(), title);
+                new PlaylistModel().renamePlaylist(PlaylistsActivity.this, adapter.get(position).getId(), title)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe();
                 adapter.get(position).setTitle(title);
                 adapter.notifyDataSetChanged();
                 updateEmptyTextView();
             } else {
 //                            List<Track> tracklist = getIntent()
 //                                    .getParcelableArrayListExtra(Constants.TRACKLIST);
-//                            long pid = new PlaylistModel().addPlaylist(title, tracklist);
+//                            long pid = new PlaylistModel().savePlaylist(title, tracklist);
 //                            if (pid != -1) {
 //                                ((List<Playlist>) adapter.getValues())
 //                                        .add(0, new Playlist(pid, title));

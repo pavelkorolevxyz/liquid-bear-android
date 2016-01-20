@@ -1,87 +1,56 @@
 package com.pillowapps.liqear.models;
 
-import com.pillowapps.liqear.LBApplication;
+import android.content.Context;
+import android.support.annotation.NonNull;
+
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.callbacks.GetPlaylistCallback;
-import com.pillowapps.liqear.callbacks.GetPlaylistListCallback;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.StorageManager;
+import com.pushtorefresh.storio.sqlite.operations.put.PutResult;
 
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
-
+import rx.Observable;
 
 public class PlaylistModel {
 
-    public void saveMainPlaylist() {
+    public Observable saveMainPlaylist(@NonNull Context context) {
         Playlist playlist = Timeline.getInstance().getPlaylist();
-        if (playlist == null) return;
-        clearMainPlaylist();
+        if (playlist == null) return Observable.empty();
         playlist.setMainPlaylist(true);
-        StorageManager.getInstance(LBApplication.getAppContext()).savePlaylist(playlist)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(putResult -> {
-                    Timber.d(putResult.toString());
-                });
+        StorageManager storageManager = StorageManager.getInstance(context);
+        return storageManager.deleteMainPlaylist()
+                .flatMap(deleteResult -> storageManager.savePlaylist(playlist));
+
     }
 
-    public void getMainPlaylist(final GetPlaylistCallback callback) {
-        StorageManager.getInstance(LBApplication.getAppContext()).getMainPlaylist()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(callback::onCompleted);
+    public Observable<Playlist> getMainPlaylist(@NonNull Context context) {
+        return StorageManager.getInstance(context).getMainPlaylist();
     }
 
-    private void clearMainPlaylist() {
-        StorageManager.getInstance(LBApplication.getAppContext()).deleteMainPlaylist().subscribe();
+    public Observable<List<Playlist>> getPlaylists(@NonNull Context context) {
+        return StorageManager.getInstance(context).getPlaylists();
     }
 
-    public void getSavedPlaylists(final GetPlaylistListCallback callback) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                From<Playlist> from = new Select().from(Playlist.class);
-//                Timber.d(from.queryList().toString());
-//                callback.onCompleted(from.where(Condition.column(Playlist$Table.MAINPLAYLIST).is(false)).queryList());
-//            }
-//        }).start();
+    public Observable removePlaylist(@NonNull Context context, @NonNull Long id) {
+        return StorageManager.getInstance(context).deletePlaylist(id);
     }
 
-    public void removePlaylist(Long id) {
-//        new Delete().from(Playlist.class).where(Condition.column(Playlist$Table.ID).is(id)).queryClose();
+    public Observable renamePlaylist(@NonNull Context context, @NonNull Long id, @NonNull String newTitle) {
+        return StorageManager.getInstance(context).renamePlaylist(id, newTitle);
     }
 
-    public void renamePlaylist(Long id, String newTitle) {
-//        Update.table(Playlist.class).set(Condition.column(Playlist$Table.TITLE).eq(newTitle))
-//                .where(Condition.column(Playlist$Table.ID).is(id)).queryClose();
+    public Observable addTrackToPlaylist(@NonNull Context context, @NonNull Long playlistId, @NonNull Track track) {
+        return StorageManager.getInstance(context).saveTrackToPlaylist(playlistId, track);
     }
 
-    public void addTrackToPlaylist(Playlist playlist, Track track) {
-//        track.associatePlaylist(playlist);
-//        track.save();
+    public Observable<PutResult> savePlaylist(@NonNull Context context, String title, @NonNull List<Track> tracks) {
+        return StorageManager.getInstance(context).savePlaylist(new Playlist(title, tracks));
     }
 
-    public long addPlaylist(String title, List<Track> tracks) {
-        Playlist playlist = new Playlist();
-        playlist.setTitle(title);
-        playlist.setTracks(tracks);
-//        playlist.save();
-        return playlist.getId();
+    public Observable<Playlist> getPlaylist(@NonNull Context context, @NonNull final Long playlistId) {
+        return StorageManager.getInstance(context).getPlaylist(playlistId);
     }
 
-    public void getPlaylist(final long pid, final GetPlaylistCallback callback) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                From<Playlist> from = new Select().from(Playlist.class);
-//                Timber.d(from.queryList().toString());
-//                callback.onCompleted(from.where(Condition.column(Playlist$Table.ID).is(pid)).querySingle());
-//            }
-//        }).start();
-    }
 }

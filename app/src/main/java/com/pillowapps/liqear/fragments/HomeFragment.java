@@ -53,6 +53,9 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     protected HomePresenter presenter;
@@ -356,7 +359,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             if (autoPlay) {
                 presenter.playTrack(index);
             }
-            new PlaylistModel().saveMainPlaylist();
+            new PlaylistModel().saveMainPlaylist(getActivity())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe();
         }
         updateEmptyPlaylistTextView();
     }

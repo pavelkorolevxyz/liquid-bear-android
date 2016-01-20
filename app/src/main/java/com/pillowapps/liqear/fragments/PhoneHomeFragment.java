@@ -132,7 +132,7 @@ public class PhoneHomeFragment extends HomeFragment {
         shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
         repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
 
-        StateManager.restorePlaylistState(() -> {
+        StateManager.restorePlaylistState(getActivity(), () -> {
             final Playlist playlist = Timeline.getInstance().getPlaylist();
             if (playlist == null || playlist.getTracks().size() == 0) return;
             updateMainPlaylistTitle();
