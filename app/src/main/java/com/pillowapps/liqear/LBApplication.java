@@ -25,10 +25,10 @@ public class LBApplication extends Application {
         super.onCreate();
         LBApplication.context = getApplicationContext();
 
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-        } else {
+        if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
+        } else {
+            Fabric.with(this, new Crashlytics());
         }
 
         ButterKnife.setDebug(true);

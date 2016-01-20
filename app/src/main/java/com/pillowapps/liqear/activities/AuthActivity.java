@@ -67,8 +67,8 @@ public class AuthActivity extends TrackedActivity {
     private boolean firstStart;
     private TextView errorVkTextView;
     private TextView errorLastfmTextView;
-    private LastfmAuthModel authModel = new LastfmAuthModel();
-    private ImageModel imageModel = new ImageModel();
+    private final LastfmAuthModel authModel = new LastfmAuthModel();
+    private final ImageModel imageModel = new ImageModel();
     private View signOutVkButton;
     private View signOutLastfmButton;
     private ProgressBar lastfmProgressBar;
@@ -167,7 +167,7 @@ public class AuthActivity extends TrackedActivity {
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
-
+                // no-op
             }
 
             @Override
@@ -177,7 +177,7 @@ public class AuthActivity extends TrackedActivity {
 
             @Override
             public void onPageScrollStateChanged(int i) {
-
+                // no-op
             }
         });
     }
@@ -219,7 +219,7 @@ public class AuthActivity extends TrackedActivity {
 
                         @Override
                         public void failure(VkError error) {
-
+                            //todo
                         }
                     });
         }
@@ -299,7 +299,7 @@ public class AuthActivity extends TrackedActivity {
 
                                 @Override
                                 public void failure(String errorMessage) {
-
+                                    //todo
                                 }
                             });
                             invalidateOptionsMenu();

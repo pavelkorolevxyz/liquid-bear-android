@@ -9,8 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
-    public Parser() {
-    }
 
     public List<String> parseGetArtistImages(Response response) {
         List<String> imagesUrls = new ArrayList<>(36);

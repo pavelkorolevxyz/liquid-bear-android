@@ -61,8 +61,8 @@ public class StorageManager {
         return INSTANCE;
     }
 
-    public void deleteMainPlaylist() {
-        database.get().listOfObjects(DBPlaylist.class)
+    public Observable<DeleteResult> deleteMainPlaylist() {
+        return database.get().listOfObjects(DBPlaylist.class)
                 .withQuery(Query.builder()
                                 .table(PlaylistTable.TABLE_NAME)
                                 .where(String.format(Locale.getDefault(), "%s=?", PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
