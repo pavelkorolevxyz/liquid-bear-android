@@ -10,6 +10,9 @@ import com.pillowapps.liqear.entities.storio.TrackTable;
 
 public class LiquidBearSQLHelper extends SQLiteOpenHelper {
 
+    public static final String DATABASE_NAME = "LB";
+    public static final int DATABASE_VERSION = 5;
+
     public LiquidBearSQLHelper(@NonNull Context context, @NonNull String dataBaseName,
                                int dataBaseVersion) {
         super(context, dataBaseName, null, dataBaseVersion);
@@ -33,13 +36,13 @@ public class LiquidBearSQLHelper extends SQLiteOpenHelper {
                 TrackTable.COLUMN_OWNER_ID + " INTEGER, " +
                 TrackTable.COLUMN_AUDIO_ID + " INTEGER, " +
                 TrackTable.COLUMN_IS_LOCAL + " INTEGER DEFAULT 0," +
-                TrackTable.COLUMN_LOCAL_URL + " TEXT, " +
-                "FOREIGN KEY(" + TrackTable.COLUMN_PLAYLIST_ID + ") REFERENCES " +
-                PlaylistTable.TABLE_NAME + "(" + PlaylistTable.COLUMN_ID + "));");
+                TrackTable.COLUMN_LOCAL_URL + " TEXT);");
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // todo support of LB 2.0 Database
+        db.execSQL("DROP TABLE " + PlaylistTable.TABLE_NAME);
+        db.execSQL("DROP TABLE " + TrackTable.TABLE_NAME);
     }
 }

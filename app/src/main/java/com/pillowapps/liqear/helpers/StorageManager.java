@@ -15,8 +15,8 @@ import com.pillowapps.liqear.entities.storio.DBTrackStorIOSQLiteGetResolver;
 import com.pillowapps.liqear.entities.storio.DBTrackStorIOSQLitePutResolver;
 import com.pillowapps.liqear.entities.storio.PlaylistTable;
 import com.pillowapps.liqear.entities.storio.TrackTable;
-import com.pillowapps.liqear.helpers.db.LiquidBearSQLHelper;
 import com.pillowapps.liqear.helpers.db.DatabaseEntitiesMapper;
+import com.pillowapps.liqear.helpers.db.LiquidBearSQLHelper;
 import com.pushtorefresh.storio.sqlite.SQLiteTypeMapping;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 import com.pushtorefresh.storio.sqlite.impl.DefaultStorIOSQLite;
@@ -25,6 +25,7 @@ import com.pushtorefresh.storio.sqlite.operations.put.PutResult;
 import com.pushtorefresh.storio.sqlite.queries.DeleteQuery;
 import com.pushtorefresh.storio.sqlite.queries.Query;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,7 +38,9 @@ public class StorageManager {
 
     private StorageManager(Context context) {
         this.database = DefaultStorIOSQLite.builder()
-                .sqliteOpenHelper(new LiquidBearSQLHelper(context, "LB", 4))
+                .sqliteOpenHelper(new LiquidBearSQLHelper(context,
+                        LiquidBearSQLHelper.DATABASE_NAME,
+                        LiquidBearSQLHelper.DATABASE_VERSION))
                 .addTypeMapping(DBPlaylist.class, SQLiteTypeMapping.<DBPlaylist>builder()
                         .putResolver(new DBPlaylistStorIOSQLitePutResolver())
                         .getResolver(new DBPlaylistStorIOSQLiteGetResolver())
@@ -58,15 +61,36 @@ public class StorageManager {
         return INSTANCE;
     }
 
-    @NonNull
-    public Observable<DeleteResult> deleteMainPlaylist() {
-        return database.delete().byQuery(DeleteQuery.builder()
-                        .table(PlaylistTable.TABLE_NAME)
-                        .where(String.format(Locale.getDefault(), "%s=?", PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
-                        .whereArgs(true)
-                        .build()
-        ).prepare().createObservable();
-        //todo delete tracks from main playlist too
+    public void deleteMainPlaylist() {
+        database.get().listOfObjects(DBPlaylist.class)
+                .withQuery(Query.builder()
+                                .table(PlaylistTable.TABLE_NAME)
+                                .where(String.format(Locale.getDefault(), "%s=?", PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
+                                .whereArgs(true)
+                                .build()
+                )
+                .prepare()
+                .createObservable()
+                .flatMap(dbPlaylists -> {
+                    HashSet<Long> playlistsToDelete = new HashSet<>(dbPlaylists.size());
+                    for (DBPlaylist dbPlaylist : dbPlaylists) {
+                        Long id = dbPlaylist.getId();
+                        playlistsToDelete.add(id);
+                    }
+                    return Observable.from(playlistsToDelete);
+                })
+                .flatMap(this::deleteTracks);
+    }
+
+    private Observable<DeleteResult> deleteTracks(Long playlistId) {
+        return database.delete()
+                .byQuery(DeleteQuery.builder()
+                        .table(TrackTable.TABLE_NAME)
+                        .whereArgs(String.format("%s=?", TrackTable.COLUMN_PLAYLIST_ID))
+                        .whereArgs(playlistId)
+                        .build())
+                .prepare()
+                .createObservable();
     }
 
     @NonNull
@@ -86,8 +110,8 @@ public class StorageManager {
                     List<DBTrack> dbTracks = database.get().listOfObjects(DBTrack.class)
                             .withQuery(Query.builder().table(TrackTable.TABLE_NAME)
                                     .where(String.format(Locale.getDefault(), "%s=?", TrackTable.COLUMN_PLAYLIST_ID))
-                                    .whereArgs(dbPlaylist.getId())
-                                    .build()).prepare().executeAsBlocking(); // todo make chain of observables instead
+                                    .whereArgs(myPlaylist.getId())
+                                    .build()).prepare().executeAsBlocking();
                     List<Track> tracks = DatabaseEntitiesMapper.mapListOfDBTracks(dbTracks);
                     myPlaylist.setTracks(tracks);
 
