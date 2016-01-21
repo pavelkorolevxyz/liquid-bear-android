@@ -54,4 +54,12 @@ public class DatabaseEntitiesMapper {
         }
         return playlists;
     }
+
+    public static List<DBTrack> mapListOfTracks(List<Track> tracks) {
+        List<DBTrack> dbTracks = new ArrayList<>(tracks.size());
+        for (Track track : tracks) {
+            dbTracks.add(map(track));
+        }
+        return dbTracks;
+    }
 }

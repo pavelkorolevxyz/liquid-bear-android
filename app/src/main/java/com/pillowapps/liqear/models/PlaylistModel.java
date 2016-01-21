@@ -7,7 +7,6 @@ import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.StorageManager;
-import com.pushtorefresh.storio.sqlite.operations.put.PutResult;
 
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class PlaylistModel {
         return StorageManager.getInstance(context).saveTrackToPlaylist(playlistId, track);
     }
 
-    public Observable<PutResult> savePlaylist(@NonNull Context context, String title, @NonNull List<Track> tracks) {
+    public Observable<Long> savePlaylist(@NonNull Context context, String title, @NonNull List<Track> tracks) {
         return StorageManager.getInstance(context).savePlaylist(new Playlist(title, tracks));
     }
 

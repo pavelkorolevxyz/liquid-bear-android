@@ -24,6 +24,7 @@ import com.pushtorefresh.storio.sqlite.impl.DefaultStorIOSQLite;
 import com.pushtorefresh.storio.sqlite.operations.delete.DeleteResult;
 import com.pushtorefresh.storio.sqlite.operations.put.DefaultPutResolver;
 import com.pushtorefresh.storio.sqlite.operations.put.PutResult;
+import com.pushtorefresh.storio.sqlite.operations.put.PutResults;
 import com.pushtorefresh.storio.sqlite.queries.DeleteQuery;
 import com.pushtorefresh.storio.sqlite.queries.InsertQuery;
 import com.pushtorefresh.storio.sqlite.queries.Query;
@@ -167,11 +168,24 @@ public class StorageManager {
                 });
     }
 
-    public Observable<PutResult> savePlaylist(Playlist playlist) {
+    public Observable<Long> savePlaylist(Playlist playlist) {
         return database.put()
                 .object(DatabaseEntitiesMapper.map(playlist))
                 .prepare()
-                .createObservable();
+                .createObservable().flatMap(putResult -> {
+                    saveTracksToPlaylist(playlist.getId(), playlist.getTracks());
+                    return Observable.just(putResult.insertedId());
+                });
+    }
+
+    public Observable<PutResults> saveTracksToPlaylist(Long playlistId, List<Track> tracks) {
+        return Observable.from(tracks).map(DatabaseEntitiesMapper::map).map(dbTrack -> {
+            dbTrack.setPlaylistId(playlistId);
+            return dbTrack;
+        }).toList().flatMap(dbTracks -> database.put()
+                .objects(dbTracks)
+                .prepare()
+                .createObservable());
     }
 
     public Observable<PutResult> renamePlaylist(Long id, String newTitle) {

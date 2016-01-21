@@ -197,13 +197,10 @@ public class PlaylistsActivity extends ResultActivity {
             new PlaylistModel().savePlaylist(PlaylistsActivity.this, title, new ArrayList<>())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
-                    .subscribe(putResult -> {
-                        Long pid = putResult.insertedId();
-                        if (pid != null) {
-                            adapter.getValues().add(0, new Playlist(pid, title));
-                            adapter.notifyDataSetChanged();
-                            updateEmptyTextView();
-                        }
+                    .subscribe(pid -> {
+                        adapter.getValues().add(0, new Playlist(pid, title));
+                        adapter.notifyDataSetChanged();
+                        updateEmptyTextView();
                     });
 
             dialog.dismiss();
@@ -245,13 +242,10 @@ public class PlaylistsActivity extends ResultActivity {
                 new PlaylistModel().savePlaylist(PlaylistsActivity.this, title, Timeline.getInstance().getPlaylistTracks())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe(putResult -> {
-                            Long pid = putResult.insertedId();
-                            if (pid != null) {
-                                adapter.getValues().add(0, new Playlist(pid, finalTitle));
-                                adapter.notifyDataSetChanged();
-                                updateEmptyTextView();
-                            }
+                        .subscribe(pid -> {
+                            adapter.getValues().add(0, new Playlist(pid, finalTitle));
+                            adapter.notifyDataSetChanged();
+                            updateEmptyTextView();
                         });
             }
             dialog.dismiss();
