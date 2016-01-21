@@ -14,14 +14,13 @@ import rx.Observable;
 
 public class PlaylistModel {
 
-    public Observable saveMainPlaylist(@NonNull Context context) {
+    public Observable<Long> saveMainPlaylist(@NonNull Context context) {
         Playlist playlist = Timeline.getInstance().getPlaylist();
         if (playlist == null) return Observable.empty();
         playlist.setMainPlaylist(true);
         StorageManager storageManager = StorageManager.getInstance(context);
-        return storageManager.deleteMainPlaylist()
-                .flatMap(deleteResult -> storageManager.savePlaylist(playlist));
 
+        return storageManager.findAndDeleteMainPlaylist().flatMap(deleteResult -> storageManager.savePlaylist(playlist));
     }
 
     public Observable<Playlist> getMainPlaylist(@NonNull Context context) {
@@ -33,7 +32,7 @@ public class PlaylistModel {
     }
 
     public Observable removePlaylist(@NonNull Context context, @NonNull Long id) {
-        return StorageManager.getInstance(context).deletePlaylist(id);
+        return StorageManager.getInstance(context).findAndDeletePlaylist(id);
     }
 
     public Observable renamePlaylist(@NonNull Context context, @NonNull Long id, @NonNull String newTitle) {

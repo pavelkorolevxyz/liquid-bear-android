@@ -15,7 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.recyclers.NewcomersAdapter;
 import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 import com.pillowapps.liqear.components.LoadMoreRecyclerView;
@@ -28,7 +27,6 @@ import com.pillowapps.liqear.models.portals.AlterportalAlbumModel;
 import com.pillowapps.liqear.models.portals.FunkySoulsAlbumModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,13 +56,6 @@ public class NewcomersActivity extends ResultActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
-            case android.R.id.home:
-                finish();
-                Intent intent = new Intent(NewcomersActivity.this, MainActivity.class);
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                break;
             case 0:
                 String url = null;
                 switch (mode) {
@@ -91,7 +82,7 @@ public class NewcomersActivity extends ResultActivity {
                 openMainPlaylist(tracks, 0, getToolbarTitle());
                 break;
             default:
-                break;
+                return super.onOptionsItemSelected(item);
         }
         return true;
     }

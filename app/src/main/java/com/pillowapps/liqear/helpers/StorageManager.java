@@ -24,13 +24,11 @@ import com.pushtorefresh.storio.sqlite.impl.DefaultStorIOSQLite;
 import com.pushtorefresh.storio.sqlite.operations.delete.DeleteResult;
 import com.pushtorefresh.storio.sqlite.operations.put.DefaultPutResolver;
 import com.pushtorefresh.storio.sqlite.operations.put.PutResult;
-import com.pushtorefresh.storio.sqlite.operations.put.PutResults;
 import com.pushtorefresh.storio.sqlite.queries.DeleteQuery;
 import com.pushtorefresh.storio.sqlite.queries.InsertQuery;
 import com.pushtorefresh.storio.sqlite.queries.Query;
 import com.pushtorefresh.storio.sqlite.queries.UpdateQuery;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,52 +64,55 @@ public class StorageManager {
         return INSTANCE;
     }
 
-    public Observable<DeleteResult> deleteMainPlaylist() {
-        return database.get().listOfObjects(DBPlaylist.class)
-                .withQuery(Query.builder()
-                                .table(PlaylistTable.TABLE_NAME)
-                                .where(String.format(Locale.getDefault(), "%s = ?", PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
-                                .whereArgs(1)
-                                .build()
-                )
-                .prepare()
-                .createObservable()
-                .flatMap(dbPlaylists -> {
-                    HashSet<Long> playlistsToDelete = new HashSet<>(dbPlaylists.size());
-                    for (DBPlaylist dbPlaylist : dbPlaylists) {
-                        Long id = dbPlaylist.getId();
-                        playlistsToDelete.add(id);
-                    }
-                    return Observable.from(playlistsToDelete);
-                })
-                .flatMap(this::deleteTracks);
+    public Observable<DeleteResult> findAndDeleteMainPlaylist() {
+        return deletePlaylistWithTracks(database.get()
+                        .object(DBPlaylist.class)
+                        .withQuery(Query.builder()
+                                        .table(PlaylistTable.TABLE_NAME)
+                                        .where(String.format(Locale.getDefault(), "%s = ?",
+                                                PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
+                                        .whereArgs(1)
+                                        .build()
+                        )
+                        .prepare()
+                        .asRxObservable()
+        );
     }
 
-    public Observable<DeleteResult> deletePlaylist(Long id) {
-        return database.get().object(DBPlaylist.class)
-                .withQuery(Query.builder()
-                                .table(PlaylistTable.TABLE_NAME)
-                                .where(String.format(Locale.getDefault(), "%s = ? AND %s = ?",
-                                        PlaylistTable.COLUMN_IS_MAIN_PLAYLIST,
-                                        PlaylistTable.COLUMN_ID))
-                                .whereArgs(0, id)
-                                .build()
-                )
-                .prepare()
-                .createObservable()
-                .flatMap(dbPlaylist -> Observable.just(dbPlaylist.getId()))
-                .flatMap(this::deleteTracks);
+    public Observable<DeleteResult> findAndDeletePlaylist(Long playlistId) {
+        return deletePlaylistWithTracks(database.get().object(DBPlaylist.class)
+                        .withQuery(Query.builder()
+                                        .table(PlaylistTable.TABLE_NAME)
+                                        .where(String.format(Locale.getDefault(), "%s = ?",
+                                                PlaylistTable.COLUMN_ID))
+                                        .whereArgs(playlistId)
+                                        .build()
+                        )
+                        .prepare()
+                        .asRxObservable()
+        );
     }
 
-    private Observable<DeleteResult> deleteTracks(Long playlistId) {
+    private Observable<DeleteResult> deletePlaylistWithTracks(Observable<DBPlaylist> playlistObservable) {
+        return playlistObservable.filter(dbPlaylist -> dbPlaylist != null)
+                .flatMap(dbPlaylist -> deleteTracksFromPlaylist(dbPlaylist.getId())
+                                .map(deleteResult -> dbPlaylist)
+                ).flatMap(dbPlaylist -> database.delete()
+                                .object(dbPlaylist)
+                                .prepare()
+                                .asRxObservable()
+                ).take(1);
+    }
+
+    private Observable<DeleteResult> deleteTracksFromPlaylist(Long playlistId) {
         return database.delete()
                 .byQuery(DeleteQuery.builder()
                         .table(TrackTable.TABLE_NAME)
-                        .whereArgs(String.format("%s = ?", TrackTable.COLUMN_PLAYLIST_ID))
+                        .where(String.format("%s = ?", TrackTable.COLUMN_PLAYLIST_ID))
                         .whereArgs(playlistId)
                         .build())
                 .prepare()
-                .createObservable();
+                .asRxObservable();
     }
 
     @NonNull
@@ -124,7 +125,8 @@ public class StorageManager {
                                 .whereArgs(1)
                                 .build()
                 ).prepare()
-                .createObservable()
+                .asRxObservable()
+                .take(1)
                 .flatMap(dbPlaylist -> {
                     Playlist myPlaylist = DatabaseEntitiesMapper.map(dbPlaylist);
                     if (dbPlaylist == null) return Observable.just(myPlaylist);
@@ -150,7 +152,8 @@ public class StorageManager {
                                 .whereArgs(0)
                                 .build()
                 ).prepare()
-                .createObservable()
+                .asRxObservable()
+                .take(1)
                 .flatMap(dbPlaylists -> {
                     List<Playlist> playlists = DatabaseEntitiesMapper.mapListOfDBPlaylists(dbPlaylists);
                     if (dbPlaylists == null) return Observable.empty();
@@ -172,20 +175,24 @@ public class StorageManager {
         return database.put()
                 .object(DatabaseEntitiesMapper.map(playlist))
                 .prepare()
-                .createObservable().flatMap(putResult -> {
-                    saveTracksToPlaylist(playlist.getId(), playlist.getTracks());
-                    return Observable.just(putResult.insertedId());
-                });
+                .asRxObservable()
+                .map(PutResult::insertedId)
+                .flatMap(playlistId -> saveTracksToPlaylist(playlistId, playlist.getTracks()));
     }
 
-    public Observable<PutResults> saveTracksToPlaylist(Long playlistId, List<Track> tracks) {
-        return Observable.from(tracks).map(DatabaseEntitiesMapper::map).map(dbTrack -> {
-            dbTrack.setPlaylistId(playlistId);
-            return dbTrack;
-        }).toList().flatMap(dbTracks -> database.put()
-                .objects(dbTracks)
-                .prepare()
-                .createObservable());
+    public Observable<Long> saveTracksToPlaylist(Long playlistId, List<Track> tracks) {
+        return Observable.from(tracks)
+                .map(DatabaseEntitiesMapper::map)
+                .map(dbTrack -> {
+                    dbTrack.setPlaylistId(playlistId);
+                    return dbTrack;
+                })
+                .toList()
+                .flatMap(dbTracks -> database.put()
+                        .objects(dbTracks)
+                        .prepare()
+                        .asRxObservable())
+                .map(deleteResult -> playlistId);
     }
 
     public Observable<PutResult> renamePlaylist(Long id, String newTitle) {
@@ -217,7 +224,7 @@ public class StorageManager {
                     protected ContentValues mapToContentValues(@NonNull ContentValues object) {
                         return object;
                     }
-                }).prepare().createObservable();
+                }).prepare().asRxObservable();
     }
 
     public Observable<PutResult> saveTrackToPlaylist(Long playlistId, Track track) {
@@ -227,7 +234,7 @@ public class StorageManager {
         return database.put()
                 .object(dbTrack)
                 .prepare()
-                .createObservable();
+                .asRxObservable();
     }
 
     public Observable<Playlist> getPlaylist(Long playlistId) {
@@ -239,7 +246,8 @@ public class StorageManager {
                                 .whereArgs(playlistId)
                                 .build()
                 ).prepare()
-                .createObservable()
+                .asRxObservable()
+                .take(1)
                 .flatMap(dbPlaylist -> {
                     Playlist playlist = DatabaseEntitiesMapper.map(dbPlaylist);
                     if (dbPlaylist == null) return Observable.empty();

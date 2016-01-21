@@ -12,7 +12,7 @@ import android.text.Html;
 import android.widget.RemoteViews;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
@@ -109,7 +109,7 @@ public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.add_to_vk_button,
                 PendingIntent.getService(context, 0, addToVkIntent, 0));
 
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+        Intent notificationIntent = new Intent(context, HomeActivity.class);
         PendingIntent activity = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         views.setOnClickPendingIntent(R.id.imageView, activity);
         views.setOnClickPendingIntent(R.id.clicable_widget_part2, activity);

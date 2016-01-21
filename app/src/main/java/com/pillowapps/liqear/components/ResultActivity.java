@@ -1,9 +1,11 @@
 package com.pillowapps.liqear.components;
 
 import android.content.Intent;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.activities.base.TrackedActivity;
 import com.pillowapps.liqear.activities.modes.VkAlbumTracksActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
@@ -174,5 +176,22 @@ public class ResultActivity extends TrackedActivity {
 
     protected void showError(VkError error) {
         ErrorNotifier.showError(this, error.getErrorMessage());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                finish();
+                Intent intent = new Intent(ResultActivity.this, HomeActivity.class);
+                intent.setAction(Intent.ACTION_MAIN);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                break;
+            default:
+                return true;
+        }
+        return true;
     }
 }

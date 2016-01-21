@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.activities.viewers;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
@@ -176,14 +174,6 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
         int itemId = item.getItemId();
 
         switch (itemId) {
-            case android.R.id.home: {
-                finish();
-                Intent intent = new Intent(LastfmChartsViewerActivity.this, MainActivity.class);
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-            return true;
             case R.id.to_playlist: {
                 LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(pager.getCurrentItem());
                 if (viewer.isNotLoaded()) return true;
@@ -199,8 +189,9 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
                 saveAsPlaylist(items);
             }
             return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return false;
     }
 
     private void getMostLoved(final LastfmTracksViewerPage viewer) {

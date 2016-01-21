@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
@@ -325,14 +324,6 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
-            case android.R.id.home: {
-                finish();
-                Intent intent = new Intent(LastfmUserViewerActivity.this, MainActivity.class);
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-            return true;
             case R.id.all_button: {
                 LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(LOVED_INDEX);
                 viewer.clear();
@@ -353,8 +344,9 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 saveAsPlaylist(viewer.getItems());
             }
             return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return false;
     }
 
     @Override

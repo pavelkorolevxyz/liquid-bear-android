@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.activities.viewers;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -8,7 +7,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
@@ -77,15 +75,9 @@ public class LastfmTagViewerActivity extends PagerResultActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
-            case android.R.id.home:
-                finish();
-                Intent intent = new Intent(LastfmTagViewerActivity.this, MainActivity.class);
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return true;
     }
 
     private void getTagTopTracks(Tag tag, int limit, int page, final LastfmTracksViewerPage viewer) {

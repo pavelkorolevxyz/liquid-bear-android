@@ -55,6 +55,7 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public abstract class HomeFragment extends BaseFragment implements HomeView {
 
@@ -344,7 +345,9 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void updateAdapter() {
-        playlistItemsAdapter.notifyDataSetChanged();
+        List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
+        playlistItemsAdapter.setValues(playlist);
+        updateEmptyPlaylistTextView();
     }
 
     @Override
@@ -362,7 +365,9 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             new PlaylistModel().saveMainPlaylist(getActivity())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
-                    .subscribe();
+                    .subscribe(aLong -> {
+                        Timber.d("saved " + aLong);
+                    });
         }
         updateEmptyPlaylistTextView();
     }

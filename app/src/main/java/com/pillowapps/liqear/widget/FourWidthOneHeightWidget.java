@@ -12,7 +12,7 @@ import android.text.Html;
 import android.widget.RemoteViews;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
@@ -51,7 +51,7 @@ public class FourWidthOneHeightWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.artist, Html.fromHtml(artist));
         views.setTextViewText(R.id.title, Html.fromHtml(title));
 
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+        Intent notificationIntent = new Intent(context, HomeActivity.class);
 
         int playButton = playing ? R.drawable.pause_button : R.drawable.play_button;
         views.setInt(R.id.play_pause, "setImageResource", playButton);

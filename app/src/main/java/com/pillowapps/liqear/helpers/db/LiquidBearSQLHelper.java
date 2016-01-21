@@ -11,7 +11,7 @@ import com.pillowapps.liqear.entities.storio.TrackTable;
 public class LiquidBearSQLHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "LB";
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 10;
 
     public LiquidBearSQLHelper(@NonNull Context context, @NonNull String dataBaseName,
                                int dataBaseVersion) {
@@ -22,27 +22,28 @@ public class LiquidBearSQLHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " +
                 PlaylistTable.TABLE_NAME + "(" +
-                PlaylistTable.COLUMN_ID + " INTEGER PRIMARY KEY UNIQUE," +
+                PlaylistTable.COLUMN_ID + " INTEGER PRIMARY KEY UNIQUE, " +
                 PlaylistTable.COLUMN_TITLE + " TEXT, " +
-                PlaylistTable.COLUMN_IS_MAIN_PLAYLIST + " INTEGER DEFAULT 0);");
+                PlaylistTable.COLUMN_IS_MAIN_PLAYLIST + " INTEGER DEFAULT 0); ");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " +
                 TrackTable.TABLE_NAME + "(" +
-                TrackTable.COLUMN_ID + "INTEGER PRIMARY KEY UNIQUE," +
-                TrackTable.COLUMN_PLAYLIST_ID + " INTEGER," +
+                TrackTable.COLUMN_ID + " INTEGER PRIMARY KEY UNIQUE, " +
+                TrackTable.COLUMN_PLAYLIST_ID + " INTEGER, " +
                 TrackTable.COLUMN_TITLE + " TEXT, " +
                 TrackTable.COLUMN_ARTIST + " TEXT, " +
                 TrackTable.COLUMN_ALBUM + " TEXT, " +
                 TrackTable.COLUMN_OWNER_ID + " INTEGER, " +
                 TrackTable.COLUMN_AUDIO_ID + " INTEGER, " +
-                TrackTable.COLUMN_IS_LOCAL + " INTEGER DEFAULT 0," +
+                TrackTable.COLUMN_IS_LOCAL + " INTEGER DEFAULT 0, " +
                 TrackTable.COLUMN_LOCAL_URL + " TEXT);");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // todo support of LB 2.0 Database
-        db.execSQL("DROP TABLE " + PlaylistTable.TABLE_NAME);
-        db.execSQL("DROP TABLE " + TrackTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + PlaylistTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TrackTable.TABLE_NAME);
+        onCreate(db);
     }
 }

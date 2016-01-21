@@ -208,6 +208,7 @@ public class PhoneHomeFragment extends HomeFragment {
                         albumTextView.setText(albumTitle);
                     }
                 }
+                updateAdapter();
             });
         });
     }

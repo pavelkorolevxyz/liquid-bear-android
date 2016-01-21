@@ -111,13 +111,6 @@ public class ImagePagerActivity extends TrackedActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
-            case android.R.id.home:
-                finish();
-                Intent intent = new Intent(ImagePagerActivity.this, MainActivity.class);
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                break;
             case R.id.download_image_button: {
 //                if (imageUrls.size() <= pager.getCurrentItem()) {
 //                    break;
@@ -172,7 +165,7 @@ public class ImagePagerActivity extends TrackedActivity {
             }
             break;
             default:
-                break;
+                return super.onOptionsItemSelected(item);
         }
         return false;
     }

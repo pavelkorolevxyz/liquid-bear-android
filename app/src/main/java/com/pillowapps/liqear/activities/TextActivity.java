@@ -97,13 +97,6 @@ public class TextActivity extends ResultActivity {
         int itemId = item.getItemId();
         if (Aim.LYRICS == aim) {
             switch (itemId) {
-                case android.R.id.home:
-                    finish();
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.setAction(Intent.ACTION_MAIN);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    break;
                 case R.id.share:
                     shareText();
                     break;
@@ -132,17 +125,12 @@ public class TextActivity extends ResultActivity {
                     getTrackLyrics(googleRequest, lyricsNumber);
                     progressBar.setVisibility(View.VISIBLE);
                     break;
+                default:
+                    return super.onOptionsItemSelected(item);
             }
             return true;
         } else {
             switch (itemId) {
-                case android.R.id.home:
-                    finish();
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.setAction(Intent.ACTION_MAIN);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    break;
                 case 0:
                     if (Aim.ARTIST_INFO == aim) {
                         String url = "http://google.com/search?&sourceid=navclient&q="
@@ -152,6 +140,8 @@ public class TextActivity extends ResultActivity {
                         startActivity(i);
                     }
                     break;
+                default:
+                    return super.onOptionsItemSelected(item);
             }
         }
         return true;

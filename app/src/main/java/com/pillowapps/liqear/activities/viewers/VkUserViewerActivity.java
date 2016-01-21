@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
@@ -316,14 +316,6 @@ public class VkUserViewerActivity extends PagerResultActivity {
         int itemId = item.getItemId();
         int currentItem = pager.getCurrentItem();
         switch (itemId) {
-            case android.R.id.home: {
-                finish();
-                Intent intent = new Intent(VkUserViewerActivity.this, MainActivity.class);
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-            return true;
             case R.id.to_playlist: {
                 VkTracksViewerPage viewer = (VkTracksViewerPage) getViewer(currentItem);
                 if (viewer.isNotLoaded()) return true;
@@ -337,8 +329,9 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 saveAsPlaylist(viewer.getItems());
             }
             return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return false;
     }
 
     public enum Mode {

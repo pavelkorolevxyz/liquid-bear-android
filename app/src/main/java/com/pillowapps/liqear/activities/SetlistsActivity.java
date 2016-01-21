@@ -55,14 +55,8 @@ public class SetlistsActivity extends ResultActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
-            case android.R.id.home:
-                finish();
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return true;
     }
 }

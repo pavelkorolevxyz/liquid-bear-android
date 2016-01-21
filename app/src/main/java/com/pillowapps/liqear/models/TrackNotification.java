@@ -12,7 +12,7 @@ import android.text.Html;
 import android.widget.RemoteViews;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MainActivity;
+import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Track;
@@ -36,7 +36,7 @@ public class TrackNotification {
     }
 
     private Notification createSimpleNotification(Context context, Track track) {
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, HomeActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pi = PendingIntent.getActivity(context, 0, intent,
@@ -65,7 +65,7 @@ public class TrackNotification {
         contentView.setTextViewText(R.id.artist,
                 Html.fromHtml(track.getArtist()));
         mBuilder.setContent(contentView);
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+        Intent notificationIntent = new Intent(context, HomeActivity.class);
 
         int playButton = Timeline.getInstance().getPlayingState() == PlayingState.PLAYING
                 ? R.drawable.pause_button
