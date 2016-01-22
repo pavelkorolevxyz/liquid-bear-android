@@ -53,6 +53,7 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -362,11 +363,25 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             if (autoPlay) {
                 presenter.playTrack(index);
             }
-            new PlaylistModel().saveMainPlaylist(getActivity())
+            new PlaylistModel().saveMainPlaylist(getActivity(), Timeline.getInstance().getPlaylist())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
-                    .subscribe(aLong -> {
-                        Timber.d("saved " + aLong);
+                    .subscribe(new Subscriber<Long>() {
+                        @Override
+                        public void onCompleted() {
+                            Timber.d("saving completed");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Timber.d("saving error " + e.toString());
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(Long aLong) {
+                            Timber.d("saving onNext " + aLong);
+                        }
                     });
         }
         updateEmptyPlaylistTextView();

@@ -11,7 +11,7 @@ import com.pillowapps.liqear.entities.storio.TrackTable;
 public class LiquidBearSQLHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "LB";
-    public static final int DATABASE_VERSION = 10;
+    public static final int DATABASE_VERSION = 11;
 
     public LiquidBearSQLHelper(@NonNull Context context, @NonNull String dataBaseName,
                                int dataBaseVersion) {

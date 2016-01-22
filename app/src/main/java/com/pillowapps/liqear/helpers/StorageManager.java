@@ -94,7 +94,7 @@ public class StorageManager {
     }
 
     private Observable<DeleteResult> deletePlaylistWithTracks(Observable<DBPlaylist> playlistObservable) {
-        return playlistObservable.filter(dbPlaylist -> dbPlaylist != null)
+        return playlistObservable
                 .flatMap(dbPlaylist -> deleteTracksFromPlaylist(dbPlaylist.getId())
                                 .map(deleteResult -> dbPlaylist)
                 ).flatMap(dbPlaylist -> database.delete()
