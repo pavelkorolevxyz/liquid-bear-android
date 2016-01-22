@@ -1,18 +1,21 @@
 package com.pillowapps.liqear.models.lastfm;
 
+import com.pillowapps.liqear.callbacks.LastfmCallback;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmArtistsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTracksRoot;
-import com.pillowapps.liqear.callbacks.LastfmCallback;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
 
 public class LastfmChartModel {
-    private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
+    private LastfmApiService lastfmService;
+
+    public LastfmChartModel(LastfmApiService api) {
+        this.lastfmService = api;
+    }
 
     public void getHypedArtists(int limit, int page, final SimpleCallback<List<LastfmArtist>> callback) {
         lastfmService.getChartHypedArtists(limit, page, new LastfmCallback<LastfmArtistsRoot>() {

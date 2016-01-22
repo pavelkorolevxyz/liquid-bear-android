@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.recyclers.TrackAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
@@ -20,13 +21,20 @@ import com.pillowapps.liqear.models.vk.VkAudioModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class SearchSimpleTrackActivity extends SearchBaseActivity {
 
     private TrackAdapter adapter;
 
+    @Inject
+    VkAudioModel vkAudioModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
 
         actionBar.setTitle(getString(R.string.vk_simple_search));
         editText.setFloatingLabelText(getString(R.string.track));
@@ -68,7 +76,7 @@ public class SearchSimpleTrackActivity extends SearchBaseActivity {
     }
 
     private void searchVK(String searchQuery, int count) {
-        new VkAudioModel().searchAudio(searchQuery, 0, count, new VkSimpleCallback<List<VkTrack>>() {
+        vkAudioModel.searchAudio(searchQuery, 0, count, new VkSimpleCallback<List<VkTrack>>() {
             @Override
             public void success(List<VkTrack> data) {
                 fillWithVkTracklist(data);

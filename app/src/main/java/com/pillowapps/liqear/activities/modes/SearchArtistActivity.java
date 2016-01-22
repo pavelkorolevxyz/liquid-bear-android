@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.recyclers.ArtistAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -20,13 +21,19 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class SearchArtistActivity extends SearchBaseActivity {
 
     private ArtistAdapter adapter;
 
+    @Inject
+    LastfmArtistModel lastfmArtistModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LBApplication.get(this).applicationComponent().inject(this);
 
         actionBar.setTitle(getString(R.string.artist_radio));
         editText.setHint(getString(R.string.artist_radio));
@@ -102,7 +109,7 @@ public class SearchArtistActivity extends SearchBaseActivity {
     }
 
     private void searchArtist(String searchQuery, int limit, int page) {
-        new LastfmArtistModel().searchArtist(searchQuery,
+        lastfmArtistModel.searchArtist(searchQuery,
                 limit,
                 page,
                 new SimpleCallback<List<LastfmArtist>>() {

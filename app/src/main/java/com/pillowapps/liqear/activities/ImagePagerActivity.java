@@ -15,7 +15,6 @@
  *******************************************************************************/
 package com.pillowapps.liqear.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -30,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.TrackedActivity;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -39,6 +39,8 @@ import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class ImagePagerActivity extends TrackedActivity {
 
@@ -56,9 +58,14 @@ public class ImagePagerActivity extends TrackedActivity {
     private ImageModel imageModel = new ImageModel();
     private ProgressBar pageProgressBar;
 
+    @Inject
+    LastfmArtistModel lastfmArtistModel;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_image_pager);
+
+        LBApplication.get(this).applicationComponent().inject(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -180,7 +187,7 @@ public class ImagePagerActivity extends TrackedActivity {
     private void getImages(final int page) {
         loading = true;
         pageProgressBar.setVisibility(View.VISIBLE);
-        new LastfmArtistModel().getArtistImages(artist, this.page++, new SimpleCallback<List<String>>() {
+        lastfmArtistModel.getArtistImages(artist, this.page++, new SimpleCallback<List<String>>() {
             @Override
             public void success(List<String> images) {
                 pageProgressBar.setVisibility(View.GONE);

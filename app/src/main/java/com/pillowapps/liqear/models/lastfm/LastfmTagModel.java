@@ -1,18 +1,21 @@
 package com.pillowapps.liqear.models.lastfm;
 
+import com.pillowapps.liqear.callbacks.LastfmCallback;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTagSearchResultsRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
-import com.pillowapps.liqear.callbacks.LastfmCallback;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
 
 public class LastfmTagModel {
-    private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
+    private LastfmApiService lastfmService;
+
+    public LastfmTagModel(LastfmApiService api) {
+        this.lastfmService = api;
+    }
 
     public void getTagTopTracks(String tag, int limit, int page,
                                 final SimpleCallback<List<LastfmTrack>> callback) {

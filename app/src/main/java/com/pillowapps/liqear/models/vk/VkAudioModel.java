@@ -21,13 +21,16 @@ import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.StringUtils;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.VkCallbackUtils;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.VkApiService;
 
 import java.util.List;
 
 public class VkAudioModel {
-    private VkApiService vkService = ServiceHelper.getVkService();
+    private VkApiService vkService;
+
+    public VkAudioModel(VkApiService api) {
+        this.vkService = api;
+    }
 
     public void getVkUserAudio(long uid, int count, int offset, final VkSimpleCallback<List<VkTrack>> callback) {
         vkService.getAudio(uid, count, offset, new VkCallback<VkTracksResponseRoot>() {

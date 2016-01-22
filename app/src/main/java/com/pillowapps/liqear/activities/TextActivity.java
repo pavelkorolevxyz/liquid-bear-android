@@ -34,6 +34,8 @@ import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.vk.VkLyricsModel;
 import com.squareup.otto.Subscribe;
 
+import javax.inject.Inject;
+
 public class TextActivity extends ResultActivity {
     public static final String ARTIST_NAME = "artist_name";
     public static final String TEXT_AIM = "text_aim";
@@ -43,9 +45,18 @@ public class TextActivity extends ResultActivity {
     private String googleRequest;
     private int lyricsNumber;
 
+    @Inject
+    LastfmArtistModel lastfmArtistModel;
+
+    @Inject
+    VkLyricsModel vkLyricsModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
+
         setContentView(R.layout.scrollable_text_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -173,7 +184,7 @@ public class TextActivity extends ResultActivity {
     }
 
     private void getArtistInfo(String artist, String username) {
-        new LastfmArtistModel().getArtistInfo(artist, username, new SimpleCallback<LastfmArtist>() {
+        lastfmArtistModel.getArtistInfo(artist, username, new SimpleCallback<LastfmArtist>() {
             @Override
             public void success(LastfmArtist lastfmArtist) {
                 progressBar.setVisibility(View.GONE);
@@ -193,7 +204,7 @@ public class TextActivity extends ResultActivity {
     }
 
     private void getTrackLyrics(Track track, int index) {
-        new VkLyricsModel().getLyrics(track, index, new VkSimpleCallback<VkLyrics>() {
+        vkLyricsModel.getLyrics(track, index, new VkSimpleCallback<VkLyrics>() {
             @Override
             public void success(VkLyrics lyrics) {
                 textView.scrollTo(0, 0);
@@ -214,7 +225,7 @@ public class TextActivity extends ResultActivity {
     }
 
     private void getTrackLyrics(String notation, int lyricsNumber) {
-        new VkLyricsModel().getLyrics(notation, lyricsNumber, new VkSimpleCallback<VkLyrics>() {
+        vkLyricsModel.getLyrics(notation, lyricsNumber, new VkSimpleCallback<VkLyrics>() {
             @Override
             public void success(VkLyrics lyrics) {
                 String lyricsText = lyrics == null

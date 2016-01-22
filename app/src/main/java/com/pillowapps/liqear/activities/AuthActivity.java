@@ -47,6 +47,8 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class AuthActivity extends TrackedActivity {
     private static final int VK_INDEX = 0;
     private static final int LASTFM_INDEX = 1;
@@ -67,15 +69,26 @@ public class AuthActivity extends TrackedActivity {
     private boolean firstStart;
     private TextView errorVkTextView;
     private TextView errorLastfmTextView;
-    private final LastfmAuthModel authModel = new LastfmAuthModel();
     private final ImageModel imageModel = new ImageModel();
     private View signOutVkButton;
     private View signOutLastfmButton;
     private ProgressBar lastfmProgressBar;
 
+    @Inject
+    LastfmAuthModel authModel;
+
+    @Inject
+    VkUserModel vkUserModel;
+
+    @Inject
+    LastfmUserModel lastfmUserModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
+
         setContentView(R.layout.auth_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -203,7 +216,7 @@ public class AuthActivity extends TrackedActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == Constants.AUTH_VK_REQUEST) {
-            new VkUserModel().getUserInfoVk(AuthorizationInfoManager.getVkUserId(),
+            vkUserModel.getUserInfoVk(AuthorizationInfoManager.getVkUserId(),
                     new VkSimpleCallback<VkUser>() {
                         @Override
                         public void success(VkUser vkUser) {
@@ -287,7 +300,7 @@ public class AuthActivity extends TrackedActivity {
                             editor.apply();
                             lastfmNameTextView.setText(name);
                             authLastfmPanel.setVisibility(View.VISIBLE);
-                            new LastfmUserModel().getUserInfo(name, new SimpleCallback<LastfmUser>() {
+                            lastfmUserModel.getUserInfo(name, new SimpleCallback<LastfmUser>() {
                                 @Override
                                 public void success(LastfmUser user) {
                                     List<LastfmImage> images = user.getImages();

@@ -78,6 +78,8 @@ import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -133,9 +135,25 @@ public class MusicService extends Service implements
 
     private int currentBuffer;
 
+    @Inject
+    VkAudioModel vkAudioModel;
+
+    @Inject
+    LastfmTrackModel lastfmTrackModel;
+
+    @Inject
+    VkStatusModel vkStatusModel;
+
+    @Inject
+    LastfmArtistModel lastfmArtistModel;
+
+    @Inject
+    LastfmAlbumModel lastfmAlbumModel;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        LBApplication.get(this).applicationComponent().inject(this);
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         audioManager.setStreamMute(AudioManager.STREAM_SYSTEM, true);
@@ -420,7 +438,7 @@ public class MusicService extends Service implements
                 case ACTION_ADD_TO_VK_FAST: {
                     final Track track = Timeline.getInstance().getCurrentTrack();
                     if (track != null) {
-                        new VkAudioModel().addToUserAudioFast(TrackUtils.getNotation(track),
+                        vkAudioModel.addToUserAudioFast(TrackUtils.getNotation(track),
                                 new VkSimpleCallback<VkResponse>() {
                                     @Override
                                     public void success(VkResponse data) {
@@ -442,7 +460,7 @@ public class MusicService extends Service implements
                     final Track track = Timeline.getInstance().getCurrentTrack();
                     if (track != null) {
                         if (!track.isLoved()) {
-                            new LastfmTrackModel().love(track, new SimpleCallback<Object>() {
+                            lastfmTrackModel.love(track, new SimpleCallback<Object>() {
                                 @Override
                                 public void success(Object o) {
                                     track.setLoved(true);
@@ -455,7 +473,7 @@ public class MusicService extends Service implements
                                 }
                             });
                         } else {
-                            new LastfmTrackModel().unlove(track, new SimpleCallback<Object>() {
+                            lastfmTrackModel.unlove(track, new SimpleCallback<Object>() {
                                 @Override
                                 public void success(Object o) {
                                     track.setLoved(false);
@@ -882,10 +900,10 @@ public class MusicService extends Service implements
 
     private void updateNowPlaying(final Track currentTrack) {
         if (SharedPreferencesManager.getPreferences().getBoolean("nowplaying_check_box_preferences", true)) {
-            new LastfmTrackModel().nowplaying(currentTrack, new PassiveCallback());
+            lastfmTrackModel.nowplaying(currentTrack, new PassiveCallback());
         }
         if (SharedPreferencesManager.getPreferences().getBoolean("nowplaying_vk_check_box_preferences", true)) {
-            new VkStatusModel().updateStatus(currentTrack, new VkPassiveCallback());
+            vkStatusModel.updateStatus(currentTrack, new VkPassiveCallback());
         }
     }
 
@@ -1005,14 +1023,14 @@ public class MusicService extends Service implements
             }
         };
         if (TrackUtils.vkInfoAvailable(trackToFind)) {
-            new VkAudioModel().getTrackById(trackToFind, urlNumber, callback);
+            vkAudioModel.getTrackById(trackToFind, urlNumber, callback);
         } else {
-            new VkAudioModel().getTrackByNotation(trackToFind, urlNumber, callback);
+            vkAudioModel.getTrackByNotation(trackToFind, urlNumber, callback);
         }
     }
 
     private void getTrackInfo(final Track track) {
-        new LastfmTrackModel().getTrackInfo(track, AuthorizationInfoManager.getLastfmName(),
+        lastfmTrackModel.getTrackInfo(track, AuthorizationInfoManager.getLastfmName(),
                 new SimpleCallback<LastfmTrack>() {
                     @Override
                     public void success(LastfmTrack lastfmTrack) {
@@ -1021,7 +1039,7 @@ public class MusicService extends Service implements
                         Intent intent = new Intent();
                         intent.setAction(Constants.ACTION_SERVICE);
                         Timeline.getInstance().setCurrentAlbum(album);
-                        new LastfmAlbumModel().getCover(MusicService.this, album, MusicService.this::showTrackInNotification);
+                        lastfmAlbumModel.getCover(MusicService.this, album, MusicService.this::showTrackInNotification);
                         Timeline.getInstance().getCurrentTrack().setLoved(loved);
                         LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(album));
                         updateWidgets();
@@ -1041,13 +1059,13 @@ public class MusicService extends Service implements
     private void scrobble(final Track track) {
         String album = track.getAlbum();
         scrobbled = true;
-        new LastfmTrackModel().scrobble(track.getArtist(), track.getTitle(), album,
+        lastfmTrackModel.scrobble(track.getArtist(), track.getTitle(), album,
                 TimeUtils.getCurrentTimeInSeconds(),
                 new PassiveCallback());
     }
 
     private void getArtistInfo(final String artist, final String username) {
-        new LastfmArtistModel().getArtistInfo(artist, username, new SimpleCallback<LastfmArtist>() {
+        lastfmArtistModel.getArtistInfo(artist, username, new SimpleCallback<LastfmArtist>() {
             @Override
             public void success(LastfmArtist lastfmArtist) {
                 Timeline.getInstance().setPreviousArtist(artist);

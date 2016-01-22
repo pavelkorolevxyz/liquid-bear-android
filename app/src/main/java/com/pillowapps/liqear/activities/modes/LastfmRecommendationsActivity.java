@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -42,6 +43,8 @@ import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class LastfmRecommendationsActivity extends ResultActivity {
     private static final int RECOMMENDATIONS_AMOUNT = 20;
     private RecommendationsArrayAdapter<Artist> adapter;
@@ -52,15 +55,19 @@ public class LastfmRecommendationsActivity extends ResultActivity {
     private boolean loading = false;
     private ListView listView;
     private boolean gridMode = true;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private com.google.android.gms.common.api.GoogleApiClient client;
+
+    @Inject
+    LastfmUserModel lastfmUserModel;
+
+    @Inject
+    LastfmRecommendationsModel lastfmRecommendationsModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
+
         setContentView(R.layout.list_grid_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,9 +79,6 @@ public class LastfmRecommendationsActivity extends ResultActivity {
         initUi();
         initListeners();
         getRecommendedArtists(RECOMMENDATIONS_AMOUNT, loadedPages + 1);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new com.google.android.gms.common.api.GoogleApiClient.Builder(this).addApi(com.google.android.gms.appindexing.AppIndex.API).build();
     }
 
     private void initUi() {
@@ -151,7 +155,7 @@ public class LastfmRecommendationsActivity extends ResultActivity {
     private void getRecommendedArtists(int limit, int page) {
         loading = true;
         progressBar.setVisibility(View.VISIBLE);
-        new LastfmUserModel().getUserRecommendedArtists(limit, page, new SimpleCallback<List<LastfmArtist>>() {
+        lastfmUserModel.getUserRecommendedArtists(limit, page, new SimpleCallback<List<LastfmArtist>>() {
             @Override
             public void success(List<LastfmArtist> data) {
                 progressBar.setVisibility(View.GONE);
@@ -180,7 +184,7 @@ public class LastfmRecommendationsActivity extends ResultActivity {
     }
 
     private void getRecommendedTracks(List<Artist> artists) {
-        new LastfmRecommendationsModel().getRecommendationsTracks(artists, new SimpleCallback<List<LastfmTrack>>() {
+        lastfmRecommendationsModel.getRecommendationsTracks(artists, new SimpleCallback<List<LastfmTrack>>() {
             @Override
             public void success(List<LastfmTrack> data) {
                 openMainPlaylist(Converter.convertLastfmTrackList(data), 0, getToolbarTitle());
@@ -191,46 +195,6 @@ public class LastfmRecommendationsActivity extends ResultActivity {
 
             }
         });
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        com.google.android.gms.appindexing.Action viewAction = com.google.android.gms.appindexing.Action.newAction(
-                com.google.android.gms.appindexing.Action.TYPE_VIEW, // TODO: choose an action type.
-                "LastfmRecommendations Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.pillowapps.liqear.activities.modes/http/host/path")
-        );
-        com.google.android.gms.appindexing.AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        com.google.android.gms.appindexing.Action viewAction = com.google.android.gms.appindexing.Action.newAction(
-                com.google.android.gms.appindexing.Action.TYPE_VIEW, // TODO: choose an action type.
-                "LastfmRecommendations Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.pillowapps.liqear.activities.modes/http/host/path")
-        );
-        com.google.android.gms.appindexing.AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 
     static class ViewHolder {

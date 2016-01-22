@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -27,17 +28,24 @@ import com.pillowapps.liqear.models.lastfm.LastfmChartModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class LastfmChartsViewerActivity extends PagerResultActivity {
     public static final int TOP_TRACKS = 0;
     public static final int TOP_ARTISTS = 1;
     //    public static final int HYPED_TRACKS = 1;
 //    public static final int MOST_LOVED = 4;
     public static final int PAGES_NUMBER = 2;
-    private LastfmChartModel chartsModel = new LastfmChartModel();
+
+    @Inject
+    LastfmChartModel chartsModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
+
         setContentView(R.layout.viewer_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

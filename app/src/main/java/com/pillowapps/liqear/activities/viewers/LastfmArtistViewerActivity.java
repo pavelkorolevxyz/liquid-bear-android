@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -40,6 +41,8 @@ import com.pillowapps.liqear.models.lastfm.LastfmDiscographyModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -53,7 +56,9 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     public static final int SIMILAR_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 2 : 1;
     private Artist artist;
     private boolean infoLoaded = false;
-    private LastfmArtistModel artistModel = new LastfmArtistModel();
+
+    @Inject
+    LastfmArtistModel artistModel;
 
     private View infoTab;
     @InjectView(R.id.progress_bar_scrollable_text_layout)
@@ -64,6 +69,9 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
+
         setContentView(R.layout.viewer_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -238,7 +246,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
                 LastfmAlbumViewerPage viewer = (LastfmAlbumViewerPage) getViewer(pager.getCurrentItem());
                 viewer.showProgressBar(true);
                 List<Album> values = viewer.getItems();
-                new LastfmDiscographyModel().getDiscographyTracks(values, new SimpleCallback<List<LastfmTrack>>() {
+                new LastfmDiscographyModel().getDiscographyTracks(this, values, new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> tracks) {
                         openMainPlaylist(Converter.convertLastfmTrackList(tracks), 0, getToolbarTitle());

@@ -8,7 +8,7 @@ import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.QueryMap;
 
-public interface SetlistfmService {
+public interface SetlistfmApiService {
 
     @GET("/search/setlists.json")
     void getSetlists(@QueryMap Map<String, String> params,

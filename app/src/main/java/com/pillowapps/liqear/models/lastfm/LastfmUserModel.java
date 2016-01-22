@@ -17,7 +17,6 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmWeeklyTrackChartRoot;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LastfmApiHelper;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
@@ -27,8 +26,12 @@ import java.util.TreeMap;
 import rx.Observable;
 
 public class LastfmUserModel {
-    private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
+    private LastfmApiService lastfmService;
     private LastfmApiHelper apiHelper = new LastfmApiHelper();
+
+    public LastfmUserModel(LastfmApiService api) {
+        lastfmService = api;
+    }
 
     public void getUserTopArtists(String userName, String period, int limit, int page,
                                   final SimpleCallback<List<LastfmArtist>> callback) {

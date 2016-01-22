@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.VkPassiveCallback;
@@ -18,9 +19,17 @@ import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.vk.VkWallModel;
 
+import javax.inject.Inject;
+
 public class ShareModel {
 
+    @Inject
+    VkWallModel vkWallModel;
+
     public void showShareCurrentTrackDialog(final Context context) {
+
+        LBApplication.get(context).applicationComponent().inject(this);
+
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.share_dialog_layout);
         dialog.setTitle(R.string.share_track);
@@ -59,7 +68,7 @@ public class ShareModel {
             if (currentTrack == null) return;
 
             String imageUrl = album != null && album.getArtist().equals(currentTrack.getArtist()) ? album.getImageUrl() : null;
-            new VkWallModel().postMessage(shareBody, imageUrl, currentTrack, new VkPassiveCallback());
+            vkWallModel.postMessage(shareBody, imageUrl, currentTrack, new VkPassiveCallback());
             Toast.makeText(context, R.string.shared, Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });

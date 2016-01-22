@@ -19,7 +19,7 @@ import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.TrackedActivity;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.network.ServiceHelper;
+import com.pillowapps.liqear.network.VkApiModule;
 
 public class LoginActivity extends TrackedActivity {
     public static final String OAUTH_REQUEST_FORMAT = "http://oauth.vk.com/authorize?"
@@ -54,7 +54,7 @@ public class LoginActivity extends TrackedActivity {
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
 
-        String url = String.format(OAUTH_REQUEST_FORMAT, ServiceHelper.VK_APP_ID,
+        String url = String.format(OAUTH_REQUEST_FORMAT, VkApiModule.VK_APP_ID,
                 ALL_PERMISSION, OAUT_BLANK_URL, DISPLAY, RESPONSE);
         webview.loadUrl(url);
     }

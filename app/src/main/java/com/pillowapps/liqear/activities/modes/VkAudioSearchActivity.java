@@ -3,6 +3,7 @@ package com.pillowapps.liqear.activities.modes;
 import android.os.Bundle;
 import android.view.View;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.TrackAdapter;
@@ -18,13 +19,19 @@ import com.pillowapps.liqear.models.vk.VkAudioModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class VkAudioSearchActivity extends ListBaseActivity {
 
     private TrackAdapter adapter;
 
+    @Inject
+    VkAudioModel vkAudioModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LBApplication.get(this).applicationComponent().inject(this);
 
         actionBar.setTitle(getResources().getString(R.string.pick_good_result));
         Track currentTrack = Timeline.getInstance().getCurrentTrack();
@@ -55,20 +62,20 @@ public class VkAudioSearchActivity extends ListBaseActivity {
     }
 
     private void searchVK(String searchQuery, int count) {
-        new VkAudioModel().searchAudio(searchQuery, 0, count, new VkSimpleCallback<List<VkTrack>>() {
-            @Override
-            public void success(List<VkTrack> data) {
-                fillWithVkTracklist(data);
+       vkAudioModel.searchAudio(searchQuery, 0, count, new VkSimpleCallback<List<VkTrack>>() {
+           @Override
+           public void success(List<VkTrack> data) {
+               fillWithVkTracklist(data);
 //                adapter.setHighlighted(SharedPreferencesManager.getUrlNumberPreferences()
 //                        .getInt(getIntent().getStringExtra(Constants.TARGET), 0)); todo
-                progressBar.setVisibility(View.GONE);
-            }
+               progressBar.setVisibility(View.GONE);
+           }
 
-            @Override
-            public void failure(VkError error) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+           @Override
+           public void failure(VkError error) {
+               progressBar.setVisibility(View.GONE);
+           }
+       });
     }
 
 }

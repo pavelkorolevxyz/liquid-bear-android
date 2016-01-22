@@ -3,6 +3,7 @@ package com.pillowapps.liqear.activities.modes;
 import android.os.Bundle;
 import android.view.View;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.NeighbourAdapter;
@@ -15,13 +16,19 @@ import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class LastfmNeighboursActivity extends ListBaseActivity {
 
     private NeighbourAdapter adapter;
 
+    @Inject
+    LastfmUserModel lastfmUserModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LBApplication.get(this).applicationComponent().inject(this);
 
         actionBar.setTitle(getResources().getString(R.string.neighbours));
         if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
@@ -39,7 +46,7 @@ public class LastfmNeighboursActivity extends ListBaseActivity {
     }
 
     private void getNeighbours(String username, int limit) {
-        new LastfmUserModel().getNeighbours(username, limit,
+        lastfmUserModel.getNeighbours(username, limit,
                 new SimpleCallback<List<LastfmUser>>() {
                     @Override
                     public void success(List<LastfmUser> lastfmUsers) {

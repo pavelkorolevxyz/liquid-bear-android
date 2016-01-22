@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.recyclers.TagAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -20,13 +21,20 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class SearchTagActivity extends SearchBaseActivity {
 
     private TagAdapter adapter;
 
+    @Inject
+    LastfmTagModel lastfmTagModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
 
         actionBar.setTitle(getString(R.string.tag_radio));
         editText.setHint(getString(R.string.tag_radio));
@@ -89,7 +97,7 @@ public class SearchTagActivity extends SearchBaseActivity {
 
 
     private void searchTag(String searchQuery, int limit, int page) {
-        new LastfmTagModel().searchTag(searchQuery, limit, page,
+        lastfmTagModel.searchTag(searchQuery, limit, page,
                 new SimpleCallback<List<LastfmTag>>() {
                     @Override
                     public void success(List<LastfmTag> tags) {

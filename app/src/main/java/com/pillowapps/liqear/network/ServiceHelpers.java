@@ -17,7 +17,7 @@ import com.pillowapps.liqear.entities.setlistfm.SetlistfmTrack;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 import com.pillowapps.liqear.network.service.LastfmAuthService;
-import com.pillowapps.liqear.network.service.SetlistfmService;
+import com.pillowapps.liqear.network.service.SetlistfmApiService;
 import com.pillowapps.liqear.network.service.VkApiService;
 import com.pillowapps.liqear.network.service.VkUploadService;
 import com.squareup.okhttp.OkHttpClient;
@@ -30,7 +30,7 @@ import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
-public class ServiceHelper {
+public class ServiceHelpers {
 
     public static final String VK_API = "https://api.vk.com/method";
     public static final String LASTFM_API_HTTPS = "https://ws.audioscrobbler.com/2.0";
@@ -44,14 +44,14 @@ public class ServiceHelper {
 
     private static VkApiService vkApiService;
     private static LastfmApiService lastfmApiService;
-    private static SetlistfmService setlistfmService;
+    private static SetlistfmApiService setlistfmService;
 
     private static RequestInterceptor lastfmInterceptor = request -> {
         request.addQueryParam("api_key", LASTFM_API_KEY);
         request.addQueryParam("format", "json");
     };
 
-    private ServiceHelper() {
+    private ServiceHelpers() {
         // No op.
     }
 
@@ -128,7 +128,7 @@ public class ServiceHelper {
         return restAdapter.create(VkUploadService.class);
     }
 
-    public static SetlistfmService getSetlistsfmService() {
+    public static SetlistfmApiService getSetlistsfmService() {
         if (setlistfmService == null) {
             Gson gson = getSetlistfmGson();
 
@@ -140,7 +140,7 @@ public class ServiceHelper {
                     .setEndpoint(SETLISTFM_API)
                     .build();
 
-            setlistfmService = restAdapter.create(SetlistfmService.class);
+            setlistfmService = restAdapter.create(SetlistfmApiService.class);
         }
         return setlistfmService;
     }

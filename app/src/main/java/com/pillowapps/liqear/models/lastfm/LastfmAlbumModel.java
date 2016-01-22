@@ -11,7 +11,6 @@ import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmAlbumSearchResultsRoot;
 import com.pillowapps.liqear.models.ImageModel;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
@@ -19,7 +18,11 @@ import java.util.List;
 import rx.Observable;
 
 public class LastfmAlbumModel {
-    private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
+    private LastfmApiService lastfmService;
+
+    public LastfmAlbumModel(LastfmApiService api) {
+        this.lastfmService = api;
+    }
 
     public void getAlbumInfo(Album album, final SimpleCallback<LastfmAlbum> callback) {
         lastfmService.getAlbumInfo(

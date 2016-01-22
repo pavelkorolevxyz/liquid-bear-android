@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.recyclers.AlbumAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -20,13 +21,20 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class SearchAlbumActivity extends SearchBaseActivity {
 
     private AlbumAdapter adapter;
 
+    @Inject
+    LastfmAlbumModel lastfmAlbumModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
 
         actionBar.setTitle(getString(R.string.album));
         editText.setHint(getString(R.string.album));
@@ -108,7 +116,7 @@ public class SearchAlbumActivity extends SearchBaseActivity {
     }
 
     private void searchAlbum(String searchQuery, int limit, int page) {
-        new LastfmAlbumModel().searchAlbum(searchQuery, limit, page,
+        lastfmAlbumModel.searchAlbum(searchQuery, limit, page,
                 new SimpleCallback<List<LastfmAlbum>>() {
                     @Override
                     public void success(List<LastfmAlbum> lastfmAlbums) {

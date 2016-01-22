@@ -1,5 +1,8 @@
 package com.pillowapps.liqear.models.lastfm;
 
+import android.content.Context;
+
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
@@ -9,11 +12,20 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmTopTracksRoot;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class LastfmRecommendationsModel {
+
+    @Inject
+    LastfmArtistModel lastfmArtistModel;
+
+    public LastfmRecommendationsModel(Context context) {
+        LBApplication.get(context).applicationComponent().inject(this);
+    }
 
     public void getRecommendationsTracks(List<Artist> artists, final SimpleCallback<List<LastfmTrack>> callback) {
         if (artists == null || artists.size() == 0) {
@@ -22,7 +34,6 @@ public class LastfmRecommendationsModel {
         }
 
         List<Observable<LastfmTopTracksRoot>> observableList = new ArrayList<>(artists.size());
-        LastfmArtistModel lastfmArtistModel = new LastfmArtistModel();
         for (Artist artist : artists) {
             Observable<LastfmTopTracksRoot> topTracksRootObservable = lastfmArtistModel
                     .getArtistTopTracks(artist, 5, 0);

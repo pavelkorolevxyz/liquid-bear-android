@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.TrackAdapter;
@@ -19,14 +20,21 @@ import com.pillowapps.liqear.models.vk.VkAudioModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class VkRecommendationsActivity extends ListBaseActivity {
 
     private TrackAdapter adapter;
     private int page = 0;
 
+    @Inject
+    VkAudioModel vkAudioModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
 
         actionBar.setTitle(getResources().getString(R.string.recommendations));
         searchVkRecommendations(getPageSize(), page++);
@@ -52,7 +60,7 @@ public class VkRecommendationsActivity extends ListBaseActivity {
     }
 
     private void searchVkRecommendations(int limit, int page) {
-        new VkAudioModel().getVkRecommendations(limit, page * limit,
+        vkAudioModel.getVkRecommendations(limit, page * limit,
                 new VkSimpleCallback<List<VkTrack>>() {
                     @Override
                     public void success(List<VkTrack> data) {

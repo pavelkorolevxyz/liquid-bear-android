@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.activities.viewers;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -11,8 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.components.PagerResultActivity;
@@ -33,6 +32,8 @@ import com.pillowapps.liqear.models.vk.VkWallModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class VkUserViewerActivity extends PagerResultActivity {
     public static final String USER = "user";
     public static final String GROUP = "group";
@@ -49,12 +50,17 @@ public class VkUserViewerActivity extends PagerResultActivity {
     private Mode mode = Mode.USER;
     private int defaultIndex = USER_AUDIO_INDEX;
     private boolean you = false;
-    private VkWallModel vkWallModel = new VkWallModel();
-    private VkAudioModel vkAudioModel = new VkAudioModel();
+
+    @Inject
+    VkWallModel vkWallModel;
+    @Inject
+    VkAudioModel vkAudioModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LBApplication.get(this).applicationComponent().inject(this);
+
         setContentView(R.layout.viewer_layout);
 
         Bundle extras = getIntent().getExtras();

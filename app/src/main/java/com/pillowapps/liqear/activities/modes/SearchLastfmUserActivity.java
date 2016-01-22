@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.recyclers.UserAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -18,13 +19,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class SearchLastfmUserActivity extends SearchBaseActivity {
 
     private UserAdapter adapter;
 
+    @Inject
+    LastfmUserModel lastfmUserModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
 
         actionBar.setTitle(getResources().getString(R.string.friends));
         if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
@@ -63,7 +71,7 @@ public class SearchLastfmUserActivity extends SearchBaseActivity {
     }
 
     private void getUserInfo(String name) {
-        new LastfmUserModel().getUserInfo(name, new SimpleCallback<LastfmUser>() {
+        lastfmUserModel.getUserInfo(name, new SimpleCallback<LastfmUser>() {
                     @Override
                     public void success(LastfmUser user) {
                         List<User> users = Collections.singletonList(Converter.convertUser(user));
@@ -80,7 +88,7 @@ public class SearchLastfmUserActivity extends SearchBaseActivity {
     }
 
     private void getLastfmFriends(String username, int limit, int page) {
-        new LastfmUserModel().getLastfmFriends(username, limit, page, new SimpleCallback<List<LastfmUser>>() {
+        lastfmUserModel.getLastfmFriends(username, limit, page, new SimpleCallback<List<LastfmUser>>() {
                     @Override
                     public void success(List<LastfmUser> lastfmUsers) {
                         fillWithUsers(Converter.convertUsers(lastfmUsers));

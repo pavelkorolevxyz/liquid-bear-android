@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -20,15 +21,22 @@ import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class LastfmTagViewerActivity extends PagerResultActivity {
     public static final String TAG = "tag";
     public static final int TRACKS_INDEX = 0;
     private Tag tag;
-    private LastfmTagModel tagModel = new LastfmTagModel();
+
+    @Inject
+    LastfmTagModel tagModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
+
         setContentView(R.layout.viewer_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

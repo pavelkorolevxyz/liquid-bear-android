@@ -13,7 +13,6 @@ import com.pillowapps.liqear.entities.vk.roots.VkSavePhotoRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkUploadServerRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkWallMessagesResponseRoot;
 import com.pillowapps.liqear.helpers.VkTracksUtils;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.VkApiService;
 
 import java.net.URL;
@@ -25,7 +24,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class VkWallModel {
-    private VkApiService vkService = ServiceHelper.getVkService();
+    private VkApiService vkService;
+
+    public VkWallModel(VkApiService api) {
+        this.vkService = api;
+    }
 
     public void getVkUserFavoritesAudio(int count, int offset, final VkSimpleCallback<List<VkTrack>> callback) {
         vkService.getFavoriteWallMessages(offset, count, new VkCallback<VkWallMessagesResponseRoot>() {

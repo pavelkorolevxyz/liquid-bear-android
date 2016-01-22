@@ -53,6 +53,8 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -72,10 +74,18 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     protected Menu mainMenu;
 
+    @Inject
+    VkAudioModel vkAudioModel;
+    @Inject
+    LastfmTrackModel lastfmTrackModel;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(getActivity()).applicationComponent().inject(this);
+
         setHasOptionsMenu(true);
 
         activity = (HomeActivity) getActivity();
@@ -192,7 +202,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                     toast(R.string.no_internet);
                     return true;
                 }
-                new VkAudioModel().addToVk(getActivity(), currentTrack);
+                vkAudioModel.addToVk(getActivity(), currentTrack);
             }
             return true;
             case R.id.settings: {
@@ -429,7 +439,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         showLoading(true);
         final Track track = Timeline.getInstance().getCurrentTrack();
         if (!track.isLoved()) {
-            new LastfmTrackModel().love(track, new SimpleCallback<Object>() {
+            lastfmTrackModel.love(track, new SimpleCallback<Object>() {
                 @Override
                 public void success(Object data) {
                     track.setLoved(true);
@@ -444,7 +454,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                 }
             });
         } else {
-            new LastfmTrackModel().unlove(track, new SimpleCallback<Object>() {
+            lastfmTrackModel.unlove(track, new SimpleCallback<Object>() {
                 @Override
                 public void success(Object o) {
                     showLoading(false);

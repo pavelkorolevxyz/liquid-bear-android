@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.SetlistAdapter;
@@ -15,13 +16,19 @@ import com.pillowapps.liqear.models.setlistsfm.SetlistsfmSetlistModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class SetlistsResultActivity extends ListBaseActivity {
 
     private SetlistAdapter adapter;
 
+    @Inject
+    SetlistsfmSetlistModel setlistfmSetlistModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LBApplication.get(this).applicationComponent().inject(this);
 
         actionBar.setTitle(R.string.setlist);
 
@@ -52,7 +59,7 @@ public class SetlistsResultActivity extends ListBaseActivity {
     }
 
     private void searchSetlists(String artist, String venue, final String city) {
-        new SetlistsfmSetlistModel().getSetlists(artist, venue, city, new SetlistfmSimpleCallback<List<SetlistfmSetlist>>() {
+        setlistfmSetlistModel.getSetlists(artist, venue, city, new SetlistfmSimpleCallback<List<SetlistfmSetlist>>() {
             @Override
             public void success(List<SetlistfmSetlist> setlists) {
                 fillWithSetlists(setlists);

@@ -54,12 +54,7 @@ android {
     }
 
     sourceSets {
-        main {
-            manifest.srcFile 'src/main/AndroidManifest.xml'
-            java.srcDirs = ['src/main/java']
-            res.srcDirs = ['src/main/res']
-            assets.srcDirs = ['src/main/assets']
-        }
+        main.java.srcDirs = ['src/main/java']
     }
 
     packagingOptions {
@@ -113,6 +108,12 @@ dependencies {
     compile 'com.pushtorefresh.storio:sqlite:1.8.0'
     compile 'com.pushtorefresh.storio:sqlite-annotations:1.8.0'
     apt 'com.pushtorefresh.storio:sqlite-annotations-processor:1.8.0'
+
+    apt 'com.google.dagger:dagger-compiler:2.0'
+    compile 'com.google.dagger:dagger:2.0'
+    provided 'javax.annotation:jsr250-api:1.0'
+    compile "javax.inject:javax.inject:1"
+    compile "javax.annotation:javax.annotation-api:1.2"
 
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-all:1.10.19"

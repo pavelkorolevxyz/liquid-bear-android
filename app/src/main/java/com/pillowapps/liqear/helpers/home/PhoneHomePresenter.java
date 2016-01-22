@@ -30,51 +30,51 @@ public class PhoneHomePresenter extends HomePresenter {
     @Override
     public void openRadiomix() {
         view.showLoading(true);
-        new LastfmLibraryModel().getRadiomix(AuthorizationInfoManager.getLastfmName(),
-                new SimpleCallback<List<LastfmTrack>>() {
-                    @Override
-                    public void success(List<LastfmTrack> tracks) {
-                        int index = 0;
-                        List<Track> trackList = Converter.convertLastfmTrackList(tracks);
-                        Timeline.getInstance().setPlaylist(new Playlist(trackList));
-
-                        view.changeViewPagerItem(0);
-                        view.updateAdapter();
-                        view.changePlaylist(index, true);
-                        view.showLoading(false);
-                    }
-
-                    @Override
-                    public void failure(String errorMessage) {
-                        view.showError(errorMessage);
-                        view.showLoading(false);
-                    }
-                });
+//        new LastfmLibraryModel().getRadiomix(view, AuthorizationInfoManager.getLastfmName(),
+//                new SimpleCallback<List<LastfmTrack>>() {
+//                    @Override
+//                    public void success(List<LastfmTrack> tracks) {
+//                        int index = 0;
+//                        List<Track> trackList = Converter.convertLastfmTrackList(tracks);
+//                        Timeline.getInstance().setPlaylist(new Playlist(trackList));
+//
+//                        view.changeViewPagerItem(0);
+//                        view.updateAdapter();
+//                        view.changePlaylist(index, true);
+//                        view.showLoading(false);
+//                    }
+//
+//                    @Override
+//                    public void failure(String errorMessage) {
+//                        view.showError(errorMessage);
+//                        view.showLoading(false);
+//                    }
+//                });
     }
 
     @Override
     public void openLibrary() {
         view.showLoading(true);
-        new LastfmLibraryModel().getLibrary(AuthorizationInfoManager.getLastfmName(),
-                new SimpleCallback<List<LastfmTrack>>() {
-                    @Override
-                    public void success(List<LastfmTrack> tracks) {
-                        int index = 0;
-                        List<Track> trackList = Converter.convertLastfmTrackList(tracks);
-                        Timeline.getInstance().setPlaylist(new Playlist(trackList));
-
-                        view.changeViewPagerItem(0);
-                        view.updateAdapter();
-                        view.changePlaylist(index, true);
-                        view.showLoading(false);
-                    }
-
-                    @Override
-                    public void failure(String errorMessage) {
-                        view.showError(errorMessage);
-                        view.showLoading(false);
-                    }
-                });
+//        new LastfmLibraryModel().getLibrary(AuthorizationInfoManager.getLastfmName(),
+//                new SimpleCallback<List<LastfmTrack>>() {
+//                    @Override
+//                    public void success(List<LastfmTrack> tracks) {
+//                        int index = 0;
+//                        List<Track> trackList = Converter.convertLastfmTrackList(tracks);
+//                        Timeline.getInstance().setPlaylist(new Playlist(trackList));
+//
+//                        view.changeViewPagerItem(0);
+//                        view.updateAdapter();
+//                        view.changePlaylist(index, true);
+//                        view.showLoading(false);
+//                    }
+//
+//                    @Override
+//                    public void failure(String errorMessage) {
+//                        view.showError(errorMessage);
+//                        view.showLoading(false);
+//                    }
+//                });
     }
 
     @Override

@@ -1,10 +1,9 @@
 package com.pillowapps.liqear.models.setlistsfm;
 
+import com.pillowapps.liqear.callbacks.SetlistfmSimpleCallback;
 import com.pillowapps.liqear.entities.setlistfm.SetlistfmSetlist;
 import com.pillowapps.liqear.entities.setlistfm.roots.SetlistsRoot;
-import com.pillowapps.liqear.network.ServiceHelper;
-import com.pillowapps.liqear.callbacks.SetlistfmSimpleCallback;
-import com.pillowapps.liqear.network.service.SetlistfmService;
+import com.pillowapps.liqear.network.service.SetlistfmApiService;
 
 import java.util.List;
 import java.util.TreeMap;
@@ -15,7 +14,11 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 public class SetlistsfmSetlistModel {
-    private SetlistfmService setlistfmService = ServiceHelper.getSetlistsfmService();
+    private SetlistfmApiService setlistfmService;
+
+    public SetlistsfmSetlistModel(SetlistfmApiService api) {
+        this.setlistfmService = api;
+    }
 
     public void getSetlists(String artist, String city, String venue,
                             final SetlistfmSimpleCallback<List<SetlistfmSetlist>> callback) {

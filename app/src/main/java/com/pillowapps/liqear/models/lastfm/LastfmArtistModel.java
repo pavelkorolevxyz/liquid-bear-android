@@ -15,7 +15,6 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmTracksRoot;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.StringUtils;
 import com.pillowapps.liqear.network.Parser;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -30,7 +29,11 @@ import inaka.com.tinytask.TinyTask;
 import rx.Observable;
 
 public class LastfmArtistModel {
-    private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
+    private LastfmApiService lastfmService;
+
+    public LastfmArtistModel(LastfmApiService api) {
+        this.lastfmService = api;
+    }
 
     public void getArtistTopTracks(Artist artist, int limit, int page,
                                    final SimpleCallback<List<LastfmTrack>> callback) {

@@ -10,7 +10,6 @@ import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.LastfmApiHelper;
 import com.pillowapps.liqear.helpers.LastfmCallbackUtils;
 import com.pillowapps.liqear.helpers.TimeUtils;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.ArrayList;
@@ -23,8 +22,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class LastfmTrackModel {
-    private LastfmApiService lastfmService = ServiceHelper.getLastfmService();
+    private LastfmApiService lastfmService;
     private LastfmApiHelper apiHelper = new LastfmApiHelper();
+
+    public LastfmTrackModel(LastfmApiService api) {
+        this.lastfmService = api;
+    }
 
     public void love(Track track, final SimpleCallback<Object> callback) {
         String sessionKey = AuthorizationInfoManager.getLastfmKey();

@@ -19,6 +19,8 @@ import com.pillowapps.liqear.models.vk.VkAudioModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class VkAlbumTracksActivity extends ListBaseActivity {
 
     public static final String TITLE = "title";
@@ -26,6 +28,9 @@ public class VkAlbumTracksActivity extends ListBaseActivity {
     public static final String GID = "gid";
     public static final String ALBUM_ID = "album_id";
     private TrackAdapter adapter;
+
+    @Inject
+    VkAudioModel vkAudioModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +65,7 @@ public class VkAlbumTracksActivity extends ListBaseActivity {
     }
 
     private void getVkUserAudioFromAlbum(long uid, long albumId) {
-        new VkAudioModel().getUserAudioFromAlbum(uid, albumId, 0, 0,
+        vkAudioModel.getUserAudioFromAlbum(uid, albumId, 0, 0,
                 vkTracksCallback());
     }
 
@@ -80,7 +85,7 @@ public class VkAlbumTracksActivity extends ListBaseActivity {
     }
 
     private void getVkGroupAudioFromAlbum(long gid, long albumId) {
-        new VkAudioModel().getGroupAudioFromAlbum(gid, albumId, 0, 0,
+        vkAudioModel.getGroupAudioFromAlbum(gid, albumId, 0, 0,
                 vkTracksCallback());
     }
 

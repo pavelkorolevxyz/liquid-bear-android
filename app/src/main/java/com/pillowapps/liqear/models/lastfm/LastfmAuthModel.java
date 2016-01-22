@@ -4,14 +4,17 @@ import com.pillowapps.liqear.callbacks.LastfmErrorCodeCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmSession;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmSessionRoot;
 import com.pillowapps.liqear.helpers.LastfmApiHelper;
-import com.pillowapps.liqear.network.ServiceHelper;
 import com.pillowapps.liqear.network.service.LastfmAuthService;
 
 import java.util.TreeMap;
 
 public class LastfmAuthModel {
-    private LastfmAuthService authService = ServiceHelper.getLastfmAuthService();
+    private LastfmAuthService authService;
     private LastfmApiHelper apiHelper = new LastfmApiHelper();
+
+    public LastfmAuthModel(LastfmAuthService api) {
+        this.authService = api;
+    }
 
     public void getMobileSession(String username, String password, final LastfmErrorCodeCallback<LastfmSession> callback) {
         TreeMap<String, String> params = new TreeMap<>();

@@ -1,5 +1,8 @@
 package com.pillowapps.liqear.models.lastfm;
 
+import android.content.Context;
+
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrackArtistStruct;
@@ -16,6 +19,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -23,13 +28,20 @@ import rx.schedulers.Schedulers;
 
 public class LastfmLibraryModel {
 
-    public void getRadiomix(final String user, final SimpleCallback<List<LastfmTrack>> callback) {
-        Observable<LastfmWeeklyTrackChartRoot> weeklyObservable = new LastfmUserModel().getWeeklyTracksChart(user);
-        Observable<LastfmTopTracksRoot> topTracksObservable = new LastfmUserModel().getTopTracks(user,
+    @Inject
+    LastfmUserModel lastfmUserModel;
+
+    public LastfmLibraryModel(Context context) {
+        LBApplication.get(context).applicationComponent().inject(this);
+    }
+
+    public void getRadiomix(Context context, final String user, final SimpleCallback<List<LastfmTrack>> callback) {
+        Observable<LastfmWeeklyTrackChartRoot> weeklyObservable = lastfmUserModel.getWeeklyTracksChart(user);
+        Observable<LastfmTopTracksRoot> topTracksObservable = lastfmUserModel.getTopTracks(user,
                 Constants.PERIODS_ARRAY[0],
                 SharedPreferencesManager.getModePreferences().getInt(Constants.TOP_IN_RADIOMIX, 100),
                 1);
-        Observable<LastfmLovedTracksRoot> lovedObservable = new LastfmUserModel().getLovedTracks(user,
+        Observable<LastfmLovedTracksRoot> lovedObservable = lastfmUserModel.getLovedTracks(user,
                 SharedPreferencesManager.getModePreferences().getInt(Constants.TOP_IN_RADIOMIX, 100),
                 1);
         Observable.zip(weeklyObservable, topTracksObservable, lovedObservable,
@@ -57,11 +69,11 @@ public class LastfmLibraryModel {
     }
 
     public void getLibrary(final String user, final SimpleCallback<List<LastfmTrack>> callback) {
-        Observable<LastfmTopTracksRoot> topTracksObservable = new LastfmUserModel().getTopTracks(user,
+        Observable<LastfmTopTracksRoot> topTracksObservable = lastfmUserModel.getTopTracks(user,
                 Constants.PERIODS_ARRAY[0],
                 SharedPreferencesManager.getModePreferences().getInt(Constants.TOP_IN_RADIOMIX, 100),
                 1);
-        Observable<LastfmLovedTracksRoot> lovedObservable = new LastfmUserModel().getLovedTracks(user,
+        Observable<LastfmLovedTracksRoot> lovedObservable = lastfmUserModel.getLovedTracks(user,
                 SharedPreferencesManager.getModePreferences().getInt(Constants.TOP_IN_RADIOMIX, 100),
                 1);
         Observable.zip(topTracksObservable, lovedObservable, (topTracksRoot, lovedTracksRoot) -> {

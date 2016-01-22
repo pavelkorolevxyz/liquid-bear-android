@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.activities.viewers;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -37,6 +37,8 @@ import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class LastfmUserViewerActivity extends PagerResultActivity {
@@ -51,13 +53,18 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     private int defaultIndex = TOP_TRACKS_INDEX;
     private String topArtistsPeriod;
     private String topTracksPeriod;
-    private LastfmUserModel userModel = new LastfmUserModel();
     private int savedTopTrackPosition;
     private int savedTopArtistPeriod;
+
+    @Inject
+    LastfmUserModel userModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
+
         setContentView(R.layout.viewer_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
