@@ -15,12 +15,17 @@ import com.pillowapps.liqear.models.PlaylistModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class LocalPlaylistTracksActivity extends ListBaseActivity {
 
     private TrackAdapter adapter;
+    
+    @Inject
+    PlaylistModel playlistModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +68,7 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
     }
 
     private void loadPlaylistTracks(long playlistId) {
-        new PlaylistModel().getPlaylist(LocalPlaylistTracksActivity.this, playlistId)
+        playlistModel.getPlaylist(LocalPlaylistTracksActivity.this, playlistId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlist -> {

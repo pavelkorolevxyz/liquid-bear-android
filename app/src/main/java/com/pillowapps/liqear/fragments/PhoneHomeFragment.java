@@ -53,7 +53,6 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
-import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.helpers.home.PhoneHomePresenter;
 import com.pillowapps.liqear.models.ImageModel;
@@ -132,7 +131,7 @@ public class PhoneHomeFragment extends HomeFragment {
         shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
         repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
 
-        StateManager.restorePlaylistState(getActivity(), () -> {
+        stateManager.restorePlaylistState(getActivity(), () -> {
             final Playlist playlist = Timeline.getInstance().getPlaylist();
             if (playlist == null || playlist.getTracks().size() == 0) return;
             updateMainPlaylistTitle();

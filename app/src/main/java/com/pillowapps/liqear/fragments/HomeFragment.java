@@ -78,6 +78,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     VkAudioModel vkAudioModel;
     @Inject
     LastfmTrackModel lastfmTrackModel;
+    @Inject
+    PlaylistModel playlistModel;
+    @Inject
+    StateManager stateManager;
 
 
     @Override
@@ -105,7 +109,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public void onDestroy() {
         LBApplication.BUS.unregister(this);
-        StateManager.savePlaylistState(MusicServiceManager.getInstance().getService());
+        stateManager.savePlaylistState(MusicServiceManager.getInstance().getService());
 
         super.onDestroy();
     }
@@ -373,7 +377,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             if (autoPlay) {
                 presenter.playTrack(index);
             }
-            new PlaylistModel().saveMainPlaylist(getActivity(), Timeline.getInstance().getPlaylist())
+            playlistModel.saveMainPlaylist(getActivity(), Timeline.getInstance().getPlaylist())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(new Subscriber<Long>() {

@@ -6,11 +6,14 @@ import android.support.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
 import com.pillowapps.liqear.models.LastfmModelsModule;
+import com.pillowapps.liqear.models.LiquidBearModelsModule;
 import com.pillowapps.liqear.models.SetlistfmModelsModule;
 import com.pillowapps.liqear.models.VkModelsModule;
 import com.pillowapps.liqear.network.LastfmApiModule;
 import com.pillowapps.liqear.network.NetworkModule;
 import com.pillowapps.liqear.network.SetlistfmApiModule;
+import com.pillowapps.liqear.network.StateModule;
+import com.pillowapps.liqear.network.StorageModule;
 import com.pillowapps.liqear.network.VkApiModule;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
@@ -66,6 +69,9 @@ public class LBApplication extends Application {
         return DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
                 .networkModule(new NetworkModule())
+                .stateModule(new StateModule())
+                .storageModule(new StorageModule())
+                .liquidBearModelsModule(new LiquidBearModelsModule())
                 .lastfmApiModule(new LastfmApiModule())
                 .vkApiModule(new VkApiModule())
                 .setlistfmApiModule(new SetlistfmApiModule())

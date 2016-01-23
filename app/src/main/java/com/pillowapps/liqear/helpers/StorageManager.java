@@ -36,10 +36,9 @@ import rx.Observable;
 
 public class StorageManager {
 
-    private static StorageManager INSTANCE;
     private final StorIOSQLite database;
 
-    private StorageManager(Context context) {
+    public StorageManager(Context context) {
         this.database = DefaultStorIOSQLite.builder()
                 .sqliteOpenHelper(new LiquidBearSQLHelper(context,
                         LiquidBearSQLHelper.DATABASE_NAME,
@@ -55,13 +54,6 @@ public class StorageManager {
                         .deleteResolver(new DBTrackStorIOSQLiteDeleteResolver())
                         .build())
                 .build();
-    }
-
-    public static synchronized StorageManager getInstance(Context context) {
-        if (INSTANCE == null) {
-            INSTANCE = new StorageManager(context);
-        }
-        return INSTANCE;
     }
 
     public Observable<DeleteResult> findAndDeleteMainPlaylist() {

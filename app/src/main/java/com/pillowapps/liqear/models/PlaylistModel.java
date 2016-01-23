@@ -15,10 +15,15 @@ import rx.Observable;
 
 public class PlaylistModel {
 
+    private StorageManager storageManager;
+
+    public PlaylistModel(StorageManager storageManager) {
+        this.storageManager = storageManager;
+    }
+
     public Observable<Long> saveMainPlaylist(@NonNull Context context, Playlist playlist) {
         if (playlist == null) return Observable.empty();
         playlist.setMainPlaylist(true);
-        StorageManager storageManager = StorageManager.getInstance(context);
 
         return storageManager.findAndDeleteMainPlaylist()
                 .onErrorReturn(throwable -> DeleteResult.newInstance(0, Collections.emptySet()))
@@ -26,31 +31,31 @@ public class PlaylistModel {
     }
 
     public Observable<Playlist> getMainPlaylist(@NonNull Context context) {
-        return StorageManager.getInstance(context).getMainPlaylist();
+        return storageManager.getMainPlaylist();
     }
 
     public Observable<List<Playlist>> getPlaylists(@NonNull Context context) {
-        return StorageManager.getInstance(context).getPlaylists();
+        return storageManager.getPlaylists();
     }
 
     public Observable removePlaylist(@NonNull Context context, @NonNull Long id) {
-        return StorageManager.getInstance(context).findAndDeletePlaylist(id);
+        return storageManager.findAndDeletePlaylist(id);
     }
 
     public Observable renamePlaylist(@NonNull Context context, @NonNull Long id, @NonNull String newTitle) {
-        return StorageManager.getInstance(context).renamePlaylist(id, newTitle);
+        return storageManager.renamePlaylist(id, newTitle);
     }
 
     public Observable addTrackToPlaylist(@NonNull Context context, @NonNull Long playlistId, @NonNull Track track) {
-        return StorageManager.getInstance(context).saveTrackToPlaylist(playlistId, track);
+        return storageManager.saveTrackToPlaylist(playlistId, track);
     }
 
     public Observable<Long> savePlaylist(@NonNull Context context, String title, @NonNull List<Track> tracks) {
-        return StorageManager.getInstance(context).savePlaylist(new Playlist(title, tracks));
+        return storageManager.savePlaylist(new Playlist(title, tracks));
     }
 
     public Observable<Playlist> getPlaylist(@NonNull Context context, @NonNull final Long playlistId) {
-        return StorageManager.getInstance(context).getPlaylist(playlistId);
+        return storageManager.getPlaylist(playlistId);
     }
 
 }

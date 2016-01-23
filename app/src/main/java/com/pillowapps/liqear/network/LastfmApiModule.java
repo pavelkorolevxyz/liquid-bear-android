@@ -17,6 +17,7 @@ import com.squareup.okhttp.OkHttpClient;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -35,10 +36,13 @@ public class LastfmApiModule {
     public static final String LASTFM_API_KEY = "d5de674bc94e88b751606051c2570f48";
     public static final String LASTFM_API_SECRET = "2b1780635fa1baa06af78bd9e90ff7e3";
 
+    public static final String LASTFM = "lastfm";
+
     @Provides
     @NonNull
     @Singleton
-    public LastfmApiService provideLastfmApiService(@NonNull OkHttpClient okHttpClient, @NonNull RequestInterceptor lastfmInterceptor) {
+    public LastfmApiService provideLastfmApiService(@NonNull OkHttpClient okHttpClient,
+                                                    @NonNull @Named(LASTFM) RequestInterceptor lastfmInterceptor) {
         LastfmApiService lastfmApiService;
         Type trackListTypeAdapter = new TypeToken<List<LastfmTrack>>() {
         }.getType();
@@ -69,7 +73,8 @@ public class LastfmApiModule {
     @Provides
     @NonNull
     @Singleton
-    public LastfmAuthService provideLastfmAuthService(@NonNull OkHttpClient okHttpClient, @NonNull RequestInterceptor lastfmInterceptor) {
+    public LastfmAuthService provideLastfmAuthService(@NonNull OkHttpClient okHttpClient,
+                                                      @NonNull @Named(LASTFM) RequestInterceptor lastfmInterceptor) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(lastfmInterceptor)
@@ -79,7 +84,8 @@ public class LastfmApiModule {
         return restAdapter.create(LastfmAuthService.class);
     }
 
-//    @Provides
+    @Provides
+    @Named(LASTFM)
     @NonNull
     @Singleton
     public RequestInterceptor provideLastmInterceptor() {

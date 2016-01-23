@@ -1,5 +1,6 @@
 package com.pillowapps.liqear;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import javax.inject.Singleton;
@@ -21,6 +22,13 @@ public class ApplicationModule {
     @NonNull
     @Singleton
     public LBApplication provideApplication() {
+        return application;
+    }
+
+    @Provides
+    @NonNull
+    @Singleton
+    public Context provideContext() {
         return application;
     }
 

@@ -150,6 +150,9 @@ public class MusicService extends Service implements
     @Inject
     LastfmAlbumModel lastfmAlbumModel;
 
+    @Inject
+    PlaylistModel playlistModel;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -508,7 +511,7 @@ public class MusicService extends Service implements
             togglePlayPause();
         } else {
             Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
-            new PlaylistModel().getMainPlaylist(MusicService.this)
+            playlistModel.getMainPlaylist(MusicService.this)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(playlist -> {

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.pillowapps.liqear.activities.AuthActivity;
 import com.pillowapps.liqear.activities.ImagePagerActivity;
+import com.pillowapps.liqear.activities.PlaylistsActivity;
 import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.activities.modes.LastfmNeighboursActivity;
 import com.pillowapps.liqear.activities.modes.LastfmRecommendationsActivity;
@@ -26,6 +27,7 @@ import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.fragments.HomeFragment;
 import com.pillowapps.liqear.models.LastfmModelsModule;
+import com.pillowapps.liqear.models.LiquidBearModelsModule;
 import com.pillowapps.liqear.models.SetlistfmModelsModule;
 import com.pillowapps.liqear.models.ShareModel;
 import com.pillowapps.liqear.models.VkModelsModule;
@@ -35,6 +37,8 @@ import com.pillowapps.liqear.models.lastfm.LastfmRecommendationsModel;
 import com.pillowapps.liqear.network.LastfmApiModule;
 import com.pillowapps.liqear.network.NetworkModule;
 import com.pillowapps.liqear.network.SetlistfmApiModule;
+import com.pillowapps.liqear.network.StateModule;
+import com.pillowapps.liqear.network.StorageModule;
 import com.pillowapps.liqear.network.VkApiModule;
 
 import javax.inject.Singleton;
@@ -45,9 +49,12 @@ import dagger.Component;
 @Component(modules = {
         ApplicationModule.class,
         NetworkModule.class,
+        StorageModule.class,
+        StateModule.class,
         LastfmApiModule.class,
         VkApiModule.class,
         SetlistfmApiModule.class,
+        LiquidBearModelsModule.class,
         LastfmModelsModule.class,
         VkModelsModule.class,
         SetlistfmModelsModule.class
@@ -109,5 +116,7 @@ public interface ApplicationComponent {
     void inject(LastfmLibraryModel lastfmLibraryModel);
 
     void inject(LastfmRecommendationsModel lastfmRecommendationsModel);
+
+    void inject(PlaylistsActivity playlistsActivity);
 }
 

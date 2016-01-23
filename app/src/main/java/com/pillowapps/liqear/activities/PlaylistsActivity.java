@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.LocalPlaylistTracksActivity;
 import com.pillowapps.liqear.audio.Timeline;
@@ -34,6 +35,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -44,6 +47,9 @@ public class PlaylistsActivity extends ResultActivity {
     private Aim aim;
     private ListView listView;
     private TextView emptyTextView;
+
+    @Inject
+    PlaylistModel playlistModel;
 
     public void onStart() {
         super.onStart();
@@ -60,6 +66,9 @@ public class PlaylistsActivity extends ResultActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
+
         setContentView(R.layout.playlists_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,7 +84,7 @@ public class PlaylistsActivity extends ResultActivity {
         }
         listView.setOnCreateContextMenuListener(this);
 
-        new PlaylistModel().getPlaylists(PlaylistsActivity.this)
+        playlistModel.getPlaylists(PlaylistsActivity.this)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlistList -> {
@@ -90,7 +99,7 @@ public class PlaylistsActivity extends ResultActivity {
             switch (aim) {
                 case ADD_TO_PLAYLIST: {
                     Playlist playlist = adapter.get(position);
-                    new PlaylistModel().addTrackToPlaylist(PlaylistsActivity.this, playlist.getId(),
+                    playlistModel.addTrackToPlaylist(PlaylistsActivity.this, playlist.getId(),
                             new Track(extras.getString("artist"), extras.getString("title")))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
@@ -145,7 +154,7 @@ public class PlaylistsActivity extends ResultActivity {
                 adapter.getValues().remove(info.position);
                 adapter.notifyDataSetChanged();
                 updateEmptyTextView();
-                new PlaylistModel().removePlaylist(PlaylistsActivity.this, playlist.getId())
+                playlistModel.removePlaylist(PlaylistsActivity.this, playlist.getId())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe();
@@ -194,7 +203,7 @@ public class PlaylistsActivity extends ResultActivity {
 
         dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
             final String title = input.getText().toString().isEmpty() ? getResources().getString(R.string.new_playlist) : input.getText().toString();
-            new PlaylistModel().savePlaylist(PlaylistsActivity.this, title, new ArrayList<>())
+            playlistModel.savePlaylist(PlaylistsActivity.this, title, new ArrayList<>())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(pid -> {
@@ -230,7 +239,7 @@ public class PlaylistsActivity extends ResultActivity {
             }
 
             if (isRenaming) {
-                new PlaylistModel().renamePlaylist(PlaylistsActivity.this, adapter.get(position).getId(), title)
+                playlistModel.renamePlaylist(PlaylistsActivity.this, adapter.get(position).getId(), title)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe();
@@ -239,7 +248,7 @@ public class PlaylistsActivity extends ResultActivity {
                 updateEmptyTextView();
             } else {
                 final String finalTitle = title;
-                new PlaylistModel().savePlaylist(PlaylistsActivity.this, title, Timeline.getInstance().getPlaylistTracks())
+                playlistModel.savePlaylist(PlaylistsActivity.this, title, Timeline.getInstance().getPlaylistTracks())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe(pid -> {
@@ -273,7 +282,7 @@ public class PlaylistsActivity extends ResultActivity {
             }
 
             if (isRenaming) {
-                new PlaylistModel().renamePlaylist(PlaylistsActivity.this, adapter.get(position).getId(), title)
+                playlistModel.renamePlaylist(PlaylistsActivity.this, adapter.get(position).getId(), title)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe();

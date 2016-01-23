@@ -17,11 +17,13 @@ import timber.log.Timber;
 
 public class StateManager {
 
-    private StateManager() {
-        // no-op
+    private PlaylistModel playlistModel;
+
+    public StateManager(PlaylistModel playlistModel) {
+        this.playlistModel = playlistModel;
     }
 
-    public static void savePlaylistState(MusicService service) {
+    public void savePlaylistState(MusicService service) {
         saveTrackState();
         SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences().edit();
         if (service != null) {
@@ -37,7 +39,7 @@ public class StateManager {
 //        new PlaylistModel().saveMainPlaylist();
     }
 
-    public static void saveTrackState() {
+    public void saveTrackState() {
         SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences().edit();
         final Track currentTrack = Timeline.getInstance().getCurrentTrack();
         if (Timeline.getInstance().getPlaylistTracks() != null
@@ -51,10 +53,10 @@ public class StateManager {
         editor.apply();
     }
 
-    public static void restorePlaylistState(Context context, final CompletionCallback completionCallback) {
+    public void restorePlaylistState(Context context, final CompletionCallback completionCallback) {
         Timber.d("restore state");
         final long time = System.currentTimeMillis();
-        new PlaylistModel().getMainPlaylist(context)
+        playlistModel.getMainPlaylist(context)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlist -> {
@@ -64,7 +66,7 @@ public class StateManager {
                 });
     }
 
-    public static void restoreTrackState() {
+    public void restoreTrackState() {
 
     }
 }

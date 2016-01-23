@@ -7,6 +7,7 @@ import com.pillowapps.liqear.network.service.VkApiService;
 import com.pillowapps.liqear.network.service.VkUploadService;
 import com.squareup.okhttp.OkHttpClient;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -23,10 +24,12 @@ public class VkApiModule {
     public static final String VK_API_KEY = "03q8HwJ2xIgJlzxLgxv0";
     public static final String VK_APP_ID = "4613451";
 
+    public static final String VK = "vk";
+
     @Provides
     @NonNull
     @Singleton
-    public VkApiService provideVkApiService(@NonNull OkHttpClient okHttpClient, @NonNull RequestInterceptor vkInterceptor) {
+    public VkApiService provideVkApiService(@NonNull OkHttpClient okHttpClient, @NonNull @Named(VK) RequestInterceptor vkInterceptor) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(vkInterceptor)
@@ -51,6 +54,7 @@ public class VkApiModule {
     @Provides
     @NonNull
     @Singleton
+    @Named(VK)
     public RequestInterceptor provideVkInterceptor() {
         return request -> {
             request.addQueryParam("access_token", AuthorizationInfoManager.getVkAccessToken());
