@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
+import com.pillowapps.liqear.audio.MusicServiceModule;
 import com.pillowapps.liqear.models.LastfmModelsModule;
 import com.pillowapps.liqear.models.LiquidBearModelsModule;
 import com.pillowapps.liqear.models.SetlistfmModelsModule;
@@ -71,6 +72,7 @@ public class LBApplication extends Application {
                 .networkModule(new NetworkModule())
                 .stateModule(new StateModule())
                 .storageModule(new StorageModule())
+                .musicServiceModule(new MusicServiceModule())
                 .liquidBearModelsModule(new LiquidBearModelsModule())
                 .lastfmApiModule(new LastfmApiModule())
                 .vkApiModule(new VkApiModule())

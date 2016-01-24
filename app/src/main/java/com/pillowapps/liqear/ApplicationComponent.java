@@ -25,6 +25,7 @@ import com.pillowapps.liqear.activities.viewers.LastfmTagViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmUserViewerActivity;
 import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.audio.MusicService;
+import com.pillowapps.liqear.audio.MusicServiceModule;
 import com.pillowapps.liqear.fragments.HomeFragment;
 import com.pillowapps.liqear.models.LastfmModelsModule;
 import com.pillowapps.liqear.models.LiquidBearModelsModule;
@@ -51,6 +52,7 @@ import dagger.Component;
         NetworkModule.class,
         StorageModule.class,
         StateModule.class,
+        MusicServiceModule.class,
         LastfmApiModule.class,
         VkApiModule.class,
         SetlistfmApiModule.class,

@@ -12,20 +12,8 @@ import com.pillowapps.liqear.helpers.ServiceConnectionListener;
 
 public class MusicServiceManager {
 
-    private static MusicServiceManager instance;
-
     private MusicService musicService;
     private ServiceConnection serviceConnection;
-
-    private MusicServiceManager() {
-    }
-
-    public static synchronized MusicServiceManager getInstance() {
-        if (instance == null) {
-            instance = new MusicServiceManager();
-        }
-        return instance;
-    }
 
     public MusicService getService() {
         return musicService;

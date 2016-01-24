@@ -96,8 +96,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
         playlistItemsAdapter = new PlaylistItemsAdapter(activity);
 
-        musicServiceManager = MusicServiceManager.getInstance();
-
         musicServiceManager.startService(activity, () -> {
             presenter.setMusicServiceConnected();
             activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -109,7 +107,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public void onDestroy() {
         LBApplication.BUS.unregister(this);
-        stateManager.savePlaylistState(MusicServiceManager.getInstance().getService());
+        stateManager.savePlaylistState(musicServiceManager.getService());
 
         super.onDestroy();
     }
@@ -192,7 +190,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             return true;
             case R.id.youtube_video_button: {
                 if (currentTrack == null) return true;
-                MusicServiceManager.getInstance().pause();
+                musicServiceManager.pause();
                 new VideoModel().openVideo(getActivity(), currentTrack);
             }
             return true;
@@ -237,14 +235,14 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                         .build();
 
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
-                    MusicServiceManager.getInstance().setTimer(sb.getCurrent() * 60);
+                    musicServiceManager.setTimer(sb.getCurrent() * 60);
                     SharedPreferences.Editor editor =
                             SharedPreferencesManager.getPreferences().edit();
                     editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
                     editor.apply();
                 });
                 dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> {
-                    MusicServiceManager.getInstance().setTimer(0);
+                    musicServiceManager.setTimer(0);
                     dialog.dismiss();
                 });
                 dialog.show();
@@ -312,7 +310,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     private void exit() {
-        MusicServiceManager.getInstance().stopService(activity);
+        musicServiceManager.stopService(activity);
         activity.finish();
     }
 
@@ -370,7 +368,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         Timeline.getInstance().clearQueue();
         Timeline.getInstance().updateRealTrackPositions();
         Timeline.getInstance().clearPreviousIndexes();
-        MusicServiceManager.getInstance().pause();
+        musicServiceManager.pause();
         List<Track> tracks = Timeline.getInstance().getPlaylistTracks();
         playlistItemsAdapter.setValues(tracks);
         if (tracks.size() > 0) {
