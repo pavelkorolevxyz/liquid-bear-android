@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +49,7 @@ import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
 import com.pillowapps.liqear.models.TrackModel;
 import com.pillowapps.liqear.models.VideoModel;
+import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.squareup.otto.Subscribe;
@@ -55,6 +58,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.Module;
+import dagger.Provides;
+import dagger.Subcomponent;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -62,17 +68,19 @@ import timber.log.Timber;
 
 public abstract class HomeFragment extends BaseFragment implements HomeView {
 
-    protected HomePresenter presenter;
+    @Inject
+    HomePresenter presenter;
 
     protected HomeActivity activity;
-
-    protected MusicServiceManager musicServiceManager;
 
     protected ProgressBar progressBar;
 
     protected PlaylistItemsAdapter playlistItemsAdapter;
 
     protected Menu mainMenu;
+
+    @Inject
+    MusicServiceManager musicServiceManager;
 
     @Inject
     VkAudioModel vkAudioModel;
@@ -88,14 +96,18 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LBApplication.get(getActivity()).applicationComponent().inject(this);
+        LBApplication.get(getActivity()).applicationComponent().plus(new HomeFragmentModule()).inject(this);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
         activity = (HomeActivity) getActivity();
 
         playlistItemsAdapter = new PlaylistItemsAdapter(activity);
 
+        presenter.bindView(this);
         musicServiceManager.startService(activity, () -> {
             presenter.setMusicServiceConnected();
             activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -474,5 +486,20 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     public void updateLoveButton() {
         // No operations.
+    }
+
+    @Subcomponent(modules = HomeFragmentModule.class)
+    public interface HomeFragmentComponent {
+        void inject(@NonNull HomeFragment itemsFragment);
+    }
+
+    @Module
+    public static class HomeFragmentModule {
+
+        @Provides
+        @NonNull
+        public HomePresenter provideHomePresenter(@NonNull LastfmLibraryModel libraryModel) {
+            return new HomePresenter(libraryModel);
+        }
     }
 }

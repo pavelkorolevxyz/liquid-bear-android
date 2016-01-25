@@ -1,16 +1,99 @@
 package com.pillowapps.liqear.helpers.home;
 
-public abstract class HomePresenter {
+import com.pillowapps.liqear.audio.Timeline;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.entities.Playlist;
+import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
+import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.Presenter;
+import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 
-    HomeView view;
+import java.util.List;
 
-    public abstract void init();
+import javax.inject.Inject;
 
-    public abstract void setMusicServiceConnected();
+public class HomePresenter extends Presenter<HomeView> {
 
-    public abstract void openRadiomix();
+    protected LastfmLibraryModel libraryModel;
 
-    public abstract void openLibrary();
+    @Inject
+    public HomePresenter(LastfmLibraryModel libraryModel) {
+        this.libraryModel = libraryModel;
+    }
 
-    public abstract void playTrack(int index);
+    public void setMusicServiceConnected() {
+
+    }
+
+    public void openRadiomix() {
+        final HomeView view = view();
+
+        if (view == null) {
+            throw new RuntimeException("View must be bound to presenter");
+        }
+
+        libraryModel.getRadiomix(AuthorizationInfoManager.getLastfmName(),
+                new SimpleCallback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> tracks) {
+                        int index = 0;
+                        List<Track> trackList = Converter.convertLastfmTrackList(tracks);
+                        Timeline.getInstance().setPlaylist(new Playlist(trackList));
+
+                        view.changeViewPagerItem(0);
+                        view.updateAdapter();
+                        view.changePlaylist(index, true);
+                        view.showLoading(false);
+                    }
+
+                    @Override
+                    public void failure(String errorMessage) {
+                        view.showError(errorMessage);
+                        view.showLoading(false);
+                    }
+                });
+    }
+
+    public void openLibrary() {
+        final HomeView view = view();
+
+        if (view == null) {
+            throw new RuntimeException("View must be bound to presenter");
+        }
+
+        view.showLoading(true);
+        libraryModel.getLibrary(AuthorizationInfoManager.getLastfmName(),
+                new SimpleCallback<List<LastfmTrack>>() {
+                    @Override
+                    public void success(List<LastfmTrack> tracks) {
+                        int index = 0;
+                        List<Track> trackList = Converter.convertLastfmTrackList(tracks);
+                        Timeline.getInstance().setPlaylist(new Playlist(trackList));
+
+                        view.changeViewPagerItem(0);
+                        view.updateAdapter();
+                        view.changePlaylist(index, true);
+                        view.showLoading(false);
+                    }
+
+                    @Override
+                    public void failure(String errorMessage) {
+                        view.showError(errorMessage);
+                        view.showLoading(false);
+                    }
+                });
+    }
+
+    public void playTrack(int index) {
+        Timeline.getInstance().setStartPlayingOnPrepared(true);
+        final HomeView view = view();
+
+        if (view == null) {
+            throw new RuntimeException("View must be bound to presenter");
+        }
+        view.playTrack(index);
+    }
+
 }

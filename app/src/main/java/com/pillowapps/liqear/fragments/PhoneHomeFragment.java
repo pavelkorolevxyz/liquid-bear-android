@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -29,8 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobeta.android.dslv.DragSortListView;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.MusicServiceManager;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.ModeGridAdapter;
@@ -54,7 +56,6 @@ import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TimeUtils;
-import com.pillowapps.liqear.helpers.home.PhoneHomePresenter;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.Tutorial;
 import com.squareup.otto.Subscribe;
@@ -116,15 +117,22 @@ public class PhoneHomeFragment extends HomeFragment {
     private Tutorial tutorial = new Tutorial();
     private ModeGridAdapter modeAdapter;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.handset_fragment_layout, container, false);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LBApplication.get(getContext()).applicationComponent().inject(this);
+    }
 
-        presenter = new PhoneHomePresenter(this);
-        initUi(v);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.handset_fragment_layout, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initUi(view);
         initListeners();
         restoreState();
-
-        return v;
     }
 
     private void restoreState() {
@@ -366,13 +374,13 @@ public class PhoneHomeFragment extends HomeFragment {
         shuffleButton.setOnClickListener(v -> {
             Timeline.getInstance().toggleShuffle();
             shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
-            MusicServiceManager.getInstance().updateWidgets();
+            musicServiceManager.updateWidgets();
         });
 
         repeatButton.setOnClickListener(v -> {
             Timeline.getInstance().toggleRepeat();
             repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
-            MusicServiceManager.getInstance().updateWidgets();
+            musicServiceManager.updateWidgets();
         });
 
         artistTextView.setOnClickListener(v -> {
@@ -385,33 +393,33 @@ public class PhoneHomeFragment extends HomeFragment {
 
 
         // Playback controlling.
-        playPauseButton.setOnClickListener(v -> MusicServiceManager.getInstance().playPause());
+        playPauseButton.setOnClickListener(v -> musicServiceManager.playPause());
 
-        nextButton.setOnClickListener(v -> MusicServiceManager.getInstance().next());
+        nextButton.setOnClickListener(v -> musicServiceManager.next());
 
-        prevButton.setOnClickListener(v -> MusicServiceManager.getInstance().prev());
+        prevButton.setOnClickListener(v -> musicServiceManager.prev());
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onStopTrackingTouch(SeekBar seekBar) {
-                MusicServiceManager.getInstance().seekTo(seekBar.getProgress()
-                        * MusicServiceManager.getInstance().getDuration() / 100);
+                musicServiceManager.seekTo(seekBar.getProgress()
+                        * musicServiceManager.getDuration() / 100);
                 timePlateTextView.setVisibility(View.GONE);
-                MusicServiceManager.getInstance().startPlayProgressUpdater();
+                musicServiceManager.startPlayProgressUpdater();
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
                 timePlateTextView.setVisibility(View.VISIBLE);
                 timePlateTextView.setText(timeTextView.getText().toString());
-                MusicServiceManager.getInstance().stopPlayProgressUpdater();
+                musicServiceManager.stopPlayProgressUpdater();
             }
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (!fromUser) return;
                 int timeFromBeginning = seekBar.getProgress() *
-                        MusicServiceManager.getInstance().getDuration() / 100000;
+                        musicServiceManager.getDuration() / 100000;
                 String time = TimeUtils.secondsToMinuteString(timeFromBeginning);
                 timePlateTextView.setText(time);
-                int timeToEnd = MusicServiceManager.getInstance().getDuration() / 1000 -
+                int timeToEnd = musicServiceManager.getDuration() / 1000 -
                         timeFromBeginning;
                 timeTextView.setText(String.format("-%s", TimeUtils.secondsToMinuteString(timeToEnd)));
             }
@@ -486,7 +494,6 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     private void updateTime() {
-        MusicServiceManager musicServiceManager = MusicServiceManager.getInstance();
         if (musicServiceManager.isPrepared()) return;
         seekBar.setProgress(musicServiceManager.getCurrentPositionPercent());
         String text;
@@ -525,7 +532,7 @@ public class PhoneHomeFragment extends HomeFragment {
         titleTextView.setText(track.getTitle());
         playPauseButton.setImageResource(R.drawable.pause_button);
 
-        MusicServiceManager.getInstance().play(track.getRealPosition());
+        musicServiceManager.play(track.getRealPosition());
     }
 
     @Override

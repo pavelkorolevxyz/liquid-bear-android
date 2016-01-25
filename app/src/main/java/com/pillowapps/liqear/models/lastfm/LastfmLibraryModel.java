@@ -1,8 +1,5 @@
 package com.pillowapps.liqear.models.lastfm;
 
-import android.content.Context;
-
-import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrackArtistStruct;
@@ -28,14 +25,14 @@ import rx.schedulers.Schedulers;
 
 public class LastfmLibraryModel {
 
-    @Inject
-    LastfmUserModel lastfmUserModel;
+    private LastfmUserModel lastfmUserModel;
 
-    public LastfmLibraryModel(Context context) {
-        LBApplication.get(context).applicationComponent().inject(this);
+    @Inject
+    public LastfmLibraryModel(LastfmUserModel lastfmUserModel) {
+        this.lastfmUserModel = lastfmUserModel;
     }
 
-    public void getRadiomix(Context context, final String user, final SimpleCallback<List<LastfmTrack>> callback) {
+    public void getRadiomix(final String user, final SimpleCallback<List<LastfmTrack>> callback) {
         Observable<LastfmWeeklyTrackChartRoot> weeklyObservable = lastfmUserModel.getWeeklyTracksChart(user);
         Observable<LastfmTopTracksRoot> topTracksObservable = lastfmUserModel.getTopTracks(user,
                 Constants.PERIODS_ARRAY[0],

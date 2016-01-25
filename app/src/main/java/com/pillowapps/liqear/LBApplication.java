@@ -25,8 +25,10 @@ import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class LBApplication extends Application {
-    private static Context context;
     public static final Bus BUS = new Bus(ThreadEnforcer.ANY);
+
+    // todo remove this field
+    private static Context context;
 
     @SuppressWarnings("NullableProblems")
     @NonNull
@@ -52,11 +54,11 @@ public class LBApplication extends Application {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
+            ButterKnife.setDebug(true);
         } else {
             Fabric.with(this, new Crashlytics());
         }
 
-        ButterKnife.setDebug(true);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath("fonts/PTC55F.ttf")

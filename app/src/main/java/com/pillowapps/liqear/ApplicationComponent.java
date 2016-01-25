@@ -63,6 +63,9 @@ import dagger.Component;
 })
 public interface ApplicationComponent {
 
+    @NonNull
+    HomeFragment.HomeFragmentComponent plus(@NonNull HomeFragment.HomeFragmentModule homeFragmentModule);
+
     void inject(@NonNull LBApplication application);
 
     void inject(@NonNull AuthActivity application);
@@ -93,32 +96,33 @@ public interface ApplicationComponent {
 
     void inject(@NonNull VkFriendsActivity vkFriendsActivity);
 
-    void inject(VkGroupsActivity vkGroupsActivity);
+    void inject(@NonNull VkGroupsActivity vkGroupsActivity);
 
-    void inject(VkRecommendationsActivity vkRecommendationsActivity);
+    void inject(@NonNull VkRecommendationsActivity vkRecommendationsActivity);
 
-    void inject(LastfmAlbumViewerActivity lastfmAlbumViewerActivity);
+    void inject(@NonNull LastfmAlbumViewerActivity lastfmAlbumViewerActivity);
 
-    void inject(LastfmArtistViewerActivity lastfmArtistViewerActivity);
+    void inject(@NonNull LastfmArtistViewerActivity lastfmArtistViewerActivity);
 
-    void inject(LastfmChartsViewerActivity lastfmChartsViewerActivity);
+    void inject(@NonNull LastfmChartsViewerActivity lastfmChartsViewerActivity);
 
-    void inject(LastfmTagViewerActivity lastfmTagViewerActivity);
+    void inject(@NonNull LastfmTagViewerActivity lastfmTagViewerActivity);
 
-    void inject(LastfmUserViewerActivity lastfmUserViewerActivity);
+    void inject(@NonNull LastfmUserViewerActivity lastfmUserViewerActivity);
 
-    void inject(VkUserViewerActivity vkUserViewerActivity);
+    void inject(@NonNull VkUserViewerActivity vkUserViewerActivity);
 
-    void inject(HomeFragment homeFragment);
+    void inject(@NonNull HomeFragment homeFragment);
 
-    void inject(ShareModel shareModel);
+    void inject(@NonNull ShareModel shareModel);
 
-    void inject(LastfmDiscographyModel lastfmDiscographyModel);
+    void inject(@NonNull LastfmDiscographyModel lastfmDiscographyModel);
 
-    void inject(LastfmLibraryModel lastfmLibraryModel);
+    void inject(@NonNull LastfmLibraryModel lastfmLibraryModel);
 
-    void inject(LastfmRecommendationsModel lastfmRecommendationsModel);
+    void inject(@NonNull LastfmRecommendationsModel lastfmRecommendationsModel);
 
-    void inject(PlaylistsActivity playlistsActivity);
+    void inject(@NonNull PlaylistsActivity playlistsActivity);
+
 }
 

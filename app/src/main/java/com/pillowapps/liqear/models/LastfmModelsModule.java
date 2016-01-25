@@ -73,9 +73,8 @@ public class LastfmModelsModule {
     @Provides
     @NonNull
     @Singleton
-    public LastfmRecommendationsModel provideLastfmRecommendationsModel(@NonNull LastfmApiService api) {
-//        return new LastfmRecommendationsModel(api);
-        return null;
+    public LastfmRecommendationsModel provideLastfmRecommendationsModel(@NonNull LastfmArtistModel lastfmArtistModel) {
+        return new LastfmRecommendationsModel(lastfmArtistModel);
     }
 
 

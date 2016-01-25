@@ -1,8 +1,5 @@
 package com.pillowapps.liqear.models.lastfm;
 
-import android.content.Context;
-
-import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
@@ -20,11 +17,11 @@ import rx.schedulers.Schedulers;
 
 public class LastfmRecommendationsModel {
 
-    @Inject
-    LastfmArtistModel lastfmArtistModel;
+    private LastfmArtistModel lastfmArtistModel;
 
-    public LastfmRecommendationsModel(Context context) {
-        LBApplication.get(context).applicationComponent().inject(this);
+    @Inject
+    public LastfmRecommendationsModel(LastfmArtistModel lastfmArtistModel) {
+        this.lastfmArtistModel = lastfmArtistModel;
     }
 
     public void getRecommendationsTracks(List<Artist> artists, final SimpleCallback<List<LastfmTrack>> callback) {
