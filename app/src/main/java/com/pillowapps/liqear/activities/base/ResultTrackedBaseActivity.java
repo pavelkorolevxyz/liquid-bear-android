@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.components;
+package com.pillowapps.liqear.activities.base;
 
 import android.content.Intent;
 import android.view.MenuItem;
@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.HomeActivity;
-import com.pillowapps.liqear.activities.base.TrackedActivity;
 import com.pillowapps.liqear.activities.modes.VkAlbumTracksActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
@@ -30,7 +29,7 @@ import com.pillowapps.liqear.helpers.LBPreferencesManager;
 
 import java.util.List;
 
-public class ResultActivity extends TrackedActivity {
+public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
 
     protected int getPageSize() {
         return LBPreferencesManager.getPageSize();
@@ -52,7 +51,7 @@ public class ResultActivity extends TrackedActivity {
 
     public void openMainPlaylist(List<Track> tracks, int position, CharSequence title, boolean local) {
         if (!AuthorizationInfoManager.isAuthorizedOnVk() && !local) {
-            Toast.makeText(ResultActivity.this, R.string.vk_not_authorized,
+            Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -69,7 +68,7 @@ public class ResultActivity extends TrackedActivity {
 
     public void addToMainPlaylist(List<Track> tracks) {
         if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-            Toast.makeText(ResultActivity.this, R.string.vk_not_authorized,
+            Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -78,7 +77,7 @@ public class ResultActivity extends TrackedActivity {
 
     public void trackLongClick(List<Track> tracks, int position) {
         if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-            Toast.makeText(ResultActivity.this, R.string.vk_not_authorized,
+            Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -87,13 +86,13 @@ public class ResultActivity extends TrackedActivity {
 
     public void trackLongClick(Track track) {
         if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-            Toast.makeText(ResultActivity.this, R.string.vk_not_authorized,
+            Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;
         }
         Timeline.getInstance().addToPlaylist(track);
 
-        Toast.makeText(ResultActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ResultTrackedBaseActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
     }
 
     public void saveAsPlaylist(List<Track> tracks) {
@@ -106,45 +105,45 @@ public class ResultActivity extends TrackedActivity {
     }
 
     protected void openArtistByName(String name) {
-        Intent intent = new Intent(ResultActivity.this, LastfmArtistViewerActivity.class);
+        Intent intent = new Intent(ResultTrackedBaseActivity.this, LastfmArtistViewerActivity.class);
         intent.putExtra(LastfmArtistViewerActivity.ARTIST, name);
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 
     protected void openTag(Tag tag) {
-        Intent intent = new Intent(ResultActivity.this, LastfmTagViewerActivity.class);
+        Intent intent = new Intent(ResultTrackedBaseActivity.this, LastfmTagViewerActivity.class);
         intent.putExtra(LastfmTagViewerActivity.TAG, tag.getName());
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 
     protected void openLastfmUser(User user) {
-        Intent intent = new Intent(ResultActivity.this, LastfmUserViewerActivity.class);
+        Intent intent = new Intent(ResultTrackedBaseActivity.this, LastfmUserViewerActivity.class);
         intent.putExtra(LastfmUserViewerActivity.USER, user);
         intent.putExtra(LastfmUserViewerActivity.TAB_INDEX, LastfmUserViewerActivity.LOVED_INDEX);
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 
     protected void openGroup(Group group) {
-        Intent userViewerIntent = new Intent(ResultActivity.this, VkUserViewerActivity.class);
+        Intent userViewerIntent = new Intent(ResultTrackedBaseActivity.this, VkUserViewerActivity.class);
         userViewerIntent.putExtra(VkUserViewerActivity.GROUP, group);
         startActivityForResult(userViewerIntent, Constants.MAIN_REQUEST_CODE);
     }
 
     protected void openVkUser(User user) {
-        Intent userViewerIntent = new Intent(ResultActivity.this, VkUserViewerActivity.class);
+        Intent userViewerIntent = new Intent(ResultTrackedBaseActivity.this, VkUserViewerActivity.class);
         userViewerIntent.putExtra(VkUserViewerActivity.USER, user);
         startActivityForResult(userViewerIntent, Constants.MAIN_REQUEST_CODE);
     }
 
     protected void openLastfmAlbum(Album album) {
-        Intent intent = new Intent(ResultActivity.this, LastfmAlbumViewerActivity.class);
+        Intent intent = new Intent(ResultTrackedBaseActivity.this, LastfmAlbumViewerActivity.class);
         intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
         intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 
     protected void openVkAlbum(Album vkAlbum) {
-        Intent searchIntent = new Intent(ResultActivity.this,
+        Intent searchIntent = new Intent(ResultTrackedBaseActivity.this,
                 VkAlbumTracksActivity.class);
         searchIntent.putExtra("title", vkAlbum.getTitle());
         searchIntent.putExtra("uid", vkAlbum.getOwnerId());
@@ -153,7 +152,7 @@ public class ResultActivity extends TrackedActivity {
     }
 
     protected void openVkAlbum(VkAlbum vkAlbum) {
-        Intent searchIntent = new Intent(ResultActivity.this,
+        Intent searchIntent = new Intent(ResultTrackedBaseActivity.this,
                 VkAlbumTracksActivity.class);
         searchIntent.putExtra("title", vkAlbum.getTitle());
         searchIntent.putExtra("uid", vkAlbum.getOwnerId());
@@ -162,7 +161,7 @@ public class ResultActivity extends TrackedActivity {
     }
 
     protected void openGroupVkAlbum(Album vkAlbum) {
-        Intent searchIntent = new Intent(ResultActivity.this,
+        Intent searchIntent = new Intent(ResultTrackedBaseActivity.this,
                 VkAlbumTracksActivity.class);
         searchIntent.putExtra("title", vkAlbum.getTitle());
         searchIntent.putExtra("gid", vkAlbum.getOwnerId());
@@ -184,7 +183,7 @@ public class ResultActivity extends TrackedActivity {
         switch (itemId) {
             case android.R.id.home:
                 finish();
-                Intent intent = new Intent(ResultActivity.this, HomeActivity.class);
+                Intent intent = new Intent(ResultTrackedBaseActivity.this, HomeActivity.class);
                 intent.setAction(Intent.ACTION_MAIN);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

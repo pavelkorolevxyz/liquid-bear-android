@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.SearchListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.UserAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.User;
@@ -15,13 +16,12 @@ import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.DelayedTextWatcher;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class SearchLastfmUserActivity extends SearchBaseActivity {
+public class SearchLastfmUserActivity extends SearchListBaseActivity {
 
     private UserAdapter adapter;
 
@@ -34,7 +34,7 @@ public class SearchLastfmUserActivity extends SearchBaseActivity {
 
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(getResources().getString(R.string.friends));
+        setTitle(getResources().getString(R.string.friends));
         if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
             getLastfmFriends(AuthorizationInfoManager.getLastfmName(), getPageSize(), 1);
         } else {
@@ -61,6 +61,7 @@ public class SearchLastfmUserActivity extends SearchBaseActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+        updateEmptyTextView();
     }
 
     private void fillWithUsers(List<User> users) {

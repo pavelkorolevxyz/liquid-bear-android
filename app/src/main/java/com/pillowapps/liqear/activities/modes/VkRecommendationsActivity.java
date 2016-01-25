@@ -36,7 +36,7 @@ public class VkRecommendationsActivity extends ListBaseActivity {
 
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(getResources().getString(R.string.recommendations));
+        setTitle(getResources().getString(R.string.recommendations));
         searchVkRecommendations(getPageSize(), page++);
         recycler.enableLoadMore(true);
         recycler.setOnLoadMoreListener(() -> searchVkRecommendations(getPageSize(), page++));
@@ -45,7 +45,6 @@ public class VkRecommendationsActivity extends ListBaseActivity {
     private void fillWithVkTracklist(List<VkTrack> vkTracks) {
         final List<Track> trackList = Converter.convertVkTrackList(vkTracks);
         if (adapter == null || adapter.getItemCount() == 0) {
-            emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
             adapter = new TrackAdapter(this, trackList,
                     (view, position) -> openMainPlaylist(adapter.getItems(), position, getToolbarTitle()),
                     (view, position) -> {
@@ -57,6 +56,7 @@ public class VkRecommendationsActivity extends ListBaseActivity {
             adapter.addAll(trackList);
         }
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void searchVkRecommendations(int limit, int page) {

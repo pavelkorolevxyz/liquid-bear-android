@@ -18,19 +18,19 @@ public class LocalArtistsActivity extends ListBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        actionBar.setTitle(getString(R.string.artist));
+        setTitle(getString(R.string.artist));
         loadLocalArtists();
 
         recycler.setOnCreateContextMenuListener(this);
     }
 
     private void fillWithArtists(List<Artist> artists) {
-        emptyTextView.setVisibility(artists.size() == 0 ? View.VISIBLE : View.GONE);
         ArtistAdapter adapter = new ArtistAdapter(artists, (view, position) -> {
             //todo
         });
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void loadLocalArtists() {

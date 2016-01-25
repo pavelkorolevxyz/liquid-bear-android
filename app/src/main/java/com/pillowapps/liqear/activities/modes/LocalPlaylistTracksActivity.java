@@ -33,7 +33,7 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
 
         Bundle extras = getIntent().getExtras();
         String title = extras.getString("title");
-        actionBar.setTitle(title);
+        setTitle(title);
 
         loadPlaylistTracks(extras.getLong("pid"));
 
@@ -42,7 +42,6 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
 
     private void fillWithTracklist(List<Track> trackList) {
         if (adapter == null || adapter.getItemCount() == 0) {
-            emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
             adapter = new TrackAdapter(getApplicationContext(), trackList);
             recycler.setAdapter(adapter);
         } else {
@@ -65,6 +64,7 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
 //        });
 
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void loadPlaylistTracks(long playlistId) {

@@ -25,7 +25,7 @@ public class ViewPage extends Page{
         this.context = context;
         this.view = view;
         this.title = LBApplication.getAppContext().getString(titleRes);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
     }
 
     public View getView() {

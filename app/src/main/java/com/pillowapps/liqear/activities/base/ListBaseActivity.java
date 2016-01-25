@@ -2,19 +2,36 @@ package com.pillowapps.liqear.activities.base;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.pillowapps.liqear.activities.modes.SearchBaseActivity;
+import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.components.HintMaterialEditText;
+import com.pillowapps.liqear.components.LoadMoreRecyclerView;
 
-public abstract class ListBaseActivity extends SearchBaseActivity {
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+public abstract class ListBaseActivity extends ResultTrackedBaseActivity {
+
+    @Bind(R.id.search_edit_text_quick_search_layout)
+    protected HintMaterialEditText editText;
+    @Bind(R.id.list)
+    protected LoadMoreRecyclerView recycler;
+    @Bind(R.id.empty)
+    protected TextView emptyTextView;
+    @Bind(R.id.progressBar)
+    protected ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        searchLayout.setVisibility(View.GONE);
+        setContentView(R.layout.search_layout);
+        ButterKnife.bind(this);
     }
 
-    @Override
-    protected void initWatcher() {
-        // No operations.
+    protected void updateEmptyTextView() {
+        emptyTextView.setVisibility(recycler.getAdapter().getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
+
 }

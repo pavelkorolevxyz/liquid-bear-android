@@ -25,7 +25,7 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.LocalPlaylistTracksActivity;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.components.HintMaterialEditText;
-import com.pillowapps.liqear.components.ResultActivity;
+import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
@@ -40,7 +40,7 @@ import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class PlaylistsActivity extends ResultActivity {
+public class PlaylistsActivity extends ResultTrackedBaseActivity {
     public static final String AIM = "aim";
     private PlaylistsArrayAdapter adapter;
     private Bundle extras;

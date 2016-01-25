@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.SearchListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.AlbumAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.Album;
@@ -23,7 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class SearchAlbumActivity extends SearchBaseActivity {
+public class SearchAlbumActivity extends SearchListBaseActivity {
 
     private AlbumAdapter adapter;
 
@@ -36,7 +37,7 @@ public class SearchAlbumActivity extends SearchBaseActivity {
 
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(getString(R.string.album));
+        setTitle(getString(R.string.album));
         editText.setHint(getString(R.string.album));
         editText.setFloatingLabelText(getString(R.string.album));
         progressBar.setVisibility(View.GONE);
@@ -95,7 +96,6 @@ public class SearchAlbumActivity extends SearchBaseActivity {
     }
 
     private void fillWithAlbums(List<Album> albums) {
-        emptyTextView.setVisibility(albums.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new AlbumAdapter(albums, (view, position) -> {
             SharedPreferences albumPreferences = SharedPreferencesManager.getAlbumPreferences();
             SharedPreferences.Editor editor = albumPreferences.edit();
@@ -113,6 +113,7 @@ public class SearchAlbumActivity extends SearchBaseActivity {
         });
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void searchAlbum(String searchQuery, int limit, int page) {

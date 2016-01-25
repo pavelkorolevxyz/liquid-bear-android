@@ -9,22 +9,22 @@ import android.view.MenuItem;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.SetlistsResultActivity;
 import com.pillowapps.liqear.components.HintMaterialEditText;
-import com.pillowapps.liqear.components.ResultActivity;
+import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
 import com.pillowapps.liqear.helpers.Constants;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import mehdi.sakout.fancybuttons.FancyButton;
 
-public class SetlistsActivity extends ResultActivity {
-    @InjectView(R.id.artist_name_edit_text_setlist)
+public class SetlistsActivity extends ResultTrackedBaseActivity {
+    @Bind(R.id.artist_name_edit_text_setlist)
     protected HintMaterialEditText artistEditText;
-    @InjectView(R.id.city_edit_text_setlist)
+    @Bind(R.id.city_edit_text_setlist)
     protected HintMaterialEditText venueEditText;
-    @InjectView(R.id.venue_edit_text_setlist)
+    @Bind(R.id.venue_edit_text_setlist)
     protected HintMaterialEditText cityEditText;
-    @InjectView(R.id.search_setlist_button)
+    @Bind(R.id.search_setlist_button)
     protected FancyButton searchButton;
 
     @Override
@@ -33,7 +33,7 @@ public class SetlistsActivity extends ResultActivity {
         setContentView(R.layout.setlist_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

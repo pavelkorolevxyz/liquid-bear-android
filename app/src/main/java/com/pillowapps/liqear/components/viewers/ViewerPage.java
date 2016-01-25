@@ -19,16 +19,16 @@ import com.pillowapps.liqear.models.Page;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import timber.log.Timber;
 
 public abstract class ViewerPage<T> extends Page {
-    @InjectView(R.id.list)
+    @Bind(R.id.list)
     protected RecyclerView recyclerView;
-    @InjectView(R.id.pageProgressBar)
+    @Bind(R.id.pageProgressBar)
     protected ProgressBar progressBar;
-    @InjectView(R.id.empty)
+    @Bind(R.id.empty)
     protected TextView emptyTextView;
     protected boolean filledFull = false;
 
@@ -47,7 +47,7 @@ public abstract class ViewerPage<T> extends Page {
         this.context = context;
         this.view = view;
         this.title = title;
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         recyclerView.setHasFixedSize(true);
 

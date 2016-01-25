@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.AuthActivity" />
-        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.VkLoginActivity" />
         <activity android:name=".activities.viewers.VkUserViewerActivity" />
         <activity android:name=".activities.viewers.LastfmUserViewerActivity" />
         <activity android:name=".activities.viewers.LastfmChartsViewerActivity" />

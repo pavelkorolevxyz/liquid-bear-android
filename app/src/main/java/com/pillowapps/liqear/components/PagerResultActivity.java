@@ -5,6 +5,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
 import com.pillowapps.liqear.components.viewers.ViewerPage;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
@@ -17,7 +18,7 @@ import com.viewpagerindicator.TitlePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PagerResultActivity extends ResultActivity {
+public class PagerResultActivity extends ResultTrackedBaseActivity {
     protected ViewPager pager;
     protected TitlePageIndicator indicator;
     private List<Page> pages = new ArrayList<>();

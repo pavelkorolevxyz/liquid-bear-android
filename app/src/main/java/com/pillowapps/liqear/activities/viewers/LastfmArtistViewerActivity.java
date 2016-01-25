@@ -43,8 +43,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class LastfmArtistViewerActivity extends PagerResultActivity {
     public static final String ARTIST = "artist";
@@ -61,9 +61,9 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     LastfmArtistModel artistModel;
 
     private View infoTab;
-    @InjectView(R.id.progress_bar_scrollable_text_layout)
+    @Bind(R.id.progress_bar_scrollable_text_layout)
     protected ProgressBar artistInfoProgressBar;
-    @InjectView(R.id.text_view_scrollable_text_layout)
+    @Bind(R.id.text_view_scrollable_text_layout)
     protected TextView artistInfoTextView;
 
     @Override
@@ -87,7 +87,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
 
     private void initUi() {
         initViewPager();
-        ButterKnife.inject(this, infoTab);
+        ButterKnife.bind(this, infoTab);
         infoTab.findViewById(R.id.toolbar).setVisibility(View.GONE);
         artistInfoTextView.setMovementMethod(LinkMovementMethod.getInstance());
         int defaultIndex = TOP_TRACKS_INDEX;

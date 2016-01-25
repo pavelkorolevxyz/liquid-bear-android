@@ -21,7 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.base.TrackedActivity;
+import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
 import com.pillowapps.liqear.audio.EqualizerManager;
 import com.pillowapps.liqear.helpers.CompatEq;
 import com.pillowapps.liqear.helpers.Constants;
@@ -30,7 +30,7 @@ import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EqualizerActivity extends TrackedActivity {
+public class EqualizerActivity extends TrackedBaseActivity {
 
     private static final List<SeekBar> SEEK_BARS = new ArrayList<>();
     private static final int TEXT_SIZE = 14;

@@ -37,7 +37,7 @@ public class VkAlbumTracksActivity extends ListBaseActivity {
         super.onCreate(savedInstanceState);
 
         Bundle extras = getIntent().getExtras();
-        actionBar.setTitle(extras.getString(TITLE));
+        setTitle(extras.getString(TITLE));
         long uid = extras.getLong(UID, -1);
         if (uid == -1) {
             long gid = extras.getLong(GID, -1);
@@ -50,7 +50,6 @@ public class VkAlbumTracksActivity extends ListBaseActivity {
     private void fillWithVkTracklist(List<VkTrack> vkTracks) {
         final List<Track> trackList = Converter.convertVkTrackList(vkTracks);
         if (adapter == null || adapter.getItemCount() == 0) {
-            emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
             adapter = new TrackAdapter(this, trackList,
                     (view, position) -> openMainPlaylist(adapter.getItems(), position, getToolbarTitle()),
                     (view, position) -> {
@@ -62,6 +61,7 @@ public class VkAlbumTracksActivity extends ListBaseActivity {
             adapter.addAll(trackList);
         }
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void getVkUserAudioFromAlbum(long uid, long albumId) {

@@ -18,19 +18,19 @@ public class LocalAlbumsActivity extends ListBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        actionBar.setTitle(getString(R.string.album));
+        setTitle(getString(R.string.album));
         loadLocalAlbums();
 
         recycler.setOnCreateContextMenuListener(this);
     }
 
     private void fillWithAlbums(List<Album> albums) {
-        emptyTextView.setVisibility(albums.size() == 0 ? View.VISIBLE : View.GONE);
         AlbumAdapter adapter = new AlbumAdapter(albums, (view, position) -> {
             //todo
         });
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void loadLocalAlbums() {

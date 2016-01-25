@@ -34,8 +34,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class LastfmAlbumViewerActivity extends PagerResultActivity {
     public static final String ALBUM = "album";
@@ -44,15 +44,15 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
     public static final int PAGES_NUMBER = 2;
 
     private View infoTab;
-    @InjectView(R.id.album_cover_image_view)
+    @Bind(R.id.album_cover_image_view)
     protected ImageView albumCoverImageView;
-    @InjectView(R.id.artist_text_view)
+    @Bind(R.id.artist_text_view)
     protected TextView artistTextView;
-    @InjectView(R.id.title_text_view)
+    @Bind(R.id.title_text_view)
     protected TextView titleTextView;
-    @InjectView(R.id.other_text_view)
+    @Bind(R.id.other_text_view)
     protected TextView otherTextView;
-    @InjectView(R.id.progressBar)
+    @Bind(R.id.progressBar)
     protected ProgressBar progressBar;
 
     @Inject
@@ -85,7 +85,7 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
     private void initUi() {
         initViewPager();
 
-        ButterKnife.inject(this, infoTab);
+        ButterKnife.bind(this, infoTab);
     }
 
     private void initViewPager() {

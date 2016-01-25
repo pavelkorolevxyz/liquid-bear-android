@@ -17,25 +17,25 @@ import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.TimeUtils;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class PlaybackControlFragment extends Fragment {
-    @InjectView(R.id.play_pause_button_playback_tab)
+    @Bind(R.id.play_pause_button_playback_tab)
     protected ImageButton playPauseButton;
-    @InjectView(R.id.seek_bar_playback_tab)
+    @Bind(R.id.seek_bar_playback_tab)
     protected SeekBar seekBar;
-    @InjectView(R.id.time_text_view_playback_tab)
+    @Bind(R.id.time_text_view_playback_tab)
     protected TextView timeTextView;
-    @InjectView(R.id.time_inverted_text_view_playback_tab)
+    @Bind(R.id.time_inverted_text_view_playback_tab)
     protected TextView timeDurationTextView;
-    @InjectView(R.id.next_button_playback_tab)
+    @Bind(R.id.next_button_playback_tab)
     protected ImageButton nextButton;
-    @InjectView(R.id.prev_button_playback_tab)
+    @Bind(R.id.prev_button_playback_tab)
     protected ImageButton prevButton;
-    @InjectView(R.id.shuffle_button_playback_tab)
+    @Bind(R.id.shuffle_button_playback_tab)
     protected ImageButton shuffleButton;
-    @InjectView(R.id.repeat_button_playback_tab)
+    @Bind(R.id.repeat_button_playback_tab)
     protected ImageButton repeatButton;
 //
 //    private MainActivity mainActivity;

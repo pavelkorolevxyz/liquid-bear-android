@@ -31,15 +31,15 @@ public class VkFriendsActivity extends ListBaseActivity {
 
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(getResources().getString(R.string.vk_friends));
+        setTitle(getResources().getString(R.string.vk_friends));
         getVkFriends();
     }
 
     private void fillWithUsers(List<User> users) {
-        emptyTextView.setVisibility(users.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new UserAdapter(users, (view, position) -> openVkUser(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void getVkFriends() {

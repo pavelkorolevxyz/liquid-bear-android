@@ -33,7 +33,7 @@ public class VkAudioSearchActivity extends ListBaseActivity {
         super.onCreate(savedInstanceState);
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(getResources().getString(R.string.pick_good_result));
+        setTitle(getResources().getString(R.string.pick_good_result));
         Track currentTrack = Timeline.getInstance().getCurrentTrack();
 
         String target = getIntent().getStringExtra(Constants.TARGET);
@@ -47,7 +47,6 @@ public class VkAudioSearchActivity extends ListBaseActivity {
     private void fillWithVkTracklist(List<VkTrack> vkTracks) {
         final List<Track> trackList = Converter.convertVkTrackList(vkTracks);
         if (adapter == null || adapter.getItemCount() == 0) {
-            emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
             adapter = new TrackAdapter(this, trackList,
                     (view, position) -> openMainPlaylist(adapter.getItems(), position, getToolbarTitle()),
                     (view, position) -> {
@@ -59,6 +58,7 @@ public class VkAudioSearchActivity extends ListBaseActivity {
             adapter.addAll(trackList);
         }
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void searchVK(String searchQuery, int count) {

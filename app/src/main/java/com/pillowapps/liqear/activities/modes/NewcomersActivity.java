@@ -15,11 +15,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.NewcomersAdapter;
 import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 import com.pillowapps.liqear.components.LoadMoreRecyclerView;
 import com.pillowapps.liqear.components.OnRecyclerItemClickListener;
-import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class NewcomersActivity extends ResultActivity {
+public class NewcomersActivity extends ResultTrackedBaseActivity {
     public static final String MODE = "mode";
     public static final int NEWCOMERS_START_ITEMS = 20;
     private Mode mode;

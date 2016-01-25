@@ -55,14 +55,13 @@ public class LocalTracksActivity extends ListBaseActivity {
         } else {
             loadTracksByFolder(filePath);
         }
-        actionBar.setTitle(getString(R.string.tracks));
+        setTitle(getString(R.string.tracks));
 
         recycler.setOnCreateContextMenuListener(this);
     }
 
     private void fillWithTracklist(List<Track> trackList) {
         if (adapter == null || adapter.getItemCount() == 0) {
-            emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
             adapter = new TrackAdapter(this, trackList,
                     (view, position) -> openMainPlaylist(adapter.getItems(), position, getToolbarTitle()),
                     (view, position) -> {
@@ -74,6 +73,7 @@ public class LocalTracksActivity extends ListBaseActivity {
             adapter.addAll(trackList);
         }
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void loadTracks() {

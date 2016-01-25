@@ -30,7 +30,7 @@ public class LastfmNeighboursActivity extends ListBaseActivity {
         super.onCreate(savedInstanceState);
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(getResources().getString(R.string.neighbours));
+        setTitle(getResources().getString(R.string.neighbours));
         if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
             getNeighbours(AuthorizationInfoManager.getLastfmName(), getPageSize());
         } else {
@@ -39,10 +39,10 @@ public class LastfmNeighboursActivity extends ListBaseActivity {
     }
 
     private void fillWithUsers(List<User> users) {
-        emptyTextView.setVisibility(users.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new NeighbourAdapter(users, (view, position) -> openLastfmUser(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void getNeighbours(String username, int limit) {

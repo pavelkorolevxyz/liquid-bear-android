@@ -17,11 +17,11 @@ import android.widget.ProgressBar;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.base.TrackedActivity;
+import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.network.VkApiModule;
 
-public class LoginActivity extends TrackedActivity {
+public class VkLoginActivity extends TrackedBaseActivity {
     public static final String OAUTH_REQUEST_FORMAT = "http://oauth.vk.com/authorize?"
             + "client_id=%s&"
             + "scope=%s&"

@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.SearchListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.TagAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.Tag;
@@ -23,7 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class SearchTagActivity extends SearchBaseActivity {
+public class SearchTagActivity extends SearchListBaseActivity {
 
     private TagAdapter adapter;
 
@@ -36,7 +37,7 @@ public class SearchTagActivity extends SearchBaseActivity {
 
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(getString(R.string.tag_radio));
+        setTitle(getString(R.string.tag_radio));
         editText.setHint(getString(R.string.tag_radio));
         editText.setFloatingLabelText(getString(R.string.tag_radio));
         progressBar.setVisibility(View.GONE);
@@ -89,10 +90,10 @@ public class SearchTagActivity extends SearchBaseActivity {
     }
 
     private void fillWithTags(List<Tag> tags) {
-        emptyTextView.setVisibility(tags.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new TagAdapter(tags, (view, position) -> openTag(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
 

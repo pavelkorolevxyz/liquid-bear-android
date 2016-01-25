@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.SearchListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.ArtistAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.Artist;
@@ -23,7 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class SearchArtistActivity extends SearchBaseActivity {
+public class SearchArtistActivity extends SearchListBaseActivity {
 
     private ArtistAdapter adapter;
 
@@ -35,7 +36,7 @@ public class SearchArtistActivity extends SearchBaseActivity {
         super.onCreate(savedInstanceState);
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(getString(R.string.artist_radio));
+        setTitle(getString(R.string.artist_radio));
         editText.setHint(getString(R.string.artist_radio));
         editText.setFloatingLabelText(getString(R.string.artist_radio));
         progressBar.setVisibility(View.GONE);
@@ -90,7 +91,6 @@ public class SearchArtistActivity extends SearchBaseActivity {
     }
 
     private void fillWithArtists(List<Artist> artists) {
-        emptyTextView.setVisibility(artists.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new ArtistAdapter(artists, (view, position) -> {
             SharedPreferences artistPreferences = SharedPreferencesManager.getArtistPreferences();
             SharedPreferences.Editor editor = artistPreferences.edit();
@@ -106,6 +106,7 @@ public class SearchArtistActivity extends SearchBaseActivity {
         });
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void searchArtist(String searchQuery, int limit, int page) {

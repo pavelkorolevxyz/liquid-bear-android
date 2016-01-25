@@ -32,15 +32,15 @@ public class VkGroupsActivity extends ListBaseActivity {
 
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(getResources().getString(R.string.group));
+        setTitle(getResources().getString(R.string.group));
         getVkGroups();
     }
 
     private void fillWithGroups(List<Group> groups) {
-        emptyTextView.setVisibility(groups.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new GroupAdapter(groups, (view, position) -> openGroup(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void getVkGroups() {

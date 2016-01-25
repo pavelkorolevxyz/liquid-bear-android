@@ -23,7 +23,7 @@ public class NewcomersTracksActivity extends ListBaseActivity {
         List<String> stringArrayList = extras.getStringArrayList("tracks");
         String artist = extras.getString("artist");
         String albumTitle = extras.getString("title");
-        actionBar.setTitle(artist + " - " + albumTitle);
+        setTitle(artist + " - " + albumTitle);
         List<Track> tracks = new ArrayList<>();
         if (stringArrayList != null) {
             for (String trackTitle : stringArrayList) {
@@ -35,7 +35,6 @@ public class NewcomersTracksActivity extends ListBaseActivity {
 
     private void fillWithVkTracklist(List<Track> trackList) {
         if (adapter == null || adapter.getItemCount() == 0) {
-            emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
             adapter = new TrackAdapter(this, trackList,
                     (view, position) -> openMainPlaylist(adapter.getItems(), position, getToolbarTitle()),
                     (view, position) -> {
@@ -47,5 +46,6 @@ public class NewcomersTracksActivity extends ListBaseActivity {
             adapter.addAll(trackList);
         }
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 }

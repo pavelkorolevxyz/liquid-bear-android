@@ -30,7 +30,7 @@ public class SetlistsResultActivity extends ListBaseActivity {
         super.onCreate(savedInstanceState);
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(R.string.setlist);
+        setTitle(R.string.setlist);
 
         Bundle extras = getIntent().getExtras();
 
@@ -42,7 +42,6 @@ public class SetlistsResultActivity extends ListBaseActivity {
 
     private void fillWithSetlists(List<SetlistfmSetlist> setlists) {
         if (adapter == null || adapter.getItemCount() == 0) {
-            emptyTextView.setVisibility(setlists.size() == 0 ? View.VISIBLE : View.GONE);
             adapter = new SetlistAdapter(setlists, (view, position) -> {
                 Intent searchIntent = new Intent(SetlistsResultActivity.this,
                         SetlistTracksActivity.class);
@@ -56,6 +55,7 @@ public class SetlistsResultActivity extends ListBaseActivity {
             recycler.setAdapter(adapter);
         }
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void searchSetlists(String artist, String venue, final String city) {

@@ -31,7 +31,7 @@ import android.widget.ProgressBar;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.base.TrackedActivity;
+import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.components.TouchImageView;
 import com.pillowapps.liqear.models.ImageModel;
@@ -42,7 +42,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class ImagePagerActivity extends TrackedActivity {
+public class ImagePagerActivity extends TrackedBaseActivity {
 
     public static final String ARTIST = "artist";
     public static final String PAGE_FORMAT = "[%d/%d] ";

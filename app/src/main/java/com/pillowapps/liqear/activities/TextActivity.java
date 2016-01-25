@@ -17,10 +17,10 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
-import com.pillowapps.liqear.components.ResultActivity;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
@@ -36,7 +36,7 @@ import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
-public class TextActivity extends ResultActivity {
+public class TextActivity extends ResultTrackedBaseActivity {
     public static final String ARTIST_NAME = "artist_name";
     public static final String TEXT_AIM = "text_aim";
     private TextView textView;

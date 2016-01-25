@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.SearchListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.TrackAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.Track;
@@ -23,7 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class SearchSimpleTrackActivity extends SearchBaseActivity {
+public class SearchSimpleTrackActivity extends SearchListBaseActivity {
 
     private TrackAdapter adapter;
 
@@ -36,7 +37,7 @@ public class SearchSimpleTrackActivity extends SearchBaseActivity {
 
         LBApplication.get(this).applicationComponent().inject(this);
 
-        actionBar.setTitle(getString(R.string.vk_simple_search));
+        setTitle(getString(R.string.vk_simple_search));
         editText.setFloatingLabelText(getString(R.string.track));
         editText.setHint(getString(R.string.track));
         progressBar.setVisibility(View.GONE);
@@ -64,7 +65,6 @@ public class SearchSimpleTrackActivity extends SearchBaseActivity {
 
     private void fillWithVkTracklist(List<VkTrack> vkTracks) {
         List<Track> trackList = Converter.convertVkTrackList(vkTracks);
-        emptyTextView.setVisibility(trackList.size() == 0 ? View.VISIBLE : View.GONE);
         adapter = new TrackAdapter(this, trackList,
                 (view, position) -> openMainPlaylist(adapter.getItems(), position, getToolbarTitle()),
                 (view, position) -> {
@@ -73,6 +73,7 @@ public class SearchSimpleTrackActivity extends SearchBaseActivity {
                 });
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+        updateEmptyTextView();
     }
 
     private void searchVK(String searchQuery, int count) {

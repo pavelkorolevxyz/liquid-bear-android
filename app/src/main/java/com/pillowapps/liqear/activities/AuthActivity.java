@@ -24,7 +24,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.base.TrackedActivity;
+import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
 import com.pillowapps.liqear.adapters.pagers.AuthPagerAdapter;
 import com.pillowapps.liqear.callbacks.LastfmErrorCodeCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -49,7 +49,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class AuthActivity extends TrackedActivity {
+public class AuthActivity extends TrackedBaseActivity {
     private static final int VK_INDEX = 0;
     private static final int LASTFM_INDEX = 1;
     private View vkTab;
@@ -244,7 +244,7 @@ public class AuthActivity extends TrackedActivity {
             errorVkTextView.setVisibility(View.GONE);
             AuthorizationInfoManager.signOutVk();
             authVkPanel.setVisibility(View.INVISIBLE);
-            Intent intent = new Intent(AuthActivity.this, LoginActivity.class);
+            Intent intent = new Intent(AuthActivity.this, VkLoginActivity.class);
             startActivityForResult(intent, Constants.AUTH_VK_REQUEST);
         });
         signOutVkButton.setOnClickListener(view -> {
