@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.models.vk;
 
-import com.pillowapps.liqear.callbacks.VkCallback;
+import com.pillowapps.liqear.callbacks.retrofit.VkCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkUser;

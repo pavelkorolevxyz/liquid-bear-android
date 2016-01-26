@@ -2,28 +2,29 @@ package com.pillowapps.liqear;
 
 import android.support.annotation.NonNull;
 
-import com.pillowapps.liqear.activities.AuthActivity;
 import com.pillowapps.liqear.activities.ImagePagerActivity;
-import com.pillowapps.liqear.activities.PlaylistsActivity;
 import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.activities.modes.LastfmNeighboursActivity;
 import com.pillowapps.liqear.activities.modes.LastfmRecommendationsActivity;
+import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.SearchAlbumActivity;
 import com.pillowapps.liqear.activities.modes.SearchArtistActivity;
 import com.pillowapps.liqear.activities.modes.SearchLastfmUserActivity;
 import com.pillowapps.liqear.activities.modes.SearchSimpleTrackActivity;
 import com.pillowapps.liqear.activities.modes.SearchTagActivity;
 import com.pillowapps.liqear.activities.modes.SetlistsResultActivity;
+import com.pillowapps.liqear.activities.modes.VkAlbumTracksActivity;
 import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.activities.modes.VkFriendsActivity;
 import com.pillowapps.liqear.activities.modes.VkGroupsActivity;
 import com.pillowapps.liqear.activities.modes.VkRecommendationsActivity;
-import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
-import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
-import com.pillowapps.liqear.activities.viewers.LastfmChartsViewerActivity;
-import com.pillowapps.liqear.activities.viewers.LastfmTagViewerActivity;
-import com.pillowapps.liqear.activities.viewers.LastfmUserViewerActivity;
-import com.pillowapps.liqear.activities.viewers.VkUserViewerActivity;
+import com.pillowapps.liqear.activities.modes.viewers.LastfmAlbumViewerActivity;
+import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity;
+import com.pillowapps.liqear.activities.modes.viewers.LastfmChartsViewerActivity;
+import com.pillowapps.liqear.activities.modes.viewers.LastfmTagViewerActivity;
+import com.pillowapps.liqear.activities.modes.viewers.LastfmUserViewerActivity;
+import com.pillowapps.liqear.activities.modes.viewers.VkUserViewerActivity;
+import com.pillowapps.liqear.activities.preferences.AuthActivity;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.MusicServiceModule;
 import com.pillowapps.liqear.fragments.HomeFragment;
@@ -124,5 +125,6 @@ public interface ApplicationComponent {
 
     void inject(@NonNull PlaylistsActivity playlistsActivity);
 
+    void inject(@NonNull VkAlbumTracksActivity vkAlbumTracksActivity);
 }
 

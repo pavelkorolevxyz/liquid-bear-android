@@ -28,7 +28,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/toolbar">
 
-        <com.pillowapps.liqear.components.HintMaterialEditText
+        <com.pillowapps.liqear.views.HintMaterialEditText
             android:id="@+id/search_edit_text_playlist_tab"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

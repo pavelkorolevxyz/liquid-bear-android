@@ -5,7 +5,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pillowapps.liqear.components.ViewPage;
+import com.pillowapps.liqear.entities.ViewPage;
 
 import java.util.List;
 

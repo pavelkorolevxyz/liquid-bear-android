@@ -25,6 +25,7 @@ import com.pillowapps.liqear.entities.vk.VkUser;
 import java.util.ArrayList;
 import java.util.List;
 
+// todo replace with mapper
 public class Converter {
 
     private Converter() {
@@ -67,7 +68,6 @@ public class Converter {
         String name = lastfmUser.getName();
         User user = new User(name);
         List<LastfmImage> images = lastfmUser.getImages();
-        user.setMatch(lastfmUser.getMatch());
         if (images != null) {
             LastfmImage lastImage = images.get(images.size() - 1);
             if (lastImage.getSize().isEmpty() && images.size() > 1) {

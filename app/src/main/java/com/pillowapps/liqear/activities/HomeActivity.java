@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.pillowapps.liqear.BuildConfig;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
+import com.pillowapps.liqear.activities.preferences.AuthActivity;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 

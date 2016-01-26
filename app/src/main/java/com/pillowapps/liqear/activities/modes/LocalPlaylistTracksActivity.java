@@ -68,7 +68,7 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
     }
 
     private void loadPlaylistTracks(long playlistId) {
-        playlistModel.getPlaylist(LocalPlaylistTracksActivity.this, playlistId)
+        playlistModel.getPlaylist(playlistId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlist -> {

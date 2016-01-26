@@ -20,14 +20,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.michaelnovakjr.numberpicker.NumberPicker;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.EqualizerActivity;
 import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.activities.ImagePagerActivity;
-import com.pillowapps.liqear.activities.MusicServiceManager;
-import com.pillowapps.liqear.activities.PlaylistsActivity;
-import com.pillowapps.liqear.activities.PreferencesActivity;
+import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
-import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
+import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity;
+import com.pillowapps.liqear.activities.preferences.EqualizerActivity;
+import com.pillowapps.liqear.activities.preferences.PreferencesActivity;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -35,9 +34,11 @@ import com.pillowapps.liqear.entities.MainActivityStartEnum;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.events.ExitEvent;
 import com.pillowapps.liqear.entities.events.ShowProgressEvent;
+import com.pillowapps.liqear.fragments.base.BaseFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
+import com.pillowapps.liqear.helpers.MusicServiceManager;
 import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
@@ -61,10 +62,8 @@ import javax.inject.Inject;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Subcomponent;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public abstract class HomeFragment extends BaseFragment implements HomeView {
 
@@ -387,26 +386,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             if (autoPlay) {
                 presenter.playTrack(index);
             }
-            playlistModel.saveMainPlaylist(getActivity(), Timeline.getInstance().getPlaylist())
+            playlistModel.saveMainPlaylist(Timeline.getInstance().getPlaylist())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new Subscriber<Long>() {
-                        @Override
-                        public void onCompleted() {
-                            Timber.d("saving completed");
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.d("saving error " + e.toString());
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onNext(Long aLong) {
-                            Timber.d("saving onNext " + aLong);
-                        }
-                    });
+                    .subscribe();
         }
         updateEmptyPlaylistTextView();
     }

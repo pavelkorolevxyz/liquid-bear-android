@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
-import com.pillowapps.liqear.components.UpdateAdapterCallback;
+import com.pillowapps.liqear.callbacks.UpdateAdapterCallback;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;

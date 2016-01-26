@@ -2,7 +2,7 @@ package com.pillowapps.liqear.helpers;
 
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
-import com.pillowapps.liqear.callbacks.VkCallback;
+import com.pillowapps.liqear.callbacks.retrofit.VkCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 
 public class VkCallbackUtils {

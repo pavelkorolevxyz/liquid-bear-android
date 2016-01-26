@@ -1,67 +1,52 @@
 package com.pillowapps.liqear.helpers;
 
-import android.annotation.TargetApi;
 import android.media.MediaPlayer;
 import android.media.audiofx.Equalizer;
 
-/**
- * Gingerbread equalizer compatibility.
- */
-@TargetApi(9)
 public class CompatEq {
-    private final Equalizer mEq;
+    private final Equalizer equalizer;
 
-    /**
-     * Create the equalizer and attach it to the given MediaPlayer's audio
-     * session.
-     */
     public CompatEq(MediaPlayer player) {
-        mEq = new Equalizer(0, player.getAudioSessionId());
+        equalizer = new Equalizer(0, player.getAudioSessionId());
     }
 
-    /**
-     * Call {@link Equalizer#getNumberOfBands()}
-     */
     public short getNumberOfBands() {
-        return mEq.getNumberOfBands();
+        return equalizer.getNumberOfBands();
     }
 
-    /**
-     * Call {@link Equalizer#setBandLevel(short, short)}.
-     */
     public void setBandLevel(short band, short level) {
-        mEq.setBandLevel(band, level);
+        equalizer.setBandLevel(band, level);
     }
 
     public void setEnabled(boolean enabled) {
-        mEq.setEnabled(enabled);
+        equalizer.setEnabled(enabled);
     }
 
     public short getNumberOfPresets() {
-        return mEq.getNumberOfPresets();
+        return equalizer.getNumberOfPresets();
     }
 
     public String getPresetName(short i) {
-        return mEq.getPresetName(i);
+        return equalizer.getPresetName(i);
     }
 
     public void usePreset(short position) {
-        mEq.usePreset(position);
+        equalizer.usePreset(position);
     }
 
     public int getBandLevel(short i) {
-        return mEq.getBandLevel(i);
+        return equalizer.getBandLevel(i);
     }
 
     public short[] getBandLevelRange() {
-        return mEq.getBandLevelRange();
+        return equalizer.getBandLevelRange();
     }
 
     public int getCenterFreq(short band) {
-        return mEq.getCenterFreq(band);
+        return equalizer.getCenterFreq(band);
     }
 
     public void release() {
-        mEq.release();
+        equalizer.release();
     }
 }

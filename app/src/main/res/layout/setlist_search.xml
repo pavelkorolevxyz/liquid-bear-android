@@ -23,7 +23,7 @@
             android:orientation="vertical"
             android:padding="4dp">
 
-            <com.pillowapps.liqear.components.HintMaterialEditText
+            <com.pillowapps.liqear.views.HintMaterialEditText
                 android:id="@+id/artist_name_edit_text_setlist"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                 app:met_floatingLabel="normal"
                 app:met_primaryColor="@color/accent" />
 
-            <com.pillowapps.liqear.components.HintMaterialEditText
+            <com.pillowapps.liqear.views.HintMaterialEditText
                 android:id="@+id/city_edit_text_setlist"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                 app:met_floatingLabel="normal"
                 app:met_primaryColor="@color/accent" />
 
-            <com.pillowapps.liqear.components.HintMaterialEditText
+            <com.pillowapps.liqear.views.HintMaterialEditText
                 android:id="@+id/venue_edit_text_setlist"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

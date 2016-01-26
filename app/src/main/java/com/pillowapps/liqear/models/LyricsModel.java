@@ -7,6 +7,7 @@ import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.entities.Track;
 
 public class LyricsModel {
+
     public void openLyrics(Context context, Track track) {
         Intent intent = new Intent(context, TextActivity.class);
         intent.putExtra("artist", track.getArtist());
@@ -14,4 +15,5 @@ public class LyricsModel {
         intent.putExtra(TextActivity.TEXT_AIM, TextActivity.Aim.LYRICS); // todo ??
         context.startActivity(intent);
     }
+
 }

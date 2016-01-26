@@ -1,13 +1,13 @@
 package com.pillowapps.liqear.models.lastfm;
 
-import com.pillowapps.liqear.callbacks.LastfmCallback;
+import com.pillowapps.liqear.callbacks.retrofit.LastfmCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmTrackRoot;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.LastfmApiHelper;
+import com.pillowapps.liqear.network.LastfmApiHelper;
 import com.pillowapps.liqear.helpers.LastfmCallbackUtils;
 import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.network.service.LastfmApiService;

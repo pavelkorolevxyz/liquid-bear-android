@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.network.ImageLoadingListener;
+import com.pillowapps.liqear.listeners.OnImageLoadedListener;
 
 public class ImageModel {
 
@@ -56,7 +56,7 @@ public class ImageModel {
                 .into(imageView);
     }
 
-    public void loadImage(Context context, String url, final ImageLoadingListener listener) {
+    public void loadImage(Context context, String url, final OnImageLoadedListener listener) {
         Glide.with(context)
                 .load(url)
                 .asBitmap()
@@ -68,7 +68,7 @@ public class ImageModel {
                 });
     }
 
-    public void loadImage(String url, ImageView imageView, final ImageLoadingListener listener) {
+    public void loadImage(String url, ImageView imageView, final OnImageLoadedListener listener) {
         Glide.with(imageView.getContext())
                 .load(url)
                 .asBitmap()

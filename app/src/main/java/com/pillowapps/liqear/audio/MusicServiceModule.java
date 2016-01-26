@@ -2,7 +2,7 @@ package com.pillowapps.liqear.audio;
 
 import android.support.annotation.NonNull;
 
-import com.pillowapps.liqear.activities.MusicServiceManager;
+import com.pillowapps.liqear.helpers.MusicServiceManager;
 
 import javax.inject.Singleton;
 

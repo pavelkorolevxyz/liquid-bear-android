@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.helpers;
 
+// todo move according to usage places
 public class Constants {
     public static final String[] PERIODS_ARRAY = new String[]{
             "overall",

@@ -20,7 +20,7 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
-import com.pillowapps.liqear.models.PlayingState;
+import com.pillowapps.liqear.entities.PlayingState;
 
 public class FourWidthThreeHeightAltWidget extends AppWidgetProvider {
     private static boolean sEnabled;

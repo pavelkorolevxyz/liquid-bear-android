@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.models.lastfm;
 
-import com.pillowapps.liqear.callbacks.LastfmCallback;
+import com.pillowapps.liqear.callbacks.retrofit.LastfmCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmTag;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;

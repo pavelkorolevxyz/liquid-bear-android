@@ -56,13 +56,13 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.NetworkUtils;
-import com.pillowapps.liqear.helpers.ShakeDetector;
+import com.pillowapps.liqear.listeners.OnShakeListenerImpl;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.helpers.TrackUtils;
-import com.pillowapps.liqear.models.PlayingState;
+import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.models.PlaylistModel;
-import com.pillowapps.liqear.models.TrackNotification;
+import com.pillowapps.liqear.models.TrackNotificationModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
@@ -119,7 +119,7 @@ public class MusicService extends Service implements
     private AudioManager.OnAudioFocusChangeListener focusChangeListener;
 
     private SensorManager sensorManager;
-    private ShakeDetector shakeDetector;
+    private OnShakeListenerImpl onShakeListenerImpl;
 
     private Subscriber<Long> nowplayingSubscriber;
     private Subscriber<Long> playProgressSubscriber;
@@ -275,14 +275,14 @@ public class MusicService extends Service implements
     private void initShakeDetector() {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor mAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        shakeDetector = new ShakeDetector();
-        shakeDetector.setOnShakeListener(count -> next());
-        sensorManager.registerListener(shakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+        onShakeListenerImpl = new OnShakeListenerImpl();
+        onShakeListenerImpl.setOnShakeListener(count -> next());
+        sensorManager.registerListener(onShakeListenerImpl, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     private void destroyShake() {
-        if (sensorManager != null && shakeDetector != null) {
-            sensorManager.unregisterListener(shakeDetector);
+        if (sensorManager != null && onShakeListenerImpl != null) {
+            sensorManager.unregisterListener(onShakeListenerImpl);
         }
     }
 
@@ -511,7 +511,7 @@ public class MusicService extends Service implements
             togglePlayPause();
         } else {
             Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
-            playlistModel.getMainPlaylist(MusicService.this)
+            playlistModel.getMainPlaylist()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(playlist -> {
@@ -559,7 +559,7 @@ public class MusicService extends Service implements
     public void showTrackInNotification() {
         Track track = Timeline.getInstance().getCurrentTrack();
         if (track == null) return;
-        Notification notification = new TrackNotification().create(this, track);
+        Notification notification = new TrackNotificationModel().create(this, track);
         bluetoothNotifyChange(AVRCP_META_CHANGED, track);
         startForeground(LIQUID_BEAR_ID, notification);
     }

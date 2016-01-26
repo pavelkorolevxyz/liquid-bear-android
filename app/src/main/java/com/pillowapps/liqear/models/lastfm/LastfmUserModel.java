@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.models.lastfm;
 
-import com.pillowapps.liqear.callbacks.LastfmCallback;
+import com.pillowapps.liqear.callbacks.retrofit.LastfmCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
@@ -16,7 +16,7 @@ import com.pillowapps.liqear.entities.lastfm.roots.LastfmUserRoot;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmWeeklyTrackChartRoot;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.LastfmApiHelper;
+import com.pillowapps.liqear.network.LastfmApiHelper;
 import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;

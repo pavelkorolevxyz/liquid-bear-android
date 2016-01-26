@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.pillowapps.liqear.LBApplication;
 
+//todo DI
 public class AuthorizationInfoManager {
     public static final String VK_PREFERENCES = "vk_preferences_v2";
     public static final String LASTFM_PREFERENCES = "lastfm_preferences";
