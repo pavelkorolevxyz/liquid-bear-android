@@ -68,8 +68,7 @@ public class VkAlbumTracksActivity extends ListBaseActivity {
     }
 
     private void getVkUserAudioFromAlbum(long uid, long albumId) {
-        vkAudioModel.getUserAudioFromAlbum(uid, albumId, 0, 0,
-                vkTracksCallback());
+        vkAudioModel.getUserAudioFromAlbum(uid, albumId, 0, 0, vkTracksCallback());
     }
 
     private VkSimpleCallback<List<VkTrack>> vkTracksCallback() {

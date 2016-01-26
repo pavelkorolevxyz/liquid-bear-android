@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent.Title"
                 android:singleLine="true"
-                android:ellipsize="marquee" />
+                android:ellipsize="marquee"/>
 
             <TextView
                 android:id="@+id/artist"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent"
                 android:singleLine="true"
-                android:ellipsize="marquee" />
+                android:ellipsize="marquee"/>
         </LinearLayout>
 
         <ImageButton
@@ -52,7 +52,7 @@
             android:contentDescription="prev"
             android:layout_toLeftOf="@+id/play_pause"
             android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"/>
 
         <ImageButton
             android:id="@+id/play_pause"
@@ -67,7 +67,7 @@
             android:contentDescription="play / pause"
             android:layout_toLeftOf="@+id/next"
             android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"/>
 
         <ImageButton
             android:id="@+id/next"
@@ -82,7 +82,7 @@
             android:contentDescription="next"
             android:layout_toLeftOf="@+id/force_close"
             android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"/>
 
         <ImageButton
             android:id="@+id/force_close"
@@ -97,7 +97,7 @@
             android:contentDescription="close"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"/>
 
         <ImageView
             android:layout_width="64dp"
@@ -106,6 +106,6 @@
             android:src="@drawable/lb_icon_white"
             android:scaleType="fitCenter"
             android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 </RelativeLayout>

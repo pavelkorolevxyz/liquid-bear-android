@@ -21,5 +21,5 @@ public class ViewPage extends Page {
     public String getTitle() {
         return title;
     }
-    
+
 }

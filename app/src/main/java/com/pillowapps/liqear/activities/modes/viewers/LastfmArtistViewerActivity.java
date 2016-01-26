@@ -17,24 +17,24 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.PagerResultActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.activities.base.PagerResultActivity;
-import com.pillowapps.liqear.entities.ViewPage;
 import com.pillowapps.liqear.components.viewers.LastfmAlbumViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.base.ViewerPage;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
+import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.ViewPage;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmDiscographyModel;
 

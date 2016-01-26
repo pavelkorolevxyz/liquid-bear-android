@@ -392,6 +392,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                     .subscribe();
         }
         updateEmptyPlaylistTextView();
+        updateToolbars();
+    }
+
+    protected void updateToolbars() {
+        // No op.
     }
 
     @Override

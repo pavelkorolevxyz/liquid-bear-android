@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <Button
         android:id="@+id/mode_button"
@@ -22,7 +22,7 @@
         android:stateListAnimator="@null"
         android:textAllCaps="false"
         android:textColor="@drawable/mode_button_text_color"
-        android:textSize="@dimen/mode_button_text_size" />
+        android:textSize="@dimen/mode_button_text_size"/>
 
     <ImageButton
         android:id="@+id/edit_mode_button"
@@ -37,5 +37,5 @@
         android:focusableInTouchMode="false"
         android:padding="4dp"
         android:src="@drawable/minus"
-        android:visibility="visible" />
+        android:visibility="visible"/>
 </RelativeLayout>

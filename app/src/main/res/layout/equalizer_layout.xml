@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/icons"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/icons"
+                android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/lb_toolbar" />
+        layout="@layout/lb_toolbar"/>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:orientation="vertical"
-        android:padding="12dp">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/toolbar"
+                android:orientation="vertical"
+                android:padding="12dp">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -24,7 +24,7 @@
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
             <LinearLayout
                 android:id="@+id/main_layout"

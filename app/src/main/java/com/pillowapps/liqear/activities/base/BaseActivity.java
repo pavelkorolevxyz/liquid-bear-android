@@ -39,7 +39,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar == null) return;
+        if (toolbar == null) {
+            return;
+        }
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -59,7 +61,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public CharSequence getToolbarTitle() {
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar == null) return null;
+        if (actionBar == null) {
+            return null;
+        }
         return actionBar.getTitle();
     }
 

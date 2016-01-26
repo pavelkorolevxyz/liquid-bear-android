@@ -62,20 +62,20 @@ public class VkAudioSearchActivity extends ListBaseActivity {
     }
 
     private void searchVK(String searchQuery, int count) {
-       vkAudioModel.searchAudio(searchQuery, 0, count, new VkSimpleCallback<List<VkTrack>>() {
-           @Override
-           public void success(List<VkTrack> data) {
-               fillWithVkTracklist(data);
+        vkAudioModel.searchAudio(searchQuery, 0, count, new VkSimpleCallback<List<VkTrack>>() {
+            @Override
+            public void success(List<VkTrack> data) {
+                fillWithVkTracklist(data);
 //                adapter.setHighlighted(SharedPreferencesManager.getUrlNumberPreferences()
 //                        .getInt(getIntent().getStringExtra(Constants.TARGET), 0)); todo
-               progressBar.setVisibility(View.GONE);
-           }
+                progressBar.setVisibility(View.GONE);
+            }
 
-           @Override
-           public void failure(VkError error) {
-               progressBar.setVisibility(View.GONE);
-           }
-       });
+            @Override
+            public void failure(VkError error) {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
 }

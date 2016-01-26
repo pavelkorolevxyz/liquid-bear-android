@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
@@ -10,14 +10,14 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"/>
 
     <com.viewpagerindicator.UnderlinePageIndicator
         android:id="@+id/indicator"
         android:layout_width="fill_parent"
         selectedColor="@color/accent"
         android:layout_height="3dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"/>
 
     <include
         layout="@layout/indeterminate_progress_bar"
@@ -26,6 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"/>
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.pillowapps.liqear.entities;
 
 import android.content.SharedPreferences;
+
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
@@ -23,6 +24,7 @@ public class Mode {
         createMode(title, icon, category, modeEnum);
         this.needLastfm = needLastfm;
     }
+
     public Mode(int title, int icon, Category category, ModeEnum modeEnum,
                 boolean needLastfm, boolean visibleByDefault) {
         createMode(title, icon, category, modeEnum);
@@ -120,7 +122,7 @@ public class Mode {
         return modeEnum.toString();
     }
 
-    public boolean isVisible(){
+    public boolean isVisible() {
         SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences();
         return modePreferences.getBoolean(Constants.MODE_VISIBLE + getModeEnum(), visibleByDefault);
     }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/primary">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/primary">
 
     <RelativeLayout
         android:id="@+id/main_layout"
@@ -32,7 +32,7 @@
                 android:layout_alignParentTop="true"
                 android:text="@string/authorized_as"
                 android:textColor="@color/icons"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/name_text_view"
@@ -43,7 +43,7 @@
                 android:layout_below="@+id/textView2"
                 android:gravity="right"
                 android:textColor="@color/icons"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
         </RelativeLayout>
 
 
@@ -55,7 +55,7 @@
             android:layout_centerHorizontal="true"
             app:riv_border_color="#fff"
             app:riv_border_width="2dip"
-            app:riv_oval="true" />
+            app:riv_oval="true"/>
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
@@ -91,7 +91,7 @@
                     app:fb_focusColor="@color/success_green_shaded"
                     app:fb_text="@string/authorize"
                     app:fb_textColor="@color/inverted_primary_text"
-                    app:fb_textSize="8sp" />
+                    app:fb_textSize="8sp"/>
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/sign_out_lastfm_button"
@@ -108,7 +108,7 @@
                     app:fb_focusColor="@color/error_red_shaded"
                     app:fb_text="@string/sign_out"
                     app:fb_textColor="@color/inverted_primary_text"
-                    app:fb_textSize="8sp" />
+                    app:fb_textSize="8sp"/>
             </LinearLayout>
 
             <EditText
@@ -126,7 +126,7 @@
                 android:textColor="@color/inverted_primary_text"
                 android:textColorHint="@color/inverted_secondary_text"
                 android:textCursorDrawable="@null"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
             <EditText
                 android:id="@+id/login_edit_text"
@@ -142,7 +142,7 @@
                 android:textColor="@color/inverted_primary_text"
                 android:textColorHint="@color/inverted_secondary_text"
                 android:textCursorDrawable="@null"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
             <TextView
                 android:id="@+id/auth_error_text_view"
@@ -154,7 +154,7 @@
                 android:background="@color/error_red"
                 android:padding="4dp"
                 android:text="@string/auth_error_happened"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
@@ -165,7 +165,7 @@
             android:layout_below="@+id/relativeLayout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
     </RelativeLayout>
 </ScrollView>

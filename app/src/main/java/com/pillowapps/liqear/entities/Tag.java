@@ -2,8 +2,6 @@ package com.pillowapps.liqear.entities;
 
 public class Tag {
     private String name;
-    private int reach;
-    private long taggings;
 
     public Tag(String name) {
         super();
@@ -18,26 +16,11 @@ public class Tag {
         this.name = name;
     }
 
-    public int getReach() {
-        return reach;
-    }
-
-    public void setReach(int reach) {
-        this.reach = reach;
-    }
-
-    public long getTaggings() {
-        return taggings;
-    }
-
-    public void setTaggings(long taggings) {
-        this.taggings = taggings;
-    }
-
     @Override
     public String toString() {
-        return "Tag [name=" + name + ", reach=" + reach + ", taggings="
-                + taggings + "]";
+        return "Tag{" +
+                "name='" + name + '\'' +
+                '}';
     }
 
     @Override

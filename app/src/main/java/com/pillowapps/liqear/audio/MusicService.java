@@ -29,6 +29,7 @@ import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkPassiveCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
@@ -56,11 +57,10 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.NetworkUtils;
-import com.pillowapps.liqear.listeners.OnShakeListenerImpl;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.helpers.TrackUtils;
-import com.pillowapps.liqear.entities.PlayingState;
+import com.pillowapps.liqear.listeners.OnShakeListenerImpl;
 import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.TrackNotificationModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
@@ -68,9 +68,9 @@ import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkStatusModel;
-import com.pillowapps.liqear.widget.FourWidthOneHeightWidget;
-import com.pillowapps.liqear.widget.FourWidthThreeHeightAltWidget;
-import com.pillowapps.liqear.widget.FourWidthThreeHeightWidget;
+import com.pillowapps.liqear.widgets.FourWidthOneHeightWidget;
+import com.pillowapps.liqear.widgets.FourWidthThreeHeightAltWidget;
+import com.pillowapps.liqear.widgets.FourWidthThreeHeightWidget;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -1081,6 +1081,7 @@ public class MusicService extends Service implements
                     }
                     imageUrl = lastfmImage != null ? lastfmImage.getUrl() : null;
                 }
+                Timeline.getInstance().setCurrentArtistImageUrl(imageUrl);
                 LBApplication.BUS.post(new ArtistInfoEvent(imageUrl));
             }
 

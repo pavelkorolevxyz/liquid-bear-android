@@ -18,20 +18,20 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.PagerResultActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.activities.base.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.SpinnerLastfmArtistViewerPage;
 import com.pillowapps.liqear.components.viewers.SpinnerLastfmTracksViewerPage;
 import com.pillowapps.liqear.components.viewers.base.ViewerPage;
+import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
-import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
 import java.util.ArrayList;

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/icons"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/icons"
+                android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/lb_toolbar" />
+        layout="@layout/lb_toolbar"/>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/toolbar"
+                android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_view_scrollable_text_layout"
@@ -25,7 +25,7 @@
             android:padding="12dp"
             android:textColor="@color/primary_text"
             android:textColorLink="@color/accent"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
     </ScrollView>
 
     <ProgressBar
@@ -36,6 +36,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:indeterminate="true"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
 </RelativeLayout>

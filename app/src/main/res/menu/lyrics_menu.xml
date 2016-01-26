@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/google"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_simple_search_mode"
-        android:title="@string/search_google" />
+        android:title="@string/search_google"/>
     <item
         android:id="@+id/share"
         app:showAsAction="always"
         android:icon="@drawable/ic_share"
-        android:title="@string/share_track" />
+        android:title="@string/share_track"/>
     <item
         android:id="@+id/next_result"
         app:showAsAction="always"
         android:icon="@drawable/ic_refresh"
-        android:title="@string/refresh" />
+        android:title="@string/refresh"/>
 </menu>

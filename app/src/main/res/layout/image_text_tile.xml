@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:focusable="false"
-    android:focusableInTouchMode="false"
-    android:orientation="horizontal"
-    android:padding="4dp">
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             android:focusable="false"
+             android:focusableInTouchMode="false"
+             android:orientation="horizontal"
+             android:padding="4dp">
 
     <ImageView
         android:id="@+id/image_tile_list_item"
@@ -16,7 +16,7 @@
         android:focusable="false"
         android:scaleType="centerCrop"
         android:focusableInTouchMode="false"
-        android:contentDescription="" />
+        android:contentDescription=""/>
 
     <TextView
         android:id="@+id/text_tile_list_item"
@@ -29,5 +29,5 @@
         android:background="@color/accent"
         android:textSize="14dip"
         android:gravity="center"
-        android:layout_gravity="center_horizontal|bottom" />
+        android:layout_gravity="center_horizontal|bottom"/>
 </FrameLayout>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/widget_frame"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:paddingBottom="8dp"
-    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-    android:paddingRight="?attr/listPreferredItemPaddingRight"
-    android:paddingTop="8dp">
+                android:id="@android:id/widget_frame"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingBottom="8dp"
+                android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+                android:paddingRight="?attr/listPreferredItemPaddingRight"
+                android:paddingTop="8dp">
 
     <TextView
         android:id="@android:id/title"
@@ -16,7 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/primary" />
+        android:textColor="@color/primary"/>
 
     <TextView
         android:id="@android:id/summary"
@@ -25,7 +25,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@android:id/title"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/primary" />
+        android:textColor="@color/primary"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -37,26 +37,26 @@
             android:id="@+id/seekBarPrefBarContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/seekBarPrefUnitsLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text" />
+            android:textColor="@color/secondary_text"/>
 
         <TextView
             android:id="@+id/seekBarPrefValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:textColor="@color/secondary_text" />
+            android:textColor="@color/secondary_text"/>
 
         <TextView
             android:id="@+id/seekBarPrefUnitsRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text" />
+            android:textColor="@color/secondary_text"/>
     </LinearLayout>
 
 </RelativeLayout>

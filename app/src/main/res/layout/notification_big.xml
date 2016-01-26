@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical"
-    android:background="@color/background_notification"
-    android:gravity="center_vertical">
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@color/background_notification"
+                android:gravity="center_vertical">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent.Title"
             android:singleLine="false"
-            android:ellipsize="marquee" />
+            android:ellipsize="marquee"/>
 
         <TextView
             android:id="@+id/artist"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent"
             android:singleLine="false"
-            android:ellipsize="marquee" />
+            android:ellipsize="marquee"/>
     </LinearLayout>
 
     <RelativeLayout
@@ -40,7 +40,7 @@
         android:layout_toRightOf="@+id/album_cover_image_view"
         android:layout_centerVertical="true"
         android:background="@color/primary_dark"
-        android:layout_above="@+id/linearLayout2" />
+        android:layout_above="@+id/linearLayout2"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -69,7 +69,7 @@
             android:layout_toLeftOf="@+id/play_pause"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <ImageButton
             android:id="@+id/play_pause"
@@ -85,7 +85,7 @@
             android:layout_toLeftOf="@+id/next"
             android:layout_alignTop="@+id/linearLayout"
             android:layout_alignParentBottom="true"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <ImageButton
             android:id="@+id/next"
@@ -101,12 +101,12 @@
             android:layout_toLeftOf="@+id/force_close"
             android:layout_alignTop="@+id/linearLayout"
             android:layout_alignBottom="@+id/prev"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <RelativeLayout
             android:layout_width="1dp"
             android:layout_height="fill_parent"
-            android:background="@color/primary_dark" />
+            android:background="@color/primary_dark"/>
 
         <ImageButton
             android:id="@+id/love_button"
@@ -121,7 +121,7 @@
             android:layout_toLeftOf="@+id/force_close"
             android:layout_alignTop="@+id/linearLayout"
             android:layout_alignBottom="@+id/prev"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <ImageButton
             android:id="@+id/add_to_vk_button"
@@ -136,7 +136,7 @@
             android:layout_toLeftOf="@+id/force_close"
             android:layout_alignTop="@+id/linearLayout"
             android:layout_alignBottom="@+id/prev"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <ImageButton
@@ -150,12 +150,12 @@
         android:contentDescription="close"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/linearLayout"
-        android:padding="8dp" />
+        android:padding="8dp"/>
 
     <ImageView
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:id="@+id/album_cover_image_view"
         android:src="@drawable/lb_icon_white"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"/>
 </RelativeLayout>

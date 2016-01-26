@@ -17,9 +17,9 @@ import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.TrackUtils;
-import com.pillowapps.liqear.helpers.ButtonStateUtils;
 
 public class TrackNotificationModel {
     public Notification create(Context context, Track track) {

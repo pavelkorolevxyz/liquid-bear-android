@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-            android:id="@+id/save_current_playlist"
-            app:showAsAction="always"
-            android:title="@string/save_current"/>
+        android:id="@+id/save_current_playlist"
+        app:showAsAction="always"
+        android:title="@string/save_current"/>
     <item
-            android:id="@+id/new_playlist"
-            app:showAsAction="ifRoom"
-            android:title="@string/new_playlist"/>
+        android:id="@+id/new_playlist"
+        app:showAsAction="ifRoom"
+        android:title="@string/new_playlist"/>
     <!--<item-->
-            <!--android:id="@+id/save_to_file"-->
-            <!--app:showAsAction="ifRoom"-->
-            <!--android:title="@string/save_file"/>-->
+    <!--android:id="@+id/save_to_file"-->
+    <!--app:showAsAction="ifRoom"-->
+    <!--android:title="@string/save_file"/>-->
     <!--<item-->
-            <!--android:id="@+id/load_from_file"-->
-            <!--app:showAsAction="ifRoom"-->
-            <!--android:title="@string/load_from_file"-->
-            <!--/>-->
+    <!--android:id="@+id/load_from_file"-->
+    <!--app:showAsAction="ifRoom"-->
+    <!--android:title="@string/load_from_file"-->
+    <!--/>-->
 
 </menu>

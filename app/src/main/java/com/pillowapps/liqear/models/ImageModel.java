@@ -75,6 +75,7 @@ public class ImageModel {
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        imageView.setImageBitmap(resource);
                         listener.onLoadingComplete(resource);
                     }
                 });

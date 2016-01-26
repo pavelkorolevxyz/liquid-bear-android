@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/relativeLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/primary"
-    android:orientation="vertical"
-    android:padding="20dp">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/relativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/primary"
+                android:orientation="vertical"
+                android:padding="20dp">
 
     <RelativeLayout
         android:id="@+id/auth_panel"
@@ -28,7 +28,7 @@
             android:layout_alignParentTop="true"
             android:text="@string/authorized_as"
             android:textColor="@color/icons"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/name_text_view"
@@ -39,7 +39,7 @@
             android:layout_below="@+id/textView2"
             android:gravity="right"
             android:textColor="@color/icons"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -77,7 +77,7 @@
             android:background="@color/error_red"
             android:padding="4dp"
             android:text="@string/auth_error_happened"
-            android:visibility="gone" />
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <com.makeramen.roundedimageview.RoundedImageView
@@ -88,7 +88,7 @@
         android:layout_centerHorizontal="true"
         app:riv_border_color="#fff"
         app:riv_border_width="2dip"
-        app:riv_oval="true" />
+        app:riv_oval="true"/>
 
     <LinearLayout
         android:id="@+id/buttonsLayout"
@@ -116,7 +116,7 @@
             app:fb_defaultColor="@color/success_green"
             app:fb_focusColor="@color/success_green_shaded"
             app:fb_text="@string/authorize"
-            app:fb_textColor="@color/inverted_primary_text" />
+            app:fb_textColor="@color/inverted_primary_text"/>
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/sign_out_vk_button"
@@ -133,7 +133,7 @@
             app:fb_defaultColor="@color/error_red"
             app:fb_focusColor="@color/error_red_shaded"
             app:fb_text="@string/sign_out"
-            app:fb_textColor="@color/inverted_primary_text" />
+            app:fb_textColor="@color/inverted_primary_text"/>
     </LinearLayout>
 
 </RelativeLayout>

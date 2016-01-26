@@ -1,8 +1,8 @@
 package com.pillowapps.liqear.helpers;
 
+import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.retrofit.LastfmCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
 
 public class LastfmCallbackUtils {
 

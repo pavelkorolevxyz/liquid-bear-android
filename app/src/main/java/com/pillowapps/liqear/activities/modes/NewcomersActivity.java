@@ -18,13 +18,13 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.NewcomersAdapter;
 import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
-import com.pillowapps.liqear.views.LoadMoreRecyclerView;
-import com.pillowapps.liqear.listeners.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.listeners.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.models.portals.AlterportalAlbumModel;
 import com.pillowapps.liqear.models.portals.FunkySoulsAlbumModel;
+import com.pillowapps.liqear.views.LoadMoreRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;

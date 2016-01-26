@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/icons"
-    android:orientation="vertical">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/icons"
+                android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/lb_toolbar" />
+        layout="@layout/lb_toolbar"/>
 
     <com.pillowapps.liqear.views.LoadMoreRecyclerView
         android:id="@+id/list"
@@ -17,7 +17,7 @@
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/edit_part_quick_search_layout"
-        android:layout_marginLeft="0dp" />
+        android:layout_marginLeft="0dp"/>
 
     <TextView
         android:id="@+id/empty"
@@ -28,7 +28,7 @@
         android:text="@string/empty"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/secondary_text"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/edit_part_quick_search_layout"
@@ -57,7 +57,7 @@
             app:met_primaryColor="@color/accent"
             app:met_clearButton="true"
             app:met_floatingLabel="normal"
-            app:met_iconLeft="@drawable/ic_search_dark" />
+            app:met_iconLeft="@drawable/ic_search_dark"/>
 
     </LinearLayout>
 
@@ -69,6 +69,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:indeterminate="true" />
+        android:indeterminate="true"/>
 
 </RelativeLayout>

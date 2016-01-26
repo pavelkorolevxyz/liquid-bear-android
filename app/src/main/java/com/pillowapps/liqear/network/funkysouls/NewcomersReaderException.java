@@ -1,4 +1,5 @@
 package com.pillowapps.liqear.network.funkysouls;
+
 @SuppressWarnings("serial")
 public class NewcomersReaderException extends Exception {
 

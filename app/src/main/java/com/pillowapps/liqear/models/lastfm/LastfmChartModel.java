@@ -1,7 +1,7 @@
 package com.pillowapps.liqear.models.lastfm;
 
-import com.pillowapps.liqear.callbacks.retrofit.LastfmCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.callbacks.retrofit.LastfmCallback;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.lastfm.roots.LastfmArtistsRoot;

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_layout"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dip">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/main_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dip">
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/cover_image_view_album_list_item"
@@ -21,7 +21,7 @@
         android:scaleType="centerCrop"
         app:riv_border_color="#fff"
         app:riv_border_width="2dip"
-        app:riv_oval="true" />
+        app:riv_oval="true"/>
 
     <TextView
         android:id="@+id/genre_list_item"
@@ -31,7 +31,7 @@
         android:layout_gravity="left"
         android:layout_toRightOf="@+id/cover_image_view_album_list_item"
         android:textColor="@drawable/list_item_secondary_text_color"
-        android:textSize="12dip" />
+        android:textSize="12dip"/>
 
     <TextView
         android:id="@+id/text_list_item"
@@ -40,6 +40,6 @@
         android:layout_alignTop="@+id/cover_image_view_album_list_item"
         android:layout_toRightOf="@+id/cover_image_view_album_list_item"
         android:textColor="@drawable/list_item_text_color"
-        android:textSize="16dip" />
+        android:textSize="16dip"/>
 
 </RelativeLayout>

@@ -122,6 +122,7 @@ public class SharedPreferencesManager {
         }
         return modePreferences;
     }
+
     public static SharedPreferences getStartPreferences() {
         if (startPreferences == null) {
             startPreferences = LBApplication.getAppContext()

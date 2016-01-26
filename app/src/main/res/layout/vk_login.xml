@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/lb_toolbar" />
+        layout="@layout/lb_toolbar"/>
 
     <WebView
         android:id="@+id/login_webview"
@@ -15,13 +15,13 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@id/toolbar"
         android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp" />
+        android:layout_marginTop="0dp"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/login_webview"
-        android:layout_alignRight="@+id/login_webview" />
+        android:layout_alignRight="@+id/login_webview"/>
 
 </RelativeLayout>

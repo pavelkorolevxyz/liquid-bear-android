@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/edit_modes_button"
         android:icon="@drawable/ic_edit_mode"
         android:title="@string/switch_edit_mode"
-        app:showAsAction="always|collapseActionView" />
+        app:showAsAction="always|collapseActionView"/>
     <item
         android:id="@+id/root_menu"
         android:icon="@drawable/ic_playlist"
@@ -17,42 +17,42 @@
                 android:id="@+id/playlists_button"
                 android:icon="@drawable/ic_playlist_dark"
                 android:title="@string/playlist_tab"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/menu_search"
                 android:icon="@drawable/ic_search_dark"
                 app:showAsAction="ifRoom|collapseActionView"
-                android:title="@string/search" />
+                android:title="@string/search"/>
             <item
                 android:id="@+id/playlist_edit_mode_button"
                 android:icon="@drawable/ic_edit_mode_dark"
                 android:title="@string/switch_edit_mode"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/fixate_search_result_button"
                 android:icon="@drawable/ic_fixate_dark"
                 android:title="@string/fixate_search_result"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/clean_titles"
                 android:icon="@drawable/ic_clean_dark"
                 android:title="@string/clean_titles"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/shuffle_button"
                 android:icon="@drawable/ic_shuffle_dark"
                 android:title="@string/shuffle"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/find_current_button"
                 android:icon="@drawable/ic_play_dark"
                 android:title="@string/find_current"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/sort_by_artist_button"
                 android:icon="@drawable/ic_artist_dark"
                 android:title="@string/sort_by_artist"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
         </menu>
     </item>
 
@@ -66,12 +66,12 @@
                 android:id="@+id/show_artist_button"
                 android:title="@string/show_artist"
                 android:icon="@drawable/ic_artist_dark"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/photo_artist_button"
                 android:title="@string/photo_artist"
                 android:icon="@drawable/ic_photo_dark"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
         </menu>
     </item>
     <item
@@ -84,32 +84,32 @@
                 android:id="@+id/share_track_button"
                 android:title="@string/share_track"
                 android:icon="@drawable/ic_share_dark"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/next_url_button"
                 android:title="@string/next_url"
                 android:icon="@drawable/ic_next_url_dark"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/lyrics_button"
                 android:title="@string/lyrics"
                 android:icon="@drawable/ic_lyrics_dark"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/youtube_video_button"
                 android:title="@string/video"
                 android:icon="@drawable/ic_video_dark"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/add_to_vk_button"
                 android:title="@string/add_to_vk"
                 android:icon="@drawable/ic_add_dark"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/love_button"
                 android:icon="@drawable/ic_love_dark"
                 android:title="@string/add_to_loved_lastfm"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
         </menu>
     </item>
     <item
@@ -122,22 +122,22 @@
                 android:id="@+id/settings"
                 android:title="@string/preferences"
                 android:icon="@drawable/ic_settings_dark"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/equalizer"
                 android:title="@string/equalizer"
                 android:icon="@drawable/ic_equalizer_dark"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/timer_button"
                 android:title="@string/timer"
                 android:icon="@drawable/ic_timer_dark"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
             <item
                 android:id="@+id/exit_button"
                 android:icon="@drawable/ic_exit_dark"
                 android:title="@string/exit"
-                app:showAsAction="always|withText" />
+                app:showAsAction="always|withText"/>
         </menu>
     </item>
 </menu>

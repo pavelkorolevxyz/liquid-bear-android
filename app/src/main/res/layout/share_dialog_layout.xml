@@ -4,35 +4,50 @@
               android:layout_height="fill_parent"
               android:layout_gravity="center_vertical"
               android:orientation="vertical">
+
     <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" android:layout_gravity="center">
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" android:layout_gravity="center" android:id="@+id/linearLayout"
-                android:minHeight="150dp">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/linearLayout"
+            android:minHeight="150dp">
+
             <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:src="@drawable/vk_logo"
-                    android:id="@+id/vk_button" android:layout_gravity="center" android:inputType="none"/>
-            <Button android:layout_width="fill_parent"
-                      android:layout_height="fill_parent"
-                      android:text="@string/other"
-                      android:id="@+id/other_button" android:layout_gravity="center" android:inputType="none"
-                      android:layout_toRightOf="@+id/vk_button" android:layout_alignTop="@+id/vk_button"
-                      android:layout_alignBottom="@+id/vk_button"/>
-        </LinearLayout>
-        <Button
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@android:string/cancel"
-                android:id="@+id/cancel_button"
-                android:layout_weight="1"
-                android:layout_alignLeft="@+id/linearLayout" android:layout_below="@+id/linearLayout"
-                android:layout_alignRight="@+id/linearLayout"/>
+                android:layout_height="fill_parent"
+                android:src="@drawable/vk_logo"
+                android:id="@+id/vk_button"
+                android:layout_gravity="center"
+                android:inputType="none"/>
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="@string/other"
+                android:id="@+id/other_button"
+                android:layout_gravity="center"
+                android:inputType="none"
+                android:layout_toRightOf="@+id/vk_button"
+                android:layout_alignTop="@+id/vk_button"
+                android:layout_alignBottom="@+id/vk_button"/>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/cancel"
+            android:id="@+id/cancel_button"
+            android:layout_weight="1"
+            android:layout_alignLeft="@+id/linearLayout"
+            android:layout_below="@+id/linearLayout"
+            android:layout_alignRight="@+id/linearLayout"/>
     </RelativeLayout>
 
 </LinearLayout>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:liqear="http://schemas.android.com/apk/res/com.pillowapps.liqear">
+                  xmlns:liqear="http://schemas.android.com/apk/res/com.pillowapps.liqear">
 
     <PreferenceCategory android:title="@string/services">
         <Preference
             android:key="authorizations_preference_preferences"
             android:summary="@string/authorizations_summary"
-            android:title="@string/authorizations" />
+            android:title="@string/authorizations"/>
 
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="scrobble_check_box_preferences"
             android:summary="@string/scrobble_summary"
-            android:title="@string/scrobble" />
+            android:title="@string/scrobble"/>
 
         <com.pillowapps.liqear.views.SeekBarPreference
             android:defaultValue="40"
@@ -23,46 +23,46 @@
             liqear:min="10"
             android:max="100"
             liqear:unitsLeft=""
-            liqear:unitsRight="%" />
+            liqear:unitsRight="%"/>
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="nowplaying_check_box_preferences"
             android:summary="@string/nowplaying_last_summary"
-            android:title="@string/nowplaying_last" />
+            android:title="@string/nowplaying_last"/>
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="nowplaying_vk_check_box_preferences"
             android:summary="@string/nowplaying_vk_summary"
-            android:title="@string/nowplaying_vk" />
+            android:title="@string/nowplaying_vk"/>
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="download_images_check_box_preferences"
             android:summary="@string/download_images_summary"
-            android:title="@string/download_images" />
+            android:title="@string/download_images"/>
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="lucky_search_check_box_preferences"
             android:summary="@string/lucky_search_summary"
-            android:title="@string/lucky_search" />
+            android:title="@string/lucky_search"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/appearance">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="show_images_grid"
             android:summary="@string/show_images_grid_summary"
-            android:title="@string/show_images_grid" />
+            android:title="@string/show_images_grid"/>
         <EditTextPreference
             android:title="@string/edit_share_format"
             android:summary="@string/edit_share_format_summary"
             android:defaultValue="@string/listening_now"
-            android:key="share_format" />
+            android:key="share_format"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/behaviour">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="show_track_change_toast"
             android:summary="@string/show_track_change_toast_summary"
-            android:title="@string/show_track_change_toast" />
+            android:title="@string/show_track_change_toast"/>
         <!--<CheckBoxPreference-->
         <!--android:defaultValue="true"-->
         <!--android:key="enable_swipe_remove"-->
@@ -72,59 +72,59 @@
             android:defaultValue="false"
             android:key="scroll_to_current"
             android:summary="@string/scroll_to_current_summary"
-            android:title="@string/scroll_to_current" />
+            android:title="@string/scroll_to_current"/>
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="shake_next"
             android:summary="@string/shake_to_next_summary"
-            android:title="@string/shake_to_next" />
+            android:title="@string/shake_to_next"/>
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="add_to_vk_slow"
             android:summary="@string/show_track_choice_dialog_on_add_to_vk_summary"
-            android:title="@string/show_track_choice_dialog_on_add_to_vk" />
+            android:title="@string/show_track_choice_dialog_on_add_to_vk"/>
         <com.michaelnovakjr.numberpicker.NumberPickerPreference
             android:key="page_size"
             liqear:defaultValue="50"
             liqear:startRange="1"
             liqear:endRange="10000"
             android:summary="@string/page_size_summary"
-            android:title="@string/page_size" />
+            android:title="@string/page_size"/>
         <ListPreference
             android:key="timer_action"
             android:title="@string/action_for_timer"
             android:summary="@string/action_for_timer_summary"
             android:entries="@array/actions_for_timers"
             android:entryValues="@array/actions_for_timers_values"
-            defaultValue="1" />
+            defaultValue="1"/>
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="exit_anyway"
             android:summary="@string/exit_anyway_summary"
-            android:title="@string/exit_anyway" />
+            android:title="@string/exit_anyway"/>
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="continue_from_position"
             android:summary="@string/continue_from_position_summary"
-            android:title="@string/continue_from_position" />
+            android:title="@string/continue_from_position"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/about">
         <Preference
             android:key="disclaimer"
             android:summary="@string/disclaimer_summary"
-            android:title="@string/disclaimer" />
+            android:title="@string/disclaimer"/>
         <Preference
             android:key="thanks"
             android:summary="@string/thanks_to_summary"
-            android:title="@string/thanks_to" />
+            android:title="@string/thanks_to"/>
         <Preference
             android:key="vk_group"
             android:summary="@string/vk_group_liqear_summary"
-            android:title="@string/vk_group_liqear" />
+            android:title="@string/vk_group_liqear"/>
         <Preference
             android:key="pk_twitter"
             android:summary="@string/pk_twitter_summary"
-            android:title="@string/pk_twitter" />
+            android:title="@string/pk_twitter"/>
         <!--<Preference-->
         <!--android:key="donate"-->
         <!--android:summary="@string/donate_summary"-->
@@ -132,7 +132,7 @@
         <Preference
             android:key="version"
             android:summary=""
-            android:title="@string/version" />
+            android:title="@string/version"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

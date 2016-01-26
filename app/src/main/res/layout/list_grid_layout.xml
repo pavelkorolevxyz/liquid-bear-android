@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/lb_toolbar" />
+        layout="@layout/lb_toolbar"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -19,13 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:columnWidth="150dp"
-            android:numColumns="auto_fit" />
+            android:numColumns="auto_fit"/>
 
         <com.costum.android.widget.LoadMoreListView
             android:id="@+id/recommendations_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <ProgressBar
             android:id="@+id/pageProgressBar"
@@ -33,6 +33,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
-            android:indeterminate="true" />
+            android:indeterminate="true"/>
     </FrameLayout>
 </LinearLayout>

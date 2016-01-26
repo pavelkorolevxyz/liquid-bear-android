@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.widget;
+package com.pillowapps.liqear.widgets;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -18,9 +18,9 @@ import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
-import com.pillowapps.liqear.helpers.ButtonStateUtils;
 
 public class FourWidthThreeHeightWidget extends AppWidgetProvider {
     private static boolean sEnabled;

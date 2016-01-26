@@ -4,18 +4,24 @@
 
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="match_parent" android:gravity="center">
+              android:layout_height="match_parent"
+              android:gravity="center">
 
     <com.michaelnovakjr.numberpicker.NumberPicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/minutes_picker"
-            android:layout_gravity="center_vertical" android:paddingLeft="10dp" android:paddingRight="10dp"
-            android:minWidth="100dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/minutes_picker"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:minWidth="100dp"/>
+
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:text="@string/min"
-            android:id="@+id/textView" android:layout_gravity="center" android:gravity="center_vertical"
-            android:textSize="24sp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:text="@string/min"
+        android:id="@+id/textView"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:textSize="24sp"/>
 </LinearLayout>

@@ -55,8 +55,10 @@ public class ImagePagerActivity extends TrackedBaseActivity {
     private boolean loading = false;
     private int page = 1;
     private ImagePagerActivity.ImagePagerAdapter adapter;
-    private ImageModel imageModel = new ImageModel();
     private ProgressBar pageProgressBar;
+
+    @Inject
+    ImageModel imageModel;
 
     @Inject
     LastfmArtistModel lastfmArtistModel;
@@ -78,7 +80,9 @@ public class ImagePagerActivity extends TrackedBaseActivity {
             pagerPosition = savedInstanceState.getInt(STATE_POSITION);
         }
         artist = bundle.getString(ARTIST);
-        if (artist == null) artist = "";
+        if (artist == null) {
+            artist = "";
+        }
         actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(artist);
@@ -94,22 +98,20 @@ public class ImagePagerActivity extends TrackedBaseActivity {
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
-
+                // No op.
             }
 
             @Override
             public void onPageSelected(final int i) {
                 actionBar.setTitle(String.format(PAGE_FORMAT, i + 1, imageUrls.size()) + artist);
-                if (!loading && i == imageUrls.size() - 1) {
-                    if (imageUrls.size() == 36 * (page - 1)) {
-                        getImages(i);
-                    }
+                if (!loading && i == imageUrls.size() - 1 && imageUrls.size() == 36 * (page - 1)) {
+                    getImages(i);
                 }
             }
 
             @Override
             public void onPageScrollStateChanged(int i) {
-
+                // No op.
             }
         });
     }
@@ -119,56 +121,7 @@ public class ImagePagerActivity extends TrackedBaseActivity {
         int itemId = item.getItemId();
         switch (itemId) {
             case R.id.download_image_button: {
-//                if (imageUrls.size() <= pager.getCurrentItem()) {
-//                    break;
-//                }
-//                String imageUrl = imageUrls.get(pager.getCurrentItem());
-//
-//                String root = String.format("%s/%s", Environment.getExternalStorageDirectory(),
-//                        Environment.DIRECTORY_PICTURES);
-//                File myDir = new File(root);
-//                if (!myDir.exists()) {
-//                    boolean directoryCreated = myDir.mkdirs();
-//                    if (!directoryCreated) {
-//                        break;
-//                    }
-//                }
-//                String fileName = String.format("%s_%s.jpg", artist,
-//                        TimeUtils.formatMillisForFileName(System.currentTimeMillis()));
-//
-//                File fileForImage = new File(myDir, fileName);
-//
-//                InputStream sourceStream = null;
-//                OutputStream targetStream = null;
-//                File cachedImage = ImageLoader.getInstance().getDiskCache().get(imageUrl);
-//                try {
-//                    if (cachedImage.exists()) {
-//                        sourceStream = new FileInputStream(cachedImage);
-//                    } else {
-//                        ImageDownloader downloader = new BaseImageDownloader(ImagePagerActivity.this);
-//                        sourceStream = downloader.getStream(imageUrl, null);
-//                    }
-//
-//                    targetStream = new FileOutputStream(fileForImage);
-//                    FileUtils.copyStream(sourceStream, targetStream);
-//                    Toast.makeText(ImagePagerActivity.this, getString(R.string.saved),
-//                            Toast.LENGTH_SHORT).show();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    if (targetStream != null) {
-//                        try {
-//                            targetStream.close();
-//                        } catch (IOException ignored) {
-//                        }
-//                    }
-//                    if (sourceStream != null) {
-//                        try {
-//                            sourceStream.close();
-//                        } catch (IOException ignored) {
-//                        }
-//                    }
-//                } todo remove if not useless due to lastfm changes
+                // todo
             }
             break;
             default:
@@ -215,8 +168,8 @@ public class ImagePagerActivity extends TrackedBaseActivity {
 
     private class ImagePagerAdapter extends PagerAdapter {
 
-        private List<String> images;
-        private LayoutInflater inflater;
+        private final List<String> images;
+        private final LayoutInflater inflater;
 
         ImagePagerAdapter(List<String> images) {
             this.images = images;
@@ -253,6 +206,7 @@ public class ImagePagerActivity extends TrackedBaseActivity {
 
         @Override
         public void restoreState(Parcelable state, ClassLoader loader) {
+            // No op.
         }
 
         @Override
@@ -262,6 +216,7 @@ public class ImagePagerActivity extends TrackedBaseActivity {
 
         @Override
         public void startUpdate(ViewGroup container) {
+            // No op.
         }
     }
 }

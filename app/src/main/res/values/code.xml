@@ -2,18 +2,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!--<string name="url_track" tools:ignore="MissingTranslation">var q = \"%s\";-->
-		<!--var count = %s;-->
-		<!--var searchResults = API.audio.search({\"q\":q,\"sort\":2, \"count\":count});-->
-		<!--var first_elem = searchResults[1];-->
-		<!--while(i&lt;count){-->
-		 <!--i = i-1;-->
-		 <!--var elem = searchResults[i];-->
-		 <!--var name = elem.artist +\" - \"+ elem.title;-->
-		 <!--if(q == name) {-->
-		     <!--return elem;-->
-		 <!--}-->
-		<!--}-->
-		<!--return first_elem;-->
+    <!--var count = %s;-->
+    <!--var searchResults = API.audio.search({\"q\":q,\"sort\":2, \"count\":count});-->
+    <!--var first_elem = searchResults[1];-->
+    <!--while(i&lt;count){-->
+    <!--i = i-1;-->
+    <!--var elem = searchResults[i];-->
+    <!--var name = elem.artist +\" - \"+ elem.title;-->
+    <!--if(q == name) {-->
+    <!--return elem;-->
+    <!--}-->
+    <!--}-->
+    <!--return first_elem;-->
     <!--</string>-->
     <string name="url_track" tools:ignore="MissingTranslation">
         var q = \"%1$s\";
@@ -23,23 +23,23 @@
     </string>
 
     <!--<string name="lyrics_code" tools:ignore="MissingTranslation">-->
-        <!--var q = \"%s\";-->
-		<!--var count = 50;-->
-		<!--var searchResults = API.audio.search({\"q\":q,\"sort\":2, \"count\":count, \"lyrics\":1});-->
-		<!--var i = 1;-->
-		<!--var first_elem = searchResults[i];-->
-		<!--while(i&lt;count){-->
-		 <!--i = i+1;-->
-		 <!--var elem = searchResults[i];-->
-		 <!--var name = elem.artist +\" - \"+ elem.title;-->
-		 <!--if(q == name) {-->
-		     <!--first_elem = elem;-->
-		     <!--var searchLyricsResults = API.audio.getLyrics({\"lyrics_id\":first_elem.lyrics_id});-->
-			 <!--return searchLyricsResults.text;-->
-		 <!--}-->
-		<!--}-->
-		<!--var searchLyricsResults = API.audio.getLyrics({\"lyrics_id\":first_elem.lyrics_id});-->
-		<!--return searchLyricsResults.text;-->
+    <!--var q = \"%s\";-->
+    <!--var count = 50;-->
+    <!--var searchResults = API.audio.search({\"q\":q,\"sort\":2, \"count\":count, \"lyrics\":1});-->
+    <!--var i = 1;-->
+    <!--var first_elem = searchResults[i];-->
+    <!--while(i&lt;count){-->
+    <!--i = i+1;-->
+    <!--var elem = searchResults[i];-->
+    <!--var name = elem.artist +\" - \"+ elem.title;-->
+    <!--if(q == name) {-->
+    <!--first_elem = elem;-->
+    <!--var searchLyricsResults = API.audio.getLyrics({\"lyrics_id\":first_elem.lyrics_id});-->
+    <!--return searchLyricsResults.text;-->
+    <!--}-->
+    <!--}-->
+    <!--var searchLyricsResults = API.audio.getLyrics({\"lyrics_id\":first_elem.lyrics_id});-->
+    <!--return searchLyricsResults.text;-->
     <!--</string>-->
 
     <string name="lyrics_code" tools:ignore="MissingTranslation">

@@ -3,8 +3,6 @@ package com.pillowapps.liqear.listeners;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.pillowapps.liqear.listeners.OnTopToBottomSwipeListener;
-
 public class OnSwipeListener implements View.OnTouchListener {
     static final int MIN_DISTANCE = 100;
     private float downY;

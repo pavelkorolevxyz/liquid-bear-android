@@ -5,8 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import com.pillowapps.liqear.listeners.OnRecyclerScrolledToBottomListener;
 import com.pillowapps.liqear.listeners.OnLoadMoreListener;
+import com.pillowapps.liqear.listeners.OnRecyclerScrolledToBottomListener;
 
 public class LoadMoreRecyclerView extends RecyclerView {
 

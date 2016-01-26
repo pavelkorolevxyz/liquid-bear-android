@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/lowest_layout"
@@ -13,7 +13,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/lb_toolbar" />
+            layout="@layout/lb_toolbar"/>
 
         <ImageView
             android:id="@+id/artist_image_view_headset"
@@ -25,7 +25,7 @@
             android:layout_below="@+id/toolbar"
             android:baselineAlignBottom="false"
             android:contentDescription="@string/artist_image"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"/>
 
         <View
             android:id="@+id/view"
@@ -36,7 +36,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/toolbar"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/fade_to_black_gradient" />
+            android:background="@drawable/fade_to_black_gradient"/>
 
         <TextView
             android:id="@+id/time_plate_text_view_playback_tab"
@@ -51,7 +51,7 @@
             android:paddingTop="12dp"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:id="@+id/bottom_combined_layout"
@@ -87,7 +87,7 @@
                         android:paddingLeft="@dimen/main_screen_padding"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"
-                        android:visibility="visible" />
+                        android:visibility="visible"/>
 
                     <TextView
                         android:id="@+id/time_inverted_text_view_playback_tab"
@@ -99,7 +99,7 @@
                         android:paddingRight="@dimen/main_screen_padding"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"
-                        android:visibility="visible" />
+                        android:visibility="visible"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -115,7 +115,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:textColor="@drawable/main_artist_text_color"
-                        android:textSize="22sp" />
+                        android:textSize="22sp"/>
 
                     <TextView
                         android:id="@+id/title_text_view_playback_tab"
@@ -123,7 +123,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/artist_text_view_playback_tab"
                         android:textColor="@android:color/white"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"/>
 
                 </RelativeLayout>
 
@@ -162,7 +162,7 @@
                         android:contentDescription="@string/repeat_button"
                         android:padding="10dp"
                         android:scaleType="fitXY"
-                        android:src="@drawable/ic_repeat" />
+                        android:src="@drawable/ic_repeat"/>
 
                     <ImageButton
                         android:id="@+id/prev_button_playback_tab"
@@ -174,7 +174,7 @@
                         android:background="@null"
                         android:contentDescription="@string/prev_button"
                         android:scaleType="fitXY"
-                        android:src="@drawable/prev_button" />
+                        android:src="@drawable/prev_button"/>
 
                     <ImageButton
                         android:id="@+id/play_pause_button_playback_tab"
@@ -190,7 +190,7 @@
                         android:background="@null"
                         android:contentDescription="@string/play_pause"
                         android:scaleType="fitXY"
-                        android:src="@drawable/play_button" />
+                        android:src="@drawable/play_button"/>
 
                     <ImageButton
                         android:id="@+id/next_button_playback_tab"
@@ -202,7 +202,7 @@
                         android:background="@null"
                         android:contentDescription="@string/next_button"
                         android:scaleType="fitXY"
-                        android:src="@drawable/next_button" />
+                        android:src="@drawable/next_button"/>
 
                     <ImageButton
                         android:id="@+id/shuffle_button_playback_tab"
@@ -215,7 +215,7 @@
                         android:contentDescription="@string/shuffle_button"
                         android:padding="10dp"
                         android:scaleType="fitXY"
-                        android:src="@drawable/ic_shuffle" />
+                        android:src="@drawable/ic_shuffle"/>
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -225,7 +225,7 @@
                 android:layout_height="1dp"
                 android:layout_above="@+id/bottom_controls_layout"
                 android:background="@color/icons"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
             <SeekBar
                 android:id="@+id/seek_bar_playback_tab"
@@ -234,7 +234,7 @@
                 android:layout_above="@+id/bottom_controls_layout"
                 android:layout_marginBottom="-16dp"
                 android:max="100"
-                android:theme="@style/LiquidBearAppTheme.ProgressBar" />
+                android:theme="@style/LiquidBearAppTheme.ProgressBar"/>
 
         </RelativeLayout>
 
@@ -249,7 +249,7 @@
                 android:id="@+id/album_cover_image_view"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:contentDescription="@string/album_image" />
+                android:contentDescription="@string/album_image"/>
 
             <TextView
                 android:id="@+id/album_title_text_view"
@@ -263,7 +263,7 @@
                 android:paddingLeft="@dimen/main_screen_padding"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
-                android:visibility="gone" />
+                android:visibility="gone"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -280,7 +280,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/swipe_right_image_view"
-                android:src="@drawable/swipe_left" />
+                android:src="@drawable/swipe_left"/>
 
             <ImageView
                 android:id="@+id/swipe_right_image_view"
@@ -290,7 +290,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/swipe_right" />
+                android:src="@drawable/swipe_right"/>
         </RelativeLayout>
 
     </RelativeLayout>
@@ -304,6 +304,6 @@
         app:borderWidth="0dp"
         app:elevation="6dp"
         app:layout_anchor="@id/view"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|right|end"/>
 
 </android.support.design.widget.CoordinatorLayout>

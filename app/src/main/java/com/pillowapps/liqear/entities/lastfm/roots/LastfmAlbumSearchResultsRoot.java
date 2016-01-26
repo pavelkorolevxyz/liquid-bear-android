@@ -1,8 +1,8 @@
 package com.pillowapps.liqear.entities.lastfm.roots;
 
 import com.google.gson.annotations.SerializedName;
-import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbumSearchResults;
+import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 
 public class LastfmAlbumSearchResultsRoot extends LastfmResponse {
     @SerializedName("results")

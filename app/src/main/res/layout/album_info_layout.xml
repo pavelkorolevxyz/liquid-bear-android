@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="8dp"
-    android:orientation="vertical"
-    android:padding="20dp">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:orientation="vertical"
+                android:padding="20dp">
 
     <ImageView
         android:layout_width="fill_parent"
@@ -12,7 +12,7 @@
         android:id="@+id/album_cover_image_view"
         android:maxHeight="150dp"
         android:layout_above="@+id/artist_text_view"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"/>
 
     <TextView
         android:layout_width="fill_parent"
@@ -20,7 +20,7 @@
         android:id="@+id/artist_text_view"
         android:textColor="@color/primary_text"
         android:textSize="18sp"
-        android:layout_above="@+id/title_text_view" />
+        android:layout_above="@+id/title_text_view"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         android:textSize="18sp"
         android:layout_alignLeft="@+id/album_cover_image_view"
         android:layout_above="@+id/other_text_view"
-        android:textColor="@color/primary_text" />
+        android:textColor="@color/primary_text"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,13 +38,13 @@
         android:textColor="@color/secondary_text"
         android:textSize="14sp"
         android:layout_alignLeft="@+id/album_cover_image_view"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"/>
 
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"/>
 
 </RelativeLayout>

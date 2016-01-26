@@ -5,14 +5,14 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.listeners.OnViewerItemClickListener;
 import com.pillowapps.liqear.components.viewers.base.ViewerPage;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
+import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.entities.Page;
+import com.pillowapps.liqear.listeners.OnViewerItemClickListener;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;

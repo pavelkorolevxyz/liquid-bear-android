@@ -6,8 +6,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.listeners.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.listeners.OnRecyclerItemClickListener;
 
 public class ArtistsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

@@ -38,14 +38,15 @@ public class LocalTracksActivity extends ListBaseActivity {
         super.onCreate(savedInstanceState);
 
         Bundle extras = getIntent().getExtras();
-        String albumId = null;
-        String artistId = null;
-        String filePath = null;
-        if (extras != null) {
-            albumId = extras.getString("albumId");
-            artistId = extras.getString("artistId");
-            filePath = extras.getString("filePath");
+        String albumId;
+        String artistId;
+        String filePath;
+        if (extras == null) {
+            throw new IllegalStateException("Extras should not be null");
         }
+        albumId = extras.getString("albumId");
+        artistId = extras.getString("artistId");
+        filePath = extras.getString("filePath");
         if (albumId == null && artistId == null && filePath == null) {
             loadTracks();
         } else if (albumId != null) {

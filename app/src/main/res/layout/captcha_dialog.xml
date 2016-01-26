@@ -4,32 +4,47 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:layout_gravity="center_vertical"
-              android:orientation="vertical" android:padding="@dimen/normal_padding">
+              android:orientation="vertical"
+              android:padding="@dimen/normal_padding">
+
     <RelativeLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" android:layout_gravity="center">
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
     </RelativeLayout>
+
     <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="left|center_vertical">
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView" android:layout_gravity="center"/>
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent" android:layout_gravity="left|center_vertical">
+            android:text="@android:string/cancel"
+            android:id="@+id/cancel_button"
+            android:layout_weight="1"
+            android:layout_alignLeft="@+id/linearLayout"
+            android:layout_below="@+id/linearLayout"
+            android:layout_alignRight="@+id/linearLayout"/>
+
         <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@android:string/cancel"
-                android:id="@+id/cancel_button"
-                android:layout_weight="1"
-                android:layout_alignLeft="@+id/linearLayout" android:layout_below="@+id/linearLayout"
-                android:layout_alignRight="@+id/linearLayout"/>
-        <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@android:string/ok" android:id="@+id/button" android:layout_weight="1"
-                android:layout_toRightOf="@+id/cancel_button" android:layout_centerVertical="true"
-                android:layout_gravity="center_horizontal|top"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/ok"
+            android:id="@+id/button"
+            android:layout_weight="1"
+            android:layout_toRightOf="@+id/cancel_button"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal|top"/>
     </LinearLayout>
 
 </LinearLayout>

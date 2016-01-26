@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_layout"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dip">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/main_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dip">
 
     <RelativeLayout
         android:id="@+id/image_list_item"
@@ -24,7 +24,7 @@
             android:layout_toRightOf="@+id/image_view_list_item"
             android:paddingLeft="10dp"
             android:textColor="@drawable/list_item_text_color"
-            android:textSize="16dip" />
+            android:textSize="16dip"/>
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/image_view_list_item"
@@ -36,7 +36,7 @@
             android:scaleType="centerCrop"
             app:riv_border_color="#fff"
             app:riv_border_width="2dip"
-            app:riv_oval="true" />
+            app:riv_oval="true"/>
     </RelativeLayout>
 
 </RelativeLayout>

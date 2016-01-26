@@ -9,13 +9,13 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.listeners.OnRecyclerScrolledToBottomListener;
+import com.pillowapps.liqear.entities.Page;
+import com.pillowapps.liqear.helpers.DividerItemDecoration;
 import com.pillowapps.liqear.listeners.OnLoadMoreListener;
 import com.pillowapps.liqear.listeners.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.listeners.OnRecyclerLongItemClickListener;
+import com.pillowapps.liqear.listeners.OnRecyclerScrolledToBottomListener;
 import com.pillowapps.liqear.listeners.OnViewerItemClickListener;
-import com.pillowapps.liqear.helpers.DividerItemDecoration;
-import com.pillowapps.liqear.entities.Page;
 
 import java.util.List;
 

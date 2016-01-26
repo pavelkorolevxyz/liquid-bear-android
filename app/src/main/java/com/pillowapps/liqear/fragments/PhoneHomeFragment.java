@@ -3,15 +3,16 @@ package com.pillowapps.liqear.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -42,11 +43,16 @@ import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.ViewPage;
+import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
 import com.pillowapps.liqear.entities.events.BufferizationEvent;
 import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
+import com.pillowapps.liqear.entities.events.PauseEvent;
+import com.pillowapps.liqear.entities.events.PlayEvent;
 import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
 import com.pillowapps.liqear.entities.events.PreparedEvent;
 import com.pillowapps.liqear.entities.events.TimeEvent;
+import com.pillowapps.liqear.entities.events.TrackAndAlbumInfoUpdatedEvent;
+import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.Constants;
@@ -81,8 +87,6 @@ public class PhoneHomeFragment extends HomeFragment {
     private EditText searchPlaylistEditText;
     private Toolbar playlistToolbar;
     private TextView emptyPlaylistTextView;
-    private ItemTouchHelper mItemTouchHelper;
-
 
     /**
      * Play tab
@@ -183,41 +187,47 @@ public class PhoneHomeFragment extends HomeFragment {
                 updateAdapter();
                 Timeline.getInstance().updateRealTrackPositions();
 
-                if (!NetworkUtils.isOnline()) {
-                    artistImageView.setImageResource(R.drawable.artist_placeholder);
-                    albumImageView.setImageDrawable(null);
-                    albumTextView.setVisibility(View.GONE);
-                    return;
-                }
-                if (SharedPreferencesManager.getPreferences()
-                        .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                    new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
-                            artistImageView, bitmap -> {
-//                                                updatePaletteWithBitmap(bitmap); todo
-                            });
-                }
-
-                Album album = Timeline.getInstance().getCurrentAlbum();
-                if (album != null) {
-                    String imageUrl = album.getImageUrl();
-                    if (imageUrl == null || !SharedPreferencesManager.getPreferences()
-                            .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                        albumImageView.setVisibility(View.GONE);
-                    } else {
-                        albumImageView.setVisibility(View.VISIBLE);
-                        new ImageModel().loadImage(imageUrl, albumImageView);
-                    }
-                    String albumTitle = album.getTitle();
-                    if (albumTitle == null) {
-                        albumTextView.setVisibility(View.GONE);
-                    } else {
-                        albumTextView.setVisibility(View.VISIBLE);
-                        albumTextView.setText(albumTitle);
-                    }
-                }
-                updateAdapter();
+                updateAlbum();
             });
         });
+    }
+
+    private void updateArtist() {
+        if (SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+            new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
+                    artistImageView, this::updatePaletteWithBitmap);
+        }
+    }
+
+    private void updateAlbum() {
+        if (!NetworkUtils.isOnline()) {
+            artistImageView.setImageResource(R.drawable.artist_placeholder);
+            albumImageView.setImageDrawable(null);
+            albumTextView.setVisibility(View.GONE);
+            return;
+        }
+
+        Album album = Timeline.getInstance().getCurrentAlbum();
+        if (album != null) {
+            String imageUrl = album.getImageUrl();
+            if (imageUrl == null || !SharedPreferencesManager.getPreferences()
+                    .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+                albumImageView.setVisibility(View.GONE);
+            } else {
+                albumImageView.setVisibility(View.VISIBLE);
+                new ImageModel().loadImage(imageUrl, albumImageView);
+            }
+            String albumTitle = album.getTitle();
+            if (albumTitle == null) {
+                albumTextView.setVisibility(View.GONE);
+            } else {
+                albumTextView.setVisibility(View.VISIBLE);
+                albumTextView.setText(albumTitle);
+            }
+        } else {
+            albumImageView.setVisibility(View.GONE);
+            albumTextView.setVisibility(View.GONE);
+        }
     }
 
     private void initUi(View v) {
@@ -472,7 +482,8 @@ public class PhoneHomeFragment extends HomeFragment {
         swipeRightImageView.startAnimation(tutorialBlinkAnimation);
     }
 
-    private void updateToolbars() {
+    @Override
+    protected void updateToolbars() {
         playlistToolbar.getMenu().clear();
         modeToolbar.getMenu().clear();
         modeToolbar.inflateMenu(R.menu.menu_mode_tab);
@@ -541,9 +552,47 @@ public class PhoneHomeFragment extends HomeFragment {
         emptyPlaylistTextView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
+    private void updatePaletteWithBitmap(Bitmap bitmap) {
+        if (bitmap == null) {
+            backLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.accent_mono_dark));
+            bottomControlsLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.accent_light));
+            return;
+        }
+        new Palette.Builder(bitmap).generate(palette -> {
+            Palette.Swatch backSwatch = palette.getDarkMutedSwatch();
+            if (backSwatch == null) {
+                backLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.accent_mono_dark));
+                return;
+            }
+            backLayout.setBackgroundColor(backSwatch.getRgb());
+
+            Palette.Swatch bottomSwatch = palette.getDarkVibrantSwatch();
+            if (bottomSwatch == null) {
+                bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_light));
+                return;
+            }
+            bottomControlsLayout.setBackgroundColor(bottomSwatch.getRgb());
+        });
+    }
+
+    @Subscribe
+    public void pauseEvent(PauseEvent event) {
+        playPauseButton.setImageResource(R.drawable.play_button);
+    }
+
+    @Subscribe
+    public void playEvent(PlayEvent event) {
+        playPauseButton.setImageResource(R.drawable.pause_button);
+    }
+
     @Subscribe
     public void networkStateEvent(NetworkStateChangeEvent event) {
         modeAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void artistInfoEvent(ArtistInfoEvent event) {
+        updateArtist();
     }
 
     @Subscribe
@@ -562,8 +611,21 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     @Subscribe
+    public void trackAndAlbumInfoUpdatedEvent(TrackAndAlbumInfoUpdatedEvent event) {
+        loveFloatingActionButton.setImageResource(ButtonStateUtils.getLoveButtonImage());
+        updateAlbum();
+    }
+
+    @Subscribe
     public void timeEvent(TimeEvent event) {
         updateTime();
+    }
+
+    @Subscribe
+    public void trackInfoEvent(TrackInfoEvent event) {
+        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        titleTextView.setText(currentTrack.getTitle());
+        artistTextView.setText(currentTrack.getArtist());
     }
 
     @Subscribe
@@ -575,7 +637,7 @@ public class PhoneHomeFragment extends HomeFragment {
         @Override
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
             ModeItemsHelper.setEditMode(true);
-//            mainActivity.getModeAdapter().notifyChanges();
+            modeAdapter.notifyChanges();
             return true;
         }
     }

@@ -7,9 +7,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.views.HintMaterialEditText;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.views.HintMaterialEditText;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

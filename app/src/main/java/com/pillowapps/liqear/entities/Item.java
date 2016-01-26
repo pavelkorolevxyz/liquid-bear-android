@@ -5,5 +5,6 @@ import android.view.View;
 
 public interface Item {
     int getViewType();
+
     View getView(LayoutInflater inflater, View convertView);
 }

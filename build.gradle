@@ -72,7 +72,7 @@ subprojects {
     task checkstyle(type: Checkstyle) {
         configFile rootProject.file('code_quality_tools/checkstyle.xml')
 
-        ignoreFailures false // Fail early.
+        ignoreFailures false
         showViolations true
 
         source 'src'
@@ -91,8 +91,7 @@ subprojects {
         checkTask.dependsOn('findbugs')
         checkTask.dependsOn('checkstyle')
 
-        // Log instrumentation tests results.
-        tasks.withType(com.android.build.gradle.internal.tasks.AndroidTestTask) { task ->
+        tasks.withType(AndroidTestTask) { task ->
             task.doFirst {
                 logging.level = LogLevel.INFO
             }

@@ -11,7 +11,6 @@ import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.Group;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkGroup;
-import com.pillowapps.liqear.entities.vk.VkGroupsResponse;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.models.vk.VkGroupModel;
 

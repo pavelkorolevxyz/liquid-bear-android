@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:id="@+id/main_view"
-    android:gravity="center_vertical">
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/main_view"
+                android:gravity="center_vertical">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -24,7 +24,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:scaleType="centerCrop"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"/>
 
         <TextView
             android:id="@+id/text_list_item"
@@ -34,7 +34,7 @@
             android:textColor="@color/primary_text"
             android:textSize="@dimen/mode_button_text_size"
             android:layout_gravity="center_vertical"
-            android:singleLine="true" />
+            android:singleLine="true"/>
     </LinearLayout>
 
     <ImageButton
@@ -55,6 +55,6 @@
         android:layout_alignParentBottom="true"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"/>
 
 </RelativeLayout>

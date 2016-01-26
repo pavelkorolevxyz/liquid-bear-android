@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/playlist_tab_item_main_layout"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:baselineAligned="false"
-    android:orientation="horizontal">
+                android:id="@+id/playlist_tab_item_main_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
     <View
         android:id="@+id/play_image_view_list_item"
@@ -14,7 +14,7 @@
         android:layout_alignTop="@+id/relativeLayout"
         android:layout_marginLeft="0dp"
         android:background="@color/accent"
-        android:visibility="invisible" />
+        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/grabber_list_item"
@@ -28,7 +28,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:src="@drawable/menu_little"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/addition_info_linear_layout"
@@ -55,7 +55,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:textColor="@drawable/list_item_secondary_text_color"
-            android:textSize="14dip" />
+            android:textSize="14dip"/>
 
         <TextView
             android:id="@+id/queue_number_text_view_list_item"
@@ -70,7 +70,7 @@
             android:gravity="right"
             android:singleLine="true"
             android:textColor="@drawable/list_item_secondary_text_color"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -97,7 +97,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:textColor="@drawable/list_item_text_color"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/artist_list_item"
@@ -110,6 +110,6 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:textColor="@drawable/list_item_secondary_text_color"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
     </RelativeLayout>
 </RelativeLayout>

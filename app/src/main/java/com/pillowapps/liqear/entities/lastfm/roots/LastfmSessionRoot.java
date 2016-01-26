@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 import com.pillowapps.liqear.entities.lastfm.LastfmSession;
 
-public class LastfmSessionRoot extends LastfmResponse{
+public class LastfmSessionRoot extends LastfmResponse {
     @SerializedName("session")
     LastfmSession session;
 

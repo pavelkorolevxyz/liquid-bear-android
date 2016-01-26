@@ -19,4 +19,10 @@ public class LiquidBearModelsModule {
         return new PlaylistModel(storageManager);
     }
 
+    @Provides
+    @NonNull
+    @Singleton
+    public ImageModel provideImageModel() {
+        return new ImageModel();
+    }
 }

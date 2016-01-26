@@ -12,20 +12,20 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.base.PagerResultActivity;
 import com.pillowapps.liqear.adapters.pagers.PagesPagerAdapter;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
-import com.pillowapps.liqear.activities.base.PagerResultActivity;
 import com.pillowapps.liqear.components.viewers.LastfmTracksViewerPage;
-import com.pillowapps.liqear.components.viewers.base.ViewerPage;
 import com.pillowapps.liqear.components.viewers.VkAlbumViewerPage;
 import com.pillowapps.liqear.components.viewers.VkTracksViewerPage;
+import com.pillowapps.liqear.components.viewers.base.ViewerPage;
 import com.pillowapps.liqear.entities.Group;
+import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
 

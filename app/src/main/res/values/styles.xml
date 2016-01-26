@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="LiquidBearAppTheme" parent="AppTheme.Base" />
+    <style name="LiquidBearAppTheme" parent="AppTheme.Base"/>
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -19,7 +19,7 @@
         <item name="android:textColorPrimary">@color/inverted_primary</item>
     </style>
 
-    <style name="NavigationTextStyle" parent="@style/TextAppearance.AppCompat.Medium" />
+    <style name="NavigationTextStyle" parent="@style/TextAppearance.AppCompat.Medium"/>
 
     <style name="PreferencesTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>

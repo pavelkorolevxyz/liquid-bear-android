@@ -1,7 +1,6 @@
 package com.pillowapps.liqear.network;
 
 import com.pillowapps.liqear.helpers.StringUtils;
-import com.pillowapps.liqear.network.LastfmApiModule;
 
 import java.util.Map;
 

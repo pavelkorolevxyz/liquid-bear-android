@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/icons">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/icons">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/lb_toolbar" />
+        layout="@layout/lb_toolbar"/>
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -34,7 +34,7 @@
                 android:singleLine="true"
                 app:met_clearButton="true"
                 app:met_floatingLabel="normal"
-                app:met_primaryColor="@color/accent" />
+                app:met_primaryColor="@color/accent"/>
 
             <com.pillowapps.liqear.views.HintMaterialEditText
                 android:id="@+id/city_edit_text_setlist"
@@ -47,7 +47,7 @@
                 android:singleLine="true"
                 app:met_clearButton="true"
                 app:met_floatingLabel="normal"
-                app:met_primaryColor="@color/accent" />
+                app:met_primaryColor="@color/accent"/>
 
             <com.pillowapps.liqear.views.HintMaterialEditText
                 android:id="@+id/venue_edit_text_setlist"
@@ -60,7 +60,7 @@
                 android:singleLine="true"
                 app:met_clearButton="true"
                 app:met_floatingLabel="normal"
-                app:met_primaryColor="@color/accent" />
+                app:met_primaryColor="@color/accent"/>
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/search_setlist_button"
@@ -78,7 +78,7 @@
                 app:fb_focusColor="@color/primary_dark"
                 app:fb_text="@string/search"
                 app:fb_textColor="@color/inverted_primary_text"
-                app:fb_textSize="8sp" />
+                app:fb_textSize="8sp"/>
         </LinearLayout>
     </ScrollView>
 

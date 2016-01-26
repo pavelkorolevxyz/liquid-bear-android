@@ -1,24 +1,13 @@
 package com.pillowapps.liqear.fragments;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.SharedPreferencesManager;
-import com.pillowapps.liqear.helpers.ButtonStateUtils;
-import com.pillowapps.liqear.helpers.TimeUtils;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 public class PlaybackControlFragment extends Fragment {
     @Bind(R.id.play_pause_button_playback_tab)

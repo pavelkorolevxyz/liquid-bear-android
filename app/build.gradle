@@ -121,7 +121,6 @@ dependencies {
     compile project(':PullToRefreshLibrary')
     compile project(':StickyGridHeaders')
     compile project(':NumberPicker')
-    compile project(':PanningViewLibrary')
     compile project(':PhotoView')
     compile project(':ViewPagerIndicatorLibrary')
     compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {

@@ -1,105 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
-                android:layout_height="fill_parent" android:layout_gravity="center_vertical"
-                android:orientation="horizontal" android:id="@+id/clicable_widget_part3"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal"
+                android:id="@+id/clicable_widget_part3"
                 android:background="@drawable/appwidget_dark_bg_clickable">
+
     <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/album_cover_image_view"
-            android:layout_alignParentTop="true"
-            android:src="@drawable/lb_icon_white"
-            android:layout_alignBottom="@+id/linearLayout" android:scaleType="centerCrop"
-            android:contentDescription="image"/>
-    <ImageView android:layout_width="fill_parent" android:layout_height="fill_parent"
-               android:id="@+id/imageView"
-               android:layout_alignParentTop="true"
-               android:layout_alignBottom="@+id/linearLayout" android:scaleType="centerCrop"
-               android:contentDescription="image"
-               android:background="@drawable/fade_to_black_gradient_lighter"/>
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/album_cover_image_view"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/lb_icon_white"
+        android:layout_alignBottom="@+id/linearLayout"
+        android:scaleType="centerCrop"
+        android:contentDescription="image"/>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/linearLayout"
+        android:scaleType="centerCrop"
+        android:contentDescription="image"
+        android:background="@drawable/fade_to_black_gradient_lighter"/>
+
     <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" android:layout_above="@+id/linearLayout">
-        <LinearLayout android:layout_width="0px" android:layout_height="wrap_content"
-                      android:layout_gravity="center" android:orientation="vertical"
-                      android:clickable="true" android:id="@+id/clicable_widget_part2"
-                      android:layout_centerVertical="true"
-                      android:layout_alignParentRight="true" android:layout_alignParentLeft="true"
-                      android:layout_above="@+id/linearLayout"
-                      android:layout_weight="3">
-            <TextView android:id="@+id/title" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent.Title"
-                      android:marqueeRepeatLimit="marquee_forever"
-                      android:scrollHorizontally="true"
-                      android:textColor="@android:color/white"
-                      android:padding="4dp"/>
-            <TextView android:id="@+id/artist" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent"
-                      android:singleLine="true" android:ellipsize="marquee" android:textColor="@android:color/white"
-                      android:padding="4dp"/>
-        </LinearLayout>
-        <LinearLayout android:orientation="horizontal" android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/linearLayout1"
-                      android:layout_alignLeft="@+id/album_cover_image_view" android:layout_alignParentTop="true"
-                      android:layout_weight="2" android:layout_gravity="bottom">
-            <ImageButton android:id="@+id/add_to_vk_button"
-                         android:layout_height="wrap_content" android:layout_width="wrap_content"
-                         android:scaleType="fitCenter" android:src="@drawable/add_button"
-                         android:contentDescription="next"
-                         android:layout_gravity="center_vertical"
-                         android:background="@null" android:padding="6dp" android:layout_weight="1"/>
-            <ImageButton android:id="@+id/love_button"
-                         android:layout_height="wrap_content" android:layout_width="wrap_content"
-                         android:scaleType="fitCenter" android:src="@drawable/ic_love"
-                         android:contentDescription="next"
-                         android:layout_gravity="center_vertical"
-                         android:background="@null" android:padding="6dp" android:layout_weight="1"/>
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout">
+
+        <LinearLayout
+            android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" android:id="@+id/linearLayout"
-            android:padding="@dimen/normal_padding">
-        <ImageButton android:id="@+id/repeat_button"
-                     android:layout_height="wrap_content" android:layout_width="wrap_content"
-                     android:scaleType="fitCenter" android:src="@drawable/ic_repeat"
-                     android:contentDescription="next"
-                     android:background="@null"
-                     android:layout_gravity="center_vertical" android:layout_weight="1" android:padding="6dp"/>
-        <ImageButton
-                android:id="@+id/prev"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:id="@+id/clicable_widget_part2"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:layout_above="@+id/linearLayout"
+            android:layout_weight="3">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent.Title"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:textColor="@android:color/white"
+                android:padding="4dp"/>
+
+            <TextView
+                android:id="@+id/artist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:textColor="@android:color/white"
+                android:padding="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout1"
+            android:layout_alignLeft="@+id/album_cover_image_view"
+            android:layout_alignParentTop="true"
+            android:layout_weight="2"
+            android:layout_gravity="bottom">
+
+            <ImageButton
+                android:id="@+id/add_to_vk_button"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_gravity="center_vertical"
                 android:scaleType="fitCenter"
-                android:src="@drawable/prev_button"
-                android:contentDescription="prev"
+                android:src="@drawable/add_button"
+                android:contentDescription="next"
+                android:layout_gravity="center_vertical"
                 android:background="@null"
-                android:layout_weight="1" android:padding="6dp"/>
-        <ImageButton android:id="@+id/play_pause"
-                     android:layout_height="wrap_content" android:layout_width="wrap_content"
-                     android:layout_gravity="center_vertical"
-                     android:scaleType="fitCenter" android:src="@drawable/ic_play"
-                     android:contentDescription="play / pause"
-                     android:background="@null"
-                     android:layout_weight="1" android:padding="6dp"/>
-        <ImageButton android:id="@+id/next"
-                     android:layout_height="wrap_content" android:layout_width="wrap_content"
-                     android:layout_gravity="center_vertical"
-                     android:scaleType="fitCenter" android:src="@drawable/next_button"
-                     android:contentDescription="next"
-                     android:background="@null"
-                     android:layout_weight="1" android:padding="6dp"/>
-        <ImageButton android:id="@+id/shuffle_button"
-                     android:layout_height="wrap_content" android:layout_width="wrap_content"
-                     android:scaleType="fitCenter"
-                     android:src="@drawable/ic_shuffle" android:contentDescription="next"
-                     android:background="@null" android:layout_weight="1" android:layout_gravity="center_vertical"
-                     android:padding="6dp"/>
+                android:padding="6dp"
+                android:layout_weight="1"/>
+
+            <ImageButton
+                android:id="@+id/love_button"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_love"
+                android:contentDescription="next"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                android:padding="6dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/linearLayout"
+        android:padding="@dimen/normal_padding">
+
+        <ImageButton
+            android:id="@+id/repeat_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_repeat"
+            android:contentDescription="next"
+            android:background="@null"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:padding="6dp"/>
+
+        <ImageButton
+            android:id="@+id/prev"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitCenter"
+            android:src="@drawable/prev_button"
+            android:contentDescription="prev"
+            android:background="@null"
+            android:layout_weight="1"
+            android:padding="6dp"/>
+
+        <ImageButton
+            android:id="@+id/play_pause"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_play"
+            android:contentDescription="play / pause"
+            android:background="@null"
+            android:layout_weight="1"
+            android:padding="6dp"/>
+
+        <ImageButton
+            android:id="@+id/next"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitCenter"
+            android:src="@drawable/next_button"
+            android:contentDescription="next"
+            android:background="@null"
+            android:layout_weight="1"
+            android:padding="6dp"/>
+
+        <ImageButton
+            android:id="@+id/shuffle_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_shuffle"
+            android:contentDescription="next"
+            android:background="@null"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:padding="6dp"/>
     </LinearLayout>
 </RelativeLayout>

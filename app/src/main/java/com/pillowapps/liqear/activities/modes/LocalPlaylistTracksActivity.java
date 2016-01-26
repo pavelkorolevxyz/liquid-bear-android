@@ -23,7 +23,7 @@ import rx.schedulers.Schedulers;
 public class LocalPlaylistTracksActivity extends ListBaseActivity {
 
     private TrackAdapter adapter;
-    
+
     @Inject
     PlaylistModel playlistModel;
 

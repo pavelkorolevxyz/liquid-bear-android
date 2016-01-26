@@ -67,7 +67,9 @@ public class TextActivity extends ResultTrackedBaseActivity {
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_scrollable_text_layout);
         Bundle extras = getIntent().getExtras();
         aim = (Aim) extras.get(TEXT_AIM);
-        if (aim == null) throw new RuntimeException("Aim of TextActivity can't be null");
+        if (aim == null) {
+            throw new RuntimeException("Aim of TextActivity can't be null");
+        }
         switch (aim) {
             case ARTIST_INFO:
                 googleRequest = extras.getString(ARTIST_NAME);
@@ -92,6 +94,8 @@ public class TextActivity extends ResultTrackedBaseActivity {
             case THANKS:
                 actionBar.setTitle(getResources().getString(R.string.thanks_to));
                 textView.setText(getResources().getString(R.string.thanks_text));
+                break;
+            default:
                 break;
         }
         LBApplication.BUS.register(this);
