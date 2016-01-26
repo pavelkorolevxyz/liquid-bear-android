@@ -33,17 +33,15 @@ import android.widget.Toast;
 import com.mobeta.android.dslv.DragSortListView;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.viewers.LastfmAlbumViewerActivity;
-import com.pillowapps.liqear.activities.viewers.LastfmArtistViewerActivity;
+import com.pillowapps.liqear.activities.modes.viewers.LastfmAlbumViewerActivity;
+import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.components.ModeClickListener;
-import com.pillowapps.liqear.components.SwipeDetector;
-import com.pillowapps.liqear.components.ViewPage;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.ViewPage;
 import com.pillowapps.liqear.entities.events.BufferizationEvent;
 import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
 import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
@@ -56,8 +54,10 @@ import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TimeUtils;
+import com.pillowapps.liqear.listeners.OnModeClickListener;
+import com.pillowapps.liqear.listeners.OnSwipeListener;
 import com.pillowapps.liqear.models.ImageModel;
-import com.pillowapps.liqear.models.Tutorial;
+import com.pillowapps.liqear.models.TutorialModel;
 import com.squareup.otto.Subscribe;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
@@ -114,7 +114,7 @@ public class PhoneHomeFragment extends HomeFragment {
      */
     private Toolbar modeToolbar;
 
-    private Tutorial tutorial = new Tutorial();
+    private TutorialModel tutorial = new TutorialModel();
     private ModeGridAdapter modeAdapter;
 
     @Override
@@ -139,7 +139,7 @@ public class PhoneHomeFragment extends HomeFragment {
         shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
         repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
 
-        stateManager.restorePlaylistState(getActivity(), () -> {
+        stateManager.restorePlaylistState(() -> {
             final Playlist playlist = Timeline.getInstance().getPlaylist();
             if (playlist == null || playlist.getTracks().size() == 0) return;
             updateMainPlaylistTitle();
@@ -241,9 +241,9 @@ public class PhoneHomeFragment extends HomeFragment {
         playlistTab = View.inflate(context, R.layout.playlist_tab, null);
         playbackTab = View.inflate(context, R.layout.play_tab, null);
         modeTab = View.inflate(context, R.layout.mode_tab, null);
-        pages.add(new ViewPage(context, playlistTab, R.string.playlist_tab));
-        pages.add(new ViewPage(context, playbackTab, R.string.play_tab));
-        pages.add(new ViewPage(context, modeTab, R.string.mode_tab));
+        pages.add(new ViewPage(playlistTab, R.string.playlist_tab));
+        pages.add(new ViewPage(playbackTab, R.string.play_tab));
+        pages.add(new ViewPage(modeTab, R.string.mode_tab));
         pager = (ViewPager) v.findViewById(R.id.viewpager);
         pager.setOffscreenPageLimit(pages.size());
         pager.setAdapter(new PhoneFragmentPagerAdapter(pages));
@@ -351,7 +351,7 @@ public class PhoneHomeFragment extends HomeFragment {
         modeAdapter = new ModeGridAdapter(activity);
 
         StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
-        modeGridView.setOnItemClickListener(new ModeClickListener(this));
+        modeGridView.setOnItemClickListener(new OnModeClickListener(this));
         modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
         modeGridView.setAdapter(modeAdapter);
     }
@@ -443,7 +443,7 @@ public class PhoneHomeFragment extends HomeFragment {
             editor.apply();
             updateTime();
         });
-        SwipeDetector swipeDetector = new SwipeDetector(this::openDropButton);
+        OnSwipeListener swipeDetector = new OnSwipeListener(this::openDropButton);
         blackView.setOnTouchListener(swipeDetector);
 
         loveFloatingActionButton.setOnClickListener(v -> toggleLoveCurrentTrack());

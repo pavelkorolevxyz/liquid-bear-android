@@ -14,7 +14,7 @@
             android:summary="@string/scrobble_summary"
             android:title="@string/scrobble" />
 
-        <com.pillowapps.liqear.components.SeekBarPreference
+        <com.pillowapps.liqear.views.SeekBarPreference
             android:defaultValue="40"
             android:dialogMessage="Value in percents"
             android:key="scrobble_time_preferences"

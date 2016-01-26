@@ -22,13 +22,13 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.views.HintMaterialEditText;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.models.PlaylistModel;
+import com.pillowapps.liqear.views.HintMaterialEditText;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
@@ -238,16 +238,17 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
             }
 
             if (isRenaming) {
-                playlistModel.renamePlaylist(adapter.get(position).getId(), title)
+                Playlist playlist = adapter.get(position);
+                playlistModel.renamePlaylist(playlist.getId(), title)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe();
-                adapter.get(position).setTitle(title);
+                playlist.setTitle(title);
                 adapter.notifyDataSetChanged();
                 updateEmptyTextView();
             } else {
                 final String finalTitle = title;
-                playlistModel.savePlaylist(title, Timeline.getInstance().getPlaylistTracks())
+                playlistModel.savePlaylist(finalTitle, Timeline.getInstance().getPlaylistTracks())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe(pid -> {
@@ -281,11 +282,12 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
             }
 
             if (isRenaming) {
-                playlistModel.renamePlaylist(adapter.get(position).getId(), title)
+                Playlist playlist = adapter.get(position);
+                playlistModel.renamePlaylist(playlist.getId(), title)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe();
-                adapter.get(position).setTitle(title);
+                playlist.setTitle(title);
                 adapter.notifyDataSetChanged();
                 updateEmptyTextView();
             } else {

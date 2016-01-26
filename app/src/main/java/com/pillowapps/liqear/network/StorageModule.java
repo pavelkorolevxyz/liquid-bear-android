@@ -3,7 +3,8 @@ package com.pillowapps.liqear.network;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.pillowapps.liqear.helpers.StorageManager;
+import com.pillowapps.liqear.helpers.PlaylistsStorage;
+import com.pillowapps.liqear.helpers.StorioStorageManager;
 
 import javax.inject.Singleton;
 
@@ -16,8 +17,8 @@ public class StorageModule {
     @Provides
     @NonNull
     @Singleton
-    public StorageManager provideStorageManager(Context context) {
-        return new StorageManager(context);
+    public PlaylistsStorage provideStorageManager(Context context) {
+        return new StorioStorageManager(context);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.components;
+package com.pillowapps.liqear.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -79,7 +79,7 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
 
     @Override
     protected View onCreateView(ViewGroup parent) {
-
+        super.onCreateView(parent);
         RelativeLayout layout = null;
 
         try {

@@ -6,8 +6,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.HintMaterialEditText;
-import com.pillowapps.liqear.components.LoadMoreRecyclerView;
+import com.pillowapps.liqear.views.HintMaterialEditText;
+import com.pillowapps.liqear.views.LoadMoreRecyclerView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

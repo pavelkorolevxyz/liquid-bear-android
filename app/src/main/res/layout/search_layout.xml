@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         layout="@layout/lb_toolbar" />
 
-    <com.pillowapps.liqear.components.LoadMoreRecyclerView
+    <com.pillowapps.liqear.views.LoadMoreRecyclerView
         android:id="@+id/list"
         android:scrollbars="vertical"
         android:layout_width="fill_parent"
@@ -42,7 +42,7 @@
         android:padding="4dp"
         android:visibility="gone">
 
-        <com.pillowapps.liqear.components.HintMaterialEditText
+        <com.pillowapps.liqear.views.HintMaterialEditText
             android:id="@+id/search_edit_text_quick_search_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

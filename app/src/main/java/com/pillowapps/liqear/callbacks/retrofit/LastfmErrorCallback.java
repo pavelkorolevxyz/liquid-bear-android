@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.callbacks;
+package com.pillowapps.liqear.callbacks.retrofit;
 
 import com.pillowapps.liqear.entities.lastfm.LastfmResponse;
 
@@ -6,7 +6,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public abstract class LastfmErrorCodeCallback<T extends LastfmResponse> implements Callback<T> {
+public abstract class LastfmErrorCallback<T extends LastfmResponse> implements Callback<T> {
     @Override
     public final void success(T data, Response response) {
         int errorCode = data.getErrorCode();

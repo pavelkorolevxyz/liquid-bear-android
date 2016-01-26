@@ -67,7 +67,7 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
         updateEmptyTextView();
     }
 
-    private void loadPlaylistTracks(long playlistId) {
+    private void loadPlaylistTracks(Long playlistId) {
         playlistModel.getPlaylist(playlistId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

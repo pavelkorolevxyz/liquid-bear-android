@@ -3,6 +3,7 @@ package com.pillowapps.liqear.audio;
 import android.graphics.Bitmap;
 
 import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
@@ -10,7 +11,6 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
-import com.pillowapps.liqear.models.PlayingState;
 
 import java.util.LinkedList;
 import java.util.List;

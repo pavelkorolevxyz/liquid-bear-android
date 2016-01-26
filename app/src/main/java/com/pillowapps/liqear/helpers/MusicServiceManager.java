@@ -8,7 +8,7 @@ import android.os.IBinder;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.audio.MusicService;
-import com.pillowapps.liqear.listeners.ServiceConnectionListener;
+import com.pillowapps.liqear.listeners.OnServiceConnectedListener;
 
 public class MusicServiceManager {
 
@@ -19,7 +19,7 @@ public class MusicServiceManager {
         return musicService;
     }
 
-    public void startService(Context context, final ServiceConnectionListener listener) {
+    public void startService(Context context, final OnServiceConnectedListener listener) {
         serviceConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
                 MusicService.LocalBinder binder = (MusicService.LocalBinder) service;

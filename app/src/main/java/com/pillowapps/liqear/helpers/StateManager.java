@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.helpers;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.pillowapps.liqear.audio.MusicService;
@@ -53,10 +52,10 @@ public class StateManager {
         editor.apply();
     }
 
-    public void restorePlaylistState(Context context, final CompletionCallback completionCallback) {
+    public void restorePlaylistState(final CompletionCallback completionCallback) {
         Timber.d("restore state");
         final long time = System.currentTimeMillis();
-        playlistModel.getMainPlaylist(context)
+        playlistModel.getMainPlaylist()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlist -> {

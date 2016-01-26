@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.pillowapps.liqear.adapters.recyclers.ArtistAdapter;
+import com.pillowapps.liqear.components.viewers.base.ViewerPage;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.helpers.Converter;

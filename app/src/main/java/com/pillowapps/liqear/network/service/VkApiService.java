@@ -1,6 +1,6 @@
 package com.pillowapps.liqear.network.service;
 
-import com.pillowapps.liqear.callbacks.VkCallback;
+import com.pillowapps.liqear.callbacks.retrofit.VkCallback;
 import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.entities.vk.roots.VkAlbumsResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkGetUsersResponseRoot;

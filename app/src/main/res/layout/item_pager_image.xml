@@ -3,7 +3,7 @@
              android:layout_width="fill_parent"
              android:layout_height="fill_parent">
 
-    <com.pillowapps.liqear.components.TouchImageView
+    <com.pillowapps.liqear.views.TouchImageView
             android:id="@+id/image"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

@@ -2,7 +2,7 @@ package com.pillowapps.liqear.helpers;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.components.UpdateAdapterCallback;
+import com.pillowapps.liqear.callbacks.UpdateAdapterCallback;
 import com.pillowapps.liqear.entities.Category;
 import com.pillowapps.liqear.entities.Header;
 import com.pillowapps.liqear.entities.Item;

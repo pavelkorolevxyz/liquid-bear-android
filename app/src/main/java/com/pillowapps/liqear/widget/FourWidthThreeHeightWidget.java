@@ -16,11 +16,11 @@ import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
-import com.pillowapps.liqear.models.PlayingState;
 
 public class FourWidthThreeHeightWidget extends AppWidgetProvider {
     private static boolean sEnabled;

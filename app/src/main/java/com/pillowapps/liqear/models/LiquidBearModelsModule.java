@@ -2,7 +2,7 @@ package com.pillowapps.liqear.models;
 
 import android.support.annotation.NonNull;
 
-import com.pillowapps.liqear.helpers.StorageManager;
+import com.pillowapps.liqear.helpers.PlaylistsStorage;
 
 import javax.inject.Singleton;
 
@@ -15,7 +15,7 @@ public class LiquidBearModelsModule {
     @Provides
     @NonNull
     @Singleton
-    public PlaylistModel providePlaylistsModel(StorageManager storageManager) {
+    public PlaylistModel providePlaylistsModel(PlaylistsStorage storageManager) {
         return new PlaylistModel(storageManager);
     }
 

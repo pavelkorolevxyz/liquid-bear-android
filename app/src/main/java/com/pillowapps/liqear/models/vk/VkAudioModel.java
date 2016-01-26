@@ -6,8 +6,8 @@ import android.widget.Toast;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
-import com.pillowapps.liqear.callbacks.VkCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
+import com.pillowapps.liqear.callbacks.retrofit.VkCallback;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;

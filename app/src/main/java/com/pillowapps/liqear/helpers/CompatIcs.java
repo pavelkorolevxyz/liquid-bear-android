@@ -15,8 +15,8 @@ import android.text.Html;
 
 import com.pillowapps.liqear.audio.MediaButtonReceiver;
 import com.pillowapps.liqear.audio.Timeline;
+import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.models.PlayingState;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class CompatIcs {

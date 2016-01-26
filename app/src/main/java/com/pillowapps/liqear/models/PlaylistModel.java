@@ -1,11 +1,10 @@
 package com.pillowapps.liqear.models;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.helpers.StorageManager;
+import com.pillowapps.liqear.helpers.PlaylistsStorage;
 import com.pushtorefresh.storio.sqlite.operations.delete.DeleteResult;
 
 import java.util.Collections;
@@ -15,13 +14,13 @@ import rx.Observable;
 
 public class PlaylistModel {
 
-    private StorageManager storageManager;
+    private PlaylistsStorage storageManager;
 
-    public PlaylistModel(StorageManager storageManager) {
+    public PlaylistModel(PlaylistsStorage storageManager) {
         this.storageManager = storageManager;
     }
 
-    public Observable<Long> saveMainPlaylist(@NonNull Context context, Playlist playlist) {
+    public Observable<Long> saveMainPlaylist(Playlist playlist) {
         if (playlist == null) return Observable.empty();
         playlist.setMainPlaylist(true);
 
@@ -30,31 +29,31 @@ public class PlaylistModel {
                 .flatMap(deleteResult -> storageManager.savePlaylist(playlist));
     }
 
-    public Observable<Playlist> getMainPlaylist(@NonNull Context context) {
+    public Observable<Playlist> getMainPlaylist() {
         return storageManager.getMainPlaylist();
     }
 
-    public Observable<List<Playlist>> getPlaylists(@NonNull Context context) {
+    public Observable<List<Playlist>> getPlaylists() {
         return storageManager.getPlaylists();
     }
 
-    public Observable removePlaylist(@NonNull Context context, @NonNull Long id) {
+    public Observable removePlaylist(@NonNull Long id) {
         return storageManager.findAndDeletePlaylist(id);
     }
 
-    public Observable renamePlaylist(@NonNull Context context, @NonNull Long id, @NonNull String newTitle) {
+    public Observable renamePlaylist(@NonNull Long id, @NonNull String newTitle) {
         return storageManager.renamePlaylist(id, newTitle);
     }
 
-    public Observable addTrackToPlaylist(@NonNull Context context, @NonNull Long playlistId, @NonNull Track track) {
+    public Observable addTrackToPlaylist(@NonNull Long playlistId, @NonNull Track track) {
         return storageManager.saveTrackToPlaylist(playlistId, track);
     }
 
-    public Observable<Long> savePlaylist(@NonNull Context context, String title, @NonNull List<Track> tracks) {
+    public Observable<Long> savePlaylist(String title, @NonNull List<Track> tracks) {
         return storageManager.savePlaylist(new Playlist(title, tracks));
     }
 
-    public Observable<Playlist> getPlaylist(@NonNull Context context, @NonNull final Long playlistId) {
+    public Observable<Playlist> getPlaylist(@NonNull final Long playlistId) {
         return storageManager.getPlaylist(playlistId);
     }
 

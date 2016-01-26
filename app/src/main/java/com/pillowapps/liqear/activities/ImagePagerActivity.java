@@ -33,9 +33,9 @@ import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.components.TouchImageView;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
+import com.pillowapps.liqear.views.TouchImageView;
 
 import java.util.ArrayList;
 import java.util.List;

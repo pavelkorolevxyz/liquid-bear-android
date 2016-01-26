@@ -5,7 +5,7 @@
     android:layout_gravity="center_vertical"
     android:orientation="vertical">
 
-    <com.pillowapps.liqear.components.HintMaterialEditText
+    <com.pillowapps.liqear.views.HintMaterialEditText
         android:id="@+id/artist"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:inputType="none"
         app:met_floatingLabel="normal" />
 
-    <com.pillowapps.liqear.components.HintMaterialEditText
+    <com.pillowapps.liqear.views.HintMaterialEditText
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
