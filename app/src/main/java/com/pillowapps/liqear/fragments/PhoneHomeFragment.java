@@ -11,7 +11,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
@@ -29,7 +28,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mobeta.android.dslv.DragSortListView;
 import com.pillowapps.liqear.LBApplication;
@@ -234,7 +232,6 @@ public class PhoneHomeFragment extends HomeFragment {
         mainProgressBar = (ProgressBar) v.findViewById(R.id.progressBar);
 
         initViewPager(v);
-        changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX);
 
         initModeTab();
         initPlaylistsTab();
@@ -262,7 +259,6 @@ public class PhoneHomeFragment extends HomeFragment {
         playbackToolbar = (Toolbar) playbackTab.findViewById(R.id.toolbar);
         modeToolbar = (Toolbar) modeTab.findViewById(R.id.toolbar);
         playlistToolbar.setTitle(R.string.playlist_tab);
-        playlistToolbar.setOnClickListener(v1 -> Toast.makeText(getActivity(), playlistToolbar.getTitle(), Toast.LENGTH_SHORT).show());
         playbackToolbar.setTitle(R.string.app_name);
         modeToolbar.setTitle(R.string.mode_tab);
         updateToolbars();
@@ -274,7 +270,7 @@ public class PhoneHomeFragment extends HomeFragment {
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                // No op.
             }
 
             @Override
@@ -291,16 +287,18 @@ public class PhoneHomeFragment extends HomeFragment {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                // No op.
             }
         });
+        changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX);
     }
 
     private void initPlaylistsTab() {
         ListView playlistListView = (DragSortListView) playlistTab.findViewById(R.id.playlist_list_view_playlist_tab);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
+        playlistListView.setOnItemClickListener((parent, view, position, id) -> {
+            musicServiceManager.play(playlistItemsAdapter.getItem(position).getRealPosition());
+        });
 //        View.OnCreateContextMenuListener contextMenuListener = new View.OnCreateContextMenuListener() {
 //            @Override
 //            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -505,7 +503,6 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     private void updateTime() {
-        if (musicServiceManager.isPrepared()) return;
         seekBar.setProgress(musicServiceManager.getCurrentPositionPercent());
         String text;
         int timeFromBeginning = musicServiceManager.getCurrentPosition() / 1000;
@@ -626,6 +623,7 @@ public class PhoneHomeFragment extends HomeFragment {
         Track currentTrack = Timeline.getInstance().getCurrentTrack();
         titleTextView.setText(currentTrack.getTitle());
         artistTextView.setText(currentTrack.getArtist());
+        playlistItemsAdapter.notifyDataSetChanged();
     }
 
     @Subscribe
