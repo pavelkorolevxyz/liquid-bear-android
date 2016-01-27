@@ -8,12 +8,14 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -22,6 +24,7 @@ import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.activities.ImagePagerActivity;
+import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity;
@@ -45,7 +48,6 @@ import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.home.HomePresenter;
 import com.pillowapps.liqear.helpers.home.HomeView;
-import com.pillowapps.liqear.models.LyricsModel;
 import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
 import com.pillowapps.liqear.models.TrackModel;
@@ -53,6 +55,7 @@ import com.pillowapps.liqear.models.VideoModel;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
+import com.pillowapps.liqear.models.vk.VkWallModel;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -67,19 +70,22 @@ import rx.schedulers.Schedulers;
 
 public abstract class HomeFragment extends BaseFragment implements HomeView {
 
-    @Inject
-    HomePresenter presenter;
-
     protected HomeActivity activity;
 
-    protected ProgressBar progressBar;
+    protected ProgressBar mainProgressBar;
 
     protected PlaylistItemsAdapter playlistItemsAdapter;
 
     protected Menu mainMenu;
 
     @Inject
+    HomePresenter presenter;
+
+    @Inject
     MusicServiceManager musicServiceManager;
+
+    @Inject
+    StateManager stateManager;
 
     @Inject
     VkAudioModel vkAudioModel;
@@ -87,9 +93,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     LastfmTrackModel lastfmTrackModel;
     @Inject
     PlaylistModel playlistModel;
-    @Inject
-    StateManager stateManager;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,89 +136,32 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         Track currentTrack = Timeline.getInstance().getCurrentTrack();
         int itemId = item.getItemId();
         switch (itemId) {
-            case android.R.id.home: {
-//                activity.setHomeClicked(); todo in tablet version
-//                if (toggle != null) toggle.onOptionsItemSelected(item);
-            }
-            return true;
             case R.id.photo_artist_button: {
-                if (currentTrack == null || currentTrack.getArtist() == null) return true;
-                if (!NetworkUtils.isOnline()) {
-                    toast(R.string.no_internet);
-                    return true;
-                }
-                Intent intent = new Intent(getActivity(), ImagePagerActivity.class);
-                intent.putExtra(ImagePagerActivity.ARTIST, currentTrack.getArtist());
-                startActivity(intent);
+                presenter.openArtistPhotos();
             }
             return true;
             case R.id.show_artist_button: {
-                if (currentTrack == null || currentTrack.getArtist() == null) return true;
-                if (!NetworkUtils.isOnline()) {
-                    toast(R.string.no_internet);
-                    return true;
-                }
-                Intent intent = new Intent(getActivity(), LastfmArtistViewerActivity.class);
-                intent.putExtra(LastfmArtistViewerActivity.ARTIST, currentTrack.getArtist());
-                startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                presenter.openArtistViewer();
             }
             return true;
             case R.id.share_track_button: {
-                if (currentTrack == null) return true;
-                new ShareModel().showShareCurrentTrackDialog(getActivity());
+                presenter.shareTrack(SharedPreferencesManager.getPreferences().getString(Constants.SHARE_FORMAT, getString(R.string.listening_now)));
             }
             return true;
             case R.id.next_url_button: {
-                if (currentTrack == null) return true;
-                if (Timeline.getInstance().getCurrentTrack() != null
-                        && Timeline.getInstance().getCurrentTrack().isLocal()) {
-                    toast(R.string.track_local);
-                    return true;
-                }
-                if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-                    toast(R.string.vk_not_authorized);
-                    return true;
-                }
-                if (!NetworkUtils.isOnline()) {
-                    toast(R.string.no_internet);
-                    return true;
-                }
-                Intent intent = new Intent(getActivity(), VkAudioSearchActivity.class);
-                intent.putExtra(Constants.TARGET, TrackUtils.getNotation(currentTrack));
-                intent.putExtra(Constants.TYPE, 2);
-                startActivityForResult(intent, Constants.VK_ADD_REQUEST_CODE);
+                presenter.nextUrl();
             }
             return true;
             case R.id.lyrics_button: {
-                if (currentTrack == null) return true;
-                if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-                    toast(R.string.vk_not_authorized);
-                    return true;
-                }
-                if (!NetworkUtils.isOnline()) {
-                    toast(R.string.no_internet);
-                    return true;
-                }
-                new LyricsModel().openLyrics(getActivity(), currentTrack);
+                presenter.openLyrics();
             }
             return true;
             case R.id.youtube_video_button: {
-                if (currentTrack == null) return true;
-                musicServiceManager.pause();
-                new VideoModel().openVideo(getActivity(), currentTrack);
+                presenter.openVideo();
             }
             return true;
             case R.id.add_to_vk_button: {
-                if (currentTrack == null) return true;
-                if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
-                    toast(R.string.vk_not_authorized);
-                    return true;
-                }
-                if (!NetworkUtils.isOnline()) {
-                    toast(R.string.no_internet);
-                    return true;
-                }
-                vkAudioModel.addToVk(getActivity(), currentTrack);
+                presenter.addToVkAudio();
             }
             return true;
             case R.id.settings: {
@@ -316,7 +262,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 //            }
 //            return true; todo
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -364,7 +310,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void showLoading(boolean loading) {
-        progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+        mainProgressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -476,6 +422,98 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         // No operations.
     }
 
+    @Override
+    public void showNoInternetError() {
+        toast(R.string.no_internet);
+    }
+
+    @Override
+    public void openArtistPhotosScreen(String artist) {
+        Intent intent = new Intent(getActivity(), ImagePagerActivity.class);
+        intent.putExtra(ImagePagerActivity.ARTIST, artist);
+        startActivity(intent);
+    }
+
+    @Override
+    public void openArtistViewer(String artist) {
+        Intent intent = new Intent(getActivity(), LastfmArtistViewerActivity.class);
+        intent.putExtra(LastfmArtistViewerActivity.ARTIST, artist);
+        startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+    }
+
+    @Override
+    public void showShareDialog(String shareMessage, String imageUrl, Track track) {
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle(R.string.share_track)
+                .create();
+
+        View shareDialogView = View.inflate(getContext(), R.layout.share_dialog_layout, null);
+
+        shareDialogView.findViewById(R.id.vk_button).setOnClickListener(v -> {
+            presenter.shareTrackToVk(shareMessage, imageUrl, track);
+            dialog.dismiss();
+        });
+
+        shareDialogView.findViewById(R.id.other_button).setOnClickListener(v -> {
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_track)));
+            dialog.dismiss();
+        });
+
+        shareDialogView.findViewById(R.id.cancel_button).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.setView(shareDialogView);
+
+        dialog.show();
+    }
+
+    @Override
+    public void showVkAuthorizationError() {
+        toast(R.string.vk_not_authorized);
+    }
+
+    @Override
+    public void showTrackIsLocalError() {
+        toast(R.string.track_local);
+    }
+
+    @Override
+    public void openVkAudioSearchForNextUrl(Track currentTrack) {
+        Intent intent = VkAudioSearchActivity.getStartIntent(getContext(), VkAudioSearchActivity.CHOOSE_URL_PURPOSE);
+        intent.putExtra(Constants.TARGET, TrackUtils.getNotation(currentTrack));
+        startActivityForResult(intent, Constants.VK_ADD_REQUEST_CODE);
+    }
+
+    @Override
+    public void openLyricsScreen(Track track) {
+        Intent intent = TextActivity.getStartIntent(getContext(), TextActivity.Aim.LYRICS);
+        intent.putExtra("artist", track.getArtist());
+        intent.putExtra("title", track.getTitle());
+        startActivity(intent);
+    }
+
+    @Override
+    public void openTrackVideo(Track track) {
+        musicServiceManager.pause();
+        new VideoModel().openVideo(getActivity(), track);
+    }
+
+    @Override
+    public void openAddToVkScreen(Track track) {
+        Intent intent = VkAudioSearchActivity.getStartIntent(getContext(), VkAudioSearchActivity.ADD_TO_VK_PURPOSE);
+        intent.putExtra(Constants.TARGET, TrackUtils.getNotation(track));
+        startActivity(intent);
+    }
+
+    @Override
+    public void showToastAdded() {
+        toast(R.string.added);
+    }
+
     @Subcomponent(modules = HomeFragmentModule.class)
     public interface HomeFragmentComponent {
         void inject(@NonNull HomeFragment itemsFragment);
@@ -486,8 +524,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
         @Provides
         @NonNull
-        public HomePresenter provideHomePresenter(@NonNull LastfmLibraryModel libraryModel) {
-            return new HomePresenter(libraryModel);
+        public HomePresenter provideHomePresenter(@NonNull LastfmLibraryModel libraryModel,
+                                                  @NonNull ShareModel shareModel,
+                                                  @NonNull VkWallModel vkWallModel,
+                                                  @NonNull VkAudioModel vkAudioModel) {
+            return new HomePresenter(libraryModel, shareModel, vkWallModel, vkAudioModel);
         }
     }
 }

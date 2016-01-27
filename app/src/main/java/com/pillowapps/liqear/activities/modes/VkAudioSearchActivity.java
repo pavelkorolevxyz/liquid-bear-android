@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.activities.modes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -23,10 +25,19 @@ import javax.inject.Inject;
 
 public class VkAudioSearchActivity extends ListBaseActivity {
 
+    public static final int ADD_TO_VK_PURPOSE = 1;
+    public static final int CHOOSE_URL_PURPOSE = 2;
+
     private TrackAdapter adapter;
 
     @Inject
     VkAudioModel vkAudioModel;
+
+    public static Intent getStartIntent(Context context, int purpose) {
+        Intent intent = new Intent(context, VkAudioSearchActivity.class);
+        intent.putExtra(Constants.TYPE, purpose);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

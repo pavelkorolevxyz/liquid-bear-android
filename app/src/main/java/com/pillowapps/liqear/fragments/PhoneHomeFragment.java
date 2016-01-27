@@ -231,7 +231,7 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     private void initUi(View v) {
-        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+        mainProgressBar = (ProgressBar) v.findViewById(R.id.progressBar);
 
         initViewPager(v);
         changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX);

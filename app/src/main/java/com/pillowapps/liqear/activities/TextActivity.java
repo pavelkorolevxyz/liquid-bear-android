@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
+import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
@@ -27,6 +29,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkLyrics;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
@@ -50,6 +53,12 @@ public class TextActivity extends ResultTrackedBaseActivity {
 
     @Inject
     VkLyricsModel vkLyricsModel;
+
+    public static Intent getStartIntent(Context context, Aim aim) {
+        Intent intent = new Intent(context, TextActivity.class);
+        intent.putExtra(TEXT_AIM, aim);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
