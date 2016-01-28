@@ -67,10 +67,6 @@ public class HomePresenter extends Presenter<HomeView> {
         this.timeline = timeline;
     }
 
-    public void setMusicServiceConnected() {
-
-    }
-
     public void openRadiomix() {
         final HomeView view = view();
 
@@ -158,10 +154,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
 
         String template = SharedPreferencesManager.getPreferences().getString(Constants.SHARE_FORMAT,
-                LBApplication.getAppContext().getString(R.string.listening_now));
+                LBApplication.getAppContext().getString(R.string.listening_now)); // todo move to interactor layer
 
         String shareMessage = shareModel.createShareMessage(currentTrack, timeline.getCurrentAlbum(), template);
-
         String imageUrl = shareModel.getAlbumImageUrl(currentTrack, currentAlbum);
 
         view.showShareDialog(shareMessage, imageUrl, currentTrack);
@@ -220,6 +215,7 @@ public class HomePresenter extends Presenter<HomeView> {
             view.showNoInternetError();
             return;
         }
+
         view.openLyricsScreen(currentTrack);
     }
 
@@ -228,7 +224,6 @@ public class HomePresenter extends Presenter<HomeView> {
         if (currentTrack == null) return;
 
         final HomeView view = view();
-
         view.openTrackVideo(currentTrack);
     }
 
@@ -266,19 +261,16 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void openPreferences() {
         final HomeView view = view();
-
         view.openPreferences();
     }
 
     public void openEqualizer() {
         final HomeView view = view();
-
         view.openEqualizer();
     }
 
     public void openTimer() {
         final HomeView view = view();
-
         view.showTimerDialog();
     }
 
@@ -304,7 +296,6 @@ public class HomePresenter extends Presenter<HomeView> {
         timeline.clearPreviousIndexes();
 
         final HomeView view = view();
-
         view.clearSearch();
         updateMainPlaylist(0, true);
     }
@@ -342,12 +333,17 @@ public class HomePresenter extends Presenter<HomeView> {
 
         HomeView view = view();
         view.changePlaylist(positionToPlay, autoPlay);
+        view.updateEmptyPlaylistTextView();
+
+        if (timeline.getPlaylistTracks().size() > 0 && autoPlay) {
+            playTrack(positionToPlay);
+        }
+
     }
 
     public void toggleModeListEditMode() {
         ModeItemsHelper.setEditMode(!ModeItemsHelper.isEditMode());
         HomeView view = view();
-
         view.updateModeListEditMode();
     }
 
@@ -357,7 +353,6 @@ public class HomePresenter extends Presenter<HomeView> {
         savePreferences.edit().putBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, visibility).apply(); // todo move shared preferences to interactor layer
 
         HomeView view = view();
-
         view.updateSearchVisibility(visibility);
     }
 

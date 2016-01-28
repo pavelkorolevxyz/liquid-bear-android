@@ -106,7 +106,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         presenter.bindView(this);
 
         musicServiceManager.startServiceAsync(activity, () -> {
-            presenter.setMusicServiceConnected();
             activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         });
 
@@ -246,17 +245,12 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public void updateAdapter() {
         playlistItemsAdapter.notifyDataSetChanged();
-        updateEmptyPlaylistTextView();
     }
 
     @Override
     public void changePlaylist(int index, boolean autoPlay) {
         List<Track> tracks = timeline.getPlaylistTracks();
         playlistItemsAdapter.setValues(tracks);
-        if (tracks.size() > 0 && autoPlay) {
-            presenter.playTrack(index);
-        }
-        updateEmptyPlaylistTextView();
         updateToolbars();
     }
 
