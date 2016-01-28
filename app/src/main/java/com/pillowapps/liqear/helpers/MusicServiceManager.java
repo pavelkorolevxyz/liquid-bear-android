@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.listeners.OnServiceConnectedListener;
 
@@ -101,5 +100,9 @@ public class MusicServiceManager {
 
     public void stopPlayProgressUpdater() {
         musicService.stopPlayProgressUpdater();
+    }
+
+    public void changeCurrentTrackUrl(int newPosition) {
+        musicService.changeUrl(newPosition);
     }
 }

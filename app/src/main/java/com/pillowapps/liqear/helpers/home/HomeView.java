@@ -59,4 +59,6 @@ public interface HomeView {
     void openPlaylistsScreen();
 
     void togglePlaylistEditMode();
+
+    void changeCurrentTrackUrl(int newPosition);
 }

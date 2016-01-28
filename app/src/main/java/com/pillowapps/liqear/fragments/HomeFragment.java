@@ -28,7 +28,6 @@ import com.pillowapps.liqear.activities.preferences.PreferencesActivity;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
-import com.pillowapps.liqear.entities.MainActivityStartEnum;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.events.ExitEvent;
@@ -60,8 +59,6 @@ import javax.inject.Inject;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Subcomponent;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public abstract class HomeFragment extends BaseFragment implements HomeView {
 
@@ -221,42 +218,24 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     @Override
-    public void exit() {
-        musicServiceManager.stopService(activity);
-        activity.finish();
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
 
         if (requestCode == Constants.MAIN_REQUEST_CODE) {
-            MainActivityStartEnum mainActivityStartEnum = (MainActivityStartEnum) data.getSerializableExtra(Constants.ACTION_ENUM);
-            if (mainActivityStartEnum != null) {
-                switch (mainActivityStartEnum) {
-                    case PLAY_TRACKS: {
-                        if (playlistItemsAdapter.isEditMode())
-                            playlistItemsAdapter.setEditMode(false);
-                        int positionToPlay = data.getIntExtra(Constants.POSITION_TO_PLAY, 0);
-                        changeViewPagerItem(0);
-                        updateAdapter();
-                        changePlaylist(positionToPlay, true);
-                    }
-                    break;
-                    default:
-                        break;
-                }
-            }
-
-        } else if (requestCode == Constants.VK_ADD_REQUEST_CODE) { //todo somewhere else
-            long aid = data.getLongExtra("aid", -1);
-            long oid = data.getLongExtra("oid", -1);
-            if (aid == -1 || oid == -1) {
-//                musicService.changeUrl(data.getIntExtra("position", 0));
-            }
+            int positionToPlay = data.getIntExtra(Constants.POSITION_TO_PLAY, 0);
+            presenter.playNewPlaylist(positionToPlay);
+        } else if (requestCode == Constants.VK_ADD_REQUEST_CODE) {
+            int position = data.getIntExtra("position", 0);
+            presenter.changeCurrentTrackUrl(position);
         }
+    }
+
+    @Override
+    public void exit() {
+        musicServiceManager.stopService(activity);
+        activity.finish();
     }
 
     @Override
@@ -266,27 +245,16 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void updateAdapter() {
-        List<Track> playlist = timeline.getPlaylistTracks();
-        playlistItemsAdapter.setValues(playlist);
+        playlistItemsAdapter.notifyDataSetChanged();
         updateEmptyPlaylistTextView();
     }
 
     @Override
     public void changePlaylist(int index, boolean autoPlay) {
-        timeline.clearQueue();
-        timeline.updateRealTrackPositions();
-        timeline.clearPreviousIndexes();
-        musicServiceManager.pause();
         List<Track> tracks = timeline.getPlaylistTracks();
         playlistItemsAdapter.setValues(tracks);
-        if (tracks.size() > 0) {
-            if (autoPlay) {
-                presenter.playTrack(index);
-            }
-            playlistModel.saveMainPlaylist(timeline.getPlaylist())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe();
+        if (tracks.size() > 0 && autoPlay) {
+            presenter.playTrack(index);
         }
         updateEmptyPlaylistTextView();
         updateToolbars();
@@ -523,6 +491,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     @Override
+    public void changeCurrentTrackUrl(int newPosition) {
+        musicServiceManager.changeCurrentTrackUrl(newPosition);
+    }
+
+    @Override
     public void togglePlaylistEditMode() {
         playlistItemsAdapter.toggleEditMode();
     }
@@ -541,8 +514,9 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                                                   @NonNull ShareModel shareModel,
                                                   @NonNull VkWallModel vkWallModel,
                                                   @NonNull VkAudioModel vkAudioModel,
+                                                  @NonNull PlaylistModel playlistModel,
                                                   @NonNull Timeline timeline) {
-            return new HomePresenter(libraryModel, shareModel, vkWallModel, vkAudioModel, timeline);
+            return new HomePresenter(libraryModel, shareModel, vkWallModel, vkAudioModel, playlistModel, timeline);
         }
     }
 }

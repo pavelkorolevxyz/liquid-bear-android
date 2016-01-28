@@ -2,9 +2,11 @@ package com.pillowapps.liqear.helpers.home;
 
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkPassiveCallback;
@@ -25,6 +27,7 @@ import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.Presenter;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
+import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
 import com.pillowapps.liqear.models.TrackModel;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
@@ -37,6 +40,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class HomePresenter extends Presenter<HomeView> {
 
     protected LastfmLibraryModel libraryModel;
@@ -44,6 +50,7 @@ public class HomePresenter extends Presenter<HomeView> {
     private VkWallModel vkWallModel;
     private VkAudioModel vkAudioModel;
     private Timeline timeline;
+    private PlaylistModel playlistModel;
 
 
     @Inject
@@ -51,11 +58,12 @@ public class HomePresenter extends Presenter<HomeView> {
                          ShareModel shareModel,
                          VkWallModel vkWallModel,
                          VkAudioModel vkAudioModel,
-                         Timeline timeline) {
+                         PlaylistModel playlistModel, Timeline timeline) {
         this.libraryModel = libraryModel;
         this.shareModel = shareModel;
         this.vkWallModel = vkWallModel;
         this.vkAudioModel = vkAudioModel;
+        this.playlistModel = playlistModel;
         this.timeline = timeline;
     }
 
@@ -66,52 +74,41 @@ public class HomePresenter extends Presenter<HomeView> {
     public void openRadiomix() {
         final HomeView view = view();
 
-        libraryModel.getRadiomix(AuthorizationInfoManager.getLastfmName(),
-                new SimpleCallback<List<LastfmTrack>>() {
-                    @Override
-                    public void success(List<LastfmTrack> tracks) {
-                        int index = 0;
-                        List<Track> trackList = Converter.convertLastfmTrackList(tracks);
-                        timeline.setPlaylist(new Playlist(trackList));
+        libraryModel.getRadiomix(AuthorizationInfoManager.getLastfmName(), new SimpleCallback<List<LastfmTrack>>() {
+            @Override
+            public void success(List<LastfmTrack> tracks) {
+                List<Track> trackList = Converter.convertLastfmTrackList(tracks);
+                view.showLoading(false);
+                playNewPlaylist(0, trackList);
+            }
 
-                        view.changeViewPagerItem(0);
-                        view.updateAdapter();
-                        view.changePlaylist(index, true);
-                        view.showLoading(false);
-                    }
-
-                    @Override
-                    public void failure(String errorMessage) {
-                        view.showError(errorMessage);
-                        view.showLoading(false);
-                    }
-                });
+            @Override
+            public void failure(String errorMessage) {
+                view.showError(errorMessage);
+                view.showLoading(false);
+            }
+        });
     }
 
     public void openLibrary() {
         final HomeView view = view();
 
         view.showLoading(true);
-        libraryModel.getLibrary(AuthorizationInfoManager.getLastfmName(),
-                new SimpleCallback<List<LastfmTrack>>() {
-                    @Override
-                    public void success(List<LastfmTrack> tracks) {
-                        int index = 0;
-                        List<Track> trackList = Converter.convertLastfmTrackList(tracks);
-                        timeline.setPlaylist(new Playlist(trackList));
+        libraryModel.getLibrary(AuthorizationInfoManager.getLastfmName(), new SimpleCallback<List<LastfmTrack>>() {
+            @Override
+            public void success(List<LastfmTrack> tracks) {
+                List<Track> trackList = Converter.convertLastfmTrackList(tracks);
 
-                        view.changeViewPagerItem(0);
-                        view.updateAdapter();
-                        view.changePlaylist(index, true);
-                        view.showLoading(false);
-                    }
+                view.showLoading(false);
+                playNewPlaylist(0, trackList);
+            }
 
-                    @Override
-                    public void failure(String errorMessage) {
-                        view.showError(errorMessage);
-                        view.showLoading(false);
-                    }
-                });
+            @Override
+            public void failure(String errorMessage) {
+                view.showError(errorMessage);
+                view.showLoading(false);
+            }
+        });
     }
 
     public void playTrack(int index) {
@@ -299,7 +296,6 @@ public class HomePresenter extends Presenter<HomeView> {
         new TrackModel().clearTitles(playlistTracks);
 
         final HomeView view = view();
-
         view.updateAdapter();
     }
 
@@ -309,9 +305,8 @@ public class HomePresenter extends Presenter<HomeView> {
 
         final HomeView view = view();
 
-        view.updateAdapter();
         view.clearSearch();
-        view.changePlaylist(0, true);
+        updateMainPlaylist(0, true);
     }
 
     public void findCurrentTrack() {
@@ -325,11 +320,28 @@ public class HomePresenter extends Presenter<HomeView> {
     public void sortByArtist(List<Track> currentTrackList) {
         List<Track> tracks = new ArrayList<>(currentTrackList);
         Collections.sort(tracks, new ArtistTrackComparator());
-        timeline.setPlaylist(new Playlist(tracks));
+        updateMainPlaylist(0, false, tracks);
+    }
+
+
+    private void updateMainPlaylist(int positionToPlay, boolean autoPlay) {
+        updateMainPlaylist(positionToPlay, autoPlay, null);
+    }
+
+    private void updateMainPlaylist(int positionToPlay, boolean autoPlay, @Nullable List<Track> tracks) {
+        timeline.clearQueue();
+        timeline.updateRealTrackPositions();
+        timeline.clearPreviousIndexes();
+        if (tracks != null) {
+            timeline.setPlaylist(new Playlist(tracks));
+        }
+        playlistModel.saveMainPlaylist(timeline.getPlaylist())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe();
 
         HomeView view = view();
-        view.updateAdapter();
-        view.changePlaylist(0, true); //todo not changing playlist immediately
+        view.changePlaylist(positionToPlay, autoPlay);
     }
 
     public void toggleModeListEditMode() {
@@ -362,5 +374,21 @@ public class HomePresenter extends Presenter<HomeView> {
     public void togglePlaylistEditMode() {
         HomeView view = view();
         view.togglePlaylistEditMode();
+    }
+
+    public void playNewPlaylist(int positionToPlay) {
+        List<Track> tracks = timeline.getPlaylistTracks();
+        playNewPlaylist(positionToPlay, tracks);
+    }
+
+    public void playNewPlaylist(int positionToPlay, List<Track> tracks) {
+        HomeView view = view();
+        view.changeViewPagerItem(PhoneFragmentPagerAdapter.PLAYLIST_TAB_INDEX);
+        updateMainPlaylist(positionToPlay, true, tracks);
+    }
+
+    public void changeCurrentTrackUrl(int newPosition) {
+        HomeView view = view();
+        view.changeCurrentTrackUrl(newPosition);
     }
 }

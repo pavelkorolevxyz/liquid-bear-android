@@ -181,7 +181,7 @@ public class PhoneHomeFragment extends HomeFragment {
                 }
 
                 timeline.setTimePosition(position);
-                updateAdapter();
+                changePlaylist(currentIndex, false);
                 timeline.updateRealTrackPositions();
 
                 updateAlbum();
@@ -528,7 +528,6 @@ public class PhoneHomeFragment extends HomeFragment {
         super.changePlaylist(index, autoPlay);
 
         updateMainPlaylistTitle();
-        changeViewPagerItem(0);
     }
 
     @Override

@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+// todo make simpler
 public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
 
     @Inject

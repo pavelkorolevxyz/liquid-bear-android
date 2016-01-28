@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.entities;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class Playlist {
         this.tracks = tracks;
     }
 
-    public Playlist(List<Track> tracks) {
+    public Playlist(@NonNull List<Track> tracks) {
         this.tracks = tracks;
     }
 
