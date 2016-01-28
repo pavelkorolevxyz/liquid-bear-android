@@ -22,11 +22,12 @@ import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.TrackUtils;
 
 public class TrackNotificationModel {
-    public Notification create(Context context, Track track) {
+    public Notification create(Context context, Timeline timeline) {
+        Track track = timeline.getCurrentTrack();
         if (track == null) return null;
         Notification notification;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            notification = createControllingNotification(context, track);
+            notification = createControllingNotification(context, timeline);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 CompatIcs.updateRemote(context, track);
             }
@@ -55,7 +56,8 @@ public class TrackNotificationModel {
         return notification;
     }
 
-    private Notification createControllingNotification(Context context, Track track) {
+    private Notification createControllingNotification(Context context, Timeline timeline) {
+        Track track = timeline.getCurrentTrack();
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_stat_liquid_bear_logotype_revision)
@@ -68,7 +70,7 @@ public class TrackNotificationModel {
         mBuilder.setContent(contentView);
         Intent notificationIntent = new Intent(context, HomeActivity.class);
 
-        int playButton = Timeline.getInstance().getPlayingState() == PlayingState.PLAYING
+        int playButton = timeline.getPlayingState() == PlayingState.PLAYING
                 ? R.drawable.pause_button
                 : R.drawable.play_button;
         contentView.setImageViewResource(R.id.play_pause, playButton);
@@ -96,7 +98,7 @@ public class TrackNotificationModel {
 
         mBuilder.setContentIntent(PendingIntent.getActivity(context, 0, notificationIntent, 0));
 
-        Bitmap bitmap = Timeline.getInstance().getAlbumCoverBitmap();
+        Bitmap bitmap = timeline.getAlbumCoverBitmap();
         if (bitmap == null) {
             contentView.setInt(R.id.album_cover_image_view, "setImageResource", R.drawable.lb_icon_white);
         } else {
@@ -134,7 +136,7 @@ public class TrackNotificationModel {
 
             Intent loveIntent = new Intent(MusicService.ACTION_LOVE);
             loveIntent.setComponent(service);
-            int loveButton = ButtonStateUtils.getLoveButtonImage();
+            int loveButton = ButtonStateUtils.getLoveButtonImage(track);
             bigView.setInt(R.id.love_button, "setImageResource", loveButton);
             bigView.setOnClickPendingIntent(R.id.love_button,
                     PendingIntent.getService(context, 0, loveIntent, 0));

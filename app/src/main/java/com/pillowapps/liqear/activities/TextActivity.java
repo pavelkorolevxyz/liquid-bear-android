@@ -264,7 +264,7 @@ public class TextActivity extends ResultTrackedBaseActivity {
 
     @Subscribe
     public void trackInfoEvent(TrackInfoEvent event) {
-        Track track = Timeline.getInstance().getCurrentTrack();
+        Track track = event.getTrack();
         googleRequest = TrackUtils.getNotation(track);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

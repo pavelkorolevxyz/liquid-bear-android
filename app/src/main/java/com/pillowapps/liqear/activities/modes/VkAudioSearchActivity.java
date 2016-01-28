@@ -32,6 +32,8 @@ public class VkAudioSearchActivity extends ListBaseActivity {
 
     @Inject
     VkAudioModel vkAudioModel;
+    @Inject
+    Timeline timeline;
 
     public static Intent getStartIntent(Context context, int purpose) {
         Intent intent = new Intent(context, VkAudioSearchActivity.class);
@@ -45,7 +47,7 @@ public class VkAudioSearchActivity extends ListBaseActivity {
         LBApplication.get(this).applicationComponent().inject(this);
 
         setTitle(getResources().getString(R.string.pick_good_result));
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        Track currentTrack = timeline.getCurrentTrack();
 
         String target = getIntent().getStringExtra(Constants.TARGET);
         if (target != null && !target.isEmpty()) {

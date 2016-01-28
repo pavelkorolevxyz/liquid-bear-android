@@ -49,6 +49,8 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
 
     @Inject
     PlaylistModel playlistModel;
+    @Inject
+    Timeline timeline;
 
     public void onStart() {
         super.onStart();
@@ -60,6 +62,12 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
             default:
                 break;
         }
+    }
+
+    public static Intent getStartIntent(Context context, Aim aim) {
+        Intent intent = new Intent(context, PlaylistsActivity.class);
+        intent.putExtra(PlaylistsActivity.AIM, aim);
+        return intent;
     }
 
     @Override
@@ -231,7 +239,7 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
         dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
             String title = input.getText().toString();
             if (title.length() < 1) {
-                title = Timeline.getInstance().getPlaylist().getTitle();
+                title = timeline.getPlaylist().getTitle();
             }
             if (title.length() < 1) {
                 title = getResources().getString(R.string.new_playlist);
@@ -248,7 +256,7 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
                 updateEmptyTextView();
             } else {
                 final String finalTitle = title;
-                playlistModel.savePlaylist(finalTitle, Timeline.getInstance().getPlaylistTracks())
+                playlistModel.savePlaylist(finalTitle, timeline.getPlaylistTracks())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe(pid -> {

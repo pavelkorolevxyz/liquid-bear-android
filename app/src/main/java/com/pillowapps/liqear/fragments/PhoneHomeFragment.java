@@ -24,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -36,7 +35,6 @@ import com.pillowapps.liqear.activities.modes.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
-import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
@@ -118,6 +116,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     private TutorialModel tutorial = new TutorialModel();
     private ModeGridAdapter modeAdapter;
+    private DragSortListView playlistListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,11 +137,11 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     private void restoreState() {
-        shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
-        repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
+        shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage(timeline.getShuffleMode()));
+        repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage(timeline.getRepeatMode()));
 
         stateManager.restorePlaylistState(() -> {
-            final Playlist playlist = Timeline.getInstance().getPlaylist();
+            final Playlist playlist = timeline.getPlaylist();
             if (playlist == null || playlist.getTracks().size() == 0) return;
             updateMainPlaylistTitle();
 
@@ -172,7 +171,7 @@ public class PhoneHomeFragment extends HomeFragment {
                     artistTextView.setText(Html.fromHtml(artist));
                     titleTextView.setText(Html.fromHtml(title));
                 }
-                Timeline.getInstance().setIndex(currentIndex);
+                timeline.setIndex(currentIndex);
                 if (currentIndex > tracks.size()) {
                     artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
                     position = 0;
@@ -181,9 +180,9 @@ public class PhoneHomeFragment extends HomeFragment {
                     position = 0;
                 }
 
-                Timeline.getInstance().setTimePosition(position);
+                timeline.setTimePosition(position);
                 updateAdapter();
-                Timeline.getInstance().updateRealTrackPositions();
+                timeline.updateRealTrackPositions();
 
                 updateAlbum();
             });
@@ -192,7 +191,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     private void updateArtist() {
         if (SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-            new ImageModel().loadImage(Timeline.getInstance().getCurrentArtistImageUrl(),
+            new ImageModel().loadImage(timeline.getCurrentArtistImageUrl(),
                     artistImageView, this::updatePaletteWithBitmap);
         }
     }
@@ -205,7 +204,7 @@ public class PhoneHomeFragment extends HomeFragment {
             return;
         }
 
-        Album album = Timeline.getInstance().getCurrentAlbum();
+        Album album = timeline.getCurrentAlbum();
         if (album != null) {
             String imageUrl = album.getImageUrl();
             if (imageUrl == null || !SharedPreferencesManager.getPreferences()
@@ -294,7 +293,7 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     private void initPlaylistsTab() {
-        ListView playlistListView = (DragSortListView) playlistTab.findViewById(R.id.playlist_list_view_playlist_tab);
+        playlistListView = (DragSortListView) playlistTab.findViewById(R.id.playlist_list_view_playlist_tab);
 
         playlistListView.setOnItemClickListener((parent, view, position, id) -> {
             musicServiceManager.play(playlistItemsAdapter.getItem(position).getRealPosition());
@@ -380,19 +379,19 @@ public class PhoneHomeFragment extends HomeFragment {
         });
 
         shuffleButton.setOnClickListener(v -> {
-            Timeline.getInstance().toggleShuffle();
-            shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage());
+            timeline.toggleShuffle();
+            shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage(timeline.getShuffleMode()));
             musicServiceManager.updateWidgets();
         });
 
         repeatButton.setOnClickListener(v -> {
-            Timeline.getInstance().toggleRepeat();
-            repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage());
+            timeline.toggleRepeat();
+            repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage(timeline.getRepeatMode()));
             musicServiceManager.updateWidgets();
         });
 
         artistTextView.setOnClickListener(v -> {
-            Track currentTrack = Timeline.getInstance().getCurrentTrack();
+            Track currentTrack = timeline.getCurrentTrack();
             if (currentTrack == null) return;
             Intent artistInfoIntent = new Intent(activity, LastfmArtistViewerActivity.class);
             artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, currentTrack.getArtist());
@@ -435,7 +434,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
         View.OnClickListener albumClickListener = view -> {
             Intent intent = new Intent(activity, LastfmAlbumViewerActivity.class);
-            Album album = Timeline.getInstance().getCurrentAlbum();
+            Album album = timeline.getCurrentAlbum();
             if (album == null) return;
             intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
             intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
@@ -463,7 +462,7 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     public void updateMainPlaylistTitle() {
-        String title = Timeline.getInstance().getPlaylist().getTitle();
+        String title = timeline.getPlaylist().getTitle();
         if (title == null) {
             title = getString(R.string.playlist_tab);
         }
@@ -494,7 +493,7 @@ public class PhoneHomeFragment extends HomeFragment {
     public void updatePlaybackToolbar() {
         playbackToolbar.getMenu().clear();
         int menuLayout = R.menu.menu_play_tab_no_current_track;
-        if (Timeline.getInstance().getCurrentTrack() != null) {
+        if (timeline.getCurrentTrack() != null) {
             menuLayout = R.menu.menu_play_tab;
         }
         playbackToolbar.inflateMenu(menuLayout);
@@ -521,7 +520,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Override
     public void updateLoveButton() {
-        loveFloatingActionButton.setImageResource(ButtonStateUtils.getLoveButtonImage());
+        loveFloatingActionButton.setImageResource(ButtonStateUtils.getLoveButtonImage(timeline.getCurrentTrack()));
     }
 
     @Override
@@ -572,6 +571,29 @@ public class PhoneHomeFragment extends HomeFragment {
         });
     }
 
+    @Override
+    public void clearSearch() {
+        searchPlaylistEditText.setText("");
+    }
+
+    @Override
+    public void setMainPlaylistSelection(int currentIndex) {
+        playlistListView.setSelection(currentIndex);
+    }
+
+    @Override
+    public void updateModeListEditMode() {
+        modeAdapter.notifyChanges();
+    }
+
+    @Override
+    public void updateSearchVisibility(boolean visible) {
+        if (visible) {
+            searchPlaylistEditText.requestFocus();
+        }
+        searchPlaylistEditText.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
     @Subscribe
     public void pauseEvent(PauseEvent event) {
         playPauseButton.setImageResource(R.drawable.play_button);
@@ -609,7 +631,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Subscribe
     public void trackAndAlbumInfoUpdatedEvent(TrackAndAlbumInfoUpdatedEvent event) {
-        loveFloatingActionButton.setImageResource(ButtonStateUtils.getLoveButtonImage());
+        loveFloatingActionButton.setImageResource(ButtonStateUtils.getLoveButtonImage(timeline.getCurrentTrack()));
         updateAlbum();
     }
 
@@ -620,7 +642,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Subscribe
     public void trackInfoEvent(TrackInfoEvent event) {
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        Track currentTrack = timeline.getCurrentTrack();
         titleTextView.setText(currentTrack.getTitle());
         artistTextView.setText(currentTrack.getArtist());
         playlistItemsAdapter.notifyDataSetChanged();

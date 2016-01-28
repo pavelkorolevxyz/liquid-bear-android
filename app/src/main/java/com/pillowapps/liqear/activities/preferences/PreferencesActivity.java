@@ -21,6 +21,11 @@ import com.pillowapps.liqear.helpers.AppUtils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class PreferencesActivity extends AppCompatPreferenceActivity {
+
+    public static Intent getStartIntent(Context context) {
+        return new Intent(context, PreferencesActivity.class);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

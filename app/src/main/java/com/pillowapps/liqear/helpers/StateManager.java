@@ -17,9 +17,11 @@ import timber.log.Timber;
 public class StateManager {
 
     private PlaylistModel playlistModel;
+    private Timeline timeline;
 
-    public StateManager(PlaylistModel playlistModel) {
+    public StateManager(PlaylistModel playlistModel, Timeline timeline) {
         this.playlistModel = playlistModel;
+        this.timeline = timeline;
     }
 
     public void savePlaylistState(MusicService service) {
@@ -28,11 +30,11 @@ public class StateManager {
         if (service != null) {
             editor.putInt(Constants.CURRENT_POSITION, service.getCurrentPosition());
             editor.putInt(Constants.CURRENT_BUFFER, service.getCurrentBuffer());
-            boolean shuffleOn = Timeline.getInstance().getShuffleMode() == ShuffleMode.SHUFFLE;
-            boolean repeatOn = Timeline.getInstance().getRepeatMode() == RepeatMode.REPEAT;
+            boolean shuffleOn = timeline.getShuffleMode() == ShuffleMode.SHUFFLE;
+            boolean repeatOn = timeline.getRepeatMode() == RepeatMode.REPEAT;
             editor.putBoolean(Constants.SHUFFLE_MODE_ON, shuffleOn);
             editor.putBoolean(Constants.REPEAT_MODE_ON, repeatOn);
-            editor.putInt(Constants.CURRENT_INDEX, Timeline.getInstance().getIndex());
+            editor.putInt(Constants.CURRENT_INDEX, timeline.getIndex());
         }
         editor.apply();
 //        new PlaylistModel().saveMainPlaylist();
@@ -40,15 +42,15 @@ public class StateManager {
 
     public void saveTrackState() {
         SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences().edit();
-        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
-        if (Timeline.getInstance().getPlaylistTracks() != null
-                && Timeline.getInstance().getPlaylistTracks().size() != 0
+        final Track currentTrack = timeline.getCurrentTrack();
+        if (timeline.getPlaylistTracks() != null
+                && timeline.getPlaylistTracks().size() != 0
                 && currentTrack != null) {
             editor.putString(Constants.ARTIST, currentTrack.getArtist());
             editor.putString(Constants.TITLE, currentTrack.getTitle());
             editor.putInt(Constants.DURATION, currentTrack.getDuration());
         }
-        editor.putInt(Constants.CURRENT_INDEX, Timeline.getInstance().getIndex());
+        editor.putInt(Constants.CURRENT_INDEX, timeline.getIndex());
         editor.apply();
     }
 
@@ -59,7 +61,7 @@ public class StateManager {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlist -> {
-                    Timeline.getInstance().setPlaylist(playlist);
+                    timeline.setPlaylist(playlist);
                     Timber.d("time = " + (System.currentTimeMillis() - time));
                     completionCallback.onCompleted();
                 });

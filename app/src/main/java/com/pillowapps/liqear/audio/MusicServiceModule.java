@@ -15,6 +15,13 @@ public class MusicServiceModule {
     @Provides
     @NonNull
     @Singleton
+    public Timeline provideTimeline() {
+        return new Timeline();
+    }
+
+    @Provides
+    @NonNull
+    @Singleton
     public MusicServiceManager provideMusicServiceManager() {
         return new MusicServiceManager();
     }

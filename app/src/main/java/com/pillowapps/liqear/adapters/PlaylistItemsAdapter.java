@@ -23,10 +23,12 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
     private boolean editMode = false;
     private PlaylistItemsFilter playlistItemsFilter;
     private List<Track> original;
+    private Timeline timeline;
 
-    public PlaylistItemsAdapter(Context context) {
+    public PlaylistItemsAdapter(Context context, Timeline timeline) {
         super(context, R.layout.playlist_tab_list_item);
         this.context = context;
+        this.timeline = timeline;
         this.tracks = new ArrayList<>();
         this.original = new ArrayList<>();
     }
@@ -37,6 +39,11 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
 
     public void setEditMode(boolean editMode) {
         this.editMode = editMode;
+        notifyDataSetChanged();
+    }
+
+    public void toggleEditMode() {
+        this.editMode = !editMode;
         notifyDataSetChanged();
     }
 
@@ -102,10 +109,10 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         holder.artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
         holder.titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
 
-        holder.playImageView.setVisibility(!Timeline.getInstance().isPlaylistChanged()
-                && Timeline.getInstance().getIndex() == realPosition ? View.VISIBLE : View.INVISIBLE);
+        holder.playImageView.setVisibility(!timeline.isPlaylistChanged()
+                && timeline.getIndex() == realPosition ? View.VISIBLE : View.INVISIBLE);
 
-        int queueIndex = Timeline.getInstance().getQueueIndexes().indexOf(realPosition);
+        int queueIndex = timeline.getQueueIndexes().indexOf(realPosition);
         holder.queueTextView.setText(queueIndex++ != -1 ? String.format("(%d)", queueIndex) : "");
         if (!editMode) {
             holder.grabber.setVisibility(View.GONE);

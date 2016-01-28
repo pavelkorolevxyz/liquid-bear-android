@@ -9,8 +9,7 @@ import com.pillowapps.liqear.entities.Track;
 
 public class ShareModel {
 
-    public String createShareMessage(@NonNull Track track, String template) {
-        final Album album = Timeline.getInstance().getCurrentAlbum();
+    public String createShareMessage(@NonNull Track track, @NonNull Album album, String template) {
         String artist = "";
         String trackTitle = "";
         String albumTitle = "";
@@ -20,7 +19,7 @@ public class ShareModel {
         if (track.getTitle() != null) {
             trackTitle = track.getTitle();
         }
-        if (album != null && album.getTitle() != null) {
+        if (album.getTitle() != null) {
             albumTitle = album.getTitle();
         }
         return template.replace("%a%", artist)

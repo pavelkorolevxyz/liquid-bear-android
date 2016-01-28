@@ -66,12 +66,12 @@ public class LastfmAlbumModel {
 
     public void getCover(Context context, final Album album, final CompletionCallback callback) {
         if (album == null) {
-            Timeline.getInstance().setAlbumCoverBitmap(null);
+//            Timeline.getInstance().setAlbumCoverBitmap(null); todo
             callback.onCompleted();
             return;
         }
         new ImageModel().loadImage(context, album.getImageUrl(), bitmap -> {
-            Timeline.getInstance().setAlbumCoverBitmap(bitmap);
+//            Timeline.getInstance().setAlbumCoverBitmap(bitmap); todo
             callback.onCompleted();
         });
     }

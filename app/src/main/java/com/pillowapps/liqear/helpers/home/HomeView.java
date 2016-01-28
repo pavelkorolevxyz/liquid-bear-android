@@ -39,4 +39,24 @@ public interface HomeView {
     void openAddToVkScreen(Track track);
 
     void showToastAdded();
+
+    void openPreferences();
+
+    void openEqualizer();
+
+    void showTimerDialog();
+
+    void clearSearch();
+
+    void setMainPlaylistSelection(int currentIndex);
+
+    void updateModeListEditMode();
+
+    void updateSearchVisibility(boolean visibility);
+
+    void exit();
+
+    void openPlaylistsScreen();
+
+    void togglePlaylistEditMode();
 }

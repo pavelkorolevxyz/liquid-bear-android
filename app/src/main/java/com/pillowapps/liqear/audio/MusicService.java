@@ -153,6 +153,9 @@ public class MusicService extends Service implements
     @Inject
     PlaylistModel playlistModel;
 
+    @Inject
+    Timeline timeline;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -193,7 +196,7 @@ public class MusicService extends Service implements
     }
 
     private void initRemote() {
-        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        final Track currentTrack = timeline.getCurrentTrack();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             CompatIcs.registerRemote(this, audioManager);
             if (currentTrack != null) {
@@ -219,7 +222,7 @@ public class MusicService extends Service implements
 
         focusChangeListener = focusChange -> {
             if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-                if (Timeline.getInstance().getPlayingState() == PlayingState.PLAYING) {
+                if (timeline.getPlayingState() == PlayingState.PLAYING) {
                     pause();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                         CompatIcs.unregisterRemote(MusicService.this, audioManager);
@@ -228,14 +231,14 @@ public class MusicService extends Service implements
                     }
                 }
             } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-                if (Timeline.getInstance().getPlayingStateBeforeCall() == PlayingState.PLAYING) {
+                if (timeline.getPlayingStateBeforeCall() == PlayingState.PLAYING) {
                     play();
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                     CompatIcs.registerRemote(MusicService.this, audioManager);
-                    if (Timeline.getInstance().getCurrentTrack() != null) {
+                    if (timeline.getCurrentTrack() != null) {
                         CompatIcs.updateRemote(MusicService.this,
-                                Timeline.getInstance().getCurrentTrack());
+                                timeline.getCurrentTrack());
                     }
                 } else {
                     MediaButtonReceiver.registerMediaButton(MusicService.this);
@@ -256,7 +259,7 @@ public class MusicService extends Service implements
                         pause();
                         break;
                     case TelephonyManager.CALL_STATE_IDLE:
-                        if (Timeline.getInstance().getPlayingStateBeforeCall() == PlayingState.PLAYING) {
+                        if (timeline.getPlayingStateBeforeCall() == PlayingState.PLAYING) {
                             play();
                         }
                         break;
@@ -302,10 +305,10 @@ public class MusicService extends Service implements
         EqualizerManager.setEnabled(SharedPreferencesManager.getEqualizerPreferences().getBoolean("enabled", true));
 
         final SharedPreferences urlNumberPreferences = SharedPreferencesManager.getUrlNumberPreferences();
-        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        final Track currentTrack = timeline.getCurrentTrack();
         if (currentTrack == null) return;
         urlNumber = urlNumberPreferences.getInt(TrackUtils.getNotation(currentTrack), 0);
-        Timeline.getInstance().addToPrevIndexes(Timeline.getInstance().getIndex());
+        timeline.addToPrevIndexes(timeline.getIndex());
         getTrackUrl(currentTrack, false, urlNumber);
     }
 
@@ -318,7 +321,7 @@ public class MusicService extends Service implements
 
     public void updateWidgets() {
         AppWidgetManager manager = AppWidgetManager.getInstance(this);
-        boolean playing = Timeline.getInstance().getPlayingState() == PlayingState.PLAYING;
+        boolean playing = timeline.getPlayingState() == PlayingState.PLAYING;
         FourWidthOneHeightWidget.updateWidget(this, manager, playing);
         FourWidthThreeHeightWidget.updateWidget(this, manager, playing);
         FourWidthThreeHeightAltWidget.updateWidget(this, manager, playing);
@@ -326,7 +329,7 @@ public class MusicService extends Service implements
 
     @Override
     public void onDestroy() {
-        Timeline.getInstance().setPlayingState(PlayingState.DEFAULT);
+        timeline.setPlayingState(PlayingState.DEFAULT);
         updateWidgets();
         manualDestroy();
         audioManager.setStreamMute(AudioManager.STREAM_SYSTEM, false);
@@ -373,24 +376,24 @@ public class MusicService extends Service implements
         SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences().edit();
         editor.putInt(Constants.CURRENT_POSITION, getCurrentPosition());
         editor.putBoolean(Constants.SHUFFLE_MODE_ON,
-                Timeline.getInstance().getShuffleMode() == ShuffleMode.SHUFFLE);
+                timeline.getShuffleMode() == ShuffleMode.SHUFFLE);
         editor.putBoolean(Constants.REPEAT_MODE_ON,
-                Timeline.getInstance().getRepeatMode() == RepeatMode.REPEAT);
+                timeline.getRepeatMode() == RepeatMode.REPEAT);
         editor.apply();
     }
 
     private void saveTrackState() {
         SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences().edit();
-        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
-        if (Timeline.getInstance().getPlaylistTracks() != null
-                && Timeline.getInstance().getPlaylistTracks().size() != 0
+        final Track currentTrack = timeline.getCurrentTrack();
+        if (timeline.getPlaylistTracks() != null
+                && timeline.getPlaylistTracks().size() != 0
                 && currentTrack != null) {
             editor.putString(Constants.ARTIST, currentTrack.getArtist());
             editor.putString(Constants.TITLE, currentTrack.getTitle());
             editor.putInt(Constants.DURATION, currentTrack
                     .getDuration());
         }
-        editor.putInt(Constants.CURRENT_INDEX, Timeline.getInstance().getIndex());
+        editor.putInt(Constants.CURRENT_INDEX, timeline.getIndex());
         editor.apply();
     }
 
@@ -420,15 +423,15 @@ public class MusicService extends Service implements
                     prev();
                     break;
                 case ACTION_SHUFFLE:
-                    Timeline.getInstance().toggleShuffle();
+                    timeline.toggleShuffle();
                     updateWidgets();
                     break;
                 case ACTION_REPEAT:
-                    Timeline.getInstance().toggleRepeat();
+                    timeline.toggleRepeat();
                     updateWidgets();
                     break;
                 case ACTION_ADD_TO_VK: {
-                    Track track = Timeline.getInstance().getCurrentTrack();
+                    Track track = timeline.getCurrentTrack();
                     if (track != null) {
                         Intent searchVkIntent = new Intent(getBaseContext(),
                                 VkAudioSearchActivity.class);
@@ -439,7 +442,7 @@ public class MusicService extends Service implements
                     break;
                 }
                 case ACTION_ADD_TO_VK_FAST: {
-                    final Track track = Timeline.getInstance().getCurrentTrack();
+                    final Track track = timeline.getCurrentTrack();
                     if (track != null) {
                         vkAudioModel.addToUserAudioFast(TrackUtils.getNotation(track),
                                 new VkSimpleCallback<VkResponse>() {
@@ -460,7 +463,7 @@ public class MusicService extends Service implements
                     break;
                 }
                 case ACTION_LOVE: {
-                    final Track track = Timeline.getInstance().getCurrentTrack();
+                    final Track track = timeline.getCurrentTrack();
                     if (track != null) {
                         if (!track.isLoved()) {
                             lastfmTrackModel.love(track, new SimpleCallback<Object>() {
@@ -506,16 +509,16 @@ public class MusicService extends Service implements
     }
 
     public void playPause() {
-        Timeline.getInstance().setStartPlayingOnPrepared(true);
+        timeline.setStartPlayingOnPrepared(true);
         if (hasDataSource()) {
             togglePlayPause();
         } else {
-            Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
+            timeline.setPlayingState(PlayingState.PLAYING);
             playlistModel.getMainPlaylist()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(playlist -> {
-                        Timeline.getInstance().setPlaylist(playlist);
+                        timeline.setPlaylist(playlist);
                         List<Track> tracks = playlist.getTracks();
 
                         SharedPreferences preferences = SharedPreferencesManager.getPreferences();
@@ -535,7 +538,7 @@ public class MusicService extends Service implements
                             currentIndex = 0;
                             position = 0;
                         }
-                        Timeline.getInstance().setIndex(currentIndex);
+                        timeline.setIndex(currentIndex);
                         if (currentIndex > tracks.size()) {
                             position = 0;
                         }
@@ -543,9 +546,9 @@ public class MusicService extends Service implements
                             position = 0;
                         }
 
-                        Timeline.getInstance().setTimePosition(position);
+                        timeline.setTimePosition(position);
                         if (tracks.size() != 0
-                                && Timeline.getInstance().getCurrentTrack() == null) {
+                                && timeline.getCurrentTrack() == null) {
                             play();
                         }
                     });
@@ -557,9 +560,9 @@ public class MusicService extends Service implements
     }
 
     public void showTrackInNotification() {
-        Track track = Timeline.getInstance().getCurrentTrack();
+        Track track = timeline.getCurrentTrack();
         if (track == null) return;
-        Notification notification = new TrackNotificationModel().create(this, track);
+        Notification notification = new TrackNotificationModel().create(this, timeline);
         bluetoothNotifyChange(AVRCP_META_CHANGED, track);
         startForeground(LIQUID_BEAR_ID, notification);
     }
@@ -567,7 +570,7 @@ public class MusicService extends Service implements
     private void showNotificationToast() {
         if (LBPreferencesManager.isToastTrackNotificationEnabled()) {
             Toast.makeText(MusicService.this,
-                    Html.fromHtml(TrackUtils.getNotation(Timeline.getInstance().getCurrentTrack())),
+                    Html.fromHtml(TrackUtils.getNotation(timeline.getCurrentTrack())),
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -580,7 +583,7 @@ public class MusicService extends Service implements
             i.putExtra("artist", track.getArtist());
             i.putExtra("track", track.getTitle());
             i.putExtra("duration", duration);
-            i.putExtra("playing", Timeline.getInstance().getPlayingState() == PlayingState.PLAYING);
+            i.putExtra("playing", timeline.getPlayingState() == PlayingState.PLAYING);
             sendBroadcast(i);
         }
     }
@@ -604,25 +607,25 @@ public class MusicService extends Service implements
     @Override
     public void onPrepared(MediaPlayer mp) {
 //        currentPositionPercent = 0;
-        if (Timeline.getInstance().getPlaylistTracks().size() == 0) {
+        if (timeline.getPlaylistTracks().size() == 0) {
             return;
         }
         prepared = true;
         LBApplication.BUS.post(new PreparedEvent());
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        Track currentTrack = timeline.getCurrentTrack();
         currentTrack.setDuration(mediaPlayer.getDuration());
         hasDataSource = true;
         scrobbled = false;
         secondsTrackPlayed = 0;
         if (NetworkUtils.isOnline()) {
-            if (!currentTrack.getArtist().equals(Timeline.getInstance().getPreviousArtist())) {
+            if (!currentTrack.getArtist().equals(timeline.getPreviousArtist())) {
                 getArtistInfo(currentTrack.getArtist(), AuthorizationInfoManager.getLastfmName());
             }
             getTrackInfo(currentTrack);
         }
         saveTrackState();
-        if (Timeline.getInstance().isStartPlayingOnPrepared()) {
-            Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
+        if (timeline.isStartPlayingOnPrepared()) {
+            timeline.setPlayingState(PlayingState.PLAYING);
             mediaPlayer.start();
             startUpdaters();
             LBApplication.BUS.post(new PlayEvent());
@@ -635,7 +638,7 @@ public class MusicService extends Service implements
         int result = audioManager.requestAudioFocus(focusChangeListener,
                 AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            if (Timeline.getInstance().getPlayingStateBeforeCall() == PlayingState.PLAYING) {
+            if (timeline.getPlayingStateBeforeCall() == PlayingState.PLAYING) {
                 play();
             }
             initRemote();
@@ -643,7 +646,7 @@ public class MusicService extends Service implements
     }
 
     public void togglePlayPause() {
-        if (Timeline.getInstance().getPlayingState() == PlayingState.PLAYING) {
+        if (timeline.getPlayingState() == PlayingState.PLAYING) {
             pause();
         } else {
             play();
@@ -651,20 +654,20 @@ public class MusicService extends Service implements
     }
 
     public void play() {
-        Timeline.getInstance().setPlayingState(PlayingState.PLAYING);
+        timeline.setPlayingState(PlayingState.PLAYING);
         acquireLocks();
         if (hasDataSource) {
             mediaPlayer.start();
             showTrackInNotification();
             startUpdaters();
-            Timeline.getInstance().setStartPlayingOnPrepared(true);
+            timeline.setStartPlayingOnPrepared(true);
             startPlayProgressUpdater();
             LBApplication.BUS.post(new PlayEvent());
         }
     }
 
     public void pause() {
-        Timeline.getInstance().setPlayingState(PlayingState.DEFAULT);
+        timeline.setPlayingState(PlayingState.DEFAULT);
         releaseLocks();
         if (hasDataSource) {
             if (mediaPlayer.isPlaying()) {
@@ -677,17 +680,17 @@ public class MusicService extends Service implements
     }
 
     public void play(int index) {
-        Timeline.getInstance().setIndex(index);
+        timeline.setIndex(index);
         urlNumber = 0;
         updateWidgets();
 
-//        Timeline.getInstance().addToPrevClicked(Timeline.getInstance().getIndex());
+//        timeline.addToPrevClicked(timeline.getIndex());
         initRemote();
-        Timeline.getInstance().setPlaylistChanged(false);
-        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        timeline.setPlaylistChanged(false);
+        final Track currentTrack = timeline.getCurrentTrack();
         if (currentTrack == null) return;
-        Timeline.getInstance().addToPrevIndexes(Timeline.getInstance().getIndex());
-//            Timeline.getInstance().getPlaylistTracks().get(Timeline.getInstance().getPreviousTracksIndexes().peek())
+        timeline.addToPrevIndexes(timeline.getIndex());
+//            timeline.getPlaylistTracks().get(timeline.getPreviousTracksIndexes().peek())
 //                    .setCurrent(false);
 
         acquireLocks();
@@ -711,23 +714,23 @@ public class MusicService extends Service implements
             }
             getTrackUrl(currentTrack, true, urlNumber);
         }
-        if (Timeline.getInstance().isStartPlayingOnPrepared()) {
+        if (timeline.isStartPlayingOnPrepared()) {
             showNotificationToast();
             showTrackInNotification();
             LBApplication.BUS.post(new PlayEvent());
         } else {
             LBApplication.BUS.post(new PlayWithoutIconEvent());
         }
-        LBApplication.BUS.post(new TrackInfoEvent());
+        LBApplication.BUS.post(new TrackInfoEvent(currentTrack));
     }
 
     private void playWithUrl() {
         initRemote();
-        Timeline.getInstance().setPlaylistChanged(false);
-        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        timeline.setPlaylistChanged(false);
+        final Track currentTrack = timeline.getCurrentTrack();
         if (currentTrack == null) return;
-        Timeline.getInstance().addToPrevIndexes(Timeline.getInstance().getIndex());
-//            Timeline.getInstance().getPlaylistTracks().get(Timeline.getInstance().getPreviousTracksIndexes().peek()).setCurrent(false);
+        timeline.addToPrevIndexes(timeline.getIndex());
+//            timeline.getPlaylistTracks().get(timeline.getPreviousTracksIndexes().peek()).setCurrent(false);
         acquireLocks();
         String url = TrackUtils.getUrlFromTrack(currentTrack);
         if (url != null && !url.isEmpty()) {
@@ -741,56 +744,56 @@ public class MusicService extends Service implements
                 onError(mediaPlayer, MediaPlayer.MEDIA_ERROR_UNKNOWN, MediaPlayer.MEDIA_ERROR_UNKNOWN);
             }
         }
-        if (Timeline.getInstance().isStartPlayingOnPrepared()) {
+        if (timeline.isStartPlayingOnPrepared()) {
             showNotificationToast();
             showTrackInNotification();
             LBApplication.BUS.post(new PlayEvent());
         } else {
             LBApplication.BUS.post(new PlayWithoutIconEvent());
         }
-        LBApplication.BUS.post(new TrackInfoEvent());
+        LBApplication.BUS.post(new TrackInfoEvent(currentTrack));
     }
 
     public void next() {
         stopPlayProgressUpdater();
 //        SharedPreferencesManager.getPreferences().edit().putInt(Constants.CURRENT_POSITION, 0).commit();
-        List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
+        List<Track> playlist = timeline.getPlaylistTracks();
         if (playlist == null) return;
-        switch (Timeline.getInstance().getRepeatMode()) {
+        switch (timeline.getRepeatMode()) {
             case REPEAT_PLAYLIST:
                 int tracklistSize = playlist.size();
                 if (tracklistSize == 0) {
                     return;
                 }
-                int currentIndex = Timeline.getInstance().getIndex();
-                switch (Timeline.getInstance().getShuffleMode()) {
+                int currentIndex = timeline.getIndex();
+                switch (timeline.getShuffleMode()) {
                     case DEFAULT:
                         currentIndex = (currentIndex + 1) % tracklistSize;
                         break;
                     case SHUFFLE:
-                        currentIndex = Timeline.getInstance().getRandomIndex();
+                        currentIndex = timeline.getRandomIndex();
                         break;
                     default:
                         break;
                 }
-                LinkedList<Integer> queue = Timeline.getInstance().getQueueIndexes();
+                LinkedList<Integer> queue = timeline.getQueueIndexes();
                 if (queue != null && !queue.isEmpty()) {
                     currentIndex = queue.poll();
                 }
-                Timeline.getInstance().setIndex(currentIndex);
+                timeline.setIndex(currentIndex);
                 updateWidgets();
                 break;
             case REPEAT:
             default:
                 break;
         }
-        play(Timeline.getInstance().getIndex());
+        play(timeline.getIndex());
     }
 
     public void prev() {
         stopPlayProgressUpdater();
         SharedPreferencesManager.getPreferences().edit().putInt(Constants.CURRENT_POSITION, 0).commit();
-        Stack<Integer> prevTracksIndexes = Timeline.getInstance().getPreviousTracksIndexes();
+        Stack<Integer> prevTracksIndexes = timeline.getPreviousTracksIndexes();
         if (prevTracksIndexes.size() == 0) {
             return;
         }
@@ -800,7 +803,7 @@ public class MusicService extends Service implements
         }
 
         int prevPosition = prevTracksIndexes.peek();
-        Timeline.getInstance().setIndex(prevPosition);
+        timeline.setIndex(prevPosition);
         updateWidgets();
         play();
     }
@@ -810,13 +813,13 @@ public class MusicService extends Service implements
         urlChanged = true;
         final SharedPreferences urlNumberPreferences = SharedPreferencesManager.getUrlNumberPreferences();
         final SharedPreferences.Editor editor = urlNumberPreferences.edit();
-        final Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        final Track currentTrack = timeline.getCurrentTrack();
         if (currentTrack == null) return;
         final String notation = TrackUtils.getNotation(currentTrack);
         editor.putInt(notation, urlNumber);
         editor.apply();
         currentTrack.setUrl(null);
-        play(Timeline.getInstance().getIndex());
+        play(timeline.getIndex());
     }
 
     public void seekTo(int position) {
@@ -824,7 +827,7 @@ public class MusicService extends Service implements
             position = 0;
         }
         mediaPlayer.seekTo(position);
-        Timeline.getInstance().setTimePosition(position);
+        timeline.setTimePosition(position);
     }
 
     public int getDuration() {
@@ -877,7 +880,7 @@ public class MusicService extends Service implements
         }
         if (NetworkUtils.isOnline() && AuthorizationInfoManager.isAuthorizedOnLastfm()
                 && LBPreferencesManager.isNowplayingEnabled()
-                && Timeline.getInstance().getPlaylistTracks().size() > Timeline.getInstance()
+                && timeline.getPlaylistTracks().size() > timeline
                 .getIndex()) {
             nowplayingSubscriber = new Subscriber<Long>() {
                 @Override
@@ -891,7 +894,7 @@ public class MusicService extends Service implements
 
                 @Override
                 public void onNext(Long aLong) {
-                    updateNowPlaying(Timeline.getInstance().getCurrentTrack());
+                    updateNowPlaying(timeline.getCurrentTrack());
                 }
             };
             Observable.interval(15, TimeUnit.SECONDS)
@@ -934,7 +937,7 @@ public class MusicService extends Service implements
                 if (duration != 0) {
                     int playedPercent = (int) (((float) secondsTrackPlayed / (duration / 1000f)) * 100);
                     if (playedPercent >= LBPreferencesManager.getPercentsToScrobble()) {
-                        scrobble(Timeline.getInstance().getCurrentTrack());
+                        scrobble(timeline.getCurrentTrack());
                     }
                 }
             }
@@ -982,12 +985,11 @@ public class MusicService extends Service implements
     }
 
     private void getTrackUrl(final Track trackToFind, final boolean current, final int urlNumber) {
-        final Timeline timeline = Timeline.getInstance();
         if (trackToFind.isLocal()) {
             if (timeline.getCurrentTrack() != null) {
                 timeline.getCurrentTrack().setUrl(trackToFind.getUrl());
                 if (!current) {
-                    Timeline.getInstance().setStartPlayingOnPrepared(false);
+                    timeline.setStartPlayingOnPrepared(false);
                 }
                 play();
             } else {
@@ -1009,7 +1011,7 @@ public class MusicService extends Service implements
                         currentTrack.setAudioId(track.getAudioId());
                         currentTrack.setOwnerId(track.getOwnerId());
                         if (!current) {
-                            Timeline.getInstance().setStartPlayingOnPrepared(false);
+                            timeline.setStartPlayingOnPrepared(false);
                         }
                         playWithUrl();
                     } else {
@@ -1041,14 +1043,14 @@ public class MusicService extends Service implements
                         Boolean loved = lastfmTrack.isLoved();
                         Intent intent = new Intent();
                         intent.setAction(Constants.ACTION_SERVICE);
-                        Timeline.getInstance().setCurrentAlbum(album);
+                        timeline.setCurrentAlbum(album);
                         lastfmAlbumModel.getCover(MusicService.this, album, MusicService.this::showTrackInNotification);
-                        Timeline.getInstance().getCurrentTrack().setLoved(loved);
+                        timeline.getCurrentTrack().setLoved(loved);
                         LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(album));
                         updateWidgets();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                             CompatIcs.updateRemote(MusicService.this,
-                                    Timeline.getInstance().getCurrentTrack());
+                                    timeline.getCurrentTrack());
                         }
                     }
 
@@ -1071,7 +1073,7 @@ public class MusicService extends Service implements
         lastfmArtistModel.getArtistInfo(artist, username, new SimpleCallback<LastfmArtist>() {
             @Override
             public void success(LastfmArtist lastfmArtist) {
-                Timeline.getInstance().setPreviousArtist(artist);
+                timeline.setPreviousArtist(artist);
                 List<LastfmImage> list = lastfmArtist.getImages();
                 String imageUrl = null;
                 if (list.size() != 0) {
@@ -1081,7 +1083,7 @@ public class MusicService extends Service implements
                     }
                     imageUrl = lastfmImage != null ? lastfmImage.getUrl() : null;
                 }
-                Timeline.getInstance().setCurrentArtistImageUrl(imageUrl);
+                timeline.setCurrentArtistImageUrl(imageUrl);
                 LBApplication.BUS.post(new ArtistInfoEvent(imageUrl));
             }
 

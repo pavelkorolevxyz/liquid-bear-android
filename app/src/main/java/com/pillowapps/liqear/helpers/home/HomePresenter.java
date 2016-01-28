@@ -1,5 +1,10 @@
 package com.pillowapps.liqear.helpers.home;
 
+import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+
+import com.pillowapps.liqear.LBApplication;
+import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkPassiveCallback;
@@ -10,17 +15,24 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
+import com.pillowapps.liqear.helpers.ArtistTrackComparator;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.Presenter;
+import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.ShareModel;
+import com.pillowapps.liqear.models.TrackModel;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -31,16 +43,20 @@ public class HomePresenter extends Presenter<HomeView> {
     protected ShareModel shareModel;
     private VkWallModel vkWallModel;
     private VkAudioModel vkAudioModel;
+    private Timeline timeline;
+
 
     @Inject
     public HomePresenter(LastfmLibraryModel libraryModel,
                          ShareModel shareModel,
                          VkWallModel vkWallModel,
-                         VkAudioModel vkAudioModel) {
+                         VkAudioModel vkAudioModel,
+                         Timeline timeline) {
         this.libraryModel = libraryModel;
         this.shareModel = shareModel;
         this.vkWallModel = vkWallModel;
         this.vkAudioModel = vkAudioModel;
+        this.timeline = timeline;
     }
 
     public void setMusicServiceConnected() {
@@ -50,17 +66,13 @@ public class HomePresenter extends Presenter<HomeView> {
     public void openRadiomix() {
         final HomeView view = view();
 
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
-
         libraryModel.getRadiomix(AuthorizationInfoManager.getLastfmName(),
                 new SimpleCallback<List<LastfmTrack>>() {
                     @Override
                     public void success(List<LastfmTrack> tracks) {
                         int index = 0;
                         List<Track> trackList = Converter.convertLastfmTrackList(tracks);
-                        Timeline.getInstance().setPlaylist(new Playlist(trackList));
+                        timeline.setPlaylist(new Playlist(trackList));
 
                         view.changeViewPagerItem(0);
                         view.updateAdapter();
@@ -79,10 +91,6 @@ public class HomePresenter extends Presenter<HomeView> {
     public void openLibrary() {
         final HomeView view = view();
 
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
-
         view.showLoading(true);
         libraryModel.getLibrary(AuthorizationInfoManager.getLastfmName(),
                 new SimpleCallback<List<LastfmTrack>>() {
@@ -90,7 +98,7 @@ public class HomePresenter extends Presenter<HomeView> {
                     public void success(List<LastfmTrack> tracks) {
                         int index = 0;
                         List<Track> trackList = Converter.convertLastfmTrackList(tracks);
-                        Timeline.getInstance().setPlaylist(new Playlist(trackList));
+                        timeline.setPlaylist(new Playlist(trackList));
 
                         view.changeViewPagerItem(0);
                         view.updateAdapter();
@@ -107,23 +115,17 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void playTrack(int index) {
-        Timeline.getInstance().setStartPlayingOnPrepared(true);
+        timeline.setStartPlayingOnPrepared(true);
         final HomeView view = view();
 
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
         view.playTrack(index);
     }
 
     public void openArtistPhotos() {
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        Track currentTrack = timeline.getCurrentTrack();
         if (currentTrack == null || currentTrack.getArtist() == null) return;
 
         final HomeView view = view();
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
 
         if (!NetworkUtils.isOnline()) {
             view.showNoInternetError();
@@ -135,13 +137,10 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void openArtistViewer() {
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        Track currentTrack = timeline.getCurrentTrack();
         if (currentTrack == null || currentTrack.getArtist() == null) return;
 
         final HomeView view = view();
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
 
         if (!NetworkUtils.isOnline()) {
             view.showNoInternetError();
@@ -150,20 +149,21 @@ public class HomePresenter extends Presenter<HomeView> {
         view.openArtistViewer(currentTrack.getArtist());
     }
 
-    public void shareTrack(String template) {
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
-        Album currentAlbum = Timeline.getInstance().getCurrentAlbum();
+    public void shareTrack() {
+        Track currentTrack = timeline.getCurrentTrack();
+        Album currentAlbum = timeline.getCurrentAlbum();
 
         if (currentTrack == null) {
             return;
         }
 
         final HomeView view = view();
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
 
-        String shareMessage = shareModel.createShareMessage(currentTrack, template);
+
+        String template = SharedPreferencesManager.getPreferences().getString(Constants.SHARE_FORMAT,
+                LBApplication.getAppContext().getString(R.string.listening_now));
+
+        String shareMessage = shareModel.createShareMessage(currentTrack, timeline.getCurrentAlbum(), template);
 
         String imageUrl = shareModel.getAlbumImageUrl(currentTrack, currentAlbum);
 
@@ -172,9 +172,6 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void shareTrackToVk(String shareMessage, String imageUrl, Track track) {
         final HomeView view = view();
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
 
         if (!NetworkUtils.isOnline()) {
             view.showNoInternetError();
@@ -190,15 +187,11 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void nextUrl() {
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        Track currentTrack = timeline.getCurrentTrack();
         if (currentTrack == null) return;
 
 
         final HomeView view = view();
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
-
 
         if (currentTrack.isLocal()) {
             view.showTrackIsLocalError();
@@ -217,13 +210,10 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void openLyrics() {
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        Track currentTrack = timeline.getCurrentTrack();
         if (currentTrack == null) return;
 
         final HomeView view = view();
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
 
         if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
             view.showVkAuthorizationError();
@@ -237,25 +227,19 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void openVideo() {
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        Track currentTrack = timeline.getCurrentTrack();
         if (currentTrack == null) return;
 
         final HomeView view = view();
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
 
         view.openTrackVideo(currentTrack);
     }
 
     public void addToVkAudio() {
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
+        Track currentTrack = timeline.getCurrentTrack();
         if (currentTrack == null) return;
 
         final HomeView view = view();
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
 
         if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
             view.showVkAuthorizationError();
@@ -281,5 +265,102 @@ public class HomePresenter extends Presenter<HomeView> {
                 }
             });
         }
+    }
+
+    public void openPreferences() {
+        final HomeView view = view();
+
+        view.openPreferences();
+    }
+
+    public void openEqualizer() {
+        final HomeView view = view();
+
+        view.openEqualizer();
+    }
+
+    public void openTimer() {
+        final HomeView view = view();
+
+        view.showTimerDialog();
+    }
+
+    public void setTimerInSeconds(int seconds) {
+        // todo
+    }
+
+    public void shufflePlaylist() {
+        List<Track> playlistTracks = timeline.getPlaylistTracks();
+        Collections.shuffle(playlistTracks);
+    }
+
+    public void clearTitles() {
+        List<Track> playlistTracks = timeline.getPlaylistTracks();
+        new TrackModel().clearTitles(playlistTracks);
+
+        final HomeView view = view();
+
+        view.updateAdapter();
+    }
+
+    public void fixateSearchResult(@NonNull Playlist playlist) {
+        timeline.setPlaylist(playlist);
+        timeline.clearPreviousIndexes();
+
+        final HomeView view = view();
+
+        view.updateAdapter();
+        view.clearSearch();
+        view.changePlaylist(0, true);
+    }
+
+    public void findCurrentTrack() {
+        int currentIndex = timeline.getIndex();
+        if (currentIndex >= 0 && currentIndex < timeline.getPlaylistTracks().size()) {
+            final HomeView view = view();
+            view.setMainPlaylistSelection(currentIndex);
+        }
+    }
+
+    public void sortByArtist(List<Track> currentTrackList) {
+        List<Track> tracks = new ArrayList<>(currentTrackList);
+        Collections.sort(tracks, new ArtistTrackComparator());
+        timeline.setPlaylist(new Playlist(tracks));
+
+        HomeView view = view();
+        view.updateAdapter();
+        view.changePlaylist(0, true); //todo not changing playlist immediately
+    }
+
+    public void toggleModeListEditMode() {
+        ModeItemsHelper.setEditMode(!ModeItemsHelper.isEditMode());
+        HomeView view = view();
+
+        view.updateModeListEditMode();
+    }
+
+    public void togglePlaylistSearchVisibility() {
+        SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences();
+        boolean visibility = !savePreferences.getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false);
+        savePreferences.edit().putBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, visibility).apply(); // todo move shared preferences to interactor layer
+
+        HomeView view = view();
+
+        view.updateSearchVisibility(visibility);
+    }
+
+    public void exit() {
+        HomeView view = view();
+        view.exit();
+    }
+
+    public void openPlaylistsScreen() {
+        HomeView view = view();
+        view.openPlaylistsScreen();
+    }
+
+    public void togglePlaylistEditMode() {
+        HomeView view = view();
+        view.togglePlaylistEditMode();
     }
 }

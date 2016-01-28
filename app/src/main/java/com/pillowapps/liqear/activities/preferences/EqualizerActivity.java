@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.activities.preferences;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.media.AudioManager;
@@ -39,6 +41,10 @@ public class EqualizerActivity extends TrackedBaseActivity {
     private LinearLayout mainLinearLayout;
     private Spinner spinner;
     private SharedPreferences preferences = SharedPreferencesManager.getEqualizerPreferences();
+
+    public static Intent getStartIntent(Context context) {
+        return new Intent(context, EqualizerActivity.class);
+    }
 
     @Override
     public void onCreate(Bundle icicle) {

@@ -50,23 +50,23 @@ public class CompatIcs {
         if (remote == null || track == null) {
             return;
         }
-        remote.setPlaybackState(Timeline.getInstance().getPlayingState() == PlayingState.PLAYING ?
-                        RemoteControlClient.PLAYSTATE_PLAYING :
-                        RemoteControlClient.PLAYSTATE_PAUSED
-        );
-        RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
-        editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
-                Html.fromHtml(track.getArtist()).toString());
-        editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST,
-                Html.fromHtml(track.getArtist()).toString());
-        editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
-                Html.fromHtml(track.getTitle()).toString());
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = Timeline.getInstance().getAlbumCoverBitmap();
-        editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap);
-        editor.apply();
+//        remote.setPlaybackState(Timeline.getInstance().getPlayingState() == PlayingState.PLAYING ?
+//                        RemoteControlClient.PLAYSTATE_PLAYING :
+//                        RemoteControlClient.PLAYSTATE_PAUSED
+//        );
+//        RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
+//        editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
+//                Html.fromHtml(track.getArtist()).toString());
+//        editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST,
+//                Html.fromHtml(track.getArtist()).toString());
+//        editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
+//                Html.fromHtml(track.getTitle()).toString());
+//
+//        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+//        Bitmap bitmap = Timeline.getInstance().getAlbumCoverBitmap();
+//        editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap);
+//        editor.apply(); //todo
     }
 
     public static void unregisterRemote(Context context, AudioManager am) {

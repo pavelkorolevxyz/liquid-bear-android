@@ -1,21 +1,16 @@
 package com.pillowapps.liqear.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -34,6 +29,7 @@ import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.MainActivityStartEnum;
+import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.events.ExitEvent;
 import com.pillowapps.liqear.entities.events.ShowProgressEvent;
@@ -50,7 +46,6 @@ import com.pillowapps.liqear.helpers.home.HomePresenter;
 import com.pillowapps.liqear.helpers.home.HomeView;
 import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
-import com.pillowapps.liqear.models.TrackModel;
 import com.pillowapps.liqear.models.VideoModel;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
@@ -82,9 +77,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     HomePresenter presenter;
 
     @Inject
-    MusicServiceManager musicServiceManager;
-
-    @Inject
     StateManager stateManager;
 
     @Inject
@@ -94,11 +86,16 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Inject
     PlaylistModel playlistModel;
 
+    @Inject
+    MusicServiceManager musicServiceManager;
+    @Inject
+    Timeline timeline;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LBApplication.get(getActivity()).applicationComponent().plus(new HomeFragmentModule()).inject(this);
+        LBApplication.get(getContext()).applicationComponent().plus(new HomeFragmentModule()).inject(this);
     }
 
     @Override
@@ -107,10 +104,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
         activity = (HomeActivity) getActivity();
 
-        playlistItemsAdapter = new PlaylistItemsAdapter(activity);
+        playlistItemsAdapter = new PlaylistItemsAdapter(activity, timeline);
 
         presenter.bindView(this);
-        musicServiceManager.startService(activity, () -> {
+
+        musicServiceManager.startServiceAsync(activity, () -> {
             presenter.setMusicServiceConnected();
             activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         });
@@ -119,161 +117,120 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     @Override
+    public void onDestroyView() {
+        presenter.unbindView(this);
+        super.onDestroyView();
+    }
+
+    @Override
     public void onDestroy() {
         LBApplication.BUS.unregister(this);
         stateManager.savePlaylistState(musicServiceManager.getService());
-
         super.onDestroy();
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Track currentTrack = Timeline.getInstance().getCurrentTrack();
         int itemId = item.getItemId();
         switch (itemId) {
             case R.id.photo_artist_button: {
                 presenter.openArtistPhotos();
+                break;
             }
-            return true;
             case R.id.show_artist_button: {
                 presenter.openArtistViewer();
+                break;
             }
-            return true;
             case R.id.share_track_button: {
-                presenter.shareTrack(SharedPreferencesManager.getPreferences().getString(Constants.SHARE_FORMAT, getString(R.string.listening_now)));
+                presenter.shareTrack();
+                break;
             }
-            return true;
             case R.id.next_url_button: {
                 presenter.nextUrl();
+                break;
             }
-            return true;
             case R.id.lyrics_button: {
                 presenter.openLyrics();
+                break;
             }
-            return true;
             case R.id.youtube_video_button: {
                 presenter.openVideo();
+                break;
             }
-            return true;
             case R.id.add_to_vk_button: {
                 presenter.addToVkAudio();
+                break;
             }
-            return true;
             case R.id.settings: {
-                Intent preferencesIntent = new Intent(getActivity(), PreferencesActivity.class);
-                startActivity(preferencesIntent);
+                presenter.openPreferences();
+                break;
             }
-            return true;
             case R.id.equalizer: {
-                Intent intent = new Intent(getActivity(), EqualizerActivity.class);
-                startActivity(intent);
+                presenter.openEqualizer();
+                break;
             }
-            return true;
             case R.id.timer_button: {
-                LayoutInflater inflater = (LayoutInflater) getActivity()
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View layout = inflater.inflate(R.layout.seekbar_layout, null);
-                final NumberPicker sb = (NumberPicker) layout.findViewById(R.id.minutes_picker);
-                sb.setRange(1, 1440);
-                int timerDefault = SharedPreferencesManager.getPreferences()
-                        .getInt(Constants.TIMER_DEFAULT, 10);
-                sb.setCurrent(timerDefault);
-
-                final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                        .title(R.string.timer)
-                        .customView(layout, true)
-                        .positiveText(android.R.string.ok)
-                        .negativeText(android.R.string.cancel)
-                        .build();
-
-                dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
-                    musicServiceManager.setTimer(sb.getCurrent() * 60);
-                    SharedPreferences.Editor editor =
-                            SharedPreferencesManager.getPreferences().edit();
-                    editor.putInt(Constants.TIMER_DEFAULT, sb.getCurrent());
-                    editor.apply();
-                });
-                dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> {
-                    musicServiceManager.setTimer(0);
-                    dialog.dismiss();
-                });
-                dialog.show();
+                presenter.openTimer();
+                break;
             }
-            return true;
             case R.id.exit_button: {
-                exit();
+                presenter.exit();
+                break;
             }
-            return true;
             case R.id.playlists_button: {
-                Intent intent = new Intent(getActivity(), PlaylistsActivity.class);
-                intent.putExtra(PlaylistsActivity.AIM, PlaylistsActivity.Aim.SHOW_PLAYLISTS);
-                startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                presenter.openPlaylistsScreen();
+                break;
             }
-            return true;
             case R.id.clean_titles: {
-                List<Track> playlistTracks = Timeline.getInstance().getPlaylistTracks();
-                new TrackModel().clearTitles(playlistTracks);
-                updateAdapter();
+                presenter.clearTitles();
+                break;
             }
-            return true;
-//            case R.id.shuffle_button: {
-//                shufflePlaylist();
-//            }
-//            return true;
-//            case R.id.playlist_edit_mode_button: {
-//                boolean editMode = !playlistItemsAdapter.isEditMode();
-//                playlistItemsAdapter.setEditMode(editMode);
-//            }
-//            return true;
-//            case R.id.fixate_search_result_button: {
-//                fixateSearchResult();
-//            }
-//            return true;
-//            case R.id.find_current_button: {
-//                findCurrentTrack();
-//            }
-//            return true;
-//            case R.id.sort_by_artist_button: {
-//                sortByArtist();
-//            }
-//            return true;
-//            case R.id.edit_modes_button: {
-//                ModeItemsHelper.setEditMode(!ModeItemsHelper.isEditMode());
-//                if (!isTablet()) {
-//                    modeAdapter.notifyChanges();
-//                } else {
-////                    if (!landscapeTablet) showMenu();todo
-//                    modeListFragment.getAdapter().notifyChanges();
-//                }
-//            }
-//            return true;
-//            case R.id.menu_search: {
-//                SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences();
-//                boolean visibility = !savePreferences.getBoolean(
-//                        Constants.SEARCH_PLAYLIST_VISIBILITY, false);
-//                savePreferences.edit().putBoolean(
-//                        Constants.SEARCH_PLAYLIST_VISIBILITY, visibility).apply();
-//                updateSearchVisibility();
-//            }
-//            return true; todo
-            default:
+            case R.id.shuffle_button: {
+                presenter.shufflePlaylist();
+                break;
+            }
+            case R.id.playlist_edit_mode_button: {
+                presenter.togglePlaylistEditMode();
+                break;
+            }
+            case R.id.fixate_search_result_button: {
+                presenter.fixateSearchResult(new Playlist(playlistItemsAdapter.getValues()));
+                break;
+            }
+            case R.id.find_current_button: {
+                presenter.findCurrentTrack();
+                break;
+            }
+            case R.id.sort_by_artist_button: {
+                presenter.sortByArtist(playlistItemsAdapter.getValues());
+                break;
+            }
+            case R.id.edit_modes_button: {
+                presenter.toggleModeListEditMode();
+                break;
+            }
+            case R.id.menu_search: {
+                presenter.togglePlaylistSearchVisibility();
+                break;
+            }
+            default: {
                 return super.onOptionsItemSelected(item);
+            }
         }
+        return true;
     }
 
-    private void exit() {
+    @Override
+    public void exit() {
         musicServiceManager.stopService(activity);
         activity.finish();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) return;
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
 
         if (requestCode == Constants.MAIN_REQUEST_CODE) {
             MainActivityStartEnum mainActivityStartEnum = (MainActivityStartEnum) data.getSerializableExtra(Constants.ACTION_ENUM);
@@ -288,10 +245,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                         changePlaylist(positionToPlay, true);
                     }
                     break;
-                    case UPDATE_ADAPTER: {
-                        updateAdapter();
-                    }
-                    break;
                     default:
                         break;
                 }
@@ -304,8 +257,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 //                musicService.changeUrl(data.getIntExtra("position", 0));
             }
         }
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -315,24 +266,24 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void updateAdapter() {
-        List<Track> playlist = Timeline.getInstance().getPlaylistTracks();
+        List<Track> playlist = timeline.getPlaylistTracks();
         playlistItemsAdapter.setValues(playlist);
         updateEmptyPlaylistTextView();
     }
 
     @Override
     public void changePlaylist(int index, boolean autoPlay) {
-        Timeline.getInstance().clearQueue();
-        Timeline.getInstance().updateRealTrackPositions();
-        Timeline.getInstance().clearPreviousIndexes();
+        timeline.clearQueue();
+        timeline.updateRealTrackPositions();
+        timeline.clearPreviousIndexes();
         musicServiceManager.pause();
-        List<Track> tracks = Timeline.getInstance().getPlaylistTracks();
+        List<Track> tracks = timeline.getPlaylistTracks();
         playlistItemsAdapter.setValues(tracks);
         if (tracks.size() > 0) {
             if (autoPlay) {
                 presenter.playTrack(index);
             }
-            playlistModel.saveMainPlaylist(Timeline.getInstance().getPlaylist())
+            playlistModel.saveMainPlaylist(timeline.getPlaylist())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe();
@@ -385,7 +336,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             return;
         }
         showLoading(true);
-        final Track track = Timeline.getInstance().getCurrentTrack();
+        final Track track = timeline.getCurrentTrack();
         if (!track.isLoved()) {
             lastfmTrackModel.love(track, new SimpleCallback<Object>() {
                 @Override
@@ -514,6 +465,68 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         toast(R.string.added);
     }
 
+    @Override
+    public void openPreferences() {
+        startActivity(PreferencesActivity.getStartIntent(getContext()));
+    }
+
+    @Override
+    public void openEqualizer() {
+        startActivity(EqualizerActivity.getStartIntent(getContext()));
+    }
+
+    @Override
+    public void showTimerDialog() {
+        View layout = View.inflate(getContext(), R.layout.seekbar_layout, null);
+        final NumberPicker sb = (NumberPicker) layout.findViewById(R.id.minutes_picker);
+        sb.setRange(1, 1440);
+        int timerDefault = SharedPreferencesManager.getPreferences()
+                .getInt(Constants.TIMER_DEFAULT, 10);
+        sb.setCurrent(timerDefault);
+
+        final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                .title(R.string.timer)
+                .customView(layout, true)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.cancel)
+                .build();
+
+        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+            presenter.setTimerInSeconds(sb.getCurrent());
+            musicServiceManager.setTimer(sb.getCurrent() * 60);
+            SharedPreferencesManager.getPreferences().edit()
+                    .putInt(Constants.TIMER_DEFAULT, sb.getCurrent())
+                    .apply();
+        });
+        dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> {
+            musicServiceManager.setTimer(0);
+            dialog.dismiss();
+        });
+        dialog.show();
+    }
+
+    @Override
+    public abstract void clearSearch();
+
+    @Override
+    public abstract void setMainPlaylistSelection(int currentIndex);
+
+    @Override
+    public abstract void updateModeListEditMode();
+
+    @Override
+    public abstract void updateSearchVisibility(boolean visibility);
+
+    @Override
+    public void openPlaylistsScreen() {
+        startActivityForResult(PlaylistsActivity.getStartIntent(getContext(), PlaylistsActivity.Aim.SHOW_PLAYLISTS), Constants.MAIN_REQUEST_CODE);
+    }
+
+    @Override
+    public void togglePlaylistEditMode() {
+        playlistItemsAdapter.toggleEditMode();
+    }
+
     @Subcomponent(modules = HomeFragmentModule.class)
     public interface HomeFragmentComponent {
         void inject(@NonNull HomeFragment itemsFragment);
@@ -527,8 +540,9 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         public HomePresenter provideHomePresenter(@NonNull LastfmLibraryModel libraryModel,
                                                   @NonNull ShareModel shareModel,
                                                   @NonNull VkWallModel vkWallModel,
-                                                  @NonNull VkAudioModel vkAudioModel) {
-            return new HomePresenter(libraryModel, shareModel, vkWallModel, vkAudioModel);
+                                                  @NonNull VkAudioModel vkAudioModel,
+                                                  @NonNull Timeline timeline) {
+            return new HomePresenter(libraryModel, shareModel, vkWallModel, vkAudioModel, timeline);
         }
     }
 }

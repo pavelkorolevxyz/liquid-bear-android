@@ -6,6 +6,7 @@ import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAuthModel;
 import com.pillowapps.liqear.models.lastfm.LastfmChartModel;
+import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmRecommendationsModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTagModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
@@ -77,5 +78,11 @@ public class LastfmModelsModule {
         return new LastfmRecommendationsModel(lastfmArtistModel);
     }
 
+    @Provides
+    @NonNull
+    @Singleton
+    public LastfmLibraryModel provideLastfmLibraryModel(@NonNull LastfmUserModel lastfmUserModel) {
+        return new LastfmLibraryModel(lastfmUserModel);
+    }
 
 }

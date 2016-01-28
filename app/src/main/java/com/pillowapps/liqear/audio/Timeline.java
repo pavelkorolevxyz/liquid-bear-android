@@ -19,7 +19,6 @@ import java.util.Stack;
 
 
 public class Timeline {
-    private static Timeline instance;
     private Playlist currentPlaylist;
     private int index = 0;
 
@@ -50,15 +49,6 @@ public class Timeline {
 
     private PlayingState playingStateBeforeCall = PlayingState.DEFAULT;
     private String previousArtist;
-
-    private Timeline() {
-        // No operations.
-    }
-
-    public static Timeline getInstance() {
-        if (instance == null) instance = new Timeline();
-        return instance;
-    }
 
     public ShuffleMode getShuffleMode() {
         return shuffleMode;

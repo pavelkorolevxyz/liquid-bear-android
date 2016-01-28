@@ -19,7 +19,7 @@ public class MusicServiceManager {
         return musicService;
     }
 
-    public void startService(Context context, final OnServiceConnectedListener listener) {
+    public void startServiceAsync(Context context, final OnServiceConnectedListener listener) {
         serviceConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
                 MusicService.LocalBinder binder = (MusicService.LocalBinder) service;
@@ -30,7 +30,7 @@ public class MusicServiceManager {
             public void onServiceDisconnected(ComponentName arg0) {
             }
         };
-        Intent intent = new Intent(LBApplication.getAppContext(), MusicService.class);
+        Intent intent = new Intent(context, MusicService.class);
         context.startService(intent);
         context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }

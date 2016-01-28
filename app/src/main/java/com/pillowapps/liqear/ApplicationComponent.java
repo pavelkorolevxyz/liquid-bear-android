@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.pillowapps.liqear.activities.ImagePagerActivity;
 import com.pillowapps.liqear.activities.TextActivity;
+import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
 import com.pillowapps.liqear.activities.modes.LastfmNeighboursActivity;
 import com.pillowapps.liqear.activities.modes.LastfmRecommendationsActivity;
 import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
@@ -126,5 +127,7 @@ public interface ApplicationComponent {
     void inject(@NonNull PlaylistsActivity playlistsActivity);
 
     void inject(@NonNull VkAlbumTracksActivity vkAlbumTracksActivity);
+
+    void inject(@NonNull ResultTrackedBaseActivity resultTrackedBaseActivity);
 }
 

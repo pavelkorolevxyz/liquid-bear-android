@@ -1,9 +1,11 @@
 package com.pillowapps.liqear.activities.base;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.activities.modes.VkAlbumTracksActivity;
@@ -29,7 +31,18 @@ import com.pillowapps.liqear.helpers.LBPreferencesManager;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
+
+    @Inject
+    Timeline timeline;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LBApplication.get(this).applicationComponent().inject(this);
+    }
 
     protected int getPageSize() {
         return LBPreferencesManager.getPageSize();
@@ -61,7 +74,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
         data.putExtra(Constants.POSITION_TO_PLAY, position);
         Playlist playlist = new Playlist(tracks);
         playlist.setTitle(String.valueOf(title));
-        Timeline.getInstance().setPlaylist(playlist);
+        timeline.setPlaylist(playlist);
         setResult(RESULT_OK, data);
         finish();
     }
@@ -72,7 +85,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        Timeline.getInstance().addToPlaylist(tracks);
+        timeline.addToPlaylist(tracks);
     }
 
     public void trackLongClick(List<Track> tracks, int position) {
@@ -81,7 +94,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        Timeline.getInstance().addToPlaylist(tracks.get(position));
+        timeline.addToPlaylist(tracks.get(position));
     }
 
     public void trackLongClick(Track track) {
@@ -90,7 +103,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        Timeline.getInstance().addToPlaylist(track);
+        timeline.addToPlaylist(track);
 
         Toast.makeText(ResultTrackedBaseActivity.this, R.string.added, Toast.LENGTH_SHORT).show();
     }

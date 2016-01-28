@@ -12,7 +12,6 @@ public class Presenter<V> {
     @NonNull
     private final CompositeSubscription subscriptionsToUnsubscribeOnUnbindView = new CompositeSubscription();
 
-    @Nullable
     private volatile V view;
 
     @CallSuper
@@ -26,8 +25,11 @@ public class Presenter<V> {
         this.view = view;
     }
 
-    @Nullable
+    @NonNull
     protected V view() {
+        if (view == null) {
+            throw new RuntimeException("View must be bound to presenter");
+        }
         return view;
     }
 

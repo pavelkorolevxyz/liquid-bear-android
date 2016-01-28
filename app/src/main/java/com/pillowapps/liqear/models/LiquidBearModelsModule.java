@@ -25,4 +25,13 @@ public class LiquidBearModelsModule {
     public ImageModel provideImageModel() {
         return new ImageModel();
     }
+
+    @Provides
+    @NonNull
+    @Singleton
+    public ShareModel provideShareModel() {
+        return new ShareModel();
+    }
+
+
 }
