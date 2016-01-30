@@ -61,4 +61,22 @@ public interface HomeView {
     void togglePlaylistEditMode();
 
     void changeCurrentTrackUrl(int newPosition);
+
+    void updateMainPlaylistTitle();
+
+    void showArtistPlaceholder();
+
+    void updateTrackArtist(String artist);
+
+    void updateTrackTitle(String title);
+
+    void updateAlbum();
+
+    void updateShuffleButtonState();
+
+    void updateRepeatButtonState();
+
+    void hideTutorial();
+
+    void showTutorial();
 }

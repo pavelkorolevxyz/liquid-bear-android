@@ -33,5 +33,12 @@ public class LiquidBearModelsModule {
         return new ShareModel();
     }
 
+    @Provides
+    @NonNull
+    @Singleton
+    public TutorialModel provideTutorialModel() {
+        return new TutorialModel();
+    }
+
 
 }

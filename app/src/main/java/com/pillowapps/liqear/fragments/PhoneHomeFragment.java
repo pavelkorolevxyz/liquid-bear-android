@@ -3,6 +3,7 @@ package com.pillowapps.liqear.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +14,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -36,7 +37,6 @@ import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity
 import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.entities.Album;
-import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.ViewPage;
 import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
@@ -59,7 +59,6 @@ import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.listeners.OnModeClickListener;
 import com.pillowapps.liqear.listeners.OnSwipeListener;
 import com.pillowapps.liqear.models.ImageModel;
-import com.pillowapps.liqear.models.TutorialModel;
 import com.squareup.otto.Subscribe;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
@@ -108,13 +107,13 @@ public class PhoneHomeFragment extends HomeFragment {
     private Animation tutorialBlinkAnimation;
     private ViewGroup backLayout;
     private ViewGroup bottomControlsLayout;
+    private LinearLayout colorsLayout;
 
     /**
      * Modes tab
      */
     private Toolbar modeToolbar;
 
-    private TutorialModel tutorial = new TutorialModel();
     private ModeGridAdapter modeAdapter;
     private DragSortListView playlistListView;
 
@@ -136,67 +135,13 @@ public class PhoneHomeFragment extends HomeFragment {
         restoreState();
     }
 
-    private void restoreState() {
-        shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage(timeline.getShuffleMode()));
-        repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage(timeline.getRepeatMode()));
-
-        stateManager.restorePlaylistState(() -> {
-            final Playlist playlist = timeline.getPlaylist();
-            if (playlist == null || playlist.getTracks().size() == 0) return;
-            updateMainPlaylistTitle();
-
-            getActivity().runOnUiThread(() -> {
-                List<Track> tracks = playlist.getTracks();
-
-                SharedPreferences preferences = SharedPreferencesManager.getPreferences();
-                String artist = preferences.getString(Constants.ARTIST, "");
-                String title = preferences.getString(Constants.TITLE, "");
-                int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-                int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
-                seekBar.setSecondaryProgress(preferences.getInt(Constants.CURRENT_BUFFER, 0));
-
-                boolean currentFits = currentIndex < tracks.size();
-                if (!currentFits) currentIndex = 0;
-                Track currentTrack = tracks.get(currentIndex);
-                boolean tracksEquals = currentFits
-                        && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                        + currentTrack.getTitle());
-                if (!tracksEquals) {
-                    artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
-                    currentIndex = 0;
-                    artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
-                    titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
-                    position = 0;
-                } else {
-                    artistTextView.setText(Html.fromHtml(artist));
-                    titleTextView.setText(Html.fromHtml(title));
-                }
-                timeline.setIndex(currentIndex);
-                if (currentIndex > tracks.size()) {
-                    artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
-                    position = 0;
-                }
-                if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
-                    position = 0;
-                }
-
-                timeline.setTimePosition(position);
-                changePlaylist(currentIndex, false);
-                timeline.updateRealTrackPositions();
-
-                updateAlbum();
-            });
-        });
-    }
-
     private void updateArtist() {
         if (SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-            new ImageModel().loadImage(timeline.getCurrentArtistImageUrl(),
-                    artistImageView, this::updatePaletteWithBitmap);
+            new ImageModel().loadImage(timeline.getCurrentArtistImageUrl(), artistImageView, this::updatePaletteWithBitmap);
         }
     }
 
-    private void updateAlbum() {
+    public void updateAlbum() {
         if (!NetworkUtils.isOnline()) {
             artistImageView.setImageResource(R.drawable.artist_placeholder);
             albumImageView.setImageDrawable(null);
@@ -236,9 +181,7 @@ public class PhoneHomeFragment extends HomeFragment {
         initPlaylistsTab();
         initPlaybackTab();
 
-        if (tutorial.isEnabled()) {
-            showTutorial();
-        }
+        presenter.showTutorial();
     }
 
     private void initViewPager(View v) {
@@ -276,11 +219,7 @@ public class PhoneHomeFragment extends HomeFragment {
             public void onPageSelected(int position) {
                 setHasOptionsMenu(true);
                 if (position != PhoneFragmentPagerAdapter.PLAY_TAB_INDEX) {
-                    if (tutorial.isEnabled() && tutorialBlinkAnimation != null) {
-                        tutorialBlinkAnimation.cancel();
-                        tutorialLayout.setVisibility(View.GONE);
-                        tutorial.end();
-                    }
+                    presenter.hideTutorial();
                 }
             }
 
@@ -352,6 +291,8 @@ public class PhoneHomeFragment extends HomeFragment {
         loveFloatingActionButton = (FloatingActionButton) playbackTab.findViewById(R.id.love_button);
 
         blackView = playbackTab.findViewById(R.id.view);
+
+        colorsLayout = (LinearLayout) playbackTab.findViewById(R.id.colors_layout);
     }
 
     private void initModeTab() {
@@ -469,7 +410,8 @@ public class PhoneHomeFragment extends HomeFragment {
         playlistToolbar.setTitle(title);
     }
 
-    private void showTutorial() {
+    @Override
+    public void showTutorial() {
         ImageView swipeLeftImageView = (ImageView) playbackTab.findViewById(R.id.swipe_left_image_view);
         ImageView swipeRightImageView = (ImageView) playbackTab.findViewById(R.id.swipe_right_image_view);
         tutorialLayout = playbackTab.findViewById(R.id.tutorial_layout);
@@ -554,19 +496,29 @@ public class PhoneHomeFragment extends HomeFragment {
             return;
         }
         new Palette.Builder(bitmap).generate(palette -> {
-            Palette.Swatch backSwatch = palette.getDarkMutedSwatch();
-            if (backSwatch == null) {
-                backLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.accent_mono_dark));
-                return;
-            }
-            backLayout.setBackgroundColor(backSwatch.getRgb());
 
-            Palette.Swatch bottomSwatch = palette.getDarkVibrantSwatch();
-            if (bottomSwatch == null) {
-                bottomControlsLayout.setBackgroundColor(getResources().getColor(R.color.accent_light));
-                return;
-            }
-            bottomControlsLayout.setBackgroundColor(bottomSwatch.getRgb());
+            // all palette colors for investigation
+//            int darkMutedColor = palette.getDarkMutedColor(Color.TRANSPARENT);
+//            int darkVibrantColor = palette.getDarkVibrantColor(Color.TRANSPARENT);
+//            int lightMutedColor = palette.getLightMutedColor(Color.TRANSPARENT);
+//            int lightVibrantColor = palette.getLightVibrantColor(Color.TRANSPARENT);
+//            int mutedColor = palette.getMutedColor(Color.TRANSPARENT);
+//            int vibrantColor = palette.getVibrantColor(Color.TRANSPARENT);
+//            colorsLayout.getChildAt(0).setBackgroundColor(darkMutedColor);
+//            colorsLayout.getChildAt(1).setBackgroundColor(darkVibrantColor);
+//            colorsLayout.getChildAt(2).setBackgroundColor(lightMutedColor);
+//            colorsLayout.getChildAt(3).setBackgroundColor(lightVibrantColor);
+//            colorsLayout.getChildAt(4).setBackgroundColor(mutedColor);
+//            colorsLayout.getChildAt(5).setBackgroundColor(vibrantColor);
+
+            int backColor = palette.getDarkMutedColor(ContextCompat.getColor(getContext(), R.color.accent_mono_dark));
+            backLayout.setBackgroundColor(backColor);
+
+            int bottomColor = palette.getMutedColor(ContextCompat.getColor(getContext(), R.color.accent_light));
+            int firstBottomColor = palette.getDarkVibrantColor(bottomColor);
+            bottomControlsLayout.setBackgroundColor(firstBottomColor);
+
+            loveFloatingActionButton.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{firstBottomColor}));
         });
     }
 
@@ -591,6 +543,39 @@ public class PhoneHomeFragment extends HomeFragment {
             searchPlaylistEditText.requestFocus();
         }
         searchPlaylistEditText.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showArtistPlaceholder() {
+        artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
+    }
+
+    @Override
+    public void updateTrackTitle(String title) {
+        titleTextView.setText(title);
+    }
+
+    @Override
+    public void updateTrackArtist(String artist) {
+        artistTextView.setText(artist);
+    }
+
+    @Override
+    public void updateRepeatButtonState() {
+        repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage(timeline.getRepeatMode()));
+    }
+
+    @Override
+    public void updateShuffleButtonState() {
+        shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage(timeline.getShuffleMode()));
+    }
+
+    @Override
+    public void hideTutorial() {
+        if (tutorialBlinkAnimation != null) {
+            tutorialBlinkAnimation.cancel();
+        }
+        tutorialLayout.setVisibility(View.GONE);
     }
 
     @Subscribe

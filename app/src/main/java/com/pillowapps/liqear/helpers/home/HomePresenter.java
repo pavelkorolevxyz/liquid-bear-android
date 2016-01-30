@@ -26,10 +26,12 @@ import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.Presenter;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
+import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
 import com.pillowapps.liqear.models.TrackModel;
+import com.pillowapps.liqear.models.TutorialModel;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
@@ -51,20 +53,24 @@ public class HomePresenter extends Presenter<HomeView> {
     private VkAudioModel vkAudioModel;
     private Timeline timeline;
     private PlaylistModel playlistModel;
+    private StateManager stateManager;
+    private TutorialModel tutorial;
 
 
     @Inject
-    public HomePresenter(LastfmLibraryModel libraryModel,
+    public HomePresenter(StateManager stateManager, LastfmLibraryModel libraryModel,
                          ShareModel shareModel,
                          VkWallModel vkWallModel,
                          VkAudioModel vkAudioModel,
-                         PlaylistModel playlistModel, Timeline timeline) {
+                         PlaylistModel playlistModel, Timeline timeline, TutorialModel tutorial) {
+        this.stateManager = stateManager;
         this.libraryModel = libraryModel;
         this.shareModel = shareModel;
         this.vkWallModel = vkWallModel;
         this.vkAudioModel = vkAudioModel;
         this.playlistModel = playlistModel;
         this.timeline = timeline;
+        this.tutorial = tutorial;
     }
 
     public void openRadiomix() {
@@ -385,5 +391,69 @@ public class HomePresenter extends Presenter<HomeView> {
     public void changeCurrentTrackUrl(int newPosition) {
         HomeView view = view();
         view.changeCurrentTrackUrl(newPosition);
+    }
+
+    public void restoreState() {
+        HomeView view = view();
+        view.updateShuffleButtonState();
+        view.updateRepeatButtonState();
+        stateManager.restorePlaylistState(() -> {
+            final Playlist playlist = timeline.getPlaylist();
+            if (playlist == null || playlist.getTracks().size() == 0) return;
+            view.updateMainPlaylistTitle();
+
+            List<Track> tracks = playlist.getTracks();
+
+            SharedPreferences preferences = SharedPreferencesManager.getPreferences(); // todo on interactor/models level
+            String artist = preferences.getString(Constants.ARTIST, "");
+            String title = preferences.getString(Constants.TITLE, "");
+            int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+            int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+
+            boolean currentFits = currentIndex < tracks.size();
+            if (!currentFits) currentIndex = 0;
+            Track currentTrack = tracks.get(currentIndex);
+            boolean tracksEquals = currentFits
+                    && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                    + currentTrack.getTitle());
+            if (!tracksEquals) {
+                view.showArtistPlaceholder();
+                currentIndex = 0;
+                view.updateTrackArtist(currentTrack.getArtist());
+                view.updateTrackTitle(currentTrack.getTitle());
+                position = 0;
+            } else {
+                view.updateTrackArtist(artist);
+                view.updateTrackTitle(title);
+            }
+            timeline.setIndex(currentIndex);
+            if (currentIndex > tracks.size()) {
+                view.showArtistPlaceholder();
+                position = 0;
+            }
+            if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
+                position = 0;
+            }
+
+            timeline.setTimePosition(position);
+            updateMainPlaylist(currentIndex, false);
+
+            view.updateAlbum();
+        });
+    }
+
+    public void showTutorial() {
+        HomeView view = view();
+        if (tutorial.isEnabled()) {
+            view.showTutorial();
+        }
+    }
+
+    public void hideTutorial() {
+        HomeView view = view();
+        if (tutorial.isEnabled()) {
+            tutorial.disableTutorial();
+            view.hideTutorial();
+        }
     }
 }

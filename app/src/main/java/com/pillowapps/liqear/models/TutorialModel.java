@@ -9,7 +9,7 @@ public class TutorialModel {
     private SharedPreferences startPreferences = SharedPreferencesManager.getStartPreferences();
     private SharedPreferences.Editor editor = startPreferences.edit();
 
-    public void end() {
+    public void disableTutorial() {
         editor.putBoolean(Constants.TUTORIAL_DISABLED, true).apply();
     }
 

@@ -45,6 +45,7 @@ import com.pillowapps.liqear.helpers.home.HomePresenter;
 import com.pillowapps.liqear.helpers.home.HomeView;
 import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
+import com.pillowapps.liqear.models.TutorialModel;
 import com.pillowapps.liqear.models.VideoModel;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
@@ -256,6 +257,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     protected void updateToolbars() {
         // No op.
+    }
+
+    public void restoreState() {
+        presenter.restoreState();
     }
 
     @Override
@@ -504,13 +509,15 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
         @Provides
         @NonNull
-        public HomePresenter provideHomePresenter(@NonNull LastfmLibraryModel libraryModel,
+        public HomePresenter provideHomePresenter(@NonNull StateManager stateManager,
+                                                  @NonNull LastfmLibraryModel libraryModel,
                                                   @NonNull ShareModel shareModel,
                                                   @NonNull VkWallModel vkWallModel,
                                                   @NonNull VkAudioModel vkAudioModel,
                                                   @NonNull PlaylistModel playlistModel,
-                                                  @NonNull Timeline timeline) {
-            return new HomePresenter(libraryModel, shareModel, vkWallModel, vkAudioModel, playlistModel, timeline);
+                                                  @NonNull Timeline timeline,
+                                                  @NonNull TutorialModel tutorial) {
+            return new HomePresenter(stateManager, libraryModel, shareModel, vkWallModel, vkAudioModel, playlistModel, timeline, tutorial);
         }
     }
 }
