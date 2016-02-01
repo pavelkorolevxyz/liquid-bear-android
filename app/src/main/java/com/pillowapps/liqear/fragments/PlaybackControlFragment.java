@@ -33,7 +33,7 @@ public class PlaybackControlFragment extends Fragment {
 //    public View onCreateView(LayoutInflater inflater, ViewGroup container,
 //                             Bundle savedInstanceState) {
 //        mainActivity = (MainActivity) getActivity();
-//        mainActivity.init();
+//        mainActivity.register();
 //        View v = inflater.inflate(R.layout.playback_controls_fragment_layout, null, false);
 //        ButterKnife.inject(this, v);
 //        initListeners();

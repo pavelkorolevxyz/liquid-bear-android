@@ -23,6 +23,7 @@ public class Constants {
     public static final int VK_ADD_REQUEST_CODE = 7463;
     public static final int CAPTCHA_NEEDED = 14;
     public static final int PRESET_WANTED_COUNT = 21;
+    public static final int LIQUID_BEAR_ID = 1314;
 
     public static final String ACTION_SERVICE = "com.pillowapps.liqear.actionservice";
     public static final String DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES = "download_images_check_box_preferences";
