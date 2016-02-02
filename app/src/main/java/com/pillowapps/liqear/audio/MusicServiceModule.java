@@ -56,6 +56,16 @@ public class MusicServiceModule {
     @Provides
     @NonNull
     @Singleton
+    public AudioFocusManager provideAudioFocusManager(Context context,
+                                                      Timeline timeline,
+                                                      AudioManager audioManager,
+                                                      MediaPlayerManager mediaPlayerManager) {
+        return new AudioFocusManager(context, timeline, audioManager, mediaPlayerManager);
+    }
+
+    @Provides
+    @NonNull
+    @Singleton
     public RemoteControlManager provideRemoteControlManager(Context context,
                                                             Timeline timeline,
                                                             AudioManager audioManager) {

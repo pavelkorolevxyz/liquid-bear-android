@@ -11,6 +11,8 @@ import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.helpers.CompatIcs;
 
+import javax.inject.Inject;
+
 public class AudioFocusManager {
 
     private Context context;
@@ -25,6 +27,14 @@ public class AudioFocusManager {
 
     private AudioManager.OnAudioFocusChangeListener focusChangeListener;
     private PhoneStateListener phoneStateListener;
+
+    @Inject
+    public AudioFocusManager(Context context, Timeline timeline, AudioManager audioManager, MediaPlayerManager mediaPlayerManager) {
+        this.context = context;
+        this.timeline = timeline;
+        this.audioManager = audioManager;
+        this.mediaPlayerManager = mediaPlayerManager;
+    }
 
     public void init() {
         headsetStateReceiver = new HeadsetStateReceiver();
@@ -68,15 +78,15 @@ public class AudioFocusManager {
             public void onCallStateChanged(int state, String incomingNumber) {
                 switch (state) {
                     case TelephonyManager.CALL_STATE_RINGING:
-                        pause();
+                        mediaPlayerManager.pause();
                         break;
                     case TelephonyManager.CALL_STATE_IDLE:
                         if (timeline.getPlayingStateBeforeCall() == PlayingState.PLAYING) {
-                            play();
+                            mediaPlayerManager.play();
                         }
                         break;
                     case TelephonyManager.CALL_STATE_OFFHOOK:
-                        pause();
+                        mediaPlayerManager.pause();
                         break;
                     default:
                         break;
@@ -92,7 +102,7 @@ public class AudioFocusManager {
     }
 
     private void changePhoneCallReceiverListener(int listenCallState) {
-        TelephonyManager mgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager mgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (mgr != null) {
             mgr.listen(phoneStateListener, listenCallState);
         }
