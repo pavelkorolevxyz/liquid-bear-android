@@ -113,8 +113,8 @@ public class HomePresenter extends Presenter<HomeView> {
         });
     }
 
-    public void playTrack(int index) {
-        timeline.setStartPlayingOnPrepared(true);
+    public void playTrack(int index, boolean autoplay) {
+        timeline.setAutoplay(autoplay);
         final HomeView view = view();
 
         view.playTrack(index);
@@ -341,8 +341,8 @@ public class HomePresenter extends Presenter<HomeView> {
         view.changePlaylist(positionToPlay, autoPlay);
         view.updateEmptyPlaylistTextView();
 
-        if (timeline.getPlaylistTracks().size() > 0 && autoPlay) {
-            playTrack(positionToPlay);
+        if (timeline.getPlaylistTracks().size() > 0) {
+            playTrack(positionToPlay, autoPlay);
         }
 
     }
@@ -436,7 +436,6 @@ public class HomePresenter extends Presenter<HomeView> {
             }
 
             timeline.setTimePosition(position);
-            updateMainPlaylist(currentIndex, false);
 
             view.updateAlbum();
         });
@@ -455,5 +454,58 @@ public class HomePresenter extends Presenter<HomeView> {
             tutorial.disableTutorial();
             view.hideTutorial();
         }
+    }
+
+    public void updateArtistPhoto() {
+        HomeView view = view();
+        if (!NetworkUtils.isOnline()) {
+            view.showArtistPlaceholder();
+            return;
+        }
+        if (SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+            view.updateArtistPhotoAndColors();
+        }
+    }
+
+    public void updateAlbum() {
+        HomeView view = view();
+
+        Album album = timeline.getCurrentAlbum();
+        if (!NetworkUtils.isOnline() || album == null) {
+            view.hideAlbumImage();
+            view.hideAlbumTitle();
+            return;
+        }
+
+        String imageUrl = album.getImageUrl();
+        if (imageUrl == null || !SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+            view.hideAlbumImage();
+        } else {
+            view.showAlbumImage(imageUrl);
+        }
+        String albumTitle = album.getTitle();
+        if (albumTitle == null) {
+            view.hideAlbumTitle();
+        } else {
+            view.showAlbumTitle(albumTitle);
+        }
+    }
+
+    public void toggleRepeat() {
+        timeline.toggleRepeat();
+        HomeView view = view();
+        view.updateRepeatButtonState();
+        view.updateWidgets();
+    }
+
+    public void toggleShuffle() {
+        timeline.toggleShuffle();
+        HomeView view = view();
+        view.updateShuffleButtonState();
+        view.updateWidgets();
+    }
+
+    public void restorePlayingState() {
+        updateMainPlaylist(timeline.getIndex(), false);
     }
 }

@@ -33,7 +33,6 @@ import com.mobeta.android.dslv.DragSortListView;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmAlbumViewerActivity;
-import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.entities.Album;
@@ -53,12 +52,10 @@ import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.helpers.NetworkUtils;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.listeners.OnModeClickListener;
 import com.pillowapps.liqear.listeners.OnSwipeListener;
-import com.pillowapps.liqear.models.ImageModel;
 import com.squareup.otto.Subscribe;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
@@ -135,41 +132,12 @@ public class PhoneHomeFragment extends HomeFragment {
         restoreState();
     }
 
-    private void updateArtist() {
-        if (SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-            new ImageModel().loadImage(timeline.getCurrentArtistImageUrl(), artistImageView, this::updatePaletteWithBitmap);
-        }
+    private void updateArtistPhoto() {
+        presenter.updateArtistPhoto();
     }
 
     public void updateAlbum() {
-        if (!NetworkUtils.isOnline()) {
-            artistImageView.setImageResource(R.drawable.artist_placeholder);
-            albumImageView.setImageDrawable(null);
-            albumTextView.setVisibility(View.GONE);
-            return;
-        }
-
-        Album album = timeline.getCurrentAlbum();
-        if (album != null) {
-            String imageUrl = album.getImageUrl();
-            if (imageUrl == null || !SharedPreferencesManager.getPreferences()
-                    .getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-                albumImageView.setVisibility(View.GONE);
-            } else {
-                albumImageView.setVisibility(View.VISIBLE);
-                new ImageModel().loadImage(imageUrl, albumImageView);
-            }
-            String albumTitle = album.getTitle();
-            if (albumTitle == null) {
-                albumTextView.setVisibility(View.GONE);
-            } else {
-                albumTextView.setVisibility(View.VISIBLE);
-                albumTextView.setText(albumTitle);
-            }
-        } else {
-            albumImageView.setVisibility(View.GONE);
-            albumTextView.setVisibility(View.GONE);
-        }
+        presenter.updateAlbum();
     }
 
     private void initUi(View v) {
@@ -237,31 +205,6 @@ public class PhoneHomeFragment extends HomeFragment {
         playlistListView.setOnItemClickListener((parent, view, position, id) -> {
             musicServiceManager.play(playlistItemsAdapter.getItem(position).getRealPosition());
         });
-//        View.OnCreateContextMenuListener contextMenuListener = new View.OnCreateContextMenuListener() {
-//            @Override
-//            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-//                PopupMenu popup = new PopupMenu(getContext(), v);
-//                //Inflating the Popup using xml file
-//                popup.getMenuInflater()
-//                        .inflate(R.menu.menu_main_playlist_track, popup.getMenu());
-//
-//                //registering popup with OnMenuItemClickListener
-//                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                    public boolean onMenuItemClick(MenuItem item) {
-//                        onContextItemSelected(item);
-//                        return true;
-//                    }
-//                });
-//
-//                popup.show();
-//            }
-//        };
-//        OnItemStartDragListener onStartDragListener = new OnItemStartDragListener() {
-//            @Override
-//            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-//                mItemTouchHelper.startDrag(viewHolder);
-//            }
-//        };
         playlistListView.setAdapter(playlistItemsAdapter);
         searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
         searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
@@ -320,23 +263,15 @@ public class PhoneHomeFragment extends HomeFragment {
         });
 
         shuffleButton.setOnClickListener(v -> {
-            timeline.toggleShuffle();
-            shuffleButton.setImageResource(ButtonStateUtils.getShuffleButtonImage(timeline.getShuffleMode()));
-            musicServiceManager.updateWidgets();
+            presenter.toggleShuffle();
         });
 
         repeatButton.setOnClickListener(v -> {
-            timeline.toggleRepeat();
-            repeatButton.setImageResource(ButtonStateUtils.getRepeatButtonImage(timeline.getRepeatMode()));
-            musicServiceManager.updateWidgets();
+            presenter.toggleRepeat();
         });
 
         artistTextView.setOnClickListener(v -> {
-            Track currentTrack = timeline.getCurrentTrack();
-            if (currentTrack == null) return;
-            Intent artistInfoIntent = new Intent(activity, LastfmArtistViewerActivity.class);
-            artistInfoIntent.putExtra(LastfmArtistViewerActivity.ARTIST, currentTrack.getArtist());
-            startActivityForResult(artistInfoIntent, Constants.MAIN_REQUEST_CODE);
+            presenter.openArtistViewer();
         });
 
 
@@ -578,6 +513,34 @@ public class PhoneHomeFragment extends HomeFragment {
         tutorialLayout.setVisibility(View.GONE);
     }
 
+    @Override
+    public void updateArtistPhotoAndColors() {
+        imageModel.loadImage(timeline.getCurrentArtistImageUrl(), artistImageView, this::updatePaletteWithBitmap);
+    }
+
+    @Override
+    public void hideAlbumImage() {
+        albumImageView.setImageDrawable(null);
+        albumImageView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideAlbumTitle() {
+        albumTextView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showAlbumImage(String imageUrl) {
+        albumImageView.setVisibility(View.VISIBLE);
+        imageModel.loadImage(imageUrl, albumImageView);
+    }
+
+    @Override
+    public void showAlbumTitle(String albumTitle) {
+        albumTextView.setVisibility(View.VISIBLE);
+        albumTextView.setText(albumTitle);
+    }
+
     @Subscribe
     public void pauseEvent(PauseEvent event) {
         playPauseButton.setImageResource(R.drawable.play_button);
@@ -595,7 +558,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Subscribe
     public void artistInfoEvent(ArtistInfoEvent event) {
-        updateArtist();
+        updateArtistPhoto();
     }
 
     @Subscribe

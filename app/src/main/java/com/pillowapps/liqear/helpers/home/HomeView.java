@@ -79,4 +79,16 @@ public interface HomeView {
     void hideTutorial();
 
     void showTutorial();
+
+    void updateArtistPhotoAndColors();
+
+    void hideAlbumImage();
+
+    void showAlbumImage(String imageUrl);
+
+    void hideAlbumTitle();
+
+    void showAlbumTitle(String albumTitle);
+
+    void updateWidgets();
 }

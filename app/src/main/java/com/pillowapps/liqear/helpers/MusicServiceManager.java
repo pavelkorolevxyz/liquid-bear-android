@@ -58,10 +58,6 @@ public class MusicServiceManager {
         musicService.play(index);
     }
 
-    public boolean isPrepared() {
-        return musicService.isPrepared();
-    }
-
     public int getCurrentPositionPercent() {
         return musicService.getCurrentPositionPercent();
     }

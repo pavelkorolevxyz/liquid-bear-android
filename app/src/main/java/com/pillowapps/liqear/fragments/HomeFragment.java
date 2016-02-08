@@ -43,6 +43,7 @@ import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.home.HomePresenter;
 import com.pillowapps.liqear.helpers.home.HomeView;
+import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
 import com.pillowapps.liqear.models.TutorialModel;
@@ -89,6 +90,9 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Inject
     Timeline timeline;
 
+    @Inject
+    ImageModel imageModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +112,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
         musicServiceManager.startServiceAsync(activity, () -> {
             activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+            presenter.restorePlayingState();
         });
 
         LBApplication.BUS.register(this);
@@ -497,6 +502,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public void togglePlaylistEditMode() {
         playlistItemsAdapter.toggleEditMode();
+    }
+
+    @Override
+    public void updateWidgets() {
+        musicServiceManager.updateWidgets();
     }
 
     @Subcomponent(modules = HomeFragmentModule.class)
