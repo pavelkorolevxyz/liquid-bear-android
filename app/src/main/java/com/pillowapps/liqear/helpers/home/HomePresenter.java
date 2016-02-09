@@ -114,7 +114,7 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void playTrack(int index, boolean autoplay) {
-        timeline.setStartPlayingOnPrepared(autoplay);
+        timeline.setAutoplay(autoplay);
         final HomeView view = view();
 
         view.playTrack(index);

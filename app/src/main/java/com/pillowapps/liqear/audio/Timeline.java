@@ -30,7 +30,7 @@ public class Timeline {
     private int maxListeningsCount;
     private LinkedList<Integer> queueIndexes = new LinkedList<>();
     private Stack<Integer> previousTracksIndexes = new Stack<>();
-    private boolean startPlayingOnPrepared = false;
+    private boolean autoplay = false;
 
     private ShuffleMode shuffleMode = SharedPreferencesManager.getPreferences()
             .getBoolean(Constants.SHUFFLE_MODE_ON, false)
@@ -107,6 +107,14 @@ public class Timeline {
         queueIndexes.add(index);
     }
 
+    public int getNextIndex() {
+        if (shuffleMode == ShuffleMode.SHUFFLE) {
+            return getRandomIndex();
+        } else {
+            return (index + 1) % PlaylistUtils.sizeOf(currentPlaylist);
+        }
+    }
+
     public Track getNextTrack() {
         if (currentPlaylist == null || PlaylistUtils.sizeOf(currentPlaylist) <= index) return null;
         return currentPlaylist.getTracks().get(getRandomIndex());
@@ -133,6 +141,13 @@ public class Timeline {
             }
         }
         return randomIndex;
+    }
+
+    public int getPrevTrackIndex() {
+        if (previousTracksIndexes.isEmpty()) {
+            return index;
+        }
+        return previousTracksIndexes.pop();
     }
 
     public List<Track> getPlaylistTracks() {
@@ -237,12 +252,12 @@ public class Timeline {
         return currentPlaylist;
     }
 
-    public boolean isStartPlayingOnPrepared() {
-        return startPlayingOnPrepared;
+    public boolean isAutoplay() {
+        return autoplay;
     }
 
-    public void setStartPlayingOnPrepared(boolean startPlayingOnPrepared) {
-        this.startPlayingOnPrepared = startPlayingOnPrepared;
+    public void setAutoplay(boolean autoplay) {
+        this.autoplay = autoplay;
     }
 
     public void updateRealTrackPositions() {

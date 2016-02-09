@@ -1,21 +1,33 @@
 package com.pillowapps.liqear.audio;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.PowerManager;
 
+import com.google.android.exoplayer.ExoPlayer;
 import com.pillowapps.liqear.LBApplication;
-import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.audio.player.PreparedMediaPlayer;
+import com.pillowapps.liqear.audio.player.RxMediaPlayer;
+import com.pillowapps.liqear.callbacks.VkSimpleCallback;
+import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
+import com.pillowapps.liqear.entities.events.PauseEvent;
+import com.pillowapps.liqear.entities.events.PlayEvent;
+import com.pillowapps.liqear.entities.vk.VkError;
+import com.pillowapps.liqear.entities.vk.VkTrack;
+import com.pillowapps.liqear.helpers.NetworkUtils;
+import com.pillowapps.liqear.models.vk.VkAudioModel;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class MusicService extends Service {
 
-    private static final String AVRCP_META_CHANGED = "com.android.music.metachanged";
+    private static final int LIQUID_BEAR_ID = 1314;
 
     public static final String ACTION_PLAY_PAUSE = "com.pillowapps.liqear.TOGGLE_PLAYBACK";
     public static final String ACTION_PREV = "com.pillowapps.liqear.PREV";
@@ -31,59 +43,160 @@ public class MusicService extends Service {
     public static final String ACTION_PAUSE = "com.pillowapps.liqear.PAUSE";
 
     private LocalBinder binder = new LocalBinder();
-
-    private PowerManager.WakeLock wakeLock;
-    private WifiManager.WifiLock wifiLock;
-
-    @Inject
-    MediaPlayerManager mediaPlayerManager;
+    private ExoPlayer mediaPlayer;
+    private RxMediaPlayer rxMediaPlayer;
 
     @Inject
-    RemoteControlManager remoteControlManager;
+    Timeline timeline;
 
     @Inject
-    AudioFocusManager audioFocusManager;
+    VkAudioModel vkAudioModel;
 
     @Override
     public void onCreate() {
         super.onCreate();
         LBApplication.get(this).applicationComponent().inject(this);
 
-        mediaPlayerManager.mute(true);
-
         initMediaPlayer();
-        initLocks();
-
-        registerRemote();
-        registerStateReceivers();
     }
 
     private void initMediaPlayer() {
-        mediaPlayerManager.init();
-    }
-
-    private void initLocks() {
-        PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getString(R.string.app_name));
-        WifiManager wifimanager = (WifiManager) LBApplication.getAppContext().getSystemService(Context.WIFI_SERVICE);
-        wifiLock = wifimanager.createWifiLock(getString(R.string.app_name));
-    }
-
-    private void registerRemote() {
-        remoteControlManager.register();
-    }
-
-    private void unregisterRemote() {
-        remoteControlManager.unregister();
-    }
-
-    private void registerStateReceivers() {
-        audioFocusManager.init();
+        mediaPlayer = ExoPlayer.Factory.newInstance(1);
+        rxMediaPlayer = RxMediaPlayer.use(mediaPlayer);
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
+    }
+
+    public int getCurrentPosition() {
+        return (int) mediaPlayer.getCurrentPosition();
+    }
+
+    public int getCurrentBuffer() {
+        return (int) mediaPlayer.getBufferedPosition();
+    }
+
+    private void play() {
+        rxMediaPlayer.preparedMediaPlayer().play().subscribe(exoPlayer -> {
+            LBApplication.BUS.post(new PlayEvent());
+        });
+    }
+
+    public void pause() {
+        rxMediaPlayer.preparedMediaPlayer().pause().subscribe(exoPlayer -> {
+            LBApplication.BUS.post(new PauseEvent());
+        });
+    }
+
+    public void setTimer(int seconds) {
+        // todo
+    }
+
+    public void play(int index) {
+        Track track = timeline.getPlaylistTracks().get(index);
+        timeline.setIndex(index);
+        String url = track.getUrl();
+        if (url == null || url.isEmpty()) {
+            getTrackUrl(track, true);
+        } else {
+            PreparedMediaPlayer preparedMediaPlayer = rxMediaPlayer.from(this, url);
+            Observable<ExoPlayer> observable;
+            if (timeline.isAutoplay()) {
+                observable = preparedMediaPlayer.play();
+            } else {
+                observable = preparedMediaPlayer.observable();
+            }
+            observable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe();
+        }
+    }
+
+    private void getTrackUrl(Track trackToFind, boolean autoPlay) {
+        timeline.setAutoplay(autoPlay);
+        if (trackToFind.isLocal()) {
+            if (timeline.getCurrentTrack() != null) {
+                timeline.getCurrentTrack().setUrl(trackToFind.getUrl());
+                play();
+            } else {
+                next();
+            }
+            return;
+        }
+        if (!NetworkUtils.isOnline()) {
+            LBApplication.BUS.post(new NetworkStateChangeEvent());
+            return;
+        }
+        VkSimpleCallback<VkTrack> callback = new VkSimpleCallback<VkTrack>() {
+            @Override
+            public void success(VkTrack track) {
+                if (track != null) {
+                    Track currentTrack = timeline.getCurrentTrack();
+                    if (currentTrack != null) {
+                        currentTrack.setUrl(track.getUrl());
+                        currentTrack.setAudioId(track.getAudioId());
+                        currentTrack.setOwnerId(track.getOwnerId());
+                        play(timeline.getIndex());
+                    } else {
+                        next();
+                    }
+                } else {
+                    next();
+                }
+            }
+
+            @Override
+            public void failure(VkError error) {
+                next();
+            }
+        };
+        vkAudioModel.getTrack(trackToFind, 0, callback);
+    }
+
+    public int getDuration() {
+        return (int) mediaPlayer.getDuration();
+    }
+
+    public void updateWidgets() {
+
+    }
+
+    public void playPause() {
+        if (mediaPlayer.getPlayWhenReady()) {
+            pause();
+        } else {
+            play();
+        }
+    }
+
+    public void next() {
+        int nextTrackIndex = timeline.getNextIndex();
+        play(nextTrackIndex);
+    }
+
+    public void prev() {
+        int prevTrackIndex = timeline.getPrevTrackIndex();
+        play(prevTrackIndex);
+    }
+
+    public void seekTo(int position) {
+        rxMediaPlayer.preparedMediaPlayer().seekTo(position).subscribe();
+    }
+
+    public void startPlayProgressUpdater() {
+
+    }
+
+    public void stopPlayProgressUpdater() {
+
+    }
+
+    public void changeUrl(int newPosition) {
+
+    }
+
+    public int getCurrentPositionPercent() {
+        return (int) (mediaPlayer.getCurrentPosition() * 100 / mediaPlayer.getDuration());
     }
 
     public class LocalBinder extends Binder {
