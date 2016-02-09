@@ -3,6 +3,7 @@ package com.pillowapps.liqear.models;
 import android.content.Context;
 import android.net.Uri;
 
+import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
 import com.google.android.exoplayer.MediaCodecSelector;
@@ -88,5 +89,27 @@ public class AudioPlayerModel {
     @Deprecated
     public int getCurrentPositionPercent() {
         return (int) (audioPlayer.getCurrentPosition() * 100 / audioPlayer.getDuration());
+    }
+
+    public Observable<Integer> addOnComplete() {
+        return Observable.create(subscriber -> audioPlayer.addListener(new ExoPlayer.Listener() {
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                if (playbackState == ExoPlayer.STATE_ENDED) {
+                    subscriber.onNext(playbackState);
+                }
+                Timber.d("PlaybackState " + playbackState);
+            }
+
+            @Override
+            public void onPlayWhenReadyCommitted() {
+                // No op.
+            }
+
+            @Override
+            public void onPlayerError(ExoPlaybackException error) {
+                // No op.
+            }
+        }));
     }
 }

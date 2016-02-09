@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
-
 public class Timeline {
     private Playlist currentPlaylist;
     private int index = 0;

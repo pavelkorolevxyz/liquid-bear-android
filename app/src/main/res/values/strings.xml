@@ -93,8 +93,8 @@
     <string name="remind">Remind me later</string>
     <string name="no_thanks">No, thanks</string>
     <string name="rate">Rate</string>
-    <string name="exit_anyway">Close player anyway</string>
-    <string name="exit_anyway_summary">Close player even if there is track playing now</string>
+    <string name="exit_anyway">Close audioPlayer anyway</string>
+    <string name="exit_anyway_summary">Close audioPlayer even if there is track playing now</string>
     <string name="compilation">Randomize</string>
     <string name="similar_artists_drop_down">Show similar artists</string>
     <string name="equalizer">Equalizer</string>
@@ -151,7 +151,7 @@
     <string name="about_internet">Internet</string>
     <string name="vk_not_authorized">VK authorization needed</string>
     <string name="no_internet">No Internet connection</string>
-    <string name="share_liqear">#LiquidBear - free online/offline audio player. Last.fm+VK.
+    <string name="share_liqear">#LiquidBear - free online/offline audio audioPlayer. Last.fm+VK.
         https://play.google.com/store/apps/details?id=com.pillowapps.liqear
     </string>
     <string name="vk_wall">Wall</string>

@@ -113,7 +113,9 @@ public interface VkApiService {
                      VkCallback<VkTrackUrlResponseRoot> callback);
 
     @GET("/execute.getUrlById")
-    void getTrackUrlById(@Query("audioId") long audioId,
+    void getTrackUrlById(@Query("notation") String trackNotation,
+                         @Query("index") long index,
+                         @Query("audioId") long audioId,
                          @Query("ownerId") long ownerId,
                          VkCallback<VkTrackUrlResponseRoot> callback);
 

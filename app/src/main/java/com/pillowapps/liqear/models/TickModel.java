@@ -86,6 +86,7 @@ public class TickModel {
 
     private void scrobble(@NonNull Track track) {
         scrobblingSubscription.clear();
+        scrobbled = true;
         lastfmTrackModel.scrobble(track.getArtist(), track.getTitle(), track.getAlbum(), TimeUtils.getCurrentTimeInSeconds(), new PassiveCallback()); // todo not passive callback but saving in database
     }
 

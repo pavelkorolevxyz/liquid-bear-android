@@ -91,11 +91,11 @@ public class MusicServiceManager {
     }
 
     public void startPlayProgressUpdater() {
-        musicService.startPlayProgressUpdater();
+//        musicService.startPlayProgressUpdater();
     }
 
     public void stopPlayProgressUpdater() {
-        musicService.stopPlayProgressUpdater();
+//        musicService.stopPlayProgressUpdater();
     }
 
     public void changeCurrentTrackUrl(int newPosition) {

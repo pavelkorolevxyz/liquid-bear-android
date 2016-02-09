@@ -213,8 +213,8 @@ public class VkAudioModel {
         });
     }
 
-    public void getTrackById(Track track, final VkSimpleCallback<VkTrack> callback) {
-        vkService.getTrackUrlById(track.getAudioId(), track.getOwnerId(),
+    public void getTrackById(Track track, int index, final VkSimpleCallback<VkTrack> callback) {
+        vkService.getTrackUrlById(TrackUtils.getNotation(track), index, track.getAudioId(), track.getOwnerId(),
                 new VkCallback<VkTrackUrlResponseRoot>() {
                     @Override
                     public void success(VkTrackUrlResponseRoot data) {
@@ -239,7 +239,7 @@ public class VkAudioModel {
 
     public void getTrack(Track trackToFind, int index, VkSimpleCallback<VkTrack> callback) {
         if (TrackUtils.vkInfoAvailable(trackToFind)) {
-            getTrackById(trackToFind, callback);
+            getTrackById(trackToFind, index, callback);
         } else {
             getTrackByNotation(trackToFind, index, callback);
         }

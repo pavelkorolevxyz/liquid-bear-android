@@ -3,27 +3,43 @@ package com.pillowapps.liqear.audio;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 
-import com.google.android.exoplayer.ExoPlayer;
 import com.pillowapps.liqear.LBApplication;
-import com.pillowapps.liqear.audio.player.PreparedMediaPlayer;
-import com.pillowapps.liqear.audio.player.RxMediaPlayer;
-import com.pillowapps.liqear.callbacks.VkSimpleCallback;
+import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
+import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
+import com.pillowapps.liqear.entities.events.BufferizationEvent;
+import com.pillowapps.liqear.entities.events.ExitEvent;
 import com.pillowapps.liqear.entities.events.PauseEvent;
 import com.pillowapps.liqear.entities.events.PlayEvent;
-import com.pillowapps.liqear.entities.vk.VkError;
-import com.pillowapps.liqear.entities.vk.VkTrack;
-import com.pillowapps.liqear.helpers.NetworkUtils;
-import com.pillowapps.liqear.models.vk.VkAudioModel;
+import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
+import com.pillowapps.liqear.entities.events.TimeEvent;
+import com.pillowapps.liqear.entities.events.TrackAndAlbumInfoUpdatedEvent;
+import com.pillowapps.liqear.entities.events.TrackInfoEvent;
+import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
+import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
+import com.pillowapps.liqear.entities.lastfm.LastfmImage;
+import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
+import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
+import com.pillowapps.liqear.helpers.CompatIcs;
+import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.models.AudioPlayerModel;
+import com.pillowapps.liqear.models.TickModel;
+import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
+import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class MusicService extends Service {
 
@@ -43,26 +59,40 @@ public class MusicService extends Service {
     public static final String ACTION_PAUSE = "com.pillowapps.liqear.PAUSE";
 
     private LocalBinder binder = new LocalBinder();
-    private ExoPlayer mediaPlayer;
-    private RxMediaPlayer rxMediaPlayer;
+
+    private CompositeSubscription completeSubscription = new CompositeSubscription();
+    private CompositeSubscription updatersSubscription = new CompositeSubscription();
+    private CompositeSubscription timerSubscription = new CompositeSubscription();
+
+    @Inject
+    AudioPlayerModel audioPlayerModel;
 
     @Inject
     Timeline timeline;
 
     @Inject
-    VkAudioModel vkAudioModel;
+    TickModel tickModel;
+
+    @Inject
+    LastfmTrackModel lastfmTrackModel;
+    @Inject
+    LastfmArtistModel lastfmArtistModel;
 
     @Override
     public void onCreate() {
         super.onCreate();
         LBApplication.get(this).applicationComponent().inject(this);
 
-        initMediaPlayer();
+        initAudioPlayer();
     }
 
-    private void initMediaPlayer() {
-        mediaPlayer = ExoPlayer.Factory.newInstance(1);
-        rxMediaPlayer = RxMediaPlayer.use(mediaPlayer);
+    private void initAudioPlayer() {
+        completeSubscription.add(
+                audioPlayerModel.addOnComplete().subscribe(playbackState -> {
+                    Timber.d("Track completed. Starting next.");
+                    next();
+                })
+        );
     }
 
     @Override
@@ -70,91 +100,146 @@ public class MusicService extends Service {
         return binder;
     }
 
+    public void exit() {
+        completeSubscription.clear();
+        timerSubscription.clear();
+        updatersSubscription.clear();
+
+        LBApplication.BUS.post(new ExitEvent());
+        stopSelf();
+    }
+
     public int getCurrentPosition() {
-        return (int) mediaPlayer.getCurrentPosition();
+        return audioPlayerModel.getCurrentPositionMillis();
     }
 
     public int getCurrentBuffer() {
-        return (int) mediaPlayer.getBufferedPosition();
+        return audioPlayerModel.getCurrentBufferMillis();
     }
 
     private void play() {
-        rxMediaPlayer.preparedMediaPlayer().play().subscribe(exoPlayer -> {
-            LBApplication.BUS.post(new PlayEvent());
-        });
+        timeline.setAutoplay(true);
+        audioPlayerModel.play();
+        LBApplication.BUS.post(new PlayEvent());
+        startUpdaters();
+    }
+
+    private void startUpdaters() {
+        tickModel.startNowplayingUpdater(timeline.getCurrentTrack());
+        tickModel.startScrobblerUpdater(timeline.getCurrentTrack());
+
+        updatersSubscription.add(
+                tickModel.getPlayProgressUpdater().observeOn(AndroidSchedulers.mainThread()).subscribe(aLong -> {
+                    LBApplication.BUS.post(new TimeEvent());
+                    LBApplication.BUS.post(new BufferizationEvent(audioPlayerModel.getCurrentBufferMillis()));
+                })
+        );
     }
 
     public void pause() {
-        rxMediaPlayer.preparedMediaPlayer().pause().subscribe(exoPlayer -> {
-            LBApplication.BUS.post(new PauseEvent());
-        });
+        audioPlayerModel.pause();
+        LBApplication.BUS.post(new PauseEvent());
+        stopUpdaters();
+    }
+
+    private void stopUpdaters() {
+        updatersSubscription.clear();
+
+        tickModel.stopScrobblerUpdater();
+        tickModel.stopNowplayingUpdater();
     }
 
     public void setTimer(int seconds) {
-        // todo
+        timerSubscription.add(
+                tickModel.getTimer(seconds).subscribe(aLong -> {
+                    if (LBPreferencesManager.isTimerActionPause()) {
+                        pause();
+                    } else {
+                        exit();
+                    }
+                })
+        );
     }
 
     public void play(int index) {
+        stopUpdaters();
+        tickModel.clearScrobbling();
+
         Track track = timeline.getPlaylistTracks().get(index);
         timeline.setIndex(index);
-        String url = track.getUrl();
-        if (url == null || url.isEmpty()) {
-            getTrackUrl(track, true);
-        } else {
-            PreparedMediaPlayer preparedMediaPlayer = rxMediaPlayer.from(this, url);
-            Observable<ExoPlayer> observable;
+
+        LBApplication.BUS.post(new UpdatePositionEvent());
+        LBApplication.BUS.post(new TrackInfoEvent(track));
+
+        //todo
+        getArtistInfo(track.getArtist(), AuthorizationInfoManager.getLastfmName());
+        getTrackInfo(track);
+
+        audioPlayerModel.load(track).subscribe(track1 -> {
             if (timeline.isAutoplay()) {
-                observable = preparedMediaPlayer.play();
+                audioPlayerModel.play();
+                startUpdaters();
+                LBApplication.BUS.post(new PlayEvent());
             } else {
-                observable = preparedMediaPlayer.observable();
+                LBApplication.BUS.post(new PlayWithoutIconEvent());
             }
-            observable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe();
-        }
+        }, throwable -> {
+            Timber.e(throwable, "Error while loading track to play");
+        });
     }
 
-    private void getTrackUrl(Track trackToFind, boolean autoPlay) {
-        timeline.setAutoplay(autoPlay);
-        if (trackToFind.isLocal()) {
-            if (timeline.getCurrentTrack() != null) {
-                timeline.getCurrentTrack().setUrl(trackToFind.getUrl());
-                play();
-            } else {
-                next();
-            }
-            return;
-        }
-        if (!NetworkUtils.isOnline()) {
-            LBApplication.BUS.post(new NetworkStateChangeEvent());
-            return;
-        }
-        VkSimpleCallback<VkTrack> callback = new VkSimpleCallback<VkTrack>() {
-            @Override
-            public void success(VkTrack track) {
-                if (track != null) {
-                    Track currentTrack = timeline.getCurrentTrack();
-                    if (currentTrack != null) {
-                        currentTrack.setUrl(track.getUrl());
-                        currentTrack.setAudioId(track.getAudioId());
-                        currentTrack.setOwnerId(track.getOwnerId());
-                        play(timeline.getIndex());
-                    } else {
-                        next();
+    private void getTrackInfo(final Track track) {
+        lastfmTrackModel.getTrackInfo(track, AuthorizationInfoManager.getLastfmName(),
+                new SimpleCallback<LastfmTrack>() {
+                    @Override
+                    public void success(LastfmTrack lastfmTrack) {
+                        Album album = Converter.convertAlbum(lastfmTrack.getAlbum());
+                        Boolean loved = lastfmTrack.isLoved();
+                        Intent intent = new Intent();
+                        intent.setAction(Constants.ACTION_SERVICE);
+                        timeline.setCurrentAlbum(album);
+//                        lastfmAlbumModel.getCover(MusicService.this, album, MusicService.this::showTrackInNotification);
+                        timeline.getCurrentTrack().setLoved(loved);
+                        LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(album));
+                        updateWidgets();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                            CompatIcs.updateRemote(MusicService.this, timeline.getCurrentTrack());
+                        }
                     }
-                } else {
-                    next();
+
+                    @Override
+                    public void failure(String errorMessage) {
+
+                    }
+                });
+    }
+
+    private void getArtistInfo(final String artist, final String username) {
+        lastfmArtistModel.getArtistInfo(artist, username, new SimpleCallback<LastfmArtist>() {
+            @Override
+            public void success(LastfmArtist lastfmArtist) {
+                timeline.setPreviousArtist(artist);
+                List<LastfmImage> list = lastfmArtist.getImages();
+                String imageUrl = null;
+                if (list.size() != 0) {
+                    LastfmImage lastfmImage = list.get(list.size() - 1);
+                    if (lastfmImage.getSize().isEmpty() && list.size() > 1) {
+                        lastfmImage = list.get(list.size() - 2);
+                    }
+                    imageUrl = lastfmImage != null ? lastfmImage.getUrl() : null;
                 }
+                timeline.setCurrentArtistImageUrl(imageUrl);
+                LBApplication.BUS.post(new ArtistInfoEvent(imageUrl));
             }
 
             @Override
-            public void failure(VkError error) {
-                next();
+            public void failure(String error) {
             }
-        };
-        vkAudioModel.getTrack(trackToFind, 0, callback);
+        });
     }
 
     public int getDuration() {
-        return (int) mediaPlayer.getDuration();
+        return audioPlayerModel.getDuration();
     }
 
     public void updateWidgets() {
@@ -162,7 +247,7 @@ public class MusicService extends Service {
     }
 
     public void playPause() {
-        if (mediaPlayer.getPlayWhenReady()) {
+        if (audioPlayerModel.isPlayReady()) {
             pause();
         } else {
             play();
@@ -179,16 +264,8 @@ public class MusicService extends Service {
         play(prevTrackIndex);
     }
 
-    public void seekTo(int position) {
-        rxMediaPlayer.preparedMediaPlayer().seekTo(position).subscribe();
-    }
-
-    public void startPlayProgressUpdater() {
-
-    }
-
-    public void stopPlayProgressUpdater() {
-
+    public void seekTo(int positionMillis) {
+        audioPlayerModel.seekTo(positionMillis);
     }
 
     public void changeUrl(int newPosition) {
@@ -196,7 +273,7 @@ public class MusicService extends Service {
     }
 
     public int getCurrentPositionPercent() {
-        return (int) (mediaPlayer.getCurrentPosition() * 100 / mediaPlayer.getDuration());
+        return audioPlayerModel.getCurrentPositionPercent();
     }
 
     public class LocalBinder extends Binder {
