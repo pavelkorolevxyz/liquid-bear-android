@@ -21,23 +21,34 @@ import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.TrackUtils;
 
+import javax.inject.Inject;
+
 public class TrackNotificationModel {
-    public Notification create(Context context, Timeline timeline) {
+
+    private Context context;
+    private Timeline timeline;
+
+    @Inject
+    public TrackNotificationModel(Context context, Timeline timeline) {
+        this.context = context;
+        this.timeline = timeline;
+    }
+
+    public Notification create() {
         Track track = timeline.getCurrentTrack();
-        if (track == null) return null;
         Notification notification;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            notification = createControllingNotification(context, timeline);
+            notification = createControllingNotification();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 CompatIcs.updateRemote(context, track);
             }
         } else {
-            notification = createSimpleNotification(context, track);
+            notification = createSimpleNotification(track);
         }
         return notification;
     }
 
-    private Notification createSimpleNotification(Context context, Track track) {
+    private Notification createSimpleNotification(Track track) {
         Intent intent = new Intent(context, HomeActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -56,7 +67,7 @@ public class TrackNotificationModel {
         return notification;
     }
 
-    private Notification createControllingNotification(Context context, Timeline timeline) {
+    private Notification createControllingNotification() {
         Track track = timeline.getCurrentTrack();
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
@@ -168,4 +179,5 @@ public class TrackNotificationModel {
         }
         return notification;
     }
+
 }

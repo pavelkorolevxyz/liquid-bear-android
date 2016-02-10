@@ -3,9 +3,9 @@ package com.pillowapps.liqear.audio;
 import android.support.annotation.NonNull;
 
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
-import com.pillowapps.liqear.entities.NoNetworkConnectionException;
+import com.pillowapps.liqear.entities.exception.NoNetworkConnectionException;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.VkException;
+import com.pillowapps.liqear.entities.exception.VkException;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.NetworkUtils;

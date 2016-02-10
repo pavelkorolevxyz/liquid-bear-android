@@ -1,13 +1,19 @@
 package com.pillowapps.liqear.audio;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.text.Html;
+import android.widget.Toast;
 
 import com.pillowapps.liqear.LBApplication;
+import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
@@ -23,15 +29,21 @@ import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
+import com.pillowapps.liqear.entities.vk.VkError;
+import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.AudioPlayerModel;
 import com.pillowapps.liqear.models.TickModel;
+import com.pillowapps.liqear.models.TrackNotificationModel;
+import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
+import com.pillowapps.liqear.models.vk.VkAudioModel;
 
 import java.util.List;
 
@@ -75,8 +87,18 @@ public class MusicService extends Service {
 
     @Inject
     LastfmTrackModel lastfmTrackModel;
+
     @Inject
     LastfmArtistModel lastfmArtistModel;
+
+    @Inject
+    TrackNotificationModel trackNotificationModel;
+
+    @Inject
+    LastfmAlbumModel lastfmAlbumModel;
+
+    @Inject
+    VkAudioModel vkAudioModel;
 
     @Override
     public void onCreate() {
@@ -84,6 +106,116 @@ public class MusicService extends Service {
         LBApplication.get(this).applicationComponent().inject(this);
 
         initAudioPlayer();
+    }
+
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+        if (intent != null) {
+            String action = intent.getAction();
+            if (action == null) return START_STICKY;
+            switch (action) {
+                case ACTION_PLAY:
+                    play();
+                    break;
+                case ACTION_PAUSE:
+                    pause();
+                    break;
+                case ACTION_PLAY_PAUSE:
+                    playPause();
+                    break;
+                case ACTION_CLOSE:
+                    exit();
+                    break;
+                case ACTION_NEXT:
+                    next();
+                    break;
+                case ACTION_PREV:
+                    prev();
+                    break;
+                case ACTION_SHUFFLE:
+                    timeline.toggleShuffle();
+                    updateWidgets();
+                    break;
+                case ACTION_REPEAT:
+                    timeline.toggleRepeat();
+                    updateWidgets();
+                    break;
+                case ACTION_ADD_TO_VK: {
+                    Track track = timeline.getCurrentTrack();
+                    if (track != null) {
+                        Intent searchVkIntent = new Intent(getBaseContext(),
+                                VkAudioSearchActivity.class);
+                        searchVkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        searchVkIntent.putExtra(Constants.TARGET, TrackUtils.getNotation(track));
+                        getApplication().startActivity(searchVkIntent);
+                    }
+                    break;
+                }
+                case ACTION_ADD_TO_VK_FAST: {
+                    final Track track = timeline.getCurrentTrack();
+                    if (track != null) {
+                        vkAudioModel.addToUserAudioFast(TrackUtils.getNotation(track),
+                                new VkSimpleCallback<VkResponse>() {
+                                    @Override
+                                    public void success(VkResponse data) {
+                                        track.setAddedToVk(true);
+                                        Toast.makeText(LBApplication.getAppContext(),
+                                                R.string.added, Toast.LENGTH_SHORT).show();
+                                        updateTrackNotification();
+                                    }
+
+                                    @Override
+                                    public void failure(VkError error) {
+
+                                    }
+                                });
+                    }
+                    break;
+                }
+                case ACTION_LOVE: {
+                    final Track track = timeline.getCurrentTrack();
+                    if (track != null) {
+                        if (!track.isLoved()) {
+                            lastfmTrackModel.love(track, new SimpleCallback<Object>() {
+                                @Override
+                                public void success(Object o) {
+                                    track.setLoved(true);
+                                    updateWidgets();
+                                    updateTrackNotification();
+                                }
+
+                                @Override
+                                public void failure(String error) {
+                                }
+                            });
+                        } else {
+                            lastfmTrackModel.unlove(track, new SimpleCallback<Object>() {
+                                @Override
+                                public void success(Object o) {
+                                    track.setLoved(false);
+                                    updateWidgets();
+                                    updateTrackNotification();
+                                }
+
+                                @Override
+                                public void failure(String error) {
+                                }
+                            });
+                        }
+                    }
+                    break;
+                }
+                case CHANGE_SHAKE_PREFERENCE:
+                    if (LBPreferencesManager.isShakeEnabled()) {
+//                        initShakeDetector();
+                    } else {
+//                        destroyShake();
+                    }
+                    break;
+            }
+        }
+
+        return START_STICKY;
     }
 
     private void initAudioPlayer() {
@@ -121,28 +253,30 @@ public class MusicService extends Service {
         timeline.setAutoplay(true);
         audioPlayerModel.play();
         LBApplication.BUS.post(new PlayEvent());
+        updateTrackNotification();
         startUpdaters();
     }
 
-    private void startUpdaters() {
+    public void pause() {
+        audioPlayerModel.pause();
+        LBApplication.BUS.post(new PauseEvent());
+        updateTrackNotification();
+        stopUpdaters();
+    }
+
+    public void startUpdaters() {
         tickModel.startNowplayingUpdater(timeline.getCurrentTrack());
         tickModel.startScrobblerUpdater(timeline.getCurrentTrack());
 
         updatersSubscription.add(
                 tickModel.getPlayProgressUpdater().observeOn(AndroidSchedulers.mainThread()).subscribe(aLong -> {
                     LBApplication.BUS.post(new TimeEvent());
-                    LBApplication.BUS.post(new BufferizationEvent(audioPlayerModel.getCurrentBufferMillis()));
+                    LBApplication.BUS.post(new BufferizationEvent(audioPlayerModel.getCurrentBufferPercent()));
                 })
         );
     }
 
-    public void pause() {
-        audioPlayerModel.pause();
-        LBApplication.BUS.post(new PauseEvent());
-        stopUpdaters();
-    }
-
-    private void stopUpdaters() {
+    public void stopUpdaters() {
         updatersSubscription.clear();
 
         tickModel.stopScrobblerUpdater();
@@ -179,6 +313,8 @@ public class MusicService extends Service {
             if (timeline.isAutoplay()) {
                 audioPlayerModel.play();
                 startUpdaters();
+                showNotificationToast();
+                updateTrackNotification();
                 LBApplication.BUS.post(new PlayEvent());
             } else {
                 LBApplication.BUS.post(new PlayWithoutIconEvent());
@@ -198,7 +334,10 @@ public class MusicService extends Service {
                         Intent intent = new Intent();
                         intent.setAction(Constants.ACTION_SERVICE);
                         timeline.setCurrentAlbum(album);
-//                        lastfmAlbumModel.getCover(MusicService.this, album, MusicService.this::showTrackInNotification);
+                        lastfmAlbumModel.getCover(album).subscribe(bitmap -> {
+                            timeline.setAlbumCoverBitmap(bitmap);
+                            updateTrackNotification();
+                        });
                         timeline.getCurrentTrack().setLoved(loved);
                         LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(album));
                         updateWidgets();
@@ -236,6 +375,19 @@ public class MusicService extends Service {
             public void failure(String error) {
             }
         });
+    }
+
+    public void updateTrackNotification() {
+        Notification notification = trackNotificationModel.create();
+        startForeground(LIQUID_BEAR_ID, notification);
+    }
+
+    private void showNotificationToast() {
+        if (LBPreferencesManager.isToastTrackNotificationEnabled()) {
+            Toast.makeText(MusicService.this,
+                    Html.fromHtml(TrackUtils.getNotation(timeline.getCurrentTrack())),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     public int getDuration() {

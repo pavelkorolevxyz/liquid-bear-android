@@ -87,6 +87,11 @@ public class AudioPlayerModel {
     }
 
     @Deprecated
+    public int getCurrentBufferPercent() {
+        return audioPlayer.getBufferedPercentage();
+    }
+
+    @Deprecated
     public int getCurrentPositionPercent() {
         return (int) (audioPlayer.getCurrentPosition() * 100 / audioPlayer.getDuration());
     }

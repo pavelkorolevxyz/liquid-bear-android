@@ -1,7 +1,9 @@
 package com.pillowapps.liqear.models;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.helpers.PlaylistsStorage;
 
 import javax.inject.Singleton;
@@ -38,6 +40,13 @@ public class LiquidBearModelsModule {
     @Singleton
     public TutorialModel provideTutorialModel() {
         return new TutorialModel();
+    }
+
+    @Provides
+    @NonNull
+    @Singleton
+    public TrackNotificationModel provideTrackNotificationModel(Context context, Timeline timeline) {
+        return new TrackNotificationModel(context, timeline);
     }
 
 

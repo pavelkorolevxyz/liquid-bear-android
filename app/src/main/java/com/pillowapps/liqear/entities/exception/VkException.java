@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.entities;
+package com.pillowapps.liqear.entities.exception;
 
 public class VkException extends RuntimeException {
     public VkException() {

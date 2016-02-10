@@ -1,4 +1,4 @@
-package com.pillowapps.liqear.entities;
+package com.pillowapps.liqear.entities.exception;
 
 public class NoNetworkConnectionException extends RuntimeException {
     public NoNetworkConnectionException() {

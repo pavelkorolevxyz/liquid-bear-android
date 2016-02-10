@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.models;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
@@ -25,15 +26,17 @@ public class LastfmModelsModule {
     @Provides
     @NonNull
     @Singleton
-    public LastfmAuthModel provideLasthmAuthModel(@NonNull LastfmAuthService api) {
+    public LastfmAuthModel provideLastfmAuthModel(@NonNull LastfmAuthService api) {
         return new LastfmAuthModel(api);
     }
 
     @Provides
     @NonNull
     @Singleton
-    public LastfmAlbumModel provideLasthmAlbumModel(@NonNull LastfmApiService api) {
-        return new LastfmAlbumModel(api);
+    public LastfmAlbumModel provideLastfmAlbumModel(@NonNull Context context,
+                                                    @NonNull LastfmApiService api,
+                                                    @NonNull ImageModel imageModel) {
+        return new LastfmAlbumModel(context, api, imageModel);
     }
 
     @Provides

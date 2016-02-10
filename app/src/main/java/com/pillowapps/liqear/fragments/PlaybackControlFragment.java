@@ -71,11 +71,11 @@ public class PlaybackControlFragment extends Fragment {
 //            public void onStopTrackingTouch(SeekBar seekBar) {
 //                mainActivity.getMusicService().seekTo(seekBar.getProgress()
 //                        * mainActivity.getMusicService().getDuration() / 100);
-//                mainActivity.getMusicService().startPlayProgressUpdater();
+//                mainActivity.getMusicService().startUpdaters();
 //            }
 //
 //            public void onStartTrackingTouch(SeekBar seekBar) {
-//                mainActivity.getMusicService().stopPlayProgressUpdater();
+//                mainActivity.getMusicService().stopUpdaters();
 //            }
 //
 //            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

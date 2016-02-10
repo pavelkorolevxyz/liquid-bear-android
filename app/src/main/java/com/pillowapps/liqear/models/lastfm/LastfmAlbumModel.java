@@ -1,9 +1,8 @@
 package com.pillowapps.liqear.models.lastfm;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
-import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.callbacks.CompletionCallback;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.retrofit.LastfmCallback;
 import com.pillowapps.liqear.entities.Album;
@@ -15,13 +14,21 @@ import com.pillowapps.liqear.network.service.LastfmApiService;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 public class LastfmAlbumModel {
-    private LastfmApiService lastfmService;
+    private Context context;
 
-    public LastfmAlbumModel(LastfmApiService api) {
+    private LastfmApiService lastfmService;
+    private ImageModel imageModel;
+
+    @Inject
+    public LastfmAlbumModel(Context context, LastfmApiService api, ImageModel imageModel) {
+        this.context = context;
         this.lastfmService = api;
+        this.imageModel = imageModel;
     }
 
     public void getAlbumInfo(Album album, final SimpleCallback<LastfmAlbum> callback) {
@@ -64,15 +71,17 @@ public class LastfmAlbumModel {
         });
     }
 
-    public void getCover(Context context, final Album album, final CompletionCallback callback) {
-        if (album == null) {
-//            Timeline.getInstance().setAlbumCoverBitmap(null); todo
-            callback.onCompleted();
-            return;
-        }
-        new ImageModel().loadImage(context, album.getImageUrl(), bitmap -> {
-//            Timeline.getInstance().setAlbumCoverBitmap(bitmap); todo
-            callback.onCompleted();
+    public Observable<Bitmap> getCover(final Album album) {
+        return Observable.create(subscriber -> {
+            if (album == null) {
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+                return;
+            }
+            imageModel.loadImage(context, album.getImageUrl(), bitmap -> {
+                subscriber.onNext(bitmap);
+                subscriber.onCompleted();
+            });
         });
     }
 

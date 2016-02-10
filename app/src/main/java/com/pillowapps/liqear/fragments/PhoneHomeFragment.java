@@ -287,13 +287,13 @@ public class PhoneHomeFragment extends HomeFragment {
                 musicServiceManager.seekTo(seekBar.getProgress()
                         * musicServiceManager.getDuration() / 100);
                 timePlateTextView.setVisibility(View.GONE);
-                musicServiceManager.startPlayProgressUpdater();
+                musicServiceManager.startUpdaters();
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
                 timePlateTextView.setVisibility(View.VISIBLE);
                 timePlateTextView.setText(timeTextView.getText().toString());
-                musicServiceManager.stopPlayProgressUpdater();
+                musicServiceManager.stopUpdaters();
             }
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

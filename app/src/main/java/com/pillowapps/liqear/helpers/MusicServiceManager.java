@@ -90,12 +90,12 @@ public class MusicServiceManager {
         musicService.seekTo(position);
     }
 
-    public void startPlayProgressUpdater() {
-//        musicService.startPlayProgressUpdater();
+    public void startUpdaters() {
+        musicService.startUpdaters();
     }
 
-    public void stopPlayProgressUpdater() {
-//        musicService.stopPlayProgressUpdater();
+    public void stopUpdaters() {
+        musicService.stopUpdaters();
     }
 
     public void changeCurrentTrackUrl(int newPosition) {
