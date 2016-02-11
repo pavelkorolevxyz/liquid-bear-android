@@ -75,7 +75,7 @@ public class SearchArtistActivity extends SearchListBaseActivity {
             for (int i = artistCount - 1; i >= artistCount - Constants.PRESET_WANTED_COUNT; i--) {
                 Artist artist = new Artist(artistPreferences
                         .getString(Constants.ARTIST_NUMBER + (i % Constants.PRESET_WANTED_COUNT), ""));
-                artist.setPreviewUrl(artistPreferences
+                artist.setImageUrl(artistPreferences
                         .getString(Constants.IMAGE + (i % Constants.PRESET_WANTED_COUNT), ""));
                 artists.add(artist);
             }
@@ -83,7 +83,7 @@ public class SearchArtistActivity extends SearchListBaseActivity {
             for (int i = artistCount - 1; i >= 0; i--) {
                 Artist artist = new Artist(artistPreferences
                         .getString(Constants.ARTIST_NUMBER + i, ""));
-                artist.setPreviewUrl(artistPreferences.getString(Constants.IMAGE + i, ""));
+                artist.setImageUrl(artistPreferences.getString(Constants.IMAGE + i, ""));
                 artists.add(artist);
             }
         }
@@ -100,7 +100,7 @@ public class SearchArtistActivity extends SearchListBaseActivity {
             Artist artist = adapter.getItem(position);
             editor.putString(Constants.ARTIST_NUMBER + artistsLastNumberMod, artist.getName());
             editor.putString(Constants.IMAGE + artistsLastNumberMod,
-                    artist.getPreviewUrl());
+                    artist.getImageUrl());
             editor.apply();
             openArtistByName(artist.getName());
         });

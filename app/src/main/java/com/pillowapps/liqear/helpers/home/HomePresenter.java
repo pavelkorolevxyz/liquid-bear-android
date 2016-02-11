@@ -435,8 +435,6 @@ public class HomePresenter extends Presenter<HomeView> {
                 position = 0;
             }
 
-            timeline.setTimePosition(position);
-
             view.updateAlbum();
         });
     }

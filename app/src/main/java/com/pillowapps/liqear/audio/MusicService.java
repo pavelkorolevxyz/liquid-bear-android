@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.text.Html;
 import android.widget.Toast;
 
+import com.google.android.exoplayer.ExoPlayer;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
@@ -212,6 +213,8 @@ public class MusicService extends Service {
 //                        destroyShake();
                     }
                     break;
+                default:
+                    throw new RuntimeException("Unknown action sent for MusicService");
             }
         }
 
@@ -220,9 +223,20 @@ public class MusicService extends Service {
 
     private void initAudioPlayer() {
         completeSubscription.add(
-                audioPlayerModel.addOnComplete().subscribe(playbackState -> {
-                    Timber.d("Track completed. Starting next.");
-                    next();
+                audioPlayerModel.addListener().subscribe(playbackState -> {
+                    if (playbackState == ExoPlayer.STATE_ENDED) {
+                        Timber.d("Track completed. Starting next.");
+                        next();
+                    } else if (playbackState == ExoPlayer.STATE_READY) {
+                        timeline.getCurrentTrack().setDuration(audioPlayerModel.getDuration());
+                        if (audioPlayerModel.isPlayReady()) {
+                            startUpdaters();
+                            Timber.d("Start updaters");
+                        } else {
+                            stopUpdaters();
+                            Timber.d("Stop updaters");
+                        }
+                    }
                 })
         );
     }
@@ -254,14 +268,12 @@ public class MusicService extends Service {
         audioPlayerModel.play();
         LBApplication.BUS.post(new PlayEvent());
         updateTrackNotification();
-        startUpdaters();
     }
 
     public void pause() {
         audioPlayerModel.pause();
         LBApplication.BUS.post(new PauseEvent());
         updateTrackNotification();
-        stopUpdaters();
     }
 
     public void startUpdaters() {
@@ -283,15 +295,17 @@ public class MusicService extends Service {
         tickModel.stopNowplayingUpdater();
     }
 
-    public void setTimer(int seconds) {
+    public void setTimer(int minutes) {
         timerSubscription.add(
-                tickModel.getTimer(seconds).subscribe(aLong -> {
-                    if (LBPreferencesManager.isTimerActionPause()) {
-                        pause();
-                    } else {
-                        exit();
-                    }
-                })
+                tickModel.getTimer(minutes)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(aLong -> {
+                            if (LBPreferencesManager.isTimerActionPause()) {
+                                pause();
+                            } else {
+                                exit();
+                            }
+                        })
         );
     }
 
@@ -309,10 +323,12 @@ public class MusicService extends Service {
         getArtistInfo(track.getArtist(), AuthorizationInfoManager.getLastfmName());
         getTrackInfo(track);
 
-        audioPlayerModel.load(track).subscribe(track1 -> {
+        audioPlayerModel.load(track).subscribe(trackInfo -> {
+            track.setAudioId(trackInfo.getAudioId());
+            track.setOwnerId(trackInfo.getOwnerId());
+            track.setUrl(trackInfo.getUrl());
             if (timeline.isAutoplay()) {
                 audioPlayerModel.play();
-                startUpdaters();
                 showNotificationToast();
                 updateTrackNotification();
                 LBApplication.BUS.post(new PlayEvent());

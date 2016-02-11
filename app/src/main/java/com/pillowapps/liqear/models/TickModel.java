@@ -105,7 +105,7 @@ public class TickModel {
         }
     }
 
-    public Observable<Long> getTimer(int seconds) {
-        return Observable.timer(seconds, TimeUnit.SECONDS);
+    public Observable<Long> getTimer(int minutes) {
+        return Observable.timer(minutes, TimeUnit.MINUTES);
     }
 }

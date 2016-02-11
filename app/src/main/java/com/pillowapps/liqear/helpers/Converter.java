@@ -59,7 +59,7 @@ public class Converter {
                 lastImage = images.get(images.size() - 2);
             }
             String previewUrl = lastImage.getUrl();
-            artist.setPreviewUrl(previewUrl);
+            artist.setImageUrl(previewUrl);
         }
         return artist;
     }

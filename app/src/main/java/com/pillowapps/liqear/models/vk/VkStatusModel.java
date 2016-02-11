@@ -16,7 +16,7 @@ public class VkStatusModel {
 
     public void updateStatus(Track track, final VkSimpleCallback<VkResponse> callback) {
         if (TrackUtils.vkInfoAvailable(track)) {
-            String audio = track.getOwnerId() + " " + track.getAudioId();
+            String audio = track.getOwnerId() + "_" + track.getAudioId();
             vkService.updateStatus(audio, VkCallbackUtils.getTransitiveCallback(callback));
         } else {
             vkService.setAudioStatusWithSearch(TrackUtils.getNotation(track), VkCallbackUtils.getTransitiveCallback(callback));

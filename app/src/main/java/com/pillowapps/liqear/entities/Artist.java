@@ -2,7 +2,7 @@ package com.pillowapps.liqear.entities;
 
 public class Artist {
     private String name;
-    private String previewUrl;
+    private String imageUrl;
     private String id;
 
     public Artist(String name, String id) {
@@ -27,12 +27,12 @@ public class Artist {
         return name;
     }
 
-    public String getPreviewUrl() {
-        return previewUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setPreviewUrl(String previewUrl) {
-        this.previewUrl = previewUrl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void setName(String name) {

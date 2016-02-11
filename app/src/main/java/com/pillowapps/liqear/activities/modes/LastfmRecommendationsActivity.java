@@ -243,7 +243,7 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
                 holder.text.setText(artist.getName());
                 holder.text.setBackgroundColor(ContextCompat.getColor(LastfmRecommendationsActivity.this, R.color.accent));
                 if (holder.loadImages) {
-                    new ImageModel().loadImage(artist.getPreviewUrl(), holder.image, bitmap -> {
+                    new ImageModel().loadImage(artist.getImageUrl(), holder.image, bitmap -> {
                         Palette.Swatch vibrantSwatch = new Palette.Builder(bitmap).generate().getVibrantSwatch(); // todo async
                         if (vibrantSwatch == null) return;
                         holder.text.setBackgroundColor(vibrantSwatch.getRgb());
@@ -267,7 +267,7 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
                 holder.text = (TextView) convertView.findViewById(R.id.text_list_item);
                 holder.text.setText(artist.getName());
                 if (holder.loadImages) {
-                    new ImageModel().loadImage(artist.getPreviewUrl(), holder.image);
+                    new ImageModel().loadImage(artist.getImageUrl(), holder.image);
                 } else {
                     holder.image.setVisibility(View.GONE);
                 }

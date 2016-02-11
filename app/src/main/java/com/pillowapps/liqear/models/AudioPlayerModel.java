@@ -15,6 +15,7 @@ import com.google.android.exoplayer.upstream.DefaultAllocator;
 import com.google.android.exoplayer.upstream.DefaultUriDataSource;
 import com.pillowapps.liqear.audio.VkAudioProvider;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.entities.TrackInfo;
 
 import javax.inject.Inject;
 
@@ -38,11 +39,11 @@ public class AudioPlayerModel {
         this.vkAudioProvider = vkAudioProvider;
     }
 
-    public Observable<Track> load(Track track) {
-        return vkAudioProvider.getAudioUrl(track).flatMap(url -> Observable.create(subscriber -> {
+    public Observable<TrackInfo> load(Track track) {
+        return vkAudioProvider.getTrackInfo(track).flatMap(trackInfo -> Observable.create(subscriber -> {
             audioPlayer.stop();
             audioPlayer.seekTo(0);
-            Uri uri = Uri.parse(url);
+            Uri uri = Uri.parse(trackInfo.getUrl());
 
             Allocator allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
             DataSource dataSource = new DefaultUriDataSource(context, "Liquid Bear");
@@ -51,9 +52,7 @@ public class AudioPlayerModel {
 
             MediaCodecAudioTrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource, MediaCodecSelector.DEFAULT);
             audioPlayer.prepare(audioRenderer);
-            Timber.d("track duration = " + getDuration());
-            track.setDuration(getDuration());
-            subscriber.onNext(track);
+            subscriber.onNext(trackInfo);
             subscriber.onCompleted();
         }));
     }
@@ -96,13 +95,11 @@ public class AudioPlayerModel {
         return (int) (audioPlayer.getCurrentPosition() * 100 / audioPlayer.getDuration());
     }
 
-    public Observable<Integer> addOnComplete() {
+    public Observable<Integer> addListener() {
         return Observable.create(subscriber -> audioPlayer.addListener(new ExoPlayer.Listener() {
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                if (playbackState == ExoPlayer.STATE_ENDED) {
-                    subscriber.onNext(playbackState);
-                }
+                subscriber.onNext(playbackState);
                 Timber.d("PlaybackState " + playbackState);
             }
 

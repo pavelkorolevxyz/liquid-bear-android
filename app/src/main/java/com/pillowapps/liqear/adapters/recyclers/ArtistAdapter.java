@@ -29,7 +29,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistsViewHolder> {
         Artist artist = items.get(position);
         holder.textView.setText(Html.fromHtml(artist.getName()));
         if (holder.loadImages) {
-            new ImageModel().loadArtistListImage(artist.getPreviewUrl(), holder.imageView);
+            new ImageModel().loadArtistListImage(artist.getImageUrl(), holder.imageView);
         } else {
             holder.imageView.setVisibility(View.GONE);
         }

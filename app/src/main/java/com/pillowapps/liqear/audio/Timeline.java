@@ -1,6 +1,7 @@
 package com.pillowapps.liqear.audio;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.PlayingState;
@@ -14,8 +15,9 @@ import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.Stack;
+
+import javax.inject.Inject;
 
 public class Timeline {
     private Playlist currentPlaylist;
@@ -24,21 +26,13 @@ public class Timeline {
     private String currentArtistImageUrl;
 
     private PlayingState playingState = PlayingState.DEFAULT;
-    private int timePosition = 0;
-    private int[] listeningsCount;
-    private int maxListeningsCount;
-    private LinkedList<Integer> queueIndexes = new LinkedList<>();
-    private Stack<Integer> previousTracksIndexes = new Stack<>();
+    private ListeningsCounter listeningsCounter;
+    private LinkedList<Integer> queueIndexes;
+    private Stack<Integer> previousTracksIndexes;
     private boolean autoplay = false;
 
-    private ShuffleMode shuffleMode = SharedPreferencesManager.getPreferences()
-            .getBoolean(Constants.SHUFFLE_MODE_ON, false)
-            ? ShuffleMode.SHUFFLE
-            : ShuffleMode.DEFAULT;
-    private RepeatMode repeatMode = SharedPreferencesManager.getPreferences()
-            .getBoolean(Constants.REPEAT_MODE_ON, false)
-            ? RepeatMode.REPEAT
-            : RepeatMode.REPEAT_PLAYLIST;
+    private ShuffleMode shuffleMode = ShuffleMode.DEFAULT;
+    private RepeatMode repeatMode = RepeatMode.REPEAT_PLAYLIST;
 
     private Album currentAlbum;
     private Album previousAlbum;
@@ -49,6 +43,23 @@ public class Timeline {
     private PlayingState playingStateBeforeCall = PlayingState.DEFAULT;
     private String previousArtist;
 
+    @Inject
+    public Timeline(ListeningsCounter listeningsCounter) {
+        this.listeningsCounter = listeningsCounter;
+
+        this.previousTracksIndexes = new Stack<>();
+        this.queueIndexes = new LinkedList<>();
+
+        this.shuffleMode = SharedPreferencesManager.getPreferences()
+                .getBoolean(Constants.SHUFFLE_MODE_ON, false)
+                ? ShuffleMode.SHUFFLE
+                : ShuffleMode.DEFAULT;
+        this.repeatMode = SharedPreferencesManager.getPreferences()
+                .getBoolean(Constants.REPEAT_MODE_ON, false)
+                ? RepeatMode.REPEAT
+                : RepeatMode.REPEAT_PLAYLIST;
+    }
+
     public ShuffleMode getShuffleMode() {
         return shuffleMode;
     }
@@ -57,11 +68,9 @@ public class Timeline {
         return repeatMode;
     }
 
-    public void setPlaylist(Playlist playlist) {
+    public void setPlaylist(@NonNull Playlist playlist) {
         this.currentPlaylist = playlist;
-        if (playlist == null) return;
-        listeningsCount = new int[playlist.getTracks().size()];
-        maxListeningsCount = 1;
+        this.listeningsCounter.updateWithPlaylist(playlist);
     }
 
     public void toggleShuffle() {
@@ -120,26 +129,7 @@ public class Timeline {
     }
 
     public int getRandomIndex() {
-        int playlistSize = currentPlaylist.getTracks().size();
-        int randomIndex = (new Random().nextInt(playlistSize));
-        while (true) {
-            if (listeningsCount[randomIndex] < maxListeningsCount) {
-                break;
-            } else {
-                randomIndex = (randomIndex + 1) % playlistSize;
-            }
-            boolean allTracksListeningsAreEqual = true;
-            for (int i = 0; i < playlistSize; i++) {
-                if (listeningsCount[i] < maxListeningsCount) {
-                    allTracksListeningsAreEqual = false;
-                    break;
-                }
-            }
-            if (allTracksListeningsAreEqual) {
-                maxListeningsCount++;
-            }
-        }
-        return randomIndex;
+        return listeningsCounter.getLeastPlayedRandomIndex();
     }
 
     public int getPrevTrackIndex() {
@@ -158,12 +148,9 @@ public class Timeline {
         return index;
     }
 
-    public void setTimePosition(int timePosition) {
-        this.timePosition = timePosition;
-    }
-
     public void setIndex(int index) {
         this.index = index;
+        listeningsCounter.listen(index);
     }
 
     public String getCurrentArtistImageUrl() {

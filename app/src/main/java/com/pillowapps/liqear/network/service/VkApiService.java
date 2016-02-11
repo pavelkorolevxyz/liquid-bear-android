@@ -132,7 +132,7 @@ public interface VkApiService {
     @GET("/photos.getWallUploadServer")
     Observable<VkUploadServerRoot> getPhotoWallUploadServer();
 
-    @POST("/status.set")
+    @POST("/audio.setBroadcast")
     void updateStatus(@Query("audio") String audioString,
                       Callback<VkResponse> callback);
 

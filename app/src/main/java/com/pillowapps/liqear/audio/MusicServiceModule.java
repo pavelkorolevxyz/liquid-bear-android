@@ -12,6 +12,8 @@ import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkStatusModel;
 
+import java.util.Random;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -23,8 +25,20 @@ public class MusicServiceModule {
     @Provides
     @NonNull
     @Singleton
-    public Timeline provideTimeline() {
-        return new Timeline();
+    public Timeline provideTimeline(ListeningsCounter listeningsCounter) {
+        return new Timeline(listeningsCounter);
+    }
+
+    @Provides
+    @NonNull
+    public Random provideRandom() {
+        return new Random();
+    }
+
+    @Provides
+    @NonNull
+    public ListeningsCounter provideListeningsCounter(Random random) {
+        return new ListeningsCounter(random);
     }
 
     @Provides
