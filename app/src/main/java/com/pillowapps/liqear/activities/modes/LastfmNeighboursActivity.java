@@ -10,9 +10,9 @@ import com.pillowapps.liqear.adapters.recyclers.NeighbourAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class LastfmNeighboursActivity extends ListBaseActivity {
     @Inject
     AuthorizationInfoManager authorizationInfoManager;
     @Inject
-    LBPreferencesManager preferencesManager;
+    PreferencesScreenManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

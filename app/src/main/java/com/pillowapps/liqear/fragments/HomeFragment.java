@@ -36,11 +36,12 @@ import com.pillowapps.liqear.fragments.base.BaseFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.MusicServiceManager;
-import com.pillowapps.liqear.helpers.NetworkModel;
+import com.pillowapps.liqear.helpers.NetworkManager;
 import com.pillowapps.liqear.helpers.PreferencesModel;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
+import com.pillowapps.liqear.helpers.SavesManager;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
@@ -99,10 +100,13 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Inject
     AuthorizationInfoManager authorizationInfoManager;
     @Inject
-    NetworkModel networkModel;
+    NetworkManager networkManager;
 
     @Inject
     ModeItemsHelper modeItemsHelper;
+
+    @Inject
+    SavesManager savesManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -314,7 +318,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             toast(R.string.last_fm_not_authorized);
             return;
         }
-        if (!networkModel.isOnline()) {
+        if (!networkManager.isOnline()) {
             toast(R.string.no_internet);
             return;
         }
@@ -463,8 +467,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         View layout = View.inflate(getContext(), R.layout.seekbar_layout, null);
         final NumberPicker sb = (NumberPicker) layout.findViewById(R.id.minutes_picker);
         sb.setRange(1, 1440);
-        int timerDefault = SharedPreferencesManager.getPreferences(getContext())
-                .getInt(Constants.TIMER_DEFAULT, 10);
+        int timerDefault = savesManager.getTimerDefault();
         sb.setCurrent(timerDefault);
 
         final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
@@ -477,9 +480,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
             presenter.setTimerInSeconds(sb.getCurrent());
             musicServiceManager.setTimer(sb.getCurrent() * 60);
-            SharedPreferencesManager.getPreferences(getContext()).edit()
-                    .putInt(Constants.TIMER_DEFAULT, sb.getCurrent())
-                    .apply();
+            savesManager.saveTimerDefault(sb.getCurrent());
         });
         dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> {
             musicServiceManager.setTimer(0);
@@ -520,6 +521,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         musicServiceManager.updateWidgets();
     }
 
+    @Override
+    public void setTimer(int minutes) {
+        musicServiceManager.setTimer(minutes);
+    }
+
     @Subcomponent(modules = HomeFragmentModule.class)
     public interface HomeFragmentComponent {
         void inject(@NonNull HomeFragment itemsFragment);
@@ -540,10 +546,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                                                   @NonNull Timeline timeline,
                                                   @NonNull TutorialModel tutorial,
                                                   @NonNull AuthorizationInfoManager authorizationInfoManager,
-                                                  @NonNull NetworkModel networkModel,
-                                                  @NonNull ModeItemsHelper modeItemsHelper, LBPreferencesManager preferencesManager) {
+                                                  @NonNull NetworkManager networkManager,
+                                                  @NonNull ModeItemsHelper modeItemsHelper, PreferencesScreenManager preferencesManager) {
             return new HomePresenter(stateManager, libraryModel, shareModel, vkWallModel, vkAudioModel, preferencesModel, playlistModel, timeline, tutorial,
-                    authorizationInfoManager, networkModel, modeItemsHelper, preferencesManager);
+                    authorizationInfoManager, networkManager, modeItemsHelper, preferencesManager);
         }
     }
 }

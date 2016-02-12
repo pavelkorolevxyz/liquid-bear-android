@@ -32,11 +32,11 @@ import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.AudioPlayerModel;
 import com.pillowapps.liqear.models.TickModel;
@@ -105,7 +105,7 @@ public class MusicService extends Service {
     AuthorizationInfoManager authorizationInfoManager;
 
     @Inject
-    LBPreferencesManager preferencesManager;
+    PreferencesScreenManager preferencesManager;
 
     @Override
     public void onCreate() {
@@ -228,6 +228,7 @@ public class MusicService extends Service {
     }
 
     private void initAudioPlayer() {
+        audioPlayerModel.seekTo(timeline.getPosition());
         completeSubscription.add(
                 audioPlayerModel.addListener().subscribe(playbackState -> {
                     if (playbackState == ExoPlayer.STATE_ENDED) {

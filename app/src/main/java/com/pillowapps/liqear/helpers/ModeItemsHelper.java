@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class ModeItemsHelper {
     private boolean editMode;
     private AuthorizationInfoManager authorizationInfoManager;
@@ -59,12 +57,12 @@ public class ModeItemsHelper {
     private List<Category> categories = new ArrayList<>(4);
     private List<Integer> itemsPerCategory = new ArrayList<>(4);
     private Context context;
-    private NetworkModel networkModel;
+    private NetworkManager networkManager;
 
-    public ModeItemsHelper(Context context, AuthorizationInfoManager authorizationInfoManager, NetworkModel networkModel) {
+    public ModeItemsHelper(Context context, AuthorizationInfoManager authorizationInfoManager, NetworkManager networkManager) {
         this.context = context;
         this.authorizationInfoManager = authorizationInfoManager;
-        this.networkModel = networkModel;
+        this.networkManager = networkManager;
     }
 
     public boolean isEditMode() {
@@ -98,7 +96,7 @@ public class ModeItemsHelper {
             return true;
         }
 
-        if (!networkModel.isOnline()) {
+        if (!networkManager.isOnline()) {
             return false;
         }
 

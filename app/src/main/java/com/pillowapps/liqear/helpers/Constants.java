@@ -37,13 +37,6 @@ public class Constants {
     public static final String TAG_NUMBER = "tag_number";
     public static final String ARTIST_NUMBER = "artist_number";
     public static final String IMAGE = "image";
-    public static final String CURRENT_POSITION = "current_position";
-    public static final String SHUFFLE_MODE_ON = "shuffle_mode_on";
-    public static final String REPEAT_MODE_ON = "repeat_mode_on";
-    public static final String ARTIST = "artist";
-    public static final String TITLE = "title";
-    public static final String DURATION = "duration";
-    public static final String CURRENT_INDEX = "current_index";
     public static final String EQUALIZER = "equalizer";
     public static final String POSITION_TO_PLAY = "position_to_play";
     public static final String TRACKLIST = "tracklist_to_play";
@@ -51,7 +44,6 @@ public class Constants {
     public static final String DATABASE_VERSION = "database_version";
     public static final String IMAGE_URL = "imageUrl";
     public static final String CALLBACK_TYPE = "callback-type";
-    public static final String TIMER_DEFAULT = "timer_default";
     public static final String TRACK_IS_LOVED = "track_is_loved";
     public static final String TIME_INVERTED = "time_inverted";
     public static final String LOVED_IN_LIBRARY = "loved_in_library";
@@ -64,7 +56,6 @@ public class Constants {
     public static final String MODE_VISIBLE = "mode_visible";
     public static final String SHARE_FORMAT = "share_format";
     public static final String SHOW_TOAST_TRACK_CHANGE = "show_track_change_toast";
-    public static final String CURRENT_BUFFER = "current_buffer";
     public static final String NETWORK_ACTION = "network_action";
     public static final String CONTINUE_FROM_POSITION = "continue_from_position";
     public static final String TYPE = "type";

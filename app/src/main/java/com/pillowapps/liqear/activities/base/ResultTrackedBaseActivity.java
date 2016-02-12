@@ -27,7 +27,7 @@ import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
     @Inject
     AuthorizationInfoManager authorizationInfoManager;
     @Inject
-    LBPreferencesManager preferencesManager;
+    PreferencesScreenManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

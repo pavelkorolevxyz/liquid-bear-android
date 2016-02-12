@@ -30,8 +30,8 @@ import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
@@ -77,7 +77,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     @Inject
     LastfmUserModel userModel;
     @Inject
-    LBPreferencesManager preferencesManager;
+    PreferencesScreenManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

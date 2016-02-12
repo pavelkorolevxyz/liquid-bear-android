@@ -5,11 +5,11 @@ import android.net.ConnectivityManager;
 
 import com.pillowapps.liqear.LBApplication;
 
-public class NetworkModel {
+public class NetworkManager {
 
     private Context context;
 
-    public NetworkModel(Context context) {
+    public NetworkManager(Context context) {
         this.context = context;
     }
 

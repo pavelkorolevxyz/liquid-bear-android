@@ -2,6 +2,7 @@ package com.pillowapps.liqear.audio;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.PlayingState;
@@ -9,9 +10,7 @@ import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.PlaylistUtils;
-import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +41,7 @@ public class Timeline {
 
     private PlayingState playingStateBeforeCall = PlayingState.DEFAULT;
     private String previousArtist;
+    private int position;
 
     @Inject
     public Timeline(ListeningsCounter listeningsCounter) {
@@ -106,8 +106,11 @@ public class Timeline {
         currentAlbum = album;
     }
 
+    @Nullable
     public Track getCurrentTrack() {
-        if (currentPlaylist == null || PlaylistUtils.sizeOf(currentPlaylist) <= index) return null;
+        if (currentPlaylist == null || PlaylistUtils.sizeOf(currentPlaylist) <= index) {
+            return null;
+        }
         return currentPlaylist.getTracks().get(index);
     }
 
@@ -251,5 +254,13 @@ public class Timeline {
         for (int i = 0; i < playlist.size(); i++) {
             playlist.get(i).setRealPosition(i);
         }
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getPosition() {
+        return position;
     }
 }

@@ -12,7 +12,7 @@ import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkUser;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.models.vk.VkFriendModel;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class VkFriendsActivity extends ListBaseActivity {
     @Inject
     VkFriendModel vkFriendModel;
     @Inject
-    LBPreferencesManager preferencesManager;
+    PreferencesScreenManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

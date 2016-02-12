@@ -9,15 +9,15 @@ import javax.inject.Inject;
 public class PreferencesModel {
 
     private Context context;
+    private PreferencesScreenManager preferencesScreenManager;
 
     @Inject
-    public PreferencesModel(Context context) {
+    public PreferencesModel(Context context, PreferencesScreenManager preferencesScreenManager) {
         this.context = context;
+        this.preferencesScreenManager = preferencesScreenManager;
     }
 
     public String getShareTemplate() {
-        return SharedPreferencesManager.getPreferences(context).getString(Constants.SHARE_FORMAT,
-                context.getString(R.string.listening_now)
-        );
+        return preferencesScreenManager.getShareFormat();
     }
 }

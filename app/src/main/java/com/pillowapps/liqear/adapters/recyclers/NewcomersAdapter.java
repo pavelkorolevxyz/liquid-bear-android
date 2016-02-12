@@ -20,9 +20,11 @@ public class NewcomersAdapter extends RecyclerView.Adapter<NewcomersViewHolder> 
     private OnRecyclerItemClickListener clickListener;
     private List<Album> items;
     private Context context;
+    private boolean loadImages;
 
-    public NewcomersAdapter(Context context, List<Album> items, OnRecyclerItemClickListener clickListener) {
+    public NewcomersAdapter(Context context, List<Album> items, boolean loadImages, OnRecyclerItemClickListener clickListener) {
         this.context = context;
+        this.loadImages = loadImages;
         this.clickListener = clickListener;
         this.items = items;
     }
@@ -32,7 +34,7 @@ public class NewcomersAdapter extends RecyclerView.Adapter<NewcomersViewHolder> 
         Album album = items.get(position);
         holder.artistAlbum.setText(Html.fromHtml(album.getNotation()));
         holder.genre.setText(Html.fromHtml(album.getGenre()));
-        if (holder.loadImages) {
+        if (loadImages) {
             new ImageModel().loadAlbumListImage(album.getImageUrl(), holder.cover);
         } else {
             holder.cover.setVisibility(View.GONE);

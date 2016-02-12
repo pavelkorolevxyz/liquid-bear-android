@@ -6,8 +6,7 @@ import android.support.annotation.NonNull;
 import com.pillowapps.liqear.callbacks.PassiveCallback;
 import com.pillowapps.liqear.callbacks.VkPassiveCallback;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
-import com.pillowapps.liqear.helpers.SharedPreferencesManager;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkStatusModel;
@@ -32,10 +31,10 @@ public class TickModel {
     private CompositeSubscription scrobblingSubscription = new CompositeSubscription();
     private boolean scrobbled = false;
     private Context context;
-    private LBPreferencesManager preferencesManager;
+    private PreferencesScreenManager preferencesManager;
 
     @Inject
-    public TickModel(Context context, LastfmTrackModel lastfmTrackModel, VkStatusModel vkStatusModel, LBPreferencesManager preferencesManager) {
+    public TickModel(Context context, LastfmTrackModel lastfmTrackModel, VkStatusModel vkStatusModel, PreferencesScreenManager preferencesManager) {
         this.context = context;
         this.lastfmTrackModel = lastfmTrackModel;
         this.vkStatusModel = vkStatusModel;
@@ -102,10 +101,10 @@ public class TickModel {
 
     //todo add lastfm auth check
     private void updateNowPlaying(final Track currentTrack) {
-        if (SharedPreferencesManager.getPreferences(context).getBoolean("nowplaying_check_box_preferences", true)) {
+        if (preferencesManager.isNowplayingLastfmEnabled()) {
             lastfmTrackModel.nowplaying(currentTrack, new PassiveCallback());
         }
-        if (SharedPreferencesManager.getPreferences(context).getBoolean("nowplaying_vk_check_box_preferences", true)) {
+        if (preferencesManager.isNowplayingVkEnabled()) {
             vkStatusModel.updateStatus(currentTrack, new VkPassiveCallback());
         }
     }

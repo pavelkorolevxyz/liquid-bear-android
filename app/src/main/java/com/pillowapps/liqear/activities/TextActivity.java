@@ -31,6 +31,7 @@ import com.pillowapps.liqear.entities.vk.VkLyrics;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
@@ -55,6 +56,8 @@ public class TextActivity extends ResultTrackedBaseActivity {
     VkLyricsModel vkLyricsModel;
     @Inject
     AuthorizationInfoManager authorizationInfoManager;
+    @Inject
+    PreferencesScreenManager preferencesScreenManager;
 
     public static Intent getStartIntent(Context context, Aim aim) {
         Intent intent = new Intent(context, TextActivity.class);
@@ -128,8 +131,7 @@ public class TextActivity extends ResultTrackedBaseActivity {
                     break;
                 case R.id.google:
                     String url;
-                    if (SharedPreferencesManager.getPreferences(this)
-                            .getBoolean("lucky_search_check_box_preferences", true)) {
+                    if (preferencesScreenManager.isLuckySearchEnabled()) {
                         url = "http://www.google.com/webhp#q="
                                 + Uri.encode(googleRequest + " lyrics") + "&btnI";
                     } else {

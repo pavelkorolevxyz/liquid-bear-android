@@ -8,7 +8,6 @@ import com.pillowapps.liqear.components.viewers.base.ViewerPage;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 
 import java.util.List;
 

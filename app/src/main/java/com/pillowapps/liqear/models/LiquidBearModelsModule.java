@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.helpers.NetworkModel;
+import com.pillowapps.liqear.helpers.NetworkManager;
 import com.pillowapps.liqear.helpers.PlaylistsStorage;
 
 import javax.inject.Singleton;
@@ -62,8 +62,8 @@ public class LiquidBearModelsModule {
     @Provides
     @NonNull
     @Singleton
-    public ModeItemsHelper provideModeItemsHelper(Context context, AuthorizationInfoManager authorizationInfoManager, NetworkModel networkModel) {
-        return new ModeItemsHelper(context, authorizationInfoManager, networkModel);
+    public ModeItemsHelper provideModeItemsHelper(Context context, AuthorizationInfoManager authorizationInfoManager, NetworkManager networkManager) {
+        return new ModeItemsHelper(context, authorizationInfoManager, networkManager);
     }
 
 

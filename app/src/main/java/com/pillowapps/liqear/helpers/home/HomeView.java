@@ -91,4 +91,6 @@ public interface HomeView {
     void showAlbumTitle(String albumTitle);
 
     void updateWidgets();
+
+    void setTimer(int minutes);
 }

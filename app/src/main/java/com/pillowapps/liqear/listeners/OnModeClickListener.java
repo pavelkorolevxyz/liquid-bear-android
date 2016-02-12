@@ -35,7 +35,7 @@ import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.fragments.HomeFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.NetworkModel;
+import com.pillowapps.liqear.helpers.NetworkManager;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapterWrapper;
 
@@ -45,12 +45,12 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
     private final Context context;
 
     private AuthorizationInfoManager authorizationInfoManager;
-    private NetworkModel networkModel;
+    private NetworkManager networkManager;
 
-    public OnModeClickListener(HomeFragment fragment, AuthorizationInfoManager authorizationInfoManager, NetworkModel networkModel) {
+    public OnModeClickListener(HomeFragment fragment, AuthorizationInfoManager authorizationInfoManager, NetworkManager networkManager) {
         this.fragment = fragment;
         this.authorizationInfoManager = authorizationInfoManager;
-        this.networkModel = networkModel;
+        this.networkManager = networkManager;
         this.context = fragment.getContext();
     }
 
@@ -76,10 +76,10 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             return;
         } else if ((mode.getCategory() == Category.VK || mode.getModeEnum() == ModeEnum.RADIOMIX
                 || mode.getModeEnum() == ModeEnum.LIBRARY)
-                && networkModel.isOnline() && !authorizationInfoManager.isAuthorizedOnVk()) {
+                && networkManager.isOnline() && !authorizationInfoManager.isAuthorizedOnVk()) {
             Toast.makeText(context, R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
             return;
-        } else if (mode.getCategory() != Category.LOCAL && !networkModel.isOnline()) {
+        } else if (mode.getCategory() != Category.LOCAL && !networkManager.isOnline()) {
             Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
             return;
         }

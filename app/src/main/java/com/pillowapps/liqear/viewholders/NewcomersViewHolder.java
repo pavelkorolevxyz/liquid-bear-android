@@ -15,7 +15,6 @@ public class NewcomersViewHolder extends RecyclerView.ViewHolder implements View
     public final TextView artistAlbum;
     public final TextView genre;
     public final ImageView cover;
-    public final boolean loadImages;
     public final View mainLayout;
 
     public OnRecyclerItemClickListener mListener;
@@ -28,8 +27,6 @@ public class NewcomersViewHolder extends RecyclerView.ViewHolder implements View
                 R.id.cover_image_view_album_list_item);
         mainLayout = itemLayoutView.findViewById(
                 R.id.main_layout);
-        loadImages = SharedPreferencesManager.getPreferences(context)
-                .getBoolean("download_images_check_box_preferences", true);
         mListener = listener;
         itemLayoutView.setOnClickListener(this);
     }

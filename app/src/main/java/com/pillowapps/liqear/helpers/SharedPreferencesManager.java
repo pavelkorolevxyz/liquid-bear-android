@@ -21,7 +21,6 @@ public class SharedPreferencesManager {
     private static final String MODE_PREFERENCES = "mode_preferences";
     private static final String START_PREFERENCES = "start_preferences";
     private static SharedPreferences lastfmPreferences;
-    private static SharedPreferences preferences;
     private static SharedPreferences savePreferences;
     private static SharedPreferences albumPreferences;
     private static SharedPreferences tagPreferences;
@@ -43,14 +42,6 @@ public class SharedPreferencesManager {
                     Context.MODE_PRIVATE);
         }
         return lastfmPreferences;
-    }
-
-    public static SharedPreferences getPreferences(Context context) {
-        if (preferences == null) {
-            preferences = PreferenceManager.getDefaultSharedPreferences(
-                    context);
-        }
-        return preferences;
     }
 
     public static SharedPreferences getSavePreferences(Context context) {

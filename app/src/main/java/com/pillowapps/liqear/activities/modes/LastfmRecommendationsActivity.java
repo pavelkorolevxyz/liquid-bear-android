@@ -35,7 +35,7 @@ import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.SharedPreferencesManager;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmRecommendationsModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
@@ -62,6 +62,8 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
     LastfmRecommendationsModel lastfmRecommendationsModel;
     @Inject
     AuthorizationInfoManager authorizationInfoManager;
+    @Inject
+    PreferencesScreenManager preferencesScreenManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +88,7 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
         progressBar = (ProgressBar) findViewById(R.id.pageProgressBar);
         gridView = (GridView) findViewById(R.id.recommendations_grid_view);
         listView = (ListView) findViewById(R.id.recommendations_list_view);
-        if (!SharedPreferencesManager.getPreferences(this).getBoolean("show_images_grid", true)) {
+        if (!preferencesScreenManager.isShowImagesAsGridEnabled()) {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
             gridMode = false;
@@ -162,7 +164,7 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
                 progressBar.setVisibility(View.GONE);
                 List<Artist> artists = Converter.convertArtistList(data);
                 if (adapter == null) {
-                    adapter = new RecommendationsArrayAdapter<>(LastfmRecommendationsActivity.this, artists);
+                    adapter = new RecommendationsArrayAdapter<>(LastfmRecommendationsActivity.this, artists, preferencesScreenManager.isDownloadImagesEnabled());
                     if (gridMode) {
                         gridView.setAdapter(adapter);
                     } else {
@@ -201,15 +203,18 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
     static class ViewHolder {
         TextView text;
         ImageView image;
-        boolean loadImages;
     }
 
     private class RecommendationsArrayAdapter<T> extends ArrayAdapter<T> {
+        private final Context context;
         private final List<T> values;
+        private final boolean loadImages;
 
-        public RecommendationsArrayAdapter(Context context, List<T> values) {
+        public RecommendationsArrayAdapter(Context context, List<T> values, boolean loadImages) {
             super(context, R.layout.image_text_tile, values);
+            this.context = context;
             this.values = values;
+            this.loadImages = loadImages;
         }
 
         public T get(int position) {
@@ -235,8 +240,6 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
                     holder = new ViewHolder();
                     holder.text = (TextView) convertView.findViewById(R.id.text_tile_list_item);
                     holder.image = (ImageView) convertView.findViewById(R.id.image_tile_list_item);
-                    holder.loadImages = SharedPreferencesManager.getPreferences(LastfmRecommendationsActivity.this)
-                            .getBoolean("download_images_check_box_preferences", true);
                     convertView.setTag(holder);
                 } else {
                     holder = (ViewHolder) convertView.getTag();
@@ -244,7 +247,7 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
                 }
                 holder.text.setText(artist.getName());
                 holder.text.setBackgroundColor(ContextCompat.getColor(LastfmRecommendationsActivity.this, R.color.accent));
-                if (holder.loadImages) {
+                if (loadImages) {
                     new ImageModel().loadImage(artist.getImageUrl(), holder.image, bitmap -> {
                         Palette.Swatch vibrantSwatch = new Palette.Builder(bitmap).generate().getVibrantSwatch(); // todo async
                         if (vibrantSwatch == null) return;
@@ -259,8 +262,6 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
                     holder = new ViewHolder();
                     holder.text = (TextView) convertView.findViewById(R.id.text_list_item);
                     holder.image = (ImageView) convertView.findViewById(R.id.image_view_list_item);
-                    holder.loadImages = SharedPreferencesManager.getPreferences(LastfmRecommendationsActivity.this)
-                            .getBoolean("download_images_check_box_preferences", true);
                     convertView.setTag(holder);
                 } else {
                     holder = (ViewHolder) convertView.getTag();
@@ -268,7 +269,7 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
                 }
                 holder.text = (TextView) convertView.findViewById(R.id.text_list_item);
                 holder.text.setText(artist.getName());
-                if (holder.loadImages) {
+                if (loadImages) {
                     new ImageModel().loadImage(artist.getImageUrl(), holder.image);
                 } else {
                     holder.image.setVisibility(View.GONE);

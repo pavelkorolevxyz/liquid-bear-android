@@ -22,8 +22,8 @@ import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmChartModel;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
     @Inject
     LastfmChartModel chartsModel;
     @Inject
-    LBPreferencesManager preferencesManager;
+    PreferencesScreenManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

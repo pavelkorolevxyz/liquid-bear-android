@@ -9,7 +9,7 @@ import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.ArtistAdapter;
 import com.pillowapps.liqear.callbacks.LocalDataCallback;
 import com.pillowapps.liqear.entities.Artist;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.models.local.LocalArtistModel;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import javax.inject.Inject;
 public class LocalArtistsActivity extends ListBaseActivity {
 
     @Inject
-    LBPreferencesManager preferencesManager;
+    PreferencesScreenManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

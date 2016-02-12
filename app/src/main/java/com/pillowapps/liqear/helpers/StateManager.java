@@ -7,6 +7,7 @@ import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.CompletionCallback;
 import com.pillowapps.liqear.entities.RepeatMode;
+import com.pillowapps.liqear.entities.RestoreData;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.models.PlaylistModel;
@@ -20,45 +21,46 @@ public class StateManager {
     private Context context;
     private PlaylistModel playlistModel;
     private Timeline timeline;
+    private SavesManager savesManager;
 
-    public StateManager(Context context, PlaylistModel playlistModel, Timeline timeline) {
+    public StateManager(Context context, SavesManager savesManager, PlaylistModel playlistModel, Timeline timeline) {
         this.context = context;
+        this.savesManager = savesManager;
         this.playlistModel = playlistModel;
         this.timeline = timeline;
     }
 
     public void savePlaylistState(MusicService service) {
-        saveTrackState();
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(context).edit();
-        if (service != null) {
-            editor.putInt(Constants.CURRENT_POSITION, service.getCurrentPosition());
-            editor.putInt(Constants.CURRENT_BUFFER, service.getCurrentBuffer());
-            boolean shuffleOn = timeline.getShuffleMode() == ShuffleMode.SHUFFLE;
-            boolean repeatOn = timeline.getRepeatMode() == RepeatMode.REPEAT;
-            editor.putBoolean(Constants.SHUFFLE_MODE_ON, shuffleOn);
-            editor.putBoolean(Constants.REPEAT_MODE_ON, repeatOn);
-            editor.putInt(Constants.CURRENT_INDEX, timeline.getIndex());
+        if (service == null) {
+            return;
         }
-        editor.apply();
-//        new PlaylistModel().saveMainPlaylist();
-    }
+        int currentPosition = service.getCurrentPosition();
+        int currentBuffer = service.getCurrentBuffer();
+        boolean shuffleOn = timeline.getShuffleMode() == ShuffleMode.SHUFFLE;
+        boolean repeatOn = timeline.getRepeatMode() == RepeatMode.REPEAT;
+        int index = timeline.getIndex();
 
-    public void saveTrackState() {
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(context).edit();
-        final Track currentTrack = timeline.getCurrentTrack();
-        if (timeline.getPlaylistTracks() != null
-                && timeline.getPlaylistTracks().size() != 0
-                && currentTrack != null) {
-            editor.putString(Constants.ARTIST, currentTrack.getArtist());
-            editor.putString(Constants.TITLE, currentTrack.getTitle());
-            editor.putInt(Constants.DURATION, currentTrack.getDuration());
+        savesManager.saveCurrentPosition(currentPosition);
+        savesManager.saveBuffer(currentBuffer);
+        savesManager.saveShuffleMode(shuffleOn);
+        savesManager.saveRepeatMode(repeatOn);
+        savesManager.saveCurrentIndex(index);
+
+        Track currentTrack = timeline.getCurrentTrack();
+        if (currentTrack == null) {
+            return;
         }
-        editor.putInt(Constants.CURRENT_INDEX, timeline.getIndex());
-        editor.apply();
+        String artist = currentTrack.getArtist();
+        String title = currentTrack.getTitle();
+        int duration = currentTrack.getDuration();
+
+        savesManager.saveArtist(artist);
+        savesManager.saveTitle(title);
+        savesManager.saveDuration(duration);
     }
 
     public void restorePlaylistState(final CompletionCallback completionCallback) {
-        Timber.d("restore state");
+        Timber.d("getRestoreData state");
         final long time = System.currentTimeMillis();
         playlistModel.getMainPlaylist()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -70,7 +72,19 @@ public class StateManager {
                 });
     }
 
-    public void restoreTrackState() {
+    public RestoreData getRestoreData() {
+        String artist = savesManager.getArtist();
+        String title = savesManager.getTitle();
+        int currentIndex = savesManager.getCurrentIndex();
+        int position = savesManager.getPosition();
 
+        return new RestoreData(artist, title, currentIndex, position);
+    }
+
+    public boolean toggleSearchVisibility() {
+        SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences(context);
+        boolean visibility = !savePreferences.getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false);
+        savePreferences.edit().putBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, visibility).apply();
+        return visibility;
     }
 }

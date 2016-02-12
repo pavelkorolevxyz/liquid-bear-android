@@ -21,6 +21,7 @@ import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.listeners.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.models.portals.AlterportalAlbumModel;
 import com.pillowapps.liqear.models.portals.FunkySoulsAlbumModel;
@@ -29,6 +30,8 @@ import com.pillowapps.liqear.views.LoadMoreRecyclerView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class NewcomersActivity extends ResultTrackedBaseActivity {
     public static final String MODE = "mode";
@@ -51,6 +54,8 @@ public class NewcomersActivity extends ResultTrackedBaseActivity {
             startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
         }
     };
+    @Inject
+    PreferencesScreenManager preferencesScreenManager;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -204,7 +209,7 @@ public class NewcomersActivity extends ResultTrackedBaseActivity {
             if (albums.size() == 0) {
                 emptyTextView.setVisibility(View.VISIBLE);
             }
-            adapter = new NewcomersAdapter(this, albums, clickListener);
+            adapter = new NewcomersAdapter(this, albums, preferencesScreenManager.isDownloadImagesEnabled(), clickListener);
             recycler.setAdapter(adapter);
         } else {
             adapter.getItems().addAll(albums);

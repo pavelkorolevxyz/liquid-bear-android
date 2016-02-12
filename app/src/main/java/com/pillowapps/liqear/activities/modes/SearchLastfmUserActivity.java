@@ -11,10 +11,10 @@ import com.pillowapps.liqear.adapters.recyclers.UserAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.DelayedTextWatcher;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
 import java.util.Collections;
@@ -31,7 +31,7 @@ public class SearchLastfmUserActivity extends SearchListBaseActivity {
     @Inject
     AuthorizationInfoManager authorizationInfoManager;
     @Inject
-    LBPreferencesManager preferencesManager;
+    PreferencesScreenManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -18,9 +18,9 @@ import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.helpers.ArtistTrackComparator;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.helpers.NetworkModel;
+import com.pillowapps.liqear.helpers.NetworkManager;
 import com.pillowapps.liqear.helpers.PreferencesModel;
 import com.pillowapps.liqear.helpers.Presenter;
 import com.pillowapps.liqear.helpers.StateManager;
@@ -54,9 +54,9 @@ public class HomePresenter extends Presenter<HomeView> {
     private StateManager stateManager;
     private TutorialModel tutorial;
     private AuthorizationInfoManager authorizationInfoManager;
-    private NetworkModel networkModel;
+    private NetworkManager networkManager;
     private ModeItemsHelper modeItemsHelper;
-    private LBPreferencesManager preferencesManager;
+    private PreferencesScreenManager preferencesManager;
 
 
     @Inject
@@ -69,9 +69,9 @@ public class HomePresenter extends Presenter<HomeView> {
                          Timeline timeline,
                          TutorialModel tutorial,
                          AuthorizationInfoManager authorizationInfoManager,
-                         NetworkModel networkModel,
+                         NetworkManager networkManager,
                          ModeItemsHelper modeItemsHelper,
-                         LBPreferencesManager preferencesManager) {
+                         PreferencesScreenManager preferencesManager) {
         this.stateManager = stateManager;
         this.libraryModel = libraryModel;
         this.shareModel = shareModel;
@@ -82,7 +82,7 @@ public class HomePresenter extends Presenter<HomeView> {
         this.timeline = timeline;
         this.tutorial = tutorial;
         this.authorizationInfoManager = authorizationInfoManager;
-        this.networkModel = networkModel;
+        this.networkManager = networkManager;
         this.modeItemsHelper = modeItemsHelper;
         this.preferencesManager = preferencesManager;
     }
@@ -140,7 +140,7 @@ public class HomePresenter extends Presenter<HomeView> {
 
         final HomeView view = view();
 
-        if (!networkModel.isOnline()) {
+        if (!networkManager.isOnline()) {
             view.showNoInternetError();
             return;
         }
@@ -155,7 +155,7 @@ public class HomePresenter extends Presenter<HomeView> {
 
         final HomeView view = view();
 
-        if (!networkModel.isOnline()) {
+        if (!networkManager.isOnline()) {
             view.showNoInternetError();
             return;
         }
@@ -184,7 +184,7 @@ public class HomePresenter extends Presenter<HomeView> {
     public void shareTrackToVk(String shareMessage, String imageUrl, Track track) {
         final HomeView view = view();
 
-        if (!networkModel.isOnline()) {
+        if (!networkManager.isOnline()) {
             view.showNoInternetError();
             return;
         }
@@ -212,7 +212,7 @@ public class HomePresenter extends Presenter<HomeView> {
             view.showVkAuthorizationError();
             return;
         }
-        if (!networkModel.isOnline()) {
+        if (!networkManager.isOnline()) {
             view.showNoInternetError();
             return;
         }
@@ -230,7 +230,7 @@ public class HomePresenter extends Presenter<HomeView> {
             view.showVkAuthorizationError();
             return;
         }
-        if (!networkModel.isOnline()) {
+        if (!networkManager.isOnline()) {
             view.showNoInternetError();
             return;
         }
@@ -256,7 +256,7 @@ public class HomePresenter extends Presenter<HomeView> {
             view.showVkAuthorizationError();
             return;
         }
-        if (!networkModel.isOnline()) {
+        if (!networkManager.isOnline()) {
             view.showNoInternetError();
             return;
         }
@@ -293,8 +293,9 @@ public class HomePresenter extends Presenter<HomeView> {
         view.showTimerDialog();
     }
 
-    public void setTimerInSeconds(int seconds) {
-        // todo
+    public void setTimerInSeconds(int minutes) {
+        final HomeView view = view();
+        view.setTimer(minutes);
     }
 
     public void shufflePlaylist() {
@@ -367,11 +368,7 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void togglePlaylistSearchVisibility() {
-//        SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences();
-//        boolean visibility = !savePreferences.getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false);
-//        savePreferences.edit().putBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, visibility).apply(); // todo move shared preferences to interactor layer
-
-        boolean visibility = false;
+        boolean visibility = stateManager.toggleSearchVisibility();
         HomeView view = view();
         view.updateSearchVisibility(visibility);
     }
@@ -419,7 +416,7 @@ public class HomePresenter extends Presenter<HomeView> {
             List<Track> tracks = playlist.getTracks();
 
 
-            RestoreData restoreData = preferencesManager.restore();
+            RestoreData restoreData = stateManager.getRestoreData();
             String artist = restoreData.getArtist();
             String title = restoreData.getTitle();
             int currentIndex = restoreData.getCurrentIndex();
@@ -449,6 +446,7 @@ public class HomePresenter extends Presenter<HomeView> {
             if (!preferencesManager.isContinueFromLastPositionEnabled()) {
                 position = 0;
             }
+            timeline.setPosition(position);
 
             view.updateAlbum();
         });
@@ -471,7 +469,7 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void updateArtistPhoto() {
         HomeView view = view();
-        if (!networkModel.isOnline()) {
+        if (!networkManager.isOnline()) {
             view.showArtistPlaceholder();
             return;
         }
@@ -484,7 +482,7 @@ public class HomePresenter extends Presenter<HomeView> {
         HomeView view = view();
 
         Album album = timeline.getCurrentAlbum();
-        if (!networkModel.isOnline() || album == null) {
+        if (!networkManager.isOnline() || album == null) {
             view.hideAlbumImage();
             view.hideAlbumTitle();
             return;

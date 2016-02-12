@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.listeners.OnRecyclerItemClickListener;
 
 public class NeighbourViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

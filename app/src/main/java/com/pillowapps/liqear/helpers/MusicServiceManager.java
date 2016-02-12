@@ -38,8 +38,8 @@ public class MusicServiceManager {
         musicService.pause();
     }
 
-    public void setTimer(int seconds) {
-        musicService.setTimer(seconds);
+    public void setTimer(int minutes) {
+        musicService.setTimer(minutes);
     }
 
     public void stopService(Context context) {

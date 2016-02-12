@@ -15,7 +15,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.DelayedTextWatcher;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 
@@ -32,7 +32,7 @@ public class SearchAlbumActivity extends SearchListBaseActivity {
     @Inject
     LastfmAlbumModel lastfmAlbumModel;
     @Inject
-    LBPreferencesManager preferencesManager;
+    PreferencesScreenManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

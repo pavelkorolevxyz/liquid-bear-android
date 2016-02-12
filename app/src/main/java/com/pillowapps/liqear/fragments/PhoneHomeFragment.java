@@ -51,7 +51,6 @@ import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.listeners.OnModeClickListener;
@@ -62,8 +61,6 @@ import com.viewpagerindicator.UnderlinePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -247,7 +244,7 @@ public class PhoneHomeFragment extends HomeFragment {
         modeAdapter = new ModeGridAdapter(activity, modeItemsHelper);
 
         StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
-        modeGridView.setOnItemClickListener(new OnModeClickListener(this, authorizationInfoManager, networkModel));
+        modeGridView.setOnItemClickListener(new OnModeClickListener(this, authorizationInfoManager, networkManager));
         modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
         modeGridView.setAdapter(modeAdapter);
     }
@@ -324,11 +321,7 @@ public class PhoneHomeFragment extends HomeFragment {
         albumImageView.setOnClickListener(albumClickListener);
         albumTextView.setOnClickListener(albumClickListener);
         timeTextView.setOnClickListener(view -> {
-            SharedPreferences preferences = SharedPreferencesManager.getPreferences(getContext());
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(Constants.TIME_INVERTED,
-                    !preferences.getBoolean(Constants.TIME_INVERTED, false));
-            editor.apply();
+            savesManager.toggleTimeInversion();
             updateTime();
         });
         OnSwipeListener swipeDetector = new OnSwipeListener(this::openDropButton);
@@ -389,7 +382,7 @@ public class PhoneHomeFragment extends HomeFragment {
         int timeFromBeginning = musicServiceManager.getCurrentPosition() / 1000;
         int duration = musicServiceManager.getDuration();
         if (duration > 0) {
-            if (SharedPreferencesManager.getPreferences(getContext()).getBoolean(Constants.TIME_INVERTED, false)) {
+            if (savesManager.isTimeInverted()) {
                 int timeToEnd = duration / 1000 - timeFromBeginning;
                 text = String.format("-%s", TimeUtils.secondsToMinuteString(timeToEnd));
             } else {

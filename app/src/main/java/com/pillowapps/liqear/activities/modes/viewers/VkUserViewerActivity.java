@@ -25,8 +25,8 @@ import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
 
@@ -57,7 +57,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
     @Inject
     VkAudioModel vkAudioModel;
     @Inject
-    LBPreferencesManager preferencesManager;
+    PreferencesScreenManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

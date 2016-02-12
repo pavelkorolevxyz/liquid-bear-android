@@ -16,8 +16,8 @@ import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.entities.vk.roots.VkAlbumsResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkTrackUrlResponseRoot;
 import com.pillowapps.liqear.entities.vk.roots.VkTracksResponseRoot;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.StringUtils;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.VkCallbackUtils;
@@ -27,9 +27,9 @@ import java.util.List;
 
 public class VkAudioModel {
     private VkApiService vkService;
-    private LBPreferencesManager preferencesManager;
+    private PreferencesScreenManager preferencesManager;
 
-    public VkAudioModel(VkApiService api, LBPreferencesManager preferencesManager) {
+    public VkAudioModel(VkApiService api, PreferencesScreenManager preferencesManager) {
         this.vkService = api;
         this.preferencesManager = preferencesManager;
     }

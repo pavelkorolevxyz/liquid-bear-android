@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.entities.User;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.listeners.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.viewholders.NeighbourViewHolder;
