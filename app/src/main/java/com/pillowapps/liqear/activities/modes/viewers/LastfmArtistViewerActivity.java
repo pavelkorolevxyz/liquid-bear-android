@@ -35,6 +35,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmDiscographyModel;
 
@@ -52,10 +53,14 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     public static final int TOP_TRACKS_INDEX = 1;
     public static final int ALBUMS_INDEX = 0;
     public static final int PAGES_NUMBER = 4;
-    public static final int ARTIST_INFO_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 3 : 2;
-    public static final int SIMILAR_INDEX = AuthorizationInfoManager.isAuthorizedOnLastfm() ? 2 : 1;
     private Artist artist;
     private boolean infoLoaded = false;
+
+    public int artistInfoIndex;
+    public int similarIndex;
+
+    @Inject
+    AuthorizationInfoManager authorizationInfoManager;
 
     @Inject
     LastfmArtistModel artistModel;
@@ -66,6 +71,9 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     @Bind(R.id.text_view_scrollable_text_layout)
     protected TextView artistInfoTextView;
 
+    @Inject
+    LBPreferencesManager preferencesManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +83,10 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         setContentView(R.layout.viewer_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        artistInfoIndex = authorizationInfoManager.isAuthorizedOnLastfm() ? 3 : 2;
+        similarIndex = authorizationInfoManager.isAuthorizedOnLastfm() ? 2 : 1;
+
         Bundle extras = getIntent().getExtras();
         artist = new Artist(extras.getString(ARTIST));
         ActionBar actionBar = getSupportActionBar();
@@ -122,9 +134,9 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
             @Override
             public void onPageSelected(int index) {
                 invalidateOptionsMenu();
-                if (index == ARTIST_INFO_INDEX) {
+                if (index == artistInfoIndex) {
                     if (!infoLoaded) {
-                        getArtistInfo(artist.getName(), AuthorizationInfoManager.getLastfmName());
+                        getArtistInfo(artist.getName(), authorizationInfoManager.getLastfmName());
                     }
                 } else {
                     ViewerPage viewer = getViewer(index);
@@ -144,13 +156,13 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     private ViewPage createBioPage() {
         return new ViewPage(
                 View.inflate(this, R.layout.scrollable_text_layout, null),
-                R.string.artist_info);
+                getString(R.string.artist_info));
     }
 
     private ViewerPage createSimilarArtistsPage() {
         final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
-                R.string.similar_artists);
+                R.string.similar_artists, preferencesManager.isDownloadImagesEnabled());
         viewer.setOnLoadMoreListener(() -> getSimilarArtists(artist.getName(), getPageSize(), viewer.getPage(), viewer));
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);
@@ -160,9 +172,9 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     private ViewerPage createPersonalTopTracksPage() {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
-                String.format("%s %s", getString(R.string.top).toLowerCase(), AuthorizationInfoManager.getLastfmName())
+                String.format("%s %s", getString(R.string.top).toLowerCase(), authorizationInfoManager.getLastfmName())
         );
-        viewer.setOnLoadMoreListener(() -> getPersonalTop(artist.getName(), AuthorizationInfoManager.getLastfmName(),
+        viewer.setOnLoadMoreListener(() -> getPersonalTop(artist.getName(), authorizationInfoManager.getLastfmName(),
                 getPageSize(), viewer.getPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
@@ -173,7 +185,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
     private ViewerPage createAlbumsPage() {
         final LastfmAlbumViewerPage viewer = new LastfmAlbumViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
-                R.string.albums);
+                R.string.albums, preferencesManager.isDownloadImagesEnabled());
         viewer.setOnLoadMoreListener(() -> getArtistAlbums(artist.getName(), viewer));
         viewer.setItemClickListener(albumClickListener);
         addViewer(viewer);
@@ -205,11 +217,11 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         } else*/
         if (index == TOP_TRACKS_INDEX) {
             inflater.inflate(R.menu.to_playlist_menu, menu);
-        } else if (index == SIMILAR_INDEX) {
+        } else if (index == similarIndex) {
             inflater.inflate(R.menu.empty_menu, menu);
         } else if (index == ALBUMS_INDEX) {
             inflater.inflate(R.menu.play_discography, menu);
-        } else if (index == ARTIST_INFO_INDEX) {
+        } else if (index == artistInfoIndex) {
             inflater.inflate(R.menu.empty_menu, menu);
         }
         return super.onCreateOptionsMenu(menu);
@@ -235,7 +247,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
             }
             return true;
             case R.id.play_discography: {
-                if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+                if (!authorizationInfoManager.isAuthorizedOnVk()) {
                     Toast.makeText(LastfmArtistViewerActivity.this, R.string.vk_not_authorized,
                             Toast.LENGTH_SHORT).show();
                     break;

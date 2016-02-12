@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.listeners.OnRecyclerItemClickListener;
 
 public class ArtistsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -19,11 +18,11 @@ public class ArtistsViewHolder extends RecyclerView.ViewHolder implements View.O
 
     public OnRecyclerItemClickListener mListener;
 
-    public ArtistsViewHolder(View itemLayoutView, OnRecyclerItemClickListener listener) {
+    public ArtistsViewHolder(View itemLayoutView, boolean loadImages, OnRecyclerItemClickListener listener) {
         super(itemLayoutView);
         textView = (TextView) itemLayoutView.findViewById(R.id.text_list_item);
         imageView = (ImageView) itemLayoutView.findViewById(R.id.image_view_list_item);
-        loadImages = LBPreferencesManager.isDownloadImagesEnabled();
+        this.loadImages = loadImages;
         mainLayout = itemLayoutView.findViewById(R.id.main_layout);
         mListener = listener;
         itemLayoutView.setOnClickListener(this);

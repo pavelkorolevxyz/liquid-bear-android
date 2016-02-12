@@ -69,7 +69,7 @@ public class SearchTagActivity extends SearchListBaseActivity {
 
     private void loadTagPresets() {
         LinkedHashSet<Tag> tags = new LinkedHashSet<>(Constants.PRESET_WANTED_COUNT);
-        SharedPreferences tagPreferences = SharedPreferencesManager.getTagPreferences();
+        SharedPreferences tagPreferences = SharedPreferencesManager.getTagPreferences(this);
         int tagsCount = tagPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
         if (tagsCount >= Constants.PRESET_WANTED_COUNT) {
             for (int i = tagsCount - 1; i >= tagsCount - Constants.PRESET_WANTED_COUNT; i--) {

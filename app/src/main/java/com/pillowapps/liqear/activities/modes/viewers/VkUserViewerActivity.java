@@ -26,6 +26,7 @@ import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
 
@@ -55,6 +56,8 @@ public class VkUserViewerActivity extends PagerResultActivity {
     VkWallModel vkWallModel;
     @Inject
     VkAudioModel vkAudioModel;
+    @Inject
+    LBPreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,8 +159,8 @@ public class VkUserViewerActivity extends PagerResultActivity {
     private ViewerPage createAlbumsTracksPage() {
         final VkAlbumViewerPage viewer = new VkAlbumViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
-                R.string.vk_albums
-        );
+                R.string.vk_albums,
+                preferencesManager.isDownloadImagesEnabled());
         viewer.setOnLoadMoreListener(() -> getAlbums(getPageSize(), viewer.getVkPage(), viewer));
         if (mode == Mode.USER) {
             viewer.setItemClickListener(vkAlbumClickListener);

@@ -19,15 +19,18 @@ import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 public class ListItem implements Item {
-    final SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences();
+    private final SharedPreferences modePreferences;
     private final Mode mode;
     private final Context context;
     private final UpdateAdapterCallback callback;
+    private ModeItemsHelper modeItemsHelper;
 
-    public ListItem(Context context, Mode mode, UpdateAdapterCallback callback) {
+    public ListItem(Context context, Mode mode, UpdateAdapterCallback callback, ModeItemsHelper modeItemsHelper) {
         this.mode = mode;
         this.context = context;
         this.callback = callback;
+        this.modeItemsHelper = modeItemsHelper;
+        modePreferences = SharedPreferencesManager.getModePreferences(context);
     }
 
     @Override
@@ -55,12 +58,12 @@ public class ListItem implements Item {
         holder.titleTextView.setText(context.getString(mode.getTitle()).toLowerCase());
         final boolean modeVisible = mode.isVisible();
 
-        holder.switchVisibilityButton.setVisibility(ModeItemsHelper.isEditMode() ? View.VISIBLE : View.GONE);
+        holder.switchVisibilityButton.setVisibility(modeItemsHelper.isEditMode() ? View.VISIBLE : View.GONE);
         holder.switchVisibilityButton.setImageResource(modeVisible
                         ? R.drawable.minus
                         : R.drawable.plus
         );
-        boolean enabled = ModeItemsHelper.isModeEnabled(mode);
+        boolean enabled = modeItemsHelper.isModeEnabled(mode);
         holder.mainView.setBackgroundResource(!enabled
                 ? R.drawable.card_view_background_disabled
                 : R.drawable.card_view_background_color);

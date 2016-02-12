@@ -18,8 +18,10 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
     private List<Album> items;
+    private boolean loadImages;
 
-    public AlbumAdapter(List<Album> items, OnRecyclerItemClickListener clickListener) {
+    public AlbumAdapter(List<Album> items, boolean loadImages, OnRecyclerItemClickListener clickListener) {
+        this.loadImages = loadImages;
         this.clickListener = clickListener;
         this.items = items;
     }
@@ -46,7 +48,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumViewHolder> {
     @Override
     public AlbumViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        return new AlbumViewHolder(v, clickListener);
+        return new AlbumViewHolder(v, loadImages, clickListener);
     }
 
     public Album getItem(int position) {

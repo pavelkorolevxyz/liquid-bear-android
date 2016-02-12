@@ -19,11 +19,11 @@ public class AlbumViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     public OnRecyclerItemClickListener mListener;
 
-    public AlbumViewHolder(View itemLayoutView, OnRecyclerItemClickListener listener) {
+    public AlbumViewHolder(View itemLayoutView, boolean loadImages, OnRecyclerItemClickListener listener) {
         super(itemLayoutView);
         textView = (TextView) itemLayoutView.findViewById(R.id.text_list_item);
         imageView = (ImageView) itemLayoutView.findViewById(R.id.image_view_list_item);
-        loadImages = LBPreferencesManager.isDownloadImagesEnabled();
+        this.loadImages = loadImages;
         mainLayout = itemLayoutView.findViewById(R.id.main_layout);
 
         mListener = listener;

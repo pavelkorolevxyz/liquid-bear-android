@@ -123,7 +123,8 @@ public class Mode {
     }
 
     public boolean isVisible() {
-        SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences();
-        return modePreferences.getBoolean(Constants.MODE_VISIBLE + getModeEnum(), visibleByDefault);
+//        SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences(context); //todo
+//        return modePreferences.getBoolean(Constants.MODE_VISIBLE + getModeEnum(), visibleByDefault);
+        return true;
     }
 }

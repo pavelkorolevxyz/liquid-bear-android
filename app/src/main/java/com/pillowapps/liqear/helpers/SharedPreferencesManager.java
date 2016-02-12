@@ -45,89 +45,89 @@ public class SharedPreferencesManager {
         return lastfmPreferences;
     }
 
-    public static SharedPreferences getPreferences() {
+    public static SharedPreferences getPreferences(Context context) {
         if (preferences == null) {
             preferences = PreferenceManager.getDefaultSharedPreferences(
-                    LBApplication.getAppContext());
+                    context);
         }
         return preferences;
     }
 
-    public static SharedPreferences getSavePreferences() {
+    public static SharedPreferences getSavePreferences(Context context) {
         if (savePreferences == null) {
-            savePreferences = LBApplication.getAppContext()
+            savePreferences = context
                     .getSharedPreferences(SAVE_PREFERENCES, Context.MODE_PRIVATE);
         }
         return savePreferences;
     }
 
-    public static SharedPreferences getAlbumPreferences() {
+    public static SharedPreferences getAlbumPreferences(Context context) {
         if (albumPreferences == null) {
-            albumPreferences = LBApplication.getAppContext()
+            albumPreferences = context
                     .getSharedPreferences(ALBUM_PREFERENCES, Context.MODE_PRIVATE);
         }
         return albumPreferences;
     }
 
-    public static SharedPreferences getTagPreferences() {
+    public static SharedPreferences getTagPreferences(Context context) {
         if (tagPreferences == null) {
-            tagPreferences = LBApplication.getAppContext()
+            tagPreferences = context
                     .getSharedPreferences(TAG_PREFERENCES, Context.MODE_PRIVATE);
         }
         return tagPreferences;
     }
 
-    public static SharedPreferences getArtistPreferences() {
+    public static SharedPreferences getArtistPreferences(Context context) {
         if (artistPreferences == null) {
-            artistPreferences = LBApplication.getAppContext()
+            artistPreferences = context
                     .getSharedPreferences(ARTIST_PREFERENCES, Context.MODE_PRIVATE);
         }
         return artistPreferences;
     }
 
-    public static SharedPreferences getUrlNumberPreferences() {
+    public static SharedPreferences getUrlNumberPreferences(Context context) {
         if (urlNumberPreferences == null) {
-            urlNumberPreferences = LBApplication.getAppContext()
+            urlNumberPreferences = context
                     .getSharedPreferences(URL_PREFERENCES, Context.MODE_PRIVATE);
         }
         return urlNumberPreferences;
     }
 
-    public static SharedPreferences getEqualizerPreferences() {
+    public static SharedPreferences getEqualizerPreferences(Context context) {
         if (equalizerPreferences == null) {
-            equalizerPreferences = LBApplication.getAppContext()
+            equalizerPreferences = context
                     .getSharedPreferences(EQUALIZER_PREFERENCES, Context.MODE_PRIVATE);
         }
         return equalizerPreferences;
     }
 
-    public static SharedPreferences getDatabasePreferences() {
+    public static SharedPreferences getDatabasePreferences(Context context) {
         if (databasePreferences == null) {
-            databasePreferences = LBApplication.getAppContext()
+            databasePreferences = context
                     .getSharedPreferences(DATABASE_PREFERENCES, Context.MODE_PRIVATE);
         }
         return databasePreferences;
     }
 
-    public static SharedPreferences getLyricsNumberPreferences() {
+    public static SharedPreferences getLyricsNumberPreferences(Context context) {
         if (lyricsNumberPreferences == null) {
-            lyricsNumberPreferences = LBApplication.getAppContext()
+            lyricsNumberPreferences = context
                     .getSharedPreferences(LYRICS_NUMBER_PREFERENCES, Context.MODE_PRIVATE);
         }
         return lyricsNumberPreferences;
     }
 
-    public static SharedPreferences getModePreferences() {
+    public static SharedPreferences getModePreferences(Context context) {
         if (modePreferences == null) {
-            modePreferences = LBApplication.getAppContext()
+            modePreferences = context
                     .getSharedPreferences(MODE_PREFERENCES, Context.MODE_PRIVATE);
         }
         return modePreferences;
     }
 
-    public static SharedPreferences getStartPreferences() {
+    public static SharedPreferences getStartPreferences(Context context) {
         if (startPreferences == null) {
-            startPreferences = LBApplication.getAppContext()
+            startPreferences = context
                     .getSharedPreferences(START_PREFERENCES, Context.MODE_PRIVATE);
         }
         return startPreferences;

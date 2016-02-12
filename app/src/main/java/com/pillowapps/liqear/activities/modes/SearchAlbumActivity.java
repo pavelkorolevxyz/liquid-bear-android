@@ -15,6 +15,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.DelayedTextWatcher;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 
@@ -30,6 +31,8 @@ public class SearchAlbumActivity extends SearchListBaseActivity {
 
     @Inject
     LastfmAlbumModel lastfmAlbumModel;
+    @Inject
+    LBPreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,7 @@ public class SearchAlbumActivity extends SearchListBaseActivity {
 
     private void loadAlbumPresets() {
         LinkedHashSet<Album> albums = new LinkedHashSet<>(Constants.PRESET_WANTED_COUNT);
-        SharedPreferences artistPreferences = SharedPreferencesManager.getAlbumPreferences();
+        SharedPreferences artistPreferences = SharedPreferencesManager.getAlbumPreferences(this);
         int albumCount = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
         if (albumCount >= Constants.PRESET_WANTED_COUNT) {
             for (int i = albumCount - 1; i >= albumCount - Constants.PRESET_WANTED_COUNT; i--) {
@@ -96,8 +99,8 @@ public class SearchAlbumActivity extends SearchListBaseActivity {
     }
 
     private void fillWithAlbums(List<Album> albums) {
-        adapter = new AlbumAdapter(albums, (view, position) -> {
-            SharedPreferences albumPreferences = SharedPreferencesManager.getAlbumPreferences();
+        adapter = new AlbumAdapter(albums, preferencesManager.isDownloadImagesEnabled(), (view, position) -> {
+            SharedPreferences albumPreferences = SharedPreferencesManager.getAlbumPreferences(this);
             SharedPreferences.Editor editor = albumPreferences.edit();
             int albumLastNumberAll = albumPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
             int albumsLastNumberMod = albumLastNumberAll % Constants.PRESET_WANTED_COUNT;

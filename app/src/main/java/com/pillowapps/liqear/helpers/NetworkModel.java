@@ -5,14 +5,16 @@ import android.net.ConnectivityManager;
 
 import com.pillowapps.liqear.LBApplication;
 
-public class NetworkUtils {
+public class NetworkModel {
 
-    private NetworkUtils() {
-        // no-op
+    private Context context;
+
+    public NetworkModel(Context context) {
+        this.context = context;
     }
 
-    public static boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) LBApplication.getAppContext()
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
 
         return cm != null && cm.getActiveNetworkInfo() != null

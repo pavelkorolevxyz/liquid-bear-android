@@ -66,10 +66,6 @@ public abstract class ViewerPage<T> extends Page {
         });
     }
 
-    public ViewerPage(Context context, View view, int titleRes) {
-        this(context, view, LBApplication.getAppContext().getString(titleRes));
-    }
-
     public void onLoadMoreComplete() {
 //        recycler.onLoadMoreComplete();
     }

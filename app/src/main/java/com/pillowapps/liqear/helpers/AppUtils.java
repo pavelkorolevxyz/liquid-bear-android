@@ -11,8 +11,7 @@ public class AppUtils {
         // no-op
     }
 
-    public static String getAppVersion() {
-        Context context = LBApplication.getAppContext();
+    public static String getAppVersion(Context context) {
         try {
             PackageManager packageManager = context.getPackageManager();
             String packageName = context.getPackageName();

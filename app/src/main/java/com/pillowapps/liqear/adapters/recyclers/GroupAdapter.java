@@ -18,8 +18,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
     private List<Group> items;
+    private boolean loadImages;
 
-    public GroupAdapter(List<Group> items, OnRecyclerItemClickListener clickListener) {
+    public GroupAdapter(List<Group> items, boolean loadImages, OnRecyclerItemClickListener clickListener) {
+        this.loadImages = loadImages;
         this.clickListener = clickListener;
         this.items = items;
     }
@@ -40,7 +42,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupViewHolder> {
     @Override
     public GroupViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        return new GroupViewHolder(v, clickListener);
+        return new GroupViewHolder(v, loadImages, clickListener);
     }
 
     @Override

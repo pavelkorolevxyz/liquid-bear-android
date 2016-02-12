@@ -50,14 +50,14 @@ public class Timeline {
         this.previousTracksIndexes = new Stack<>();
         this.queueIndexes = new LinkedList<>();
 
-        this.shuffleMode = SharedPreferencesManager.getPreferences()
-                .getBoolean(Constants.SHUFFLE_MODE_ON, false)
-                ? ShuffleMode.SHUFFLE
-                : ShuffleMode.DEFAULT;
-        this.repeatMode = SharedPreferencesManager.getPreferences()
-                .getBoolean(Constants.REPEAT_MODE_ON, false)
-                ? RepeatMode.REPEAT
-                : RepeatMode.REPEAT_PLAYLIST;
+//        this.shuffleMode = SharedPreferencesManager.getPreferences()
+//                .getBoolean(Constants.SHUFFLE_MODE_ON, false)
+//                ? ShuffleMode.SHUFFLE
+//                : ShuffleMode.DEFAULT;
+//        this.repeatMode = SharedPreferencesManager.getPreferences()
+//                .getBoolean(Constants.REPEAT_MODE_ON, false)
+//                ? RepeatMode.REPEAT
+//                : RepeatMode.REPEAT_PLAYLIST; todo
     }
 
     public ShuffleMode getShuffleMode() {

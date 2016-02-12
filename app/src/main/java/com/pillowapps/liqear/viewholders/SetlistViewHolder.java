@@ -15,7 +15,6 @@ public class SetlistViewHolder extends RecyclerView.ViewHolder implements View.O
     public final ImageView imageView;
     public final TextView textView;
 
-    public final boolean loadImages;
 
     public OnRecyclerItemClickListener mListener;
 
@@ -23,7 +22,6 @@ public class SetlistViewHolder extends RecyclerView.ViewHolder implements View.O
         super(itemLayoutView);
         textView = (TextView) itemLayoutView.findViewById(R.id.text_list_item);
         imageView = (ImageView) itemLayoutView.findViewById(R.id.image_view_list_item);
-        loadImages = LBPreferencesManager.isDownloadImagesEnabled();
         mainLayout = itemLayoutView.findViewById(R.id.main_layout);
 
         mListener = listener;

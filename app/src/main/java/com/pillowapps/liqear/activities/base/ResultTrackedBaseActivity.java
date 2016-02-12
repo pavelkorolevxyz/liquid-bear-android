@@ -38,6 +38,10 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
 
     @Inject
     Timeline timeline;
+    @Inject
+    AuthorizationInfoManager authorizationInfoManager;
+    @Inject
+    LBPreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
     }
 
     protected int getPageSize() {
-        return LBPreferencesManager.getPageSize();
+        return preferencesManager.getPageSize();
     }
 
     @Override
@@ -64,7 +68,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
     }
 
     public void openMainPlaylist(List<Track> tracks, int position, CharSequence title, boolean local) {
-        if (!AuthorizationInfoManager.isAuthorizedOnVk() && !local) {
+        if (!authorizationInfoManager.isAuthorizedOnVk() && !local) {
             Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;
@@ -81,7 +85,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
     }
 
     public void addToMainPlaylist(List<Track> tracks) {
-        if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+        if (!authorizationInfoManager.isAuthorizedOnVk()) {
             Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;
@@ -90,7 +94,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
     }
 
     public void trackLongClick(List<Track> tracks, int position) {
-        if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+        if (!authorizationInfoManager.isAuthorizedOnVk()) {
             Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;
@@ -99,7 +103,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
     }
 
     public void trackLongClick(Track track) {
-        if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+        if (!authorizationInfoManager.isAuthorizedOnVk()) {
             Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized,
                     Toast.LENGTH_SHORT).show();
             return;

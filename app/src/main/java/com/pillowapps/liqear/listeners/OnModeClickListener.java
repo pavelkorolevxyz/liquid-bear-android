@@ -35,7 +35,7 @@ import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.fragments.HomeFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.NetworkUtils;
+import com.pillowapps.liqear.helpers.NetworkModel;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapterWrapper;
 
@@ -44,8 +44,13 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
     private final HomeFragment fragment;
     private final Context context;
 
-    public OnModeClickListener(HomeFragment fragment) {
+    private AuthorizationInfoManager authorizationInfoManager;
+    private NetworkModel networkModel;
+
+    public OnModeClickListener(HomeFragment fragment, AuthorizationInfoManager authorizationInfoManager, NetworkModel networkModel) {
         this.fragment = fragment;
+        this.authorizationInfoManager = authorizationInfoManager;
+        this.networkModel = networkModel;
         this.context = fragment.getContext();
     }
 
@@ -66,15 +71,15 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             }
         }
 
-        if (mode.isNeedLastfm() && !AuthorizationInfoManager.isAuthorizedOnLastfm()) {
+        if (mode.isNeedLastfm() && !authorizationInfoManager.isAuthorizedOnLastfm()) {
             Toast.makeText(context, R.string.last_fm_not_authorized, Toast.LENGTH_SHORT).show();
             return;
         } else if ((mode.getCategory() == Category.VK || mode.getModeEnum() == ModeEnum.RADIOMIX
                 || mode.getModeEnum() == ModeEnum.LIBRARY)
-                && NetworkUtils.isOnline() && !AuthorizationInfoManager.isAuthorizedOnVk()) {
+                && networkModel.isOnline() && !authorizationInfoManager.isAuthorizedOnVk()) {
             Toast.makeText(context, R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
             return;
-        } else if (mode.getCategory() != Category.LOCAL && !NetworkUtils.isOnline()) {
+        } else if (mode.getCategory() != Category.LOCAL && !networkModel.isOnline()) {
             Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -83,7 +88,7 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             case LOVED: {
                 Intent intent = new Intent(context, LastfmUserViewerActivity.class);
                 intent.putExtra(LastfmUserViewerActivity.USER,
-                        new User(AuthorizationInfoManager.getLastfmName()));
+                        new User(authorizationInfoManager.getLastfmName()));
                 intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
                         LastfmUserViewerActivity.LOVED_INDEX);
                 fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
@@ -93,7 +98,7 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             case TOP_TRACKS: {
                 Intent intent = new Intent(context, LastfmUserViewerActivity.class);
                 intent.putExtra(LastfmUserViewerActivity.USER,
-                        new User(AuthorizationInfoManager.getLastfmName()));
+                        new User(authorizationInfoManager.getLastfmName()));
                 intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
                         LastfmUserViewerActivity.TOP_TRACKS_INDEX);
                 fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
@@ -103,7 +108,7 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             case TOP_ARTISTS: {
                 Intent intent = new Intent(context, LastfmUserViewerActivity.class);
                 intent.putExtra(LastfmUserViewerActivity.USER,
-                        new User(AuthorizationInfoManager.getLastfmName()));
+                        new User(authorizationInfoManager.getLastfmName()));
                 intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
                         LastfmUserViewerActivity.TOP_ARTISTS_INDEX);
                 fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
@@ -165,7 +170,7 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             case RECENT_LAST: {
                 Intent intent = new Intent(context, LastfmUserViewerActivity.class);
                 intent.putExtra(LastfmUserViewerActivity.USER,
-                        new User(AuthorizationInfoManager.getLastfmName()));
+                        new User(authorizationInfoManager.getLastfmName()));
                 intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
                         LastfmUserViewerActivity.RECENT_INDEX);
                 fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
@@ -175,8 +180,8 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             case USER_AUDIO_VK: {
                 Intent intent = new Intent(context, VkUserViewerActivity.class);
                 intent.putExtra(VkUserViewerActivity.USER,
-                        new User(AuthorizationInfoManager.getVkName(),
-                                AuthorizationInfoManager.getVkUserId()));
+                        new User(authorizationInfoManager.getVkName(),
+                                authorizationInfoManager.getVkUserId()));
                 intent.putExtra(VkUserViewerActivity.TAB_INDEX,
                         VkUserViewerActivity.USER_AUDIO_INDEX);
                 intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
@@ -205,8 +210,8 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             case ALBUMS_VK: {
                 Intent intent = new Intent(context, VkUserViewerActivity.class);
                 intent.putExtra(VkUserViewerActivity.USER,
-                        new User(AuthorizationInfoManager.getVkName(),
-                                AuthorizationInfoManager.getVkUserId()));
+                        new User(authorizationInfoManager.getVkName(),
+                                authorizationInfoManager.getVkUserId()));
                 intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.ALBUM_INDEX);
                 intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
                 fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
@@ -222,8 +227,8 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             case WALL_VK: {
                 Intent intent = new Intent(context, VkUserViewerActivity.class);
                 intent.putExtra(VkUserViewerActivity.USER,
-                        new User(AuthorizationInfoManager.getVkName(),
-                                AuthorizationInfoManager.getVkUserId()));
+                        new User(authorizationInfoManager.getVkName(),
+                                authorizationInfoManager.getVkUserId()));
                 intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.WALL_INDEX);
                 intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
                 fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
@@ -233,8 +238,8 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             case FAVORITES_VK: {
                 Intent intent = new Intent(context, VkUserViewerActivity.class);
                 intent.putExtra(VkUserViewerActivity.USER,
-                        new User(AuthorizationInfoManager.getVkName(),
-                                AuthorizationInfoManager.getVkUserId()));
+                        new User(authorizationInfoManager.getVkName(),
+                                authorizationInfoManager.getVkUserId()));
                 intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.FAVORITES);
                 intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
                 fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
@@ -244,8 +249,8 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
             case FEED_VK: {
                 Intent intent = new Intent(context, VkUserViewerActivity.class);
                 intent.putExtra(VkUserViewerActivity.USER,
-                        new User(AuthorizationInfoManager.getVkName(),
-                                AuthorizationInfoManager.getVkUserId()));
+                        new User(authorizationInfoManager.getVkName(),
+                                authorizationInfoManager.getVkUserId()));
                 intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.NEWS_FEED);
                 intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
                 fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);

@@ -2,6 +2,7 @@ package com.pillowapps.liqear;
 
 import android.support.annotation.NonNull;
 
+import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.activities.ImagePagerActivity;
 import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
@@ -29,6 +30,7 @@ import com.pillowapps.liqear.activities.preferences.AuthActivity;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.MusicServiceModule;
 import com.pillowapps.liqear.fragments.HomeFragment;
+import com.pillowapps.liqear.fragments.ModeListFragment;
 import com.pillowapps.liqear.models.LastfmModelsModule;
 import com.pillowapps.liqear.models.LiquidBearModelsModule;
 import com.pillowapps.liqear.models.SetlistfmModelsModule;
@@ -129,5 +131,9 @@ public interface ApplicationComponent {
     void inject(@NonNull VkAlbumTracksActivity vkAlbumTracksActivity);
 
     void inject(@NonNull ResultTrackedBaseActivity resultTrackedBaseActivity);
+
+    void inject(@NonNull HomeActivity homeActivity);
+
+    void inject(@NonNull ModeListFragment modeListFragment);
 }
 

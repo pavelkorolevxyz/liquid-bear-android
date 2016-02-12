@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.entities.User;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.listeners.OnRecyclerItemClickListener;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.viewholders.NeighbourViewHolder;
@@ -18,16 +19,19 @@ public class NeighbourAdapter extends RecyclerView.Adapter<NeighbourViewHolder> 
 
     private OnRecyclerItemClickListener clickListener;
     private List<User> items;
+    private boolean loadImages;
 
-    public NeighbourAdapter(List<User> items, OnRecyclerItemClickListener clickListener) {
+    public NeighbourAdapter(List<User> items, boolean loadImages, OnRecyclerItemClickListener clickListener) {
+        this.loadImages = loadImages;
         this.clickListener = clickListener;
         this.items = items;
+
     }
 
     @Override
     public NeighbourViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.neighbour_image_list_item, parent, false);
-        return new NeighbourViewHolder(v, clickListener);
+        return new NeighbourViewHolder(v, loadImages, clickListener);
     }
 
     @Override

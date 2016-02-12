@@ -204,7 +204,7 @@ public class NewcomersActivity extends ResultTrackedBaseActivity {
             if (albums.size() == 0) {
                 emptyTextView.setVisibility(View.VISIBLE);
             }
-            adapter = new NewcomersAdapter(albums, clickListener);
+            adapter = new NewcomersAdapter(this, albums, clickListener);
             recycler.setAdapter(adapter);
         } else {
             adapter.getItems().addAll(albums);

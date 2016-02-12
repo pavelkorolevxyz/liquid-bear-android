@@ -78,15 +78,15 @@ public class LocalTracksActivity extends ListBaseActivity {
     }
 
     private void loadTracks() {
-        new LocalTrackModel().getAllTracks(tracksCallback);
+        new LocalTrackModel(this).getAllTracks(tracksCallback);
     }
 
     private void loadTracksFromLocalAlbum(String albumId) {
-        new LocalAlbumModel().getTracksFromAlbum(albumId, tracksCallback);
+        new LocalAlbumModel(this).getTracksFromAlbum(albumId, tracksCallback);
     }
 
     private void loadTracksFromLocalArtist(String artistId) {
-        new LocalArtistModel().getTracksFromArtist(artistId, tracksCallback);
+        new LocalArtistModel(this).getTracksFromArtist(artistId, tracksCallback);
     }
 
     private void loadTracksByFolder(String filePath) {

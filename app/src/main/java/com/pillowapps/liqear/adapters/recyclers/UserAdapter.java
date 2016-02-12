@@ -18,8 +18,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
     private List<User> items;
+    private boolean loadImages;
 
-    public UserAdapter(List<User> items, OnRecyclerItemClickListener clickListener) {
+    public UserAdapter(List<User> items, boolean loadImages, OnRecyclerItemClickListener clickListener) {
+        this.loadImages = loadImages;
         this.clickListener = clickListener;
         this.items = items;
     }
@@ -40,7 +42,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
     @Override
     public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        return new UserViewHolder(v, clickListener);
+        return new UserViewHolder(v, loadImages, clickListener);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.models.local;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
@@ -11,10 +12,18 @@ import com.pillowapps.liqear.entities.Track;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import inaka.com.tinytask.DoThis;
 import inaka.com.tinytask.TinyTask;
 
 public class LocalAlbumModel {
+
+    private Context context;
+
+    public LocalAlbumModel(Context context) {
+        this.context = context;
+    }
 
     @SuppressWarnings("unchecked")
     public void getAllAlbums(final LocalDataCallback<List<Album>> callback) {
@@ -26,7 +35,7 @@ public class LocalAlbumModel {
                     MediaStore.Audio.Albums.ALBUM_ART
             };
 
-            Cursor cursor = LBApplication.getAppContext().getContentResolver().query(
+            Cursor cursor = context.getContentResolver().query(
                     MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                     projection, null, null, null);
             List<Album> albums = new ArrayList<>();
@@ -68,7 +77,7 @@ public class LocalAlbumModel {
             };
             String[] whereVal = {albumId};
 
-            Cursor cursor = LBApplication.getAppContext().getContentResolver().query(
+            Cursor cursor = context.getContentResolver().query(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                     projection, selection, whereVal, null);
             List<Track> tracks = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.models;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.pillowapps.liqear.callbacks.PassiveCallback;
@@ -30,11 +31,15 @@ public class TickModel {
     private CompositeSubscription nowplayingSubscription = new CompositeSubscription();
     private CompositeSubscription scrobblingSubscription = new CompositeSubscription();
     private boolean scrobbled = false;
+    private Context context;
+    private LBPreferencesManager preferencesManager;
 
     @Inject
-    public TickModel(LastfmTrackModel lastfmTrackModel, VkStatusModel vkStatusModel) {
+    public TickModel(Context context, LastfmTrackModel lastfmTrackModel, VkStatusModel vkStatusModel, LBPreferencesManager preferencesManager) {
+        this.context = context;
         this.lastfmTrackModel = lastfmTrackModel;
         this.vkStatusModel = vkStatusModel;
+        this.preferencesManager = preferencesManager;
     }
 
     public void startNowplayingUpdater(@NonNull Track track) {
@@ -72,7 +77,7 @@ public class TickModel {
                             seconds++;
                             int playedPercent = (int) (((float) seconds / (track.getDuration() / 1000f)) * 100);
                             Timber.d("Scrobbling " + seconds + " / " + (track.getDuration() / 1000f) + " = " + playedPercent + "%");
-                            if (playedPercent >= LBPreferencesManager.getPercentsToScrobble()) {
+                            if (playedPercent >= preferencesManager.getPercentsToScrobble()) {
                                 Timber.d("Send scrobbling");
                                 scrobble(track);
                             }
@@ -97,10 +102,10 @@ public class TickModel {
 
     //todo add lastfm auth check
     private void updateNowPlaying(final Track currentTrack) {
-        if (SharedPreferencesManager.getPreferences().getBoolean("nowplaying_check_box_preferences", true)) {
+        if (SharedPreferencesManager.getPreferences(context).getBoolean("nowplaying_check_box_preferences", true)) {
             lastfmTrackModel.nowplaying(currentTrack, new PassiveCallback());
         }
-        if (SharedPreferencesManager.getPreferences().getBoolean("nowplaying_vk_check_box_preferences", true)) {
+        if (SharedPreferencesManager.getPreferences(context).getBoolean("nowplaying_vk_check_box_preferences", true)) {
             vkStatusModel.updateStatus(currentTrack, new VkPassiveCallback());
         }
     }

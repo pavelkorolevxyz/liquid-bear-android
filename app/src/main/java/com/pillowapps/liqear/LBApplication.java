@@ -27,17 +27,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 public class LBApplication extends Application {
     public static final Bus BUS = new Bus(ThreadEnforcer.ANY);
 
-    // todo remove this field
-    private static Context context;
-
     @SuppressWarnings("NullableProblems")
     @NonNull
     private ApplicationComponent applicationComponent;
-
-    // todo remove this method
-    public static Context getAppContext() {
-        return LBApplication.context;
-    }
 
     @NonNull
     public static LBApplication get(@NonNull Context context) {
@@ -49,8 +41,6 @@ public class LBApplication extends Application {
         super.onCreate();
         applicationComponent = prepareApplicationComponent().build();
         applicationComponent.inject(this);
-
-        LBApplication.context = getApplicationContext();
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());

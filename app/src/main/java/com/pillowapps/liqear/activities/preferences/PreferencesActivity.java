@@ -55,7 +55,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         });
         Preference shakeNext = findPreference("shake_next");
         shakeNext.setOnPreferenceChangeListener((preference, newValue) -> {
-            startService(new Intent(LBApplication.getAppContext(),
+            startService(new Intent(PreferencesActivity.this,
                     MusicService.class)
                     .setAction(MusicService.CHANGE_SHAKE_PREFERENCE));
             return true;
@@ -77,7 +77,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
             return true;
         });
         Preference versionPref = findPreference("version");
-        versionPref.setSummary(AppUtils.getAppVersion());
+        versionPref.setSummary(AppUtils.getAppVersion(this));
         Preference thanksPref = findPreference("thanks");
         thanksPref.setOnPreferenceClickListener(preference -> {
             Intent myIntent = new Intent(getApplicationContext(),

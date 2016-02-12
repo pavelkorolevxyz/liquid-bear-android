@@ -10,13 +10,8 @@ public class SpinnerLastfmArtistViewerPage extends LastfmArtistViewerPage {
     private Spinner spinner;
     private String period;
 
-    public SpinnerLastfmArtistViewerPage(Context context, View view, String title) {
-        super(context, view, title);
-        spinner = (Spinner) view.findViewById(R.id.spinner);
-    }
-
-    public SpinnerLastfmArtistViewerPage(Context context, View view, int titleRes) {
-        super(context, view, titleRes);
+    public SpinnerLastfmArtistViewerPage(Context context, View view, int titleRes, boolean loadImages) {
+        super(context, view, titleRes, loadImages);
         spinner = (Spinner) view.findViewById(R.id.spinner);
     }
 

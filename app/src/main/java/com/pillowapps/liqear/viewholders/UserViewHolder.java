@@ -19,11 +19,11 @@ public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     public OnRecyclerItemClickListener mListener;
 
-    public UserViewHolder(View itemLayoutView, OnRecyclerItemClickListener listener) {
+    public UserViewHolder(View itemLayoutView, boolean loadImages, OnRecyclerItemClickListener listener) {
         super(itemLayoutView);
         textView = (TextView) itemLayoutView.findViewById(R.id.text_list_item);
         imageView = (ImageView) itemLayoutView.findViewById(R.id.image_view_list_item);
-        loadImages = LBPreferencesManager.isDownloadImagesEnabled();
+        this.loadImages = loadImages;
         mainLayout = itemLayoutView.findViewById(R.id.main_layout);
 
         mListener = listener;

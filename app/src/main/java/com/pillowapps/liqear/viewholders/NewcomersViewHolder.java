@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.viewholders;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +20,7 @@ public class NewcomersViewHolder extends RecyclerView.ViewHolder implements View
 
     public OnRecyclerItemClickListener mListener;
 
-    public NewcomersViewHolder(View itemLayoutView, OnRecyclerItemClickListener listener) {
+    public NewcomersViewHolder(Context context, View itemLayoutView, OnRecyclerItemClickListener listener) {
         super(itemLayoutView);
         artistAlbum = (TextView) itemLayoutView.findViewById(R.id.text_list_item);
         genre = (TextView) itemLayoutView.findViewById(R.id.genre_list_item);
@@ -27,7 +28,7 @@ public class NewcomersViewHolder extends RecyclerView.ViewHolder implements View
                 R.id.cover_image_view_album_list_item);
         mainLayout = itemLayoutView.findViewById(
                 R.id.main_layout);
-        loadImages = SharedPreferencesManager.getPreferences()
+        loadImages = SharedPreferencesManager.getPreferences(context)
                 .getBoolean("download_images_check_box_preferences", true);
         mListener = listener;
         itemLayoutView.setOnClickListener(this);

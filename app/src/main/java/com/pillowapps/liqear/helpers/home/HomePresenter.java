@@ -4,8 +4,6 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.pillowapps.liqear.LBApplication;
-import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -23,7 +21,8 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
-import com.pillowapps.liqear.helpers.NetworkUtils;
+import com.pillowapps.liqear.helpers.NetworkModel;
+import com.pillowapps.liqear.helpers.PreferencesModel;
 import com.pillowapps.liqear.helpers.Presenter;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
@@ -52,9 +51,14 @@ public class HomePresenter extends Presenter<HomeView> {
     private VkWallModel vkWallModel;
     private VkAudioModel vkAudioModel;
     private Timeline timeline;
+    private PreferencesModel preferencesModel;
     private PlaylistModel playlistModel;
     private StateManager stateManager;
     private TutorialModel tutorial;
+    private AuthorizationInfoManager authorizationInfoManager;
+    private NetworkModel networkModel;
+    private ModeItemsHelper modeItemsHelper;
+    private LBPreferencesManager preferencesManager;
 
 
     @Inject
@@ -62,21 +66,33 @@ public class HomePresenter extends Presenter<HomeView> {
                          ShareModel shareModel,
                          VkWallModel vkWallModel,
                          VkAudioModel vkAudioModel,
-                         PlaylistModel playlistModel, Timeline timeline, TutorialModel tutorial) {
+                         PreferencesModel preferencesModel,
+                         PlaylistModel playlistModel,
+                         Timeline timeline,
+                         TutorialModel tutorial,
+                         AuthorizationInfoManager authorizationInfoManager,
+                         NetworkModel networkModel,
+                         ModeItemsHelper modeItemsHelper,
+                         LBPreferencesManager preferencesManager) {
         this.stateManager = stateManager;
         this.libraryModel = libraryModel;
         this.shareModel = shareModel;
         this.vkWallModel = vkWallModel;
         this.vkAudioModel = vkAudioModel;
+        this.preferencesModel = preferencesModel;
         this.playlistModel = playlistModel;
         this.timeline = timeline;
         this.tutorial = tutorial;
+        this.authorizationInfoManager = authorizationInfoManager;
+        this.networkModel = networkModel;
+        this.modeItemsHelper = modeItemsHelper;
+        this.preferencesManager = preferencesManager;
     }
 
     public void openRadiomix() {
         final HomeView view = view();
 
-        libraryModel.getRadiomix(AuthorizationInfoManager.getLastfmName(), new SimpleCallback<List<LastfmTrack>>() {
+        libraryModel.getRadiomix(authorizationInfoManager.getLastfmName(), new SimpleCallback<List<LastfmTrack>>() {
             @Override
             public void success(List<LastfmTrack> tracks) {
                 List<Track> trackList = Converter.convertLastfmTrackList(tracks);
@@ -96,7 +112,7 @@ public class HomePresenter extends Presenter<HomeView> {
         final HomeView view = view();
 
         view.showLoading(true);
-        libraryModel.getLibrary(AuthorizationInfoManager.getLastfmName(), new SimpleCallback<List<LastfmTrack>>() {
+        libraryModel.getLibrary(authorizationInfoManager.getLastfmName(), new SimpleCallback<List<LastfmTrack>>() {
             @Override
             public void success(List<LastfmTrack> tracks) {
                 List<Track> trackList = Converter.convertLastfmTrackList(tracks);
@@ -126,7 +142,7 @@ public class HomePresenter extends Presenter<HomeView> {
 
         final HomeView view = view();
 
-        if (!NetworkUtils.isOnline()) {
+        if (!networkModel.isOnline()) {
             view.showNoInternetError();
             return;
         }
@@ -141,7 +157,7 @@ public class HomePresenter extends Presenter<HomeView> {
 
         final HomeView view = view();
 
-        if (!NetworkUtils.isOnline()) {
+        if (!networkModel.isOnline()) {
             view.showNoInternetError();
             return;
         }
@@ -159,8 +175,7 @@ public class HomePresenter extends Presenter<HomeView> {
         final HomeView view = view();
 
 
-        String template = SharedPreferencesManager.getPreferences().getString(Constants.SHARE_FORMAT,
-                LBApplication.getAppContext().getString(R.string.listening_now)); // todo move to interactor layer
+        String template = preferencesModel.getShareTemplate();
 
         String shareMessage = shareModel.createShareMessage(currentTrack, timeline.getCurrentAlbum(), template);
         String imageUrl = shareModel.getAlbumImageUrl(currentTrack, currentAlbum);
@@ -171,12 +186,12 @@ public class HomePresenter extends Presenter<HomeView> {
     public void shareTrackToVk(String shareMessage, String imageUrl, Track track) {
         final HomeView view = view();
 
-        if (!NetworkUtils.isOnline()) {
+        if (!networkModel.isOnline()) {
             view.showNoInternetError();
             return;
         }
 
-        if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+        if (!authorizationInfoManager.isAuthorizedOnVk()) {
             view.showVkAuthorizationError();
             return;
         }
@@ -195,11 +210,11 @@ public class HomePresenter extends Presenter<HomeView> {
             view.showTrackIsLocalError();
             return;
         }
-        if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+        if (!authorizationInfoManager.isAuthorizedOnVk()) {
             view.showVkAuthorizationError();
             return;
         }
-        if (!NetworkUtils.isOnline()) {
+        if (!networkModel.isOnline()) {
             view.showNoInternetError();
             return;
         }
@@ -213,11 +228,11 @@ public class HomePresenter extends Presenter<HomeView> {
 
         final HomeView view = view();
 
-        if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+        if (!authorizationInfoManager.isAuthorizedOnVk()) {
             view.showVkAuthorizationError();
             return;
         }
-        if (!NetworkUtils.isOnline()) {
+        if (!networkModel.isOnline()) {
             view.showNoInternetError();
             return;
         }
@@ -239,16 +254,16 @@ public class HomePresenter extends Presenter<HomeView> {
 
         final HomeView view = view();
 
-        if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+        if (!authorizationInfoManager.isAuthorizedOnVk()) {
             view.showVkAuthorizationError();
             return;
         }
-        if (!NetworkUtils.isOnline()) {
+        if (!networkModel.isOnline()) {
             view.showNoInternetError();
             return;
         }
 
-        if (LBPreferencesManager.isVkAddSlow()) {
+        if (preferencesManager.isVkAddSlow()) {
             view.openAddToVkScreen(currentTrack);
         } else {
             vkAudioModel.addToUserAudioFast(TrackUtils.getNotation(currentTrack), new VkSimpleCallback<VkResponse>() {
@@ -348,16 +363,17 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void toggleModeListEditMode() {
-        ModeItemsHelper.setEditMode(!ModeItemsHelper.isEditMode());
+        modeItemsHelper.setEditMode(!modeItemsHelper.isEditMode());
         HomeView view = view();
         view.updateModeListEditMode();
     }
 
     public void togglePlaylistSearchVisibility() {
-        SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences();
-        boolean visibility = !savePreferences.getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false);
-        savePreferences.edit().putBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, visibility).apply(); // todo move shared preferences to interactor layer
+//        SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences();
+//        boolean visibility = !savePreferences.getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false);
+//        savePreferences.edit().putBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, visibility).apply(); // todo move shared preferences to interactor layer
 
+        boolean visibility = false;
         HomeView view = view();
         view.updateSearchVisibility(visibility);
     }
@@ -404,38 +420,38 @@ public class HomePresenter extends Presenter<HomeView> {
 
             List<Track> tracks = playlist.getTracks();
 
-            SharedPreferences preferences = SharedPreferencesManager.getPreferences(); // todo on interactor/models level
-            String artist = preferences.getString(Constants.ARTIST, "");
-            String title = preferences.getString(Constants.TITLE, "");
-            int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-            int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
-
-            boolean currentFits = currentIndex < tracks.size();
-            if (!currentFits) currentIndex = 0;
-            Track currentTrack = tracks.get(currentIndex);
-            boolean tracksEquals = currentFits
-                    && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                    + currentTrack.getTitle());
-            if (!tracksEquals) {
-                view.showArtistPlaceholder();
-                currentIndex = 0;
-                view.updateTrackArtist(currentTrack.getArtist());
-                view.updateTrackTitle(currentTrack.getTitle());
-                position = 0;
-            } else {
-                view.updateTrackArtist(artist);
-                view.updateTrackTitle(title);
-            }
-            timeline.setIndex(currentIndex);
-            if (currentIndex > tracks.size()) {
-                view.showArtistPlaceholder();
-                position = 0;
-            }
-            if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
-                position = 0;
-            }
-
-            view.updateAlbum();
+//            SharedPreferences preferences = SharedPreferencesManager.getPreferences(); // todo on interactor/models level
+//            String artist = preferences.getString(Constants.ARTIST, "");
+//            String title = preferences.getString(Constants.TITLE, "");
+//            int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+//            int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+//
+//            boolean currentFits = currentIndex < tracks.size();
+//            if (!currentFits) currentIndex = 0;
+//            Track currentTrack = tracks.get(currentIndex);
+//            boolean tracksEquals = currentFits
+//                    && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+//                    + currentTrack.getTitle());
+//            if (!tracksEquals) {
+//                view.showArtistPlaceholder();
+//                currentIndex = 0;
+//                view.updateTrackArtist(currentTrack.getArtist());
+//                view.updateTrackTitle(currentTrack.getTitle());
+//                position = 0;
+//            } else {
+//                view.updateTrackArtist(artist);
+//                view.updateTrackTitle(title);
+//            }
+//            timeline.setIndex(currentIndex);
+//            if (currentIndex > tracks.size()) {
+//                view.showArtistPlaceholder();
+//                position = 0;
+//            }
+//            if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
+//                position = 0;
+//            }
+//
+//            view.updateAlbum();
         });
     }
 
@@ -456,31 +472,31 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void updateArtistPhoto() {
         HomeView view = view();
-        if (!NetworkUtils.isOnline()) {
+        if (!networkModel.isOnline()) {
             view.showArtistPlaceholder();
             return;
         }
-        if (SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-            view.updateArtistPhotoAndColors();
-        }
+//        if (SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+//            view.updateArtistPhotoAndColors();
+//        }
     }
 
     public void updateAlbum() {
         HomeView view = view();
 
         Album album = timeline.getCurrentAlbum();
-        if (!NetworkUtils.isOnline() || album == null) {
+        if (!networkModel.isOnline() || album == null) {
             view.hideAlbumImage();
             view.hideAlbumTitle();
             return;
         }
 
         String imageUrl = album.getImageUrl();
-        if (imageUrl == null || !SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-            view.hideAlbumImage();
-        } else {
-            view.showAlbumImage(imageUrl);
-        }
+//        if (imageUrl == null || !SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
+//            view.hideAlbumImage();
+//        } else {
+//            view.showAlbumImage(imageUrl);
+//        }
         String albumTitle = album.getTitle();
         if (albumTitle == null) {
             view.hideAlbumTitle();

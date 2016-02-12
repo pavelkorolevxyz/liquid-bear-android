@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.pillowapps.liqear.helpers.PlaylistsStorage;
+import com.pillowapps.liqear.helpers.PreferencesModel;
 import com.pillowapps.liqear.helpers.StorioStorageManager;
 
 import javax.inject.Singleton;
@@ -21,5 +22,11 @@ public class StorageModule {
         return new StorioStorageManager(context);
     }
 
+    @Provides
+    @NonNull
+    @Singleton
+    public PreferencesModel providePreferencesModel(Context context) {
+        return new PreferencesModel(context);
+    }
 }
 

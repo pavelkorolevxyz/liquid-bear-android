@@ -23,7 +23,7 @@ public class VkTracksViewerPage extends ViewerPage<Track> {
     public VkTracksViewerPage(Context context,
                               View view,
                               int titleRes) {
-        super(context, view, titleRes);
+        super(context, view, context.getString(titleRes));
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.pillowapps.liqear.models;
 
 import android.support.annotation.NonNull;
 
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkFriendModel;
 import com.pillowapps.liqear.models.vk.VkGroupModel;
@@ -29,8 +30,8 @@ public class VkModelsModule {
     @Provides
     @NonNull
     @Singleton
-    public VkAudioModel provideVkAudioModel(@NonNull VkApiService api) {
-        return new VkAudioModel(api);
+    public VkAudioModel provideVkAudioModel(@NonNull VkApiService api, @NonNull LBPreferencesManager preferencesManager) {
+        return new VkAudioModel(api, preferencesManager);
     }
 
     @Provides

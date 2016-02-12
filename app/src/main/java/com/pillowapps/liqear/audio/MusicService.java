@@ -101,6 +101,12 @@ public class MusicService extends Service {
     @Inject
     VkAudioModel vkAudioModel;
 
+    @Inject
+    AuthorizationInfoManager authorizationInfoManager;
+
+    @Inject
+    LBPreferencesManager preferencesManager;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -160,7 +166,7 @@ public class MusicService extends Service {
                                     @Override
                                     public void success(VkResponse data) {
                                         track.setAddedToVk(true);
-                                        Toast.makeText(LBApplication.getAppContext(),
+                                        Toast.makeText(MusicService.this,
                                                 R.string.added, Toast.LENGTH_SHORT).show();
                                         updateTrackNotification();
                                     }
@@ -207,11 +213,11 @@ public class MusicService extends Service {
                     break;
                 }
                 case CHANGE_SHAKE_PREFERENCE:
-                    if (LBPreferencesManager.isShakeEnabled()) {
-//                        initShakeDetector();
-                    } else {
-//                        destroyShake();
-                    }
+//                    if (LBPreferencesManager.isShakeEnabled()) {
+////                        initShakeDetector();
+//                    } else {
+////                        destroyShake();
+//                    }
                     break;
                 default:
                     throw new RuntimeException("Unknown action sent for MusicService");
@@ -300,7 +306,7 @@ public class MusicService extends Service {
                 tickModel.getTimer(minutes)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(aLong -> {
-                            if (LBPreferencesManager.isTimerActionPause()) {
+                            if (preferencesManager.isTimerActionPause()) {
                                 pause();
                             } else {
                                 exit();
@@ -320,7 +326,7 @@ public class MusicService extends Service {
         LBApplication.BUS.post(new TrackInfoEvent(track));
 
         //todo
-        getArtistInfo(track.getArtist(), AuthorizationInfoManager.getLastfmName());
+        getArtistInfo(track.getArtist(), authorizationInfoManager.getLastfmName());
         getTrackInfo(track);
 
         audioPlayerModel.load(track).subscribe(trackInfo -> {
@@ -341,7 +347,7 @@ public class MusicService extends Service {
     }
 
     private void getTrackInfo(final Track track) {
-        lastfmTrackModel.getTrackInfo(track, AuthorizationInfoManager.getLastfmName(),
+        lastfmTrackModel.getTrackInfo(track, authorizationInfoManager.getLastfmName(),
                 new SimpleCallback<LastfmTrack>() {
                     @Override
                     public void success(LastfmTrack lastfmTrack) {
@@ -399,7 +405,7 @@ public class MusicService extends Service {
     }
 
     private void showNotificationToast() {
-        if (LBPreferencesManager.isToastTrackNotificationEnabled()) {
+        if (preferencesManager.isToastTrackNotificationEnabled()) {
             Toast.makeText(MusicService.this,
                     Html.fromHtml(TrackUtils.getNotation(timeline.getCurrentTrack())),
                     Toast.LENGTH_LONG).show();

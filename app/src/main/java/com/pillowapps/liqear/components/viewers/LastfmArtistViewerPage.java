@@ -13,13 +13,16 @@ import java.util.List;
 
 public class LastfmArtistViewerPage extends ViewerPage<Artist> {
     private ArtistAdapter adapter;
+    private boolean loadImages;
 
-    public LastfmArtistViewerPage(Context context, View view, String title) {
+    public LastfmArtistViewerPage(Context context, View view, String title, boolean loadImages) {
         super(context, view, title);
+        this.loadImages = loadImages;
     }
 
-    public LastfmArtistViewerPage(Context context, View view, int titleRes) {
-        super(context, view, titleRes);
+    public LastfmArtistViewerPage(Context context, View view, int titleRes, boolean loadImages) {
+        super(context, view, context.getString(titleRes));
+        this.loadImages = loadImages;
     }
 
     public ArtistAdapter getAdapter() {
@@ -58,7 +61,7 @@ public class LastfmArtistViewerPage extends ViewerPage<Artist> {
 
     private void updateAdapter(List<Artist> artists) {
         if (adapter == null) {
-            adapter = new ArtistAdapter(artists, listener);
+            adapter = new ArtistAdapter(artists, loadImages, listener);
             recyclerView.setAdapter(adapter);
         } else {
             adapter.addAll(artists);

@@ -1,48 +1,52 @@
 package com.pillowapps.liqear.helpers;
 
+import android.content.Context;
+
 public class LBPreferencesManager {
 
-    private LBPreferencesManager() {
-        // no-op
+    private Context context;
+
+    public LBPreferencesManager(Context context) {
+        this.context = context;
     }
 
-    public static boolean isShakeEnabled() {
-        return SharedPreferencesManager.getPreferences().getBoolean("shake_next", false);
+    public boolean isShakeEnabled() {
+        return SharedPreferencesManager.getPreferences(context).getBoolean("shake_next", false);
     }
 
-    public static boolean isContinueFromLastPositionEnabled() {
-        return SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true);
+    public boolean isContinueFromLastPositionEnabled() {
+        return SharedPreferencesManager.getPreferences(context).getBoolean("continue_from_position", true);
     }
 
-    public static boolean isToastTrackNotificationEnabled() {
-        return SharedPreferencesManager.getPreferences().getBoolean(Constants.SHOW_TOAST_TRACK_CHANGE, false);
+    public boolean isToastTrackNotificationEnabled() {
+        return SharedPreferencesManager.getPreferences(context).getBoolean(Constants.SHOW_TOAST_TRACK_CHANGE, false);
     }
 
-    public static boolean isNowplayingEnabled() {
-        return SharedPreferencesManager.getPreferences().getBoolean("nowplaying_check_box_preferences", true);
+    public boolean isNowplayingEnabled() {
+        return SharedPreferencesManager.getPreferences(context).getBoolean("nowplaying_check_box_preferences", true);
     }
 
-    public static boolean isTimerActionPause() {
-        return SharedPreferencesManager.getPreferences().getString("timer_action", "1").equals("1");
+    public boolean isTimerActionPause() {
+        return SharedPreferencesManager.getPreferences(context).getString("timer_action", "1").equals("1");
     }
 
-    public static int getPercentsToScrobble() {
-        return SharedPreferencesManager.getPreferences().getInt("scrobble_time_preferences", 40);
+    public int getPercentsToScrobble() {
+        return SharedPreferencesManager.getPreferences(context).getInt("scrobble_time_preferences", 40);
     }
 
-    public static boolean isScrobblingEnabled() {
-        return SharedPreferencesManager.getPreferences().getBoolean("scrobble_check_box_preferences", false);
+    public boolean isScrobblingEnabled() {
+        return SharedPreferencesManager.getPreferences(context).getBoolean("scrobble_check_box_preferences", false);
     }
 
-    public static boolean isDownloadImagesEnabled() {
-        return SharedPreferencesManager.getPreferences().getBoolean("download_images_check_box_preferences", true);
+    public boolean isDownloadImagesEnabled() {
+        return SharedPreferencesManager.getPreferences(context).getBoolean("download_images_check_box_preferences", true);
     }
 
-    public static int getPageSize() {
-        return SharedPreferencesManager.getPreferences().getInt("page_size", 50);
+    public int getPageSize() {
+        return SharedPreferencesManager.getPreferences(context).getInt("page_size", 50);
     }
 
-    public static boolean isVkAddSlow() {
-        return SharedPreferencesManager.getPreferences().getBoolean("add_to_vk_slow", true);
+    public boolean isVkAddSlow() {
+        return SharedPreferencesManager.getPreferences(context).getBoolean("add_to_vk_slow", true);
     }
 }

@@ -14,6 +14,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmUser;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.DelayedTextWatcher;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
 import java.util.Collections;
@@ -27,6 +28,10 @@ public class SearchLastfmUserActivity extends SearchListBaseActivity {
 
     @Inject
     LastfmUserModel lastfmUserModel;
+    @Inject
+    AuthorizationInfoManager authorizationInfoManager;
+    @Inject
+    LBPreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +40,8 @@ public class SearchLastfmUserActivity extends SearchListBaseActivity {
         LBApplication.get(this).applicationComponent().inject(this);
 
         setTitle(getResources().getString(R.string.friends));
-        if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-            getLastfmFriends(AuthorizationInfoManager.getLastfmName(), getPageSize(), 1);
+        if (authorizationInfoManager.isAuthorizedOnLastfm()) {
+            getLastfmFriends(authorizationInfoManager.getLastfmName(), getPageSize(), 1);
         } else {
             progressBar.setVisibility(View.GONE);
         }
@@ -66,7 +71,7 @@ public class SearchLastfmUserActivity extends SearchListBaseActivity {
 
     private void fillWithUsers(List<User> users) {
         emptyTextView.setVisibility(users.size() == 0 ? View.VISIBLE : View.GONE);
-        adapter = new UserAdapter(users, (view, position) -> openLastfmUser(adapter.getItem(position)));
+        adapter = new UserAdapter(users, preferencesManager.isDownloadImagesEnabled(), (view, position) -> openLastfmUser(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }

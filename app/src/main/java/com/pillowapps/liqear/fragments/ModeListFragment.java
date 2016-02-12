@@ -16,10 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
 import com.pillowapps.liqear.callbacks.UpdateAdapterCallback;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
+
+import javax.inject.Inject;
 
 public class ModeListFragment extends ListFragment {
     private ModeListAdapter adapter;
@@ -27,8 +30,12 @@ public class ModeListFragment extends ListFragment {
     private DrawerLayout mDrawerLayout;
     private View mFragmentContainerView;
 
+    @Inject
+    ModeItemsHelper modeItemsHelper;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        LBApplication.get(getContext()).applicationComponent().inject(this);
         return inflater.inflate(R.layout.list, null);
     }
 
@@ -36,7 +43,6 @@ public class ModeListFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         UpdateAdapterCallback callback = adapter::notifyChanges;
-        ModeItemsHelper modeItemsHelper = new ModeItemsHelper();
         adapter = new ModeListAdapter(getActivity(), modeItemsHelper.createItemsList(callback), modeItemsHelper);
         setListAdapter(adapter);
         getListView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.icons));
@@ -51,7 +57,7 @@ public class ModeListFragment extends ListFragment {
     public class ModeLongClickListener implements AdapterView.OnItemLongClickListener {
         @Override
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-            ModeItemsHelper.setEditMode(true);
+            modeItemsHelper.setEditMode(true);
             adapter.notifyChanges();
             return true;
         }

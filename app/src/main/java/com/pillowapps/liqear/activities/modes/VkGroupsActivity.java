@@ -12,6 +12,7 @@ import com.pillowapps.liqear.entities.Group;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkGroup;
 import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.vk.VkGroupModel;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public class VkGroupsActivity extends ListBaseActivity {
 
     @Inject
     VkGroupModel vkGroupModel;
+    @Inject
+    LBPreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,7 @@ public class VkGroupsActivity extends ListBaseActivity {
     }
 
     private void fillWithGroups(List<Group> groups) {
-        adapter = new GroupAdapter(groups, (view, position) -> openGroup(adapter.getItem(position)));
+        adapter = new GroupAdapter(groups, preferencesManager.isDownloadImagesEnabled(), (view, position) -> openGroup(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
         updateEmptyTextView();

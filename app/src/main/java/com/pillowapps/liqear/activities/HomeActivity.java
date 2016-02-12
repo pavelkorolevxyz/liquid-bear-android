@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.pillowapps.liqear.BuildConfig;
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
 import com.pillowapps.liqear.activities.preferences.AuthActivity;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
+
+import javax.inject.Inject;
 
 import fr.nicolaspomepuy.discreetapprate.AppRate;
 import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
@@ -16,11 +19,16 @@ import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
 
 public class HomeActivity extends TrackedBaseActivity {
 
+    @Inject
+    AuthorizationInfoManager authorizationInfoManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (AuthorizationInfoManager.isAuthScreenNeeded()) {
+        LBApplication.get(this).applicationComponent().inject(this);
+
+        if (authorizationInfoManager.isAuthScreenNeeded()) {
             Intent intent = new Intent(this, AuthActivity.class);
             intent.putExtra(Constants.SHOW_AUTHSCREEN_AUTO, true);
             startActivity(intent);

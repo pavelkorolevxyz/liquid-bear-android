@@ -12,6 +12,7 @@ import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
 import java.util.List;
@@ -24,6 +25,10 @@ public class LastfmNeighboursActivity extends ListBaseActivity {
 
     @Inject
     LastfmUserModel lastfmUserModel;
+    @Inject
+    AuthorizationInfoManager authorizationInfoManager;
+    @Inject
+    LBPreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +36,15 @@ public class LastfmNeighboursActivity extends ListBaseActivity {
         LBApplication.get(this).applicationComponent().inject(this);
 
         setTitle(getResources().getString(R.string.neighbours));
-        if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
-            getNeighbours(AuthorizationInfoManager.getLastfmName(), getPageSize());
+        if (authorizationInfoManager.isAuthorizedOnLastfm()) {
+            getNeighbours(authorizationInfoManager.getLastfmName(), getPageSize());
         } else {
             progressBar.setVisibility(View.GONE);
         }
     }
 
     private void fillWithUsers(List<User> users) {
-        adapter = new NeighbourAdapter(users, (view, position) -> openLastfmUser(adapter.getItem(position)));
+        adapter = new NeighbourAdapter(users, preferencesManager.isDownloadImagesEnabled(), (view, position) -> openLastfmUser(adapter.getItem(position)));
         recycler.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
         updateEmptyTextView();

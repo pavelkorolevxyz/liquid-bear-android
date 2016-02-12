@@ -21,7 +21,7 @@ public class ErrorNotifier {
         try {
             dialog.show();
         } catch (Exception e) {
-            Toast.makeText(LBApplication.getAppContext(), message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
         }
     }
 

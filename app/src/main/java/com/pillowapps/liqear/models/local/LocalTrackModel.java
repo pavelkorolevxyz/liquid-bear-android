@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.models.local;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
@@ -15,6 +16,12 @@ import inaka.com.tinytask.TinyTask;
 
 public class LocalTrackModel {
 
+    private Context context;
+
+    public LocalTrackModel(Context context) {
+        this.context = context;
+    }
+
     @SuppressWarnings("unchecked")
     public void getAllTracks(final LocalDataCallback<List<Track>> callback) {
         TinyTask.perform(() -> {
@@ -25,7 +32,7 @@ public class LocalTrackModel {
                     MediaStore.Audio.Media.DATA,
             };
 
-            Cursor cursor = LBApplication.getAppContext().getContentResolver().query(
+            Cursor cursor = context.getContentResolver().query(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                     projection, selection, null, null);
 

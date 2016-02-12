@@ -53,6 +53,8 @@ public class TextActivity extends ResultTrackedBaseActivity {
 
     @Inject
     VkLyricsModel vkLyricsModel;
+    @Inject
+    AuthorizationInfoManager authorizationInfoManager;
 
     public static Intent getStartIntent(Context context, Aim aim) {
         Intent intent = new Intent(context, TextActivity.class);
@@ -83,7 +85,7 @@ public class TextActivity extends ResultTrackedBaseActivity {
             case ARTIST_INFO:
                 googleRequest = extras.getString(ARTIST_NAME);
                 actionBar.setTitle(Html.fromHtml(googleRequest));
-                getArtistInfo(googleRequest, AuthorizationInfoManager.getLastfmName());
+                getArtistInfo(googleRequest, authorizationInfoManager.getLastfmName());
                 progressBar.setVisibility(View.VISIBLE);
                 break;
             case LYRICS:
@@ -91,7 +93,7 @@ public class TextActivity extends ResultTrackedBaseActivity {
                 String title = extras.getString("title");
                 googleRequest = artist + " - " + title;
                 actionBar.setTitle(Html.fromHtml(googleRequest));
-                lyricsNumber = SharedPreferencesManager.getLyricsNumberPreferences()
+                lyricsNumber = SharedPreferencesManager.getLyricsNumberPreferences(this)
                         .getInt(googleRequest, 0);
                 getTrackLyrics(new Track(artist, title), lyricsNumber);
                 progressBar.setVisibility(View.VISIBLE);
@@ -126,7 +128,7 @@ public class TextActivity extends ResultTrackedBaseActivity {
                     break;
                 case R.id.google:
                     String url;
-                    if (SharedPreferencesManager.getPreferences()
+                    if (SharedPreferencesManager.getPreferences(this)
                             .getBoolean("lucky_search_check_box_preferences", true)) {
                         url = "http://www.google.com/webhp#q="
                                 + Uri.encode(googleRequest + " lyrics") + "&btnI";
@@ -141,7 +143,7 @@ public class TextActivity extends ResultTrackedBaseActivity {
                 case R.id.next_result:
                     lyricsNumber++;
                     final SharedPreferences lyricsNumberPreferences =
-                            SharedPreferencesManager.getLyricsNumberPreferences();
+                            SharedPreferencesManager.getLyricsNumberPreferences(this);
                     final SharedPreferences.Editor editor = lyricsNumberPreferences.edit();
                     editor.putInt(googleRequest,
                             lyricsNumberPreferences.getInt(googleRequest, 0) + 1);
@@ -271,7 +273,7 @@ public class TextActivity extends ResultTrackedBaseActivity {
             actionBar.setTitle(googleRequest);
         }
         getTrackLyrics(track, SharedPreferencesManager
-                .getLyricsNumberPreferences().getInt(googleRequest, 0));
+                .getLyricsNumberPreferences(this).getInt(googleRequest, 0));
         progressBar.setVisibility(View.VISIBLE);
     }
 }

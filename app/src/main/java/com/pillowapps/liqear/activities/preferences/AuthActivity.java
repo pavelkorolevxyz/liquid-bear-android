@@ -30,6 +30,7 @@ import com.pillowapps.liqear.adapters.pagers.AuthPagerAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.callbacks.retrofit.LastfmErrorCallback;
+import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmSession;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
@@ -84,6 +85,9 @@ public class AuthActivity extends TrackedBaseActivity {
     @Inject
     LastfmUserModel lastfmUserModel;
 
+    @Inject
+    AuthorizationInfoManager authorizationInfoManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,10 +125,10 @@ public class AuthActivity extends TrackedBaseActivity {
     }
 
     private void showSaves() {
-        if (AuthorizationInfoManager.isAuthorizedOnVk()) {
+        if (authorizationInfoManager.isAuthorizedOnVk()) {
             avatarVkImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageModel.loadImage(AuthorizationInfoManager.getVkAvatar(), avatarVkImageView);
-            vkNameTextView.setText(AuthorizationInfoManager.getVkName());
+            imageModel.loadImage(authorizationInfoManager.getVkAvatar(), avatarVkImageView);
+            vkNameTextView.setText(authorizationInfoManager.getVkName());
             authVkPanel.setVisibility(View.VISIBLE);
             signOutVkButton.setVisibility(View.VISIBLE);
             authorizeVkButton.setVisibility(View.GONE);
@@ -134,11 +138,11 @@ public class AuthActivity extends TrackedBaseActivity {
             signOutVkButton.setVisibility(View.GONE);
             authorizeVkButton.setVisibility(View.VISIBLE);
         }
-        if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
+        if (authorizationInfoManager.isAuthorizedOnLastfm()) {
             avatarLastfmImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageModel.loadImage(AuthorizationInfoManager.getLastfmAvatar(), avatarLastfmImageView);
-            lastfmNameTextView.setText(AuthorizationInfoManager.getLastfmName());
-            loginLastfmEditText.setText(AuthorizationInfoManager.getLastfmName());
+            imageModel.loadImage(authorizationInfoManager.getLastfmAvatar(), avatarLastfmImageView);
+            lastfmNameTextView.setText(authorizationInfoManager.getLastfmName());
+            loginLastfmEditText.setText(authorizationInfoManager.getLastfmName());
             authLastfmPanel.setVisibility(View.VISIBLE);
             signOutLastfmButton.setVisibility(View.VISIBLE);
             authorizeLastfmButton.setVisibility(View.GONE);
@@ -161,7 +165,10 @@ public class AuthActivity extends TrackedBaseActivity {
         lastfmTab = View.inflate(this, R.layout.auth_lastfm_layout, null);
         views.add(lastfmTab);
         pager = (ViewPager) findViewById(R.id.pager);
-        AuthPagerAdapter adapter = new AuthPagerAdapter(views);
+        List<Page> pages = new ArrayList<>();
+        pages.add(new Page(vkTab, getString(R.string.vk)));
+        pages.add(new Page(lastfmTab, getString(R.string.last_fm)));
+        AuthPagerAdapter adapter = new AuthPagerAdapter(this, pages);
 
         pager.setAdapter(adapter);
         TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
@@ -172,7 +179,7 @@ public class AuthActivity extends TrackedBaseActivity {
         indicator.setTextColor(ContextCompat.getColor(AuthActivity.this, R.color.icons));
         indicator.setSelectedColor(ContextCompat.getColor(AuthActivity.this, R.color.icons));
 
-        Resources resources = LBApplication.getAppContext().getResources();
+        Resources resources = AuthActivity.this.getResources();
         boolean isTablet = resources.getBoolean(R.bool.isTablet);
         if (isTablet && resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             indicator.setVisibility(View.GONE);
@@ -217,15 +224,15 @@ public class AuthActivity extends TrackedBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == Constants.AUTH_VK_REQUEST) {
-            vkUserModel.getUserInfoVk(AuthorizationInfoManager.getVkUserId(),
+            vkUserModel.getUserInfoVk(authorizationInfoManager.getVkUserId(),
                     new VkSimpleCallback<VkUser>() {
                         @Override
                         public void success(VkUser vkUser) {
-                            AuthorizationInfoManager.setVkAvatar(vkUser.getPhotoMedium());
-                            AuthorizationInfoManager.setVkName(vkUser.getName());
+                            authorizationInfoManager.setVkAvatar(vkUser.getPhotoMedium());
+                            authorizationInfoManager.setVkName(vkUser.getName());
                             invalidateOptionsMenu();
                             showSaves();
-                            if (firstStart && AuthorizationInfoManager.isAuthorizedOnLastfm()) {
+                            if (firstStart && authorizationInfoManager.isAuthorizedOnLastfm()) {
                                 startMainActivity(AuthActivity.this);
                                 finish();
                             }
@@ -243,20 +250,20 @@ public class AuthActivity extends TrackedBaseActivity {
     private void initListeners() {
         authorizeVkButton.setOnClickListener(view -> {
             errorVkTextView.setVisibility(View.GONE);
-            AuthorizationInfoManager.signOutVk();
+            authorizationInfoManager.signOutVk();
             authVkPanel.setVisibility(View.INVISIBLE);
             Intent intent = new Intent(AuthActivity.this, VkLoginActivity.class);
             startActivityForResult(intent, Constants.AUTH_VK_REQUEST);
         });
         signOutVkButton.setOnClickListener(view -> {
-            AuthorizationInfoManager.signOutVk();
+            authorizationInfoManager.signOutVk();
             authVkPanel.setVisibility(View.INVISIBLE);
             invalidateOptionsMenu();
             showSaves();
         });
 
         signOutLastfmButton.setOnClickListener(view -> {
-            AuthorizationInfoManager.signOutLastfm();
+            authorizationInfoManager.signOutLastfm();
             authLastfmPanel.setVisibility(View.INVISIBLE);
             loginLastfmEditText.setVisibility(View.VISIBLE);
             passwordLastfmEditText.setVisibility(View.VISIBLE);
@@ -266,7 +273,7 @@ public class AuthActivity extends TrackedBaseActivity {
         });
         authorizeLastfmButton.setOnClickListener(view -> {
             errorLastfmTextView.setVisibility(View.GONE);
-            AuthorizationInfoManager.signOutLastfm();
+            authorizationInfoManager.signOutLastfm();
             authLastfmPanel.setVisibility(View.INVISIBLE);
             loginLastfmEditText.setVisibility(View.VISIBLE);
             passwordLastfmEditText.setVisibility(View.VISIBLE);
@@ -306,7 +313,7 @@ public class AuthActivity extends TrackedBaseActivity {
                                 public void success(LastfmUser user) {
                                     List<LastfmImage> images = user.getImages();
                                     String url = images.get(images.size() - 1).getUrl();
-                                    AuthorizationInfoManager.setLastfmAvatar(url);
+                                    authorizationInfoManager.setLastfmAvatar(url);
                                     imageModel.loadImage(url, avatarLastfmImageView);
                                     showSaves();
                                 }
@@ -317,7 +324,7 @@ public class AuthActivity extends TrackedBaseActivity {
                                 }
                             });
                             invalidateOptionsMenu();
-                            if (firstStart && AuthorizationInfoManager.isAuthorizedOnVk()) {
+                            if (firstStart && authorizationInfoManager.isAuthorizedOnVk()) {
                                 finish();
                                 startMainActivity(AuthActivity.this);
                             }
@@ -370,7 +377,7 @@ public class AuthActivity extends TrackedBaseActivity {
         MenuInflater inflater = getMenuInflater();
         switch (pager.getCurrentItem()) {
             case VK_INDEX: {
-                if (AuthorizationInfoManager.isAuthorizedOnVk()) {
+                if (authorizationInfoManager.isAuthorizedOnVk()) {
                     inflater.inflate(R.menu.menu_auth, menu);
                 } else {
                     inflater.inflate(R.menu.menu_sign_up, menu);
@@ -378,7 +385,7 @@ public class AuthActivity extends TrackedBaseActivity {
             }
             break;
             case LASTFM_INDEX:
-                if (AuthorizationInfoManager.isAuthorizedOnLastfm()) {
+                if (authorizationInfoManager.isAuthorizedOnLastfm()) {
                     inflater.inflate(R.menu.menu_auth, menu);
                 } else {
                     inflater.inflate(R.menu.menu_sign_up, menu);
@@ -407,7 +414,7 @@ public class AuthActivity extends TrackedBaseActivity {
             }
             return true;
             case R.id.skip_button: {
-                AuthorizationInfoManager.skipAuth();
+                authorizationInfoManager.skipAuth();
                 startMainActivity(AuthActivity.this);
                 finish();
             }

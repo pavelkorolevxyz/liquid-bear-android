@@ -31,6 +31,7 @@ import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
@@ -75,6 +76,8 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
 
     @Inject
     LastfmUserModel userModel;
+    @Inject
+    LBPreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +112,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         topTracksSpinner.setAdapter(adapter);
 
-        savedTopTrackPosition = SharedPreferencesManager.getSavePreferences().getInt(Constants.TIME_TOP_TRACKS, 0);
+        savedTopTrackPosition = SharedPreferencesManager.getSavePreferences(this).getInt(Constants.TIME_TOP_TRACKS, 0);
         topTracksPeriod = PERIODS_ARRAY[savedTopTrackPosition];
         topTracksSpinner.setSelection(savedTopTrackPosition);
 
@@ -122,7 +125,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                     selectedText.setTextColor(ContextCompat.getColor(LastfmUserViewerActivity.this, R.color.primary_text));
                 }
                 topTracksPeriod = PERIODS_WITHOUT_ONEMONTH_ARRAY[itemPosition];
-                SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences();
+                SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences(LastfmUserViewerActivity.this);
                 SharedPreferences.Editor editor = savePreferences.edit();
                 editor.putInt(Constants.TIME_TOP_TRACKS, itemPosition).apply();
                 if (topTracksViewer.isNotLoaded() || itemPosition != savedTopTrackPosition) {
@@ -147,7 +150,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         topArtistsSpinner.setAdapter(mSpinnerAdapter);
 
-        savedTopArtistPeriod = SharedPreferencesManager.getSavePreferences().getInt(Constants.TIME_TOP_ARTISTS, 0);
+        savedTopArtistPeriod = SharedPreferencesManager.getSavePreferences(this).getInt(Constants.TIME_TOP_ARTISTS, 0);
         topArtistsPeriod = PERIODS_ARRAY[savedTopArtistPeriod];
         topArtistsSpinner.setSelection(savedTopArtistPeriod);
 
@@ -160,7 +163,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                     selectedText.setTextColor(ContextCompat.getColor(LastfmUserViewerActivity.this, R.color.primary_text));
                 }
                 topArtistsPeriod = PERIODS_ARRAY[itemPosition];
-                SharedPreferences.Editor editor = SharedPreferencesManager.getSavePreferences().edit();
+                SharedPreferences.Editor editor = SharedPreferencesManager.getSavePreferences(LastfmUserViewerActivity.this).edit();
                 editor.putInt(Constants.TIME_TOP_ARTISTS, itemPosition).apply();
                 if (artistsViewer.isNotLoaded() || itemPosition != savedTopArtistPeriod) {
                     if (!artistsViewer.isNotLoaded()) {
@@ -227,7 +230,8 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     private ViewerPage createTopArtistsPage() {
         final SpinnerLastfmArtistViewerPage viewer = new SpinnerLastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_spinner_tab, null),
-                R.string.top_artists);
+                R.string.top_artists,
+                preferencesManager.isDownloadImagesEnabled());
         viewer.setOnLoadMoreListener(() -> getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), false, viewer)
         );
         viewer.setItemClickListener(artistClickListener);

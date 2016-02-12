@@ -3,6 +3,7 @@ package com.pillowapps.liqear.models;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.models.lastfm.LastfmAlbumModel;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAuthModel;
@@ -63,15 +64,15 @@ public class LastfmModelsModule {
     @Provides
     @NonNull
     @Singleton
-    public LastfmUserModel provideLastfmUserModel(@NonNull LastfmApiService api) {
-        return new LastfmUserModel(api);
+    public LastfmUserModel provideLastfmUserModel(@NonNull LastfmApiService api, @NonNull AuthorizationInfoManager authorizationInfoManager) {
+        return new LastfmUserModel(api, authorizationInfoManager);
     }
 
     @Provides
     @NonNull
     @Singleton
-    public LastfmTrackModel provideLastfmTrackModel(@NonNull LastfmApiService api) {
-        return new LastfmTrackModel(api);
+    public LastfmTrackModel provideLastfmTrackModel(@NonNull LastfmApiService api, @NonNull AuthorizationInfoManager authorizationInfoManager) {
+        return new LastfmTrackModel(api, authorizationInfoManager);
     }
 
     @Provides
@@ -84,8 +85,8 @@ public class LastfmModelsModule {
     @Provides
     @NonNull
     @Singleton
-    public LastfmLibraryModel provideLastfmLibraryModel(@NonNull LastfmUserModel lastfmUserModel) {
-        return new LastfmLibraryModel(lastfmUserModel);
+    public LastfmLibraryModel provideLastfmLibraryModel(@NonNull Context context, @NonNull LastfmUserModel lastfmUserModel) {
+        return new LastfmLibraryModel(context, lastfmUserModel);
     }
 
 }

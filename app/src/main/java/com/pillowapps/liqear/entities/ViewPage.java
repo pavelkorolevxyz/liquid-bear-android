@@ -2,15 +2,13 @@ package com.pillowapps.liqear.entities;
 
 import android.view.View;
 
-import com.pillowapps.liqear.LBApplication;
-
 import butterknife.ButterKnife;
 
 public class ViewPage extends Page {
 
-    public ViewPage(View view, int titleRes) {
+    public ViewPage(View view, String title) {
         this.view = view;
-        this.title = LBApplication.getAppContext().getString(titleRes);
+        this.title = title;
         ButterKnife.bind(this, view);
     }
 

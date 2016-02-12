@@ -24,13 +24,15 @@ import rx.schedulers.Schedulers;
 public class LastfmTrackModel {
     private LastfmApiService lastfmService;
     private LastfmApiHelper apiHelper = new LastfmApiHelper();
+    private AuthorizationInfoManager authorizationInfoManager;
 
-    public LastfmTrackModel(LastfmApiService api) {
+    public LastfmTrackModel(LastfmApiService api, AuthorizationInfoManager authorizationInfoManager) {
         this.lastfmService = api;
+        this.authorizationInfoManager = authorizationInfoManager;
     }
 
     public void love(Track track, final SimpleCallback<Object> callback) {
-        String sessionKey = AuthorizationInfoManager.getLastfmKey();
+        String sessionKey = authorizationInfoManager.getLastfmKey();
         String artist = track.getArtist();
         String title = track.getTitle();
 
@@ -48,7 +50,7 @@ public class LastfmTrackModel {
     }
 
     public void unlove(Track track, final SimpleCallback<Object> callback) {
-        String sessionKey = AuthorizationInfoManager.getLastfmKey();
+        String sessionKey = authorizationInfoManager.getLastfmKey();
         String artist = track.getArtist();
         String title = track.getTitle();
 
@@ -67,7 +69,7 @@ public class LastfmTrackModel {
 
     public void scrobble(String artist, String title, String album, String timestamp,
                          final SimpleCallback<Object> callback) {
-        String sessionKey = AuthorizationInfoManager.getLastfmKey();
+        String sessionKey = authorizationInfoManager.getLastfmKey();
         Map<String, String> params = new TreeMap<>();
         params.put("artist", artist);
         params.put("track", title);
@@ -96,7 +98,7 @@ public class LastfmTrackModel {
 
     public Observable<LastfmResponse> scrobble(String artist, String title, String album,
                                                String timestamp) {
-        String sessionKey = AuthorizationInfoManager.getLastfmKey();
+        String sessionKey = authorizationInfoManager.getLastfmKey();
         Map<String, String> params = new TreeMap<>();
         params.put("artist", artist);
         params.put("track", title);
@@ -121,7 +123,7 @@ public class LastfmTrackModel {
     }
 
     public void nowplaying(Track track, final SimpleCallback<Object> callback) {
-        String sessionKey = AuthorizationInfoManager.getLastfmKey();
+        String sessionKey = authorizationInfoManager.getLastfmKey();
         Map<String, String> params = new TreeMap<>();
         String artist = track.getArtist();
         String title = track.getTitle();

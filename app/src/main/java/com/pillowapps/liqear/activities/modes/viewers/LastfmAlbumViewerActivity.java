@@ -119,7 +119,7 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
     private ViewPage createAlbumInfoPage() {
         return new ViewPage(
                 View.inflate(this, R.layout.album_info_layout, null),
-                R.string.album_info);
+                getString(R.string.album_info));
     }
 
     private ViewerPage createTracksPage() {

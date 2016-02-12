@@ -36,8 +36,11 @@ import com.pillowapps.liqear.fragments.base.BaseFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
+import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.MusicServiceManager;
-import com.pillowapps.liqear.helpers.NetworkUtils;
+import com.pillowapps.liqear.helpers.NetworkModel;
+import com.pillowapps.liqear.helpers.PreferencesModel;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
@@ -92,6 +95,14 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Inject
     ImageModel imageModel;
+
+    @Inject
+    AuthorizationInfoManager authorizationInfoManager;
+    @Inject
+    NetworkModel networkModel;
+
+    @Inject
+    ModeItemsHelper modeItemsHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -299,11 +310,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     public void toggleLoveCurrentTrack() {
-        if (!AuthorizationInfoManager.isAuthorizedOnLastfm()) {
+        if (!authorizationInfoManager.isAuthorizedOnLastfm()) {
             toast(R.string.last_fm_not_authorized);
             return;
         }
-        if (!NetworkUtils.isOnline()) {
+        if (!networkModel.isOnline()) {
             toast(R.string.no_internet);
             return;
         }
@@ -452,7 +463,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         View layout = View.inflate(getContext(), R.layout.seekbar_layout, null);
         final NumberPicker sb = (NumberPicker) layout.findViewById(R.id.minutes_picker);
         sb.setRange(1, 1440);
-        int timerDefault = SharedPreferencesManager.getPreferences()
+        int timerDefault = SharedPreferencesManager.getPreferences(getContext())
                 .getInt(Constants.TIMER_DEFAULT, 10);
         sb.setCurrent(timerDefault);
 
@@ -466,7 +477,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
             presenter.setTimerInSeconds(sb.getCurrent());
             musicServiceManager.setTimer(sb.getCurrent() * 60);
-            SharedPreferencesManager.getPreferences().edit()
+            SharedPreferencesManager.getPreferences(getContext()).edit()
                     .putInt(Constants.TIMER_DEFAULT, sb.getCurrent())
                     .apply();
         });
@@ -524,10 +535,15 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                                                   @NonNull ShareModel shareModel,
                                                   @NonNull VkWallModel vkWallModel,
                                                   @NonNull VkAudioModel vkAudioModel,
+                                                  @NonNull PreferencesModel preferencesModel,
                                                   @NonNull PlaylistModel playlistModel,
                                                   @NonNull Timeline timeline,
-                                                  @NonNull TutorialModel tutorial) {
-            return new HomePresenter(stateManager, libraryModel, shareModel, vkWallModel, vkAudioModel, playlistModel, timeline, tutorial);
+                                                  @NonNull TutorialModel tutorial,
+                                                  @NonNull AuthorizationInfoManager authorizationInfoManager,
+                                                  @NonNull NetworkModel networkModel,
+                                                  @NonNull ModeItemsHelper modeItemsHelper, LBPreferencesManager preferencesManager) {
+            return new HomePresenter(stateManager, libraryModel, shareModel, vkWallModel, vkAudioModel, preferencesModel, playlistModel, timeline, tutorial,
+                    authorizationInfoManager, networkModel, modeItemsHelper, preferencesManager);
         }
     }
 }

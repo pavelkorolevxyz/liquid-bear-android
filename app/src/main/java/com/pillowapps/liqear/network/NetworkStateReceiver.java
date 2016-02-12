@@ -14,6 +14,6 @@ public class NetworkStateReceiver extends BroadcastReceiver {
         Intent i = new Intent(Constants.NETWORK_ACTION, intent.getData());
         Bundle extras = intent.getExtras();
         if (extras != null) i.putExtras(extras);
-        LBApplication.getAppContext().sendBroadcast(i);
+        context.sendBroadcast(i);
     }
 }

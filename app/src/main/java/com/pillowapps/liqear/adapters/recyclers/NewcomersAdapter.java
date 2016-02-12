@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.adapters.recyclers;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -18,8 +19,10 @@ public class NewcomersAdapter extends RecyclerView.Adapter<NewcomersViewHolder> 
 
     private OnRecyclerItemClickListener clickListener;
     private List<Album> items;
+    private Context context;
 
-    public NewcomersAdapter(List<Album> items, OnRecyclerItemClickListener clickListener) {
+    public NewcomersAdapter(Context context, List<Album> items, OnRecyclerItemClickListener clickListener) {
+        this.context = context;
         this.clickListener = clickListener;
         this.items = items;
     }
@@ -47,7 +50,7 @@ public class NewcomersAdapter extends RecyclerView.Adapter<NewcomersViewHolder> 
     @Override
     public NewcomersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.album_item, parent, false);
-        return new NewcomersViewHolder(v, clickListener);
+        return new NewcomersViewHolder(context, v, clickListener);
     }
 
     public Album getItem(int position) {

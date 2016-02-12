@@ -26,15 +26,17 @@ import java.util.List;
 public class ModeGridAdapter implements StickyGridHeadersBaseAdapter {
     private final LayoutInflater inflater;
     private final Context context;
-    private final SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences();
+    private final SharedPreferences modePreferences;
     private List<Mode> modes;
     private List<DataSetObserver> observers = new ArrayList<>();
-    private ModeItemsHelper modeItemsHelper = new ModeItemsHelper();
+    private ModeItemsHelper modeItemsHelper;
 
-    public ModeGridAdapter(Context context) {
+    public ModeGridAdapter(Context context, ModeItemsHelper modeItemsHelper) {
         this.context = context;
         inflater = LayoutInflater.from(context);
-        modeItemsHelper.calcNewModesList();
+        modePreferences = SharedPreferencesManager.getModePreferences(context);
+        this.modeItemsHelper = modeItemsHelper;
+        this.modeItemsHelper.calcNewModesList();
         modes = modeItemsHelper.getModes();
     }
 
@@ -135,7 +137,7 @@ public class ModeGridAdapter implements StickyGridHeadersBaseAdapter {
         int icon = mode.getIcon();
 
         Drawable drawable = ContextCompat.getDrawable(context, icon);
-        boolean modeEnabled = ModeItemsHelper.isModeEnabled(mode);
+        boolean modeEnabled = modeItemsHelper.isModeEnabled(mode);
         int iconsColor = modeEnabled ? R.color.icons : R.color.accent;
         drawable.setColorFilter(ContextCompat.getColor(context, iconsColor), PorterDuff.Mode.MULTIPLY);
 
@@ -147,7 +149,7 @@ public class ModeGridAdapter implements StickyGridHeadersBaseAdapter {
         final boolean modeVisible = mode.isVisible();
         holder.modeButton.setEnabled(modeEnabled);
         holder.switchVisibilityButton.setVisibility(
-                ModeItemsHelper.isEditMode() ? View.VISIBLE : View.GONE);
+                modeItemsHelper.isEditMode() ? View.VISIBLE : View.GONE);
         holder.switchVisibilityButton.setImageResource(modeVisible
                         ? R.drawable.minus
                         : R.drawable.plus

@@ -9,7 +9,7 @@ import com.pillowapps.liqear.entities.exception.NoNetworkConnectionException;
 import com.pillowapps.liqear.entities.exception.VkException;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkTrack;
-import com.pillowapps.liqear.helpers.NetworkUtils;
+import com.pillowapps.liqear.helpers.NetworkModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 
 import javax.inject.Inject;
@@ -19,17 +19,19 @@ import rx.Observable;
 public class VkAudioProvider {
 
     private VkAudioModel vkAudioModel;
+    private NetworkModel networkModel;
 
     @Inject
-    public VkAudioProvider(VkAudioModel vkAudioModel) {
+    public VkAudioProvider(VkAudioModel vkAudioModel, NetworkModel networkModel) {
         this.vkAudioModel = vkAudioModel;
+        this.networkModel = networkModel;
     }
 
     public Observable<TrackInfo> getTrackInfo(@NonNull final Track track) {
         final String url = track.getUrl();
         if (url == null || url.isEmpty()) {
             return Observable.create(subscriber -> {
-                if (!NetworkUtils.isOnline()) {
+                if (!networkModel.isOnline()) {
                     subscriber.onError(new NoNetworkConnectionException());
                     return;
                 }

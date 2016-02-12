@@ -63,6 +63,10 @@ import com.viewpagerindicator.UnderlinePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import timber.log.Timber;
+
 public class PhoneHomeFragment extends HomeFragment {
 
     private ViewPager pager;
@@ -118,6 +122,7 @@ public class PhoneHomeFragment extends HomeFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LBApplication.get(getContext()).applicationComponent().inject(this);
+        Timber.d("phonefragment injected");
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -158,9 +163,9 @@ public class PhoneHomeFragment extends HomeFragment {
         playlistTab = View.inflate(context, R.layout.playlist_tab, null);
         playbackTab = View.inflate(context, R.layout.play_tab, null);
         modeTab = View.inflate(context, R.layout.mode_tab, null);
-        pages.add(new ViewPage(playlistTab, R.string.playlist_tab));
-        pages.add(new ViewPage(playbackTab, R.string.play_tab));
-        pages.add(new ViewPage(modeTab, R.string.mode_tab));
+        pages.add(new ViewPage(playlistTab, getString(R.string.playlist_tab)));
+        pages.add(new ViewPage(playbackTab, getString(R.string.play_tab)));
+        pages.add(new ViewPage(modeTab, getString(R.string.mode_tab)));
         pager = (ViewPager) v.findViewById(R.id.viewpager);
         pager.setOffscreenPageLimit(pages.size());
         pager.setAdapter(new PhoneFragmentPagerAdapter(pages));
@@ -207,7 +212,7 @@ public class PhoneHomeFragment extends HomeFragment {
         });
         playlistListView.setAdapter(playlistItemsAdapter);
         searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
-        searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences()
+        searchPlaylistEditText.setVisibility(SharedPreferencesManager.getSavePreferences(getContext())
                 .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false) ? View.VISIBLE : View.GONE);
         emptyPlaylistTextView = (TextView) playlistTab.findViewById(R.id.empty);
     }
@@ -239,10 +244,10 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     private void initModeTab() {
-        modeAdapter = new ModeGridAdapter(activity);
+        modeAdapter = new ModeGridAdapter(activity, modeItemsHelper);
 
         StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
-        modeGridView.setOnItemClickListener(new OnModeClickListener(this));
+        modeGridView.setOnItemClickListener(new OnModeClickListener(this, authorizationInfoManager, networkModel));
         modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
         modeGridView.setAdapter(modeAdapter);
     }
@@ -319,7 +324,7 @@ public class PhoneHomeFragment extends HomeFragment {
         albumImageView.setOnClickListener(albumClickListener);
         albumTextView.setOnClickListener(albumClickListener);
         timeTextView.setOnClickListener(view -> {
-            SharedPreferences preferences = SharedPreferencesManager.getPreferences();
+            SharedPreferences preferences = SharedPreferencesManager.getPreferences(getContext());
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean(Constants.TIME_INVERTED,
                     !preferences.getBoolean(Constants.TIME_INVERTED, false));
@@ -384,7 +389,7 @@ public class PhoneHomeFragment extends HomeFragment {
         int timeFromBeginning = musicServiceManager.getCurrentPosition() / 1000;
         int duration = musicServiceManager.getDuration();
         if (duration > 0) {
-            if (SharedPreferencesManager.getPreferences().getBoolean(Constants.TIME_INVERTED, false)) {
+            if (SharedPreferencesManager.getPreferences(getContext()).getBoolean(Constants.TIME_INVERTED, false)) {
                 int timeToEnd = duration / 1000 - timeFromBeginning;
                 text = String.format("-%s", TimeUtils.secondsToMinuteString(timeToEnd));
             } else {
@@ -603,7 +608,7 @@ public class PhoneHomeFragment extends HomeFragment {
     public class ModeLongClickListener implements AdapterView.OnItemLongClickListener {
         @Override
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-            ModeItemsHelper.setEditMode(true);
+            modeItemsHelper.setEditMode(true);
             modeAdapter.notifyChanges();
             return true;
         }

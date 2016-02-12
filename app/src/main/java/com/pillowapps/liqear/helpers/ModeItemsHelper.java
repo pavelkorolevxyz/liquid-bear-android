@@ -1,6 +1,7 @@
 package com.pillowapps.liqear.helpers;
 
-import com.pillowapps.liqear.LBApplication;
+import android.content.Context;
+
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.callbacks.UpdateAdapterCallback;
 import com.pillowapps.liqear.entities.Category;
@@ -14,8 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ModeItemsHelper {
-    private static boolean editMode;
+    private boolean editMode;
+    private AuthorizationInfoManager authorizationInfoManager;
     private List<Mode> allModes = Arrays.asList(
             //Vk
             new Mode(R.string.user_audio, R.drawable.ic_casette, Category.VK, ModeEnum.USER_AUDIO_VK, false),
@@ -54,23 +58,31 @@ public class ModeItemsHelper {
     private List<Item> items;
     private List<Category> categories = new ArrayList<>(4);
     private List<Integer> itemsPerCategory = new ArrayList<>(4);
+    private Context context;
+    private NetworkModel networkModel;
 
-    public static boolean isEditMode() {
+    public ModeItemsHelper(Context context, AuthorizationInfoManager authorizationInfoManager, NetworkModel networkModel) {
+        this.context = context;
+        this.authorizationInfoManager = authorizationInfoManager;
+        this.networkModel = networkModel;
+    }
+
+    public boolean isEditMode() {
         return editMode;
     }
 
-    public static void setEditMode(boolean editMode) {
-        ModeItemsHelper.editMode = editMode;
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
     }
 
-    public static boolean isModeEnabled(Mode mode) {
+    public boolean isModeEnabled(Mode mode) {
         final boolean modeVisible = mode.isVisible();
         boolean isModeLocal = mode.getCategory() == Category.LOCAL;
-        boolean areBothAuthorized = AuthorizationInfoManager.isAuthorizedOnVk()
-                && AuthorizationInfoManager.isAuthorizedOnLastfm();
-        boolean isOnlyVkModeAndAuthorized = AuthorizationInfoManager.isAuthorizedOnVk()
+        boolean areBothAuthorized = authorizationInfoManager.isAuthorizedOnVk()
+                && authorizationInfoManager.isAuthorizedOnLastfm();
+        boolean isOnlyVkModeAndAuthorized = authorizationInfoManager.isAuthorizedOnVk()
                 && !mode.isNeedLastfm();
-        boolean isModeForLastfmAuthorized = AuthorizationInfoManager.isAuthorizedOnLastfm()
+        boolean isModeForLastfmAuthorized = authorizationInfoManager.isAuthorizedOnLastfm()
                 &&
                 mode.getCategory() != Category.VK
                 &&
@@ -78,13 +90,19 @@ public class ModeItemsHelper {
                 &&
                 mode.getModeEnum() != ModeEnum.LIBRARY;
         boolean isLastfmModeNotNeededAuth = !mode.isNeedLastfm() && mode.getCategory() != Category.VK;
-        return modeVisible
-                && (isModeLocal
-                || (((areBothAuthorized
-                || isOnlyVkModeAndAuthorized
-                || isModeForLastfmAuthorized)
-                || isLastfmModeNotNeededAuth)
-                && NetworkUtils.isOnline()));
+        if (!modeVisible) {
+            return false;
+        }
+
+        if (isModeLocal) {
+            return true;
+        }
+
+        if (!networkModel.isOnline()) {
+            return false;
+        }
+
+        return areBothAuthorized || isOnlyVkModeAndAuthorized || isModeForLastfmAuthorized || isLastfmModeNotNeededAuth;
     }
 
     public List<Item> createItemsList(UpdateAdapterCallback callback) {
@@ -93,17 +111,17 @@ public class ModeItemsHelper {
         Mode prev;
         if (modes.size() > 0) {
             prev = modes.get(0);
-            items.add(new Header(LBApplication.getAppContext(), prev.getCategoryTitle()));
-            items.add(new ListItem(LBApplication.getAppContext(), prev, callback));
+            items.add(new Header(context, prev.getCategoryTitle()));
+            items.add(new ListItem(context, prev, callback, this));
         }
         for (int i = 1; i < modes.size(); i++) {
             prev = modes.get(i - 1);
             Mode current = modes.get(i);
             if (prev.getCategory() != current.getCategory()) {
-                items.add(new Header(LBApplication.getAppContext(),
+                items.add(new Header(context,
                         current.getCategoryTitle()));
             }
-            items.add(new ListItem(LBApplication.getAppContext(), current, callback));
+            items.add(new ListItem(context, current, callback, this));
         }
         return items;
     }
@@ -113,7 +131,7 @@ public class ModeItemsHelper {
         categories.clear();
         itemsPerCategory.clear();
         for (Mode currentMode : allModes) {
-            if (SharedPreferencesManager.getModePreferences().getBoolean(Constants.MODE_VISIBLE
+            if (SharedPreferencesManager.getModePreferences(context).getBoolean(Constants.MODE_VISIBLE
                     + currentMode.getModeEnum(), currentMode.isVisible()) || isEditMode()) {
                 modes.add(currentMode);
                 Category category = currentMode.getCategory();

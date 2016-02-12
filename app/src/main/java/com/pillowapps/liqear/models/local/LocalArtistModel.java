@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.models.local;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
@@ -16,6 +17,12 @@ import inaka.com.tinytask.TinyTask;
 
 public class LocalArtistModel {
 
+    private Context context;
+
+    public LocalArtistModel(Context context) {
+        this.context = context;
+    }
+
     @SuppressWarnings("unchecked")
     public void getAllArtists(final LocalDataCallback<List<Artist>> callback) {
         TinyTask.perform(() -> {
@@ -24,7 +31,7 @@ public class LocalArtistModel {
                     MediaStore.Audio.Artists.ARTIST,
             };
 
-            Cursor cursor = LBApplication.getAppContext().getContentResolver().query(
+            Cursor cursor = context.getContentResolver().query(
                     MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
                     projection, null, null, null);
             List<Artist> artists = new ArrayList<>();
@@ -66,7 +73,7 @@ public class LocalArtistModel {
 
             String[] whereVal = {artistId};
 
-            Cursor cursor = LBApplication.getAppContext().getContentResolver().query(
+            Cursor cursor = context.getContentResolver().query(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                     projection, selection, whereVal, null);
             List<Track> tracks = new ArrayList<>();

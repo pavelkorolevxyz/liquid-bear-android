@@ -27,9 +27,11 @@ import java.util.List;
 
 public class VkAudioModel {
     private VkApiService vkService;
+    private LBPreferencesManager preferencesManager;
 
-    public VkAudioModel(VkApiService api) {
+    public VkAudioModel(VkApiService api, LBPreferencesManager preferencesManager) {
         this.vkService = api;
+        this.preferencesManager = preferencesManager;
     }
 
     public void getVkUserAudio(long uid, int count, int offset, final VkSimpleCallback<List<VkTrack>> callback) {
@@ -150,7 +152,7 @@ public class VkAudioModel {
     }
 
     public void addToVk(final Context context, Track track) {
-        if (LBPreferencesManager.isVkAddSlow()) {
+        if (preferencesManager.isVkAddSlow()) {
             if (track == null) return;
             Intent intent = new Intent(context, VkAudioSearchActivity.class);
             intent.putExtra(Constants.TARGET, TrackUtils.getNotation(track));

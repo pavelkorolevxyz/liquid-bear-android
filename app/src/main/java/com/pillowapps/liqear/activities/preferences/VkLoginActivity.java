@@ -94,7 +94,7 @@ public class VkLoginActivity extends TrackedBaseActivity {
             }
         }
         if (hasAccessToken && hasUserId) {
-            SharedPreferences preferences = LBApplication.getAppContext()
+            SharedPreferences preferences = VkLoginActivity.this
                     .getSharedPreferences(AuthorizationInfoManager.VK_PREFERENCES,
                             Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();

@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.helpers;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.pillowapps.liqear.audio.MusicService;
@@ -16,17 +17,19 @@ import timber.log.Timber;
 
 public class StateManager {
 
+    private Context context;
     private PlaylistModel playlistModel;
     private Timeline timeline;
 
-    public StateManager(PlaylistModel playlistModel, Timeline timeline) {
+    public StateManager(Context context, PlaylistModel playlistModel, Timeline timeline) {
+        this.context = context;
         this.playlistModel = playlistModel;
         this.timeline = timeline;
     }
 
     public void savePlaylistState(MusicService service) {
         saveTrackState();
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences().edit();
+        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(context).edit();
         if (service != null) {
             editor.putInt(Constants.CURRENT_POSITION, service.getCurrentPosition());
             editor.putInt(Constants.CURRENT_BUFFER, service.getCurrentBuffer());
@@ -41,7 +44,7 @@ public class StateManager {
     }
 
     public void saveTrackState() {
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences().edit();
+        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(context).edit();
         final Track currentTrack = timeline.getCurrentTrack();
         if (timeline.getPlaylistTracks() != null
                 && timeline.getPlaylistTracks().size() != 0

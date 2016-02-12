@@ -60,6 +60,8 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
 
     @Inject
     LastfmRecommendationsModel lastfmRecommendationsModel;
+    @Inject
+    AuthorizationInfoManager authorizationInfoManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +86,7 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
         progressBar = (ProgressBar) findViewById(R.id.pageProgressBar);
         gridView = (GridView) findViewById(R.id.recommendations_grid_view);
         listView = (ListView) findViewById(R.id.recommendations_list_view);
-        if (!SharedPreferencesManager.getPreferences().getBoolean("show_images_grid", true)) {
+        if (!SharedPreferencesManager.getPreferences(this).getBoolean("show_images_grid", true)) {
             listView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
             gridMode = false;
@@ -134,7 +136,7 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
                 finish();
                 break;
             case 0:
-                if (!AuthorizationInfoManager.isAuthorizedOnVk()) {
+                if (!authorizationInfoManager.isAuthorizedOnVk()) {
                     Toast.makeText(LastfmRecommendationsActivity.this,
                             R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
                     break;
@@ -233,7 +235,7 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
                     holder = new ViewHolder();
                     holder.text = (TextView) convertView.findViewById(R.id.text_tile_list_item);
                     holder.image = (ImageView) convertView.findViewById(R.id.image_tile_list_item);
-                    holder.loadImages = SharedPreferencesManager.getPreferences()
+                    holder.loadImages = SharedPreferencesManager.getPreferences(LastfmRecommendationsActivity.this)
                             .getBoolean("download_images_check_box_preferences", true);
                     convertView.setTag(holder);
                 } else {
@@ -257,7 +259,7 @@ public class LastfmRecommendationsActivity extends ResultTrackedBaseActivity {
                     holder = new ViewHolder();
                     holder.text = (TextView) convertView.findViewById(R.id.text_list_item);
                     holder.image = (ImageView) convertView.findViewById(R.id.image_view_list_item);
-                    holder.loadImages = SharedPreferencesManager.getPreferences()
+                    holder.loadImages = SharedPreferencesManager.getPreferences(LastfmRecommendationsActivity.this)
                             .getBoolean("download_images_check_box_preferences", true);
                     convertView.setTag(holder);
                 } else {

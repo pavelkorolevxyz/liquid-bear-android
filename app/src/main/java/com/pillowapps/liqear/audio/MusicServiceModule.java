@@ -5,7 +5,9 @@ import android.media.AudioManager;
 import android.support.annotation.NonNull;
 
 import com.google.android.exoplayer.ExoPlayer;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.MusicServiceManager;
+import com.pillowapps.liqear.helpers.NetworkModel;
 import com.pillowapps.liqear.models.AudioPlayerModel;
 import com.pillowapps.liqear.models.TickModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
@@ -80,15 +82,15 @@ public class MusicServiceModule {
     @Provides
     @NonNull
     @Singleton
-    public VkAudioProvider provideAudioProvider(VkAudioModel vkAudioModel) {
-        return new VkAudioProvider(vkAudioModel);
+    public VkAudioProvider provideAudioProvider(VkAudioModel vkAudioModel, NetworkModel networkModel) {
+        return new VkAudioProvider(vkAudioModel, networkModel);
     }
 
     @Provides
     @NonNull
     @Singleton
-    public TickModel provideTickModel(LastfmTrackModel lastfmTrackModel, VkStatusModel vkStatusModel) {
-        return new TickModel(lastfmTrackModel, vkStatusModel);
+    public TickModel provideTickModel(Context context, LastfmTrackModel lastfmTrackModel, VkStatusModel vkStatusModel, LBPreferencesManager preferencesManager) {
+        return new TickModel(context, lastfmTrackModel, vkStatusModel, preferencesManager);
     }
 
 }

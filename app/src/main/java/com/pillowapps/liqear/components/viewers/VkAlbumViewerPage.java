@@ -13,17 +13,13 @@ import java.util.List;
 
 public class VkAlbumViewerPage extends ViewerPage<Album> {
     private AlbumAdapter adapter;
+    private boolean loadImages;
 
     public VkAlbumViewerPage(Context context,
                              View view,
-                             String title) {
-        super(context, view, title);
-    }
-
-    public VkAlbumViewerPage(Context context,
-                             View view,
-                             int titleRes) {
-        super(context, view, titleRes);
+                             int titleRes, boolean loadImages) {
+        super(context, view, context.getString(titleRes));
+        this.loadImages = loadImages;
     }
 
     @Override
@@ -67,7 +63,7 @@ public class VkAlbumViewerPage extends ViewerPage<Album> {
 
     private void updateAdapter(List<Album> albums) {
         if (adapter == null) {
-            adapter = new AlbumAdapter(albums, listener);
+            adapter = new AlbumAdapter(albums, loadImages, listener);
             recyclerView.setAdapter(adapter);
         } else {
             adapter.addAll(albums);

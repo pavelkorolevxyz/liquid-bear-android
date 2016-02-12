@@ -8,18 +8,21 @@ import com.pillowapps.liqear.components.viewers.base.ViewerPage;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.lastfm.LastfmAlbum;
 import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 
 import java.util.List;
 
 public class LastfmAlbumViewerPage extends ViewerPage<Album> {
     private AlbumAdapter adapter;
+    private boolean loadImages;
 
     public LastfmAlbumViewerPage(Context context, View view, String title) {
         super(context, view, title);
     }
 
-    public LastfmAlbumViewerPage(Context context, View view, int titleRes) {
-        super(context, view, titleRes);
+    public LastfmAlbumViewerPage(Context context, View view, int titleRes, boolean loadImages) {
+        super(context, view, context.getString(titleRes));
+        this.loadImages = loadImages;
     }
 
     public AlbumAdapter getAdapter() {
@@ -53,7 +56,7 @@ public class LastfmAlbumViewerPage extends ViewerPage<Album> {
 
     private void updateAdapter(List<Album> albums) {
         if (adapter == null) {
-            adapter = new AlbumAdapter(albums, listener);
+            adapter = new AlbumAdapter(albums, loadImages, listener);
             recyclerView.setAdapter(adapter);
         } else {
             adapter.addAll(albums);

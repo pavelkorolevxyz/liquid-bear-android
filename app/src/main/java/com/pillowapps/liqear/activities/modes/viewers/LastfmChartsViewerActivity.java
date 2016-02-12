@@ -23,6 +23,7 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmChartModel;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
 
     @Inject
     LastfmChartModel chartsModel;
+    @Inject
+    LBPreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +113,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
     private ViewerPage createTopArtistsPage() {
         final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
-                R.string.top_artists);
+                R.string.top_artists, preferencesManager.isDownloadImagesEnabled());
         viewer.setOnLoadMoreListener(() -> getTopArtists(viewer));
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);
@@ -142,7 +145,7 @@ public class LastfmChartsViewerActivity extends PagerResultActivity {
     private ViewerPage createHypedArtistsPage() {
         final LastfmArtistViewerPage viewer = new LastfmArtistViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
-                R.string.hyped_artists);
+                R.string.hyped_artists, preferencesManager.isDownloadImagesEnabled());
         viewer.setOnLoadMoreListener(() -> getHypedArtists(viewer));
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);

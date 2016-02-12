@@ -18,8 +18,10 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistsViewHolder> {
 
     private OnRecyclerItemClickListener clickListener;
     private List<Artist> items;
+    private boolean loadImages;
 
-    public ArtistAdapter(List<Artist> items, OnRecyclerItemClickListener clickListener) {
+    public ArtistAdapter(List<Artist> items, boolean loadImages, OnRecyclerItemClickListener clickListener) {
+        this.loadImages = loadImages;
         this.clickListener = clickListener;
         this.items = items;
     }
@@ -40,7 +42,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistsViewHolder> {
     @Override
     public ArtistsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_item, parent, false);
-        return new ArtistsViewHolder(v, clickListener);
+        return new ArtistsViewHolder(v, loadImages, clickListener);
     }
 
     @Override

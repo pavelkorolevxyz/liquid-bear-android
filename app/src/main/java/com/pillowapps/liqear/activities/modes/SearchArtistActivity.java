@@ -15,6 +15,7 @@ import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.DelayedTextWatcher;
+import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmArtistModel;
 
@@ -30,6 +31,8 @@ public class SearchArtistActivity extends SearchListBaseActivity {
 
     @Inject
     LastfmArtistModel lastfmArtistModel;
+    @Inject
+    LBPreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,7 @@ public class SearchArtistActivity extends SearchListBaseActivity {
 
     private void loadArtistPresets() {
         LinkedHashSet<Artist> artists = new LinkedHashSet<>(Constants.PRESET_WANTED_COUNT);
-        SharedPreferences artistPreferences = SharedPreferencesManager.getArtistPreferences();
+        SharedPreferences artistPreferences = SharedPreferencesManager.getArtistPreferences(this);
         int artistCount = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
         if (artistCount >= Constants.PRESET_WANTED_COUNT) {
             for (int i = artistCount - 1; i >= artistCount - Constants.PRESET_WANTED_COUNT; i--) {
@@ -91,8 +94,8 @@ public class SearchArtistActivity extends SearchListBaseActivity {
     }
 
     private void fillWithArtists(List<Artist> artists) {
-        adapter = new ArtistAdapter(artists, (view, position) -> {
-            SharedPreferences artistPreferences = SharedPreferencesManager.getArtistPreferences();
+        adapter = new ArtistAdapter(artists, preferencesManager.isDownloadImagesEnabled(), (view, position) -> {
+            SharedPreferences artistPreferences = SharedPreferencesManager.getArtistPreferences(this);
             SharedPreferences.Editor editor = artistPreferences.edit();
             int artistLastNumberAll = artistPreferences.getInt(Constants.PRESET_LAST_NUMBER, 0);
             int artistsLastNumberMod = artistLastNumberAll % Constants.PRESET_WANTED_COUNT;

@@ -28,9 +28,11 @@ import rx.Observable;
 public class LastfmUserModel {
     private LastfmApiService lastfmService;
     private LastfmApiHelper apiHelper = new LastfmApiHelper();
+    private AuthorizationInfoManager authorizationInfoManager;
 
-    public LastfmUserModel(LastfmApiService api) {
+    public LastfmUserModel(LastfmApiService api, AuthorizationInfoManager authorizationInfoManager) {
         lastfmService = api;
+        this.authorizationInfoManager = authorizationInfoManager;
     }
 
     public void getUserTopArtists(String userName, String period, int limit, int page,
@@ -54,7 +56,7 @@ public class LastfmUserModel {
 
     public void getUserRecommendedArtists(int limit, int page,
                                           final SimpleCallback<List<LastfmArtist>> callback) {
-        String sessionKey = AuthorizationInfoManager.getLastfmKey();
+        String sessionKey = authorizationInfoManager.getLastfmKey();
 
         Map<String, String> params = new TreeMap<>();
         params.put("limit", String.valueOf(limit));

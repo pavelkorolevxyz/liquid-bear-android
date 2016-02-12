@@ -19,13 +19,12 @@ public class NeighbourViewHolder extends RecyclerView.ViewHolder implements View
 
     public OnRecyclerItemClickListener mListener;
 
-    public NeighbourViewHolder(View itemLayoutView, OnRecyclerItemClickListener listener) {
+    public NeighbourViewHolder(View itemLayoutView, boolean loadImages, OnRecyclerItemClickListener listener) {
         super(itemLayoutView);
         textView = (TextView) itemLayoutView.findViewById(R.id.text_list_item);
         imageView = (RoundedImageView) itemLayoutView.findViewById(R.id.image_view_list_item);
-        loadImages = LBPreferencesManager.isDownloadImagesEnabled();
+        this.loadImages = loadImages;
         mainLayout = itemLayoutView.findViewById(R.id.main_layout);
-
         mListener = listener;
         itemLayoutView.setOnClickListener(this);
     }
