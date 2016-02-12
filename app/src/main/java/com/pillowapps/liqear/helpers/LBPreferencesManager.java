@@ -1,6 +1,9 @@
 package com.pillowapps.liqear.helpers;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.pillowapps.liqear.entities.RestoreData;
 
 public class LBPreferencesManager {
 
@@ -48,5 +51,14 @@ public class LBPreferencesManager {
 
     public boolean isVkAddSlow() {
         return SharedPreferencesManager.getPreferences(context).getBoolean("add_to_vk_slow", true);
+    }
+
+    public RestoreData restore() {
+        SharedPreferences preferences = SharedPreferencesManager.getPreferences(context);
+        String artist = preferences.getString(Constants.ARTIST, "");
+        String title = preferences.getString(Constants.TITLE, "");
+        int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
+        int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
+        return new RestoreData(artist, title, currentIndex, position);
     }
 }

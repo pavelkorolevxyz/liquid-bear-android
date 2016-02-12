@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.helpers.home;
 
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -11,20 +10,19 @@ import com.pillowapps.liqear.callbacks.VkPassiveCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
+import com.pillowapps.liqear.entities.RestoreData;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.helpers.ArtistTrackComparator;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.LBPreferencesManager;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.NetworkModel;
 import com.pillowapps.liqear.helpers.PreferencesModel;
 import com.pillowapps.liqear.helpers.Presenter;
-import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.PlaylistModel;
@@ -420,38 +418,39 @@ public class HomePresenter extends Presenter<HomeView> {
 
             List<Track> tracks = playlist.getTracks();
 
-//            SharedPreferences preferences = SharedPreferencesManager.getPreferences(); // todo on interactor/models level
-//            String artist = preferences.getString(Constants.ARTIST, "");
-//            String title = preferences.getString(Constants.TITLE, "");
-//            int currentIndex = preferences.getInt(Constants.CURRENT_INDEX, 0);
-//            int position = preferences.getInt(Constants.CURRENT_POSITION, 0);
-//
-//            boolean currentFits = currentIndex < tracks.size();
-//            if (!currentFits) currentIndex = 0;
-//            Track currentTrack = tracks.get(currentIndex);
-//            boolean tracksEquals = currentFits
-//                    && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-//                    + currentTrack.getTitle());
-//            if (!tracksEquals) {
-//                view.showArtistPlaceholder();
-//                currentIndex = 0;
-//                view.updateTrackArtist(currentTrack.getArtist());
-//                view.updateTrackTitle(currentTrack.getTitle());
-//                position = 0;
-//            } else {
-//                view.updateTrackArtist(artist);
-//                view.updateTrackTitle(title);
-//            }
-//            timeline.setIndex(currentIndex);
-//            if (currentIndex > tracks.size()) {
-//                view.showArtistPlaceholder();
-//                position = 0;
-//            }
-//            if (!SharedPreferencesManager.getPreferences().getBoolean("continue_from_position", true)) {
-//                position = 0;
-//            }
-//
-//            view.updateAlbum();
+
+            RestoreData restoreData = preferencesManager.restore();
+            String artist = restoreData.getArtist();
+            String title = restoreData.getTitle();
+            int currentIndex = restoreData.getCurrentIndex();
+            int position = restoreData.getPosition();
+
+            boolean currentFits = currentIndex < tracks.size();
+            if (!currentFits) currentIndex = 0;
+            Track currentTrack = tracks.get(currentIndex);
+            boolean tracksEquals = currentFits
+                    && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
+                    + currentTrack.getTitle());
+            if (!tracksEquals) {
+                view.showArtistPlaceholder();
+                currentIndex = 0;
+                view.updateTrackArtist(currentTrack.getArtist());
+                view.updateTrackTitle(currentTrack.getTitle());
+                position = 0;
+            } else {
+                view.updateTrackArtist(artist);
+                view.updateTrackTitle(title);
+            }
+            timeline.setIndex(currentIndex);
+            if (currentIndex > tracks.size()) {
+                view.showArtistPlaceholder();
+                position = 0;
+            }
+            if (!preferencesManager.isContinueFromLastPositionEnabled()) {
+                position = 0;
+            }
+
+            view.updateAlbum();
         });
     }
 
@@ -476,9 +475,9 @@ public class HomePresenter extends Presenter<HomeView> {
             view.showArtistPlaceholder();
             return;
         }
-//        if (SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-//            view.updateArtistPhotoAndColors();
-//        }
+        if (preferencesManager.isDownloadImagesEnabled()) {
+            view.updateArtistPhotoAndColors();
+        }
     }
 
     public void updateAlbum() {
@@ -492,11 +491,11 @@ public class HomePresenter extends Presenter<HomeView> {
         }
 
         String imageUrl = album.getImageUrl();
-//        if (imageUrl == null || !SharedPreferencesManager.getPreferences().getBoolean(Constants.DOWNLOAD_IMAGES_CHECK_BOX_PREFERENCES, true)) {
-//            view.hideAlbumImage();
-//        } else {
-//            view.showAlbumImage(imageUrl);
-//        }
+        if (imageUrl == null || !preferencesManager.isDownloadImagesEnabled()) {
+            view.hideAlbumImage();
+        } else {
+            view.showAlbumImage(imageUrl);
+        }
         String albumTitle = album.getTitle();
         if (albumTitle == null) {
             view.hideAlbumTitle();
