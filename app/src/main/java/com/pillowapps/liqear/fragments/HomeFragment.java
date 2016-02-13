@@ -42,7 +42,6 @@ import com.pillowapps.liqear.helpers.NetworkManager;
 import com.pillowapps.liqear.helpers.PreferencesModel;
 import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.SavesManager;
-import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.home.HomePresenter;
@@ -309,7 +308,9 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     public void openDropButton() {
-        if (mainMenu == null) return;
+        if (mainMenu == null) {
+            return;
+        }
         mainMenu.performIdentifierAction(R.id.track_button, 0);
     }
 

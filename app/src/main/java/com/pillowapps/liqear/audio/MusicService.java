@@ -32,11 +32,12 @@ import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
-import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.Converter;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
+import com.pillowapps.liqear.helpers.ShakeManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.AudioPlayerModel;
 import com.pillowapps.liqear.models.TickModel;
@@ -107,12 +108,22 @@ public class MusicService extends Service {
     @Inject
     PreferencesScreenManager preferencesManager;
 
+    @Inject
+    ShakeManager shakeManager;
+
     @Override
     public void onCreate() {
         super.onCreate();
         LBApplication.get(this).applicationComponent().inject(this);
 
         initAudioPlayer();
+        updateShake();
+    }
+
+    private void updateShake() {
+        shakeManager.updateShake().subscribe(o -> {
+            next();
+        });
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -149,75 +160,73 @@ public class MusicService extends Service {
                     break;
                 case ACTION_ADD_TO_VK: {
                     Track track = timeline.getCurrentTrack();
-                    if (track != null) {
-                        Intent searchVkIntent = new Intent(getBaseContext(),
-                                VkAudioSearchActivity.class);
-                        searchVkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        searchVkIntent.putExtra(Constants.TARGET, TrackUtils.getNotation(track));
-                        getApplication().startActivity(searchVkIntent);
+                    if (track == null) {
+                        break;
                     }
+                    Intent searchVkIntent = new Intent(getBaseContext(), VkAudioSearchActivity.class);
+                    searchVkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    searchVkIntent.putExtra(Constants.TARGET, TrackUtils.getNotation(track));
+                    getApplication().startActivity(searchVkIntent);
                     break;
                 }
                 case ACTION_ADD_TO_VK_FAST: {
                     final Track track = timeline.getCurrentTrack();
-                    if (track != null) {
-                        vkAudioModel.addToUserAudioFast(TrackUtils.getNotation(track),
-                                new VkSimpleCallback<VkResponse>() {
-                                    @Override
-                                    public void success(VkResponse data) {
-                                        track.setAddedToVk(true);
-                                        Toast.makeText(MusicService.this,
-                                                R.string.added, Toast.LENGTH_SHORT).show();
-                                        updateTrackNotification();
-                                    }
-
-                                    @Override
-                                    public void failure(VkError error) {
-
-                                    }
-                                });
+                    if (track == null) {
+                        break;
                     }
+                    vkAudioModel.addToUserAudioFast(TrackUtils.getNotation(track),
+                            new VkSimpleCallback<VkResponse>() {
+                                @Override
+                                public void success(VkResponse data) {
+                                    track.setAddedToVk(true);
+                                    Toast.makeText(MusicService.this,
+                                            R.string.added, Toast.LENGTH_SHORT).show();
+                                    updateTrackNotification();
+                                }
+
+                                @Override
+                                public void failure(VkError error) {
+
+                                }
+                            });
                     break;
                 }
                 case ACTION_LOVE: {
                     final Track track = timeline.getCurrentTrack();
-                    if (track != null) {
-                        if (!track.isLoved()) {
-                            lastfmTrackModel.love(track, new SimpleCallback<Object>() {
-                                @Override
-                                public void success(Object o) {
-                                    track.setLoved(true);
-                                    updateWidgets();
-                                    updateTrackNotification();
-                                }
+                    if (track == null) {
+                        break;
+                    }
+                    if (!track.isLoved()) {
+                        lastfmTrackModel.love(track, new SimpleCallback<Object>() {
+                            @Override
+                            public void success(Object o) {
+                                track.setLoved(true);
+                                updateWidgets();
+                                updateTrackNotification();
+                            }
 
-                                @Override
-                                public void failure(String error) {
-                                }
-                            });
-                        } else {
-                            lastfmTrackModel.unlove(track, new SimpleCallback<Object>() {
-                                @Override
-                                public void success(Object o) {
-                                    track.setLoved(false);
-                                    updateWidgets();
-                                    updateTrackNotification();
-                                }
+                            @Override
+                            public void failure(String error) {
+                            }
+                        });
+                    } else {
+                        lastfmTrackModel.unlove(track, new SimpleCallback<Object>() {
+                            @Override
+                            public void success(Object o) {
+                                track.setLoved(false);
+                                updateWidgets();
+                                updateTrackNotification();
+                            }
 
-                                @Override
-                                public void failure(String error) {
-                                }
-                            });
-                        }
+                            @Override
+                            public void failure(String error) {
+                            }
+                        });
                     }
                     break;
                 }
                 case CHANGE_SHAKE_PREFERENCE:
-//                    if (LBPreferencesManager.isShakeEnabled()) {
-////                        initShakeDetector();
-//                    } else {
-////                        destroyShake();
-//                    }
+                    updateShake();
                     break;
                 default:
                     throw new RuntimeException("Unknown action sent for MusicService");
@@ -235,7 +244,8 @@ public class MusicService extends Service {
                         Timber.d("Track completed. Starting next.");
                         next();
                     } else if (playbackState == ExoPlayer.STATE_READY) {
-                        timeline.getCurrentTrack().setDuration(audioPlayerModel.getDuration());
+                        Track currentTrack = timeline.getCurrentTrack();
+                        currentTrack.setDuration(audioPlayerModel.getDuration());
                         if (audioPlayerModel.isPlayReady()) {
                             startUpdaters();
                             Timber.d("Start updaters");
@@ -284,8 +294,12 @@ public class MusicService extends Service {
     }
 
     public void startUpdaters() {
-        tickModel.startNowplayingUpdater(timeline.getCurrentTrack());
-        tickModel.startScrobblerUpdater(timeline.getCurrentTrack());
+        Track currentTrack = timeline.getCurrentTrack();
+        if (currentTrack == null) {
+            throw new IllegalStateException("Current track is null");
+        }
+        tickModel.startNowplayingUpdater(currentTrack);
+        tickModel.startScrobblerUpdater(currentTrack);
 
         updatersSubscription.add(
                 tickModel.getPlayProgressUpdater().observeOn(AndroidSchedulers.mainThread()).subscribe(aLong -> {
@@ -326,7 +340,6 @@ public class MusicService extends Service {
         LBApplication.BUS.post(new UpdatePositionEvent());
         LBApplication.BUS.post(new TrackInfoEvent(track));
 
-        //todo
         getArtistInfo(track.getArtist(), authorizationInfoManager.getLastfmName());
         getTrackInfo(track);
 
@@ -361,6 +374,9 @@ public class MusicService extends Service {
                             timeline.setAlbumCoverBitmap(bitmap);
                             updateTrackNotification();
                         });
+                        if (timeline.getCurrentTrack() == null) {
+                            throw new IllegalStateException("Current track is null");
+                        }
                         timeline.getCurrentTrack().setLoved(loved);
                         LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(album));
                         updateWidgets();

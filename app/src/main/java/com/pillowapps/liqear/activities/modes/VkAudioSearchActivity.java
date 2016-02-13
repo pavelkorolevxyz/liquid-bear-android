@@ -49,6 +49,10 @@ public class VkAudioSearchActivity extends ListBaseActivity {
         setTitle(getResources().getString(R.string.pick_good_result));
         Track currentTrack = timeline.getCurrentTrack();
 
+        if (currentTrack == null) {
+            throw new IllegalStateException("Current track is null.");
+        }
+
         String target = getIntent().getStringExtra(Constants.TARGET);
         if (target != null && !target.isEmpty()) {
             searchVK(target, 100);
