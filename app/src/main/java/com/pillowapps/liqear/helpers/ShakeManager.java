@@ -13,14 +13,12 @@ import rx.Observable;
 public class ShakeManager {
 
     private Context context;
-    private PreferencesScreenManager preferencesScreenManager;
     private SensorManager sensorManager;
     private OnShakeListenerImpl onShakeListenerImpl;
 
     @Inject
-    public ShakeManager(Context context, PreferencesScreenManager preferencesScreenManager) {
+    public ShakeManager(Context context) {
         this.context = context;
-        this.preferencesScreenManager = preferencesScreenManager;
     }
 
     public Observable<Object> initShakeDetector() {
@@ -39,14 +37,5 @@ public class ShakeManager {
             return;
         }
         sensorManager.unregisterListener(onShakeListenerImpl);
-    }
-
-    public Observable<Object> updateShake() {
-        if (preferencesScreenManager.isShakeEnabled()) {
-            return initShakeDetector();
-        } else {
-            destroyShake();
-            return Observable.empty();
-        }
     }
 }

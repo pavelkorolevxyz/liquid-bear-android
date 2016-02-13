@@ -77,6 +77,7 @@ public class MusicService extends Service {
     private CompositeSubscription completeSubscription = new CompositeSubscription();
     private CompositeSubscription updatersSubscription = new CompositeSubscription();
     private CompositeSubscription timerSubscription = new CompositeSubscription();
+    private CompositeSubscription shakeSubscription = new CompositeSubscription();
 
     @Inject
     AudioPlayerModel audioPlayerModel;
@@ -121,9 +122,14 @@ public class MusicService extends Service {
     }
 
     private void updateShake() {
-        shakeManager.updateShake().subscribe(o -> {
-            next();
-        });
+        if (preferencesManager.isShakeEnabled()) {
+            shakeSubscription.add(shakeManager.initShakeDetector().subscribe(o -> {
+                next();
+            }));
+        } else {
+            shakeSubscription.clear();
+            shakeManager.destroyShake();
+        }
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -336,6 +342,7 @@ public class MusicService extends Service {
 
         Track track = timeline.getPlaylistTracks().get(index);
         timeline.setIndex(index);
+        timeline.listen(index);
 
         LBApplication.BUS.post(new UpdatePositionEvent());
         LBApplication.BUS.post(new TrackInfoEvent(track));

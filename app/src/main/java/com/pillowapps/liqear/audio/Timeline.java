@@ -151,9 +151,12 @@ public class Timeline {
         return index;
     }
 
+    public void listen(int index) {
+        listeningsCounter.listen(index);
+    }
+
     public void setIndex(int index) {
         this.index = index;
-        listeningsCounter.listen(index);
     }
 
     public String getCurrentArtistImageUrl() {

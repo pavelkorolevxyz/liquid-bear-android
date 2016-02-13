@@ -12,6 +12,7 @@ public class ListeningsCounter {
 
     private int[] listeningsCount;
     private int maxListeningsCount;
+    private int minListeningsCount;
 
     private Random random;
 
@@ -23,6 +24,7 @@ public class ListeningsCounter {
     public void updateWithPlaylist(@NonNull Playlist playlist) {
         listeningsCount = new int[playlist.getTracks().size()];
         maxListeningsCount = 1;
+        minListeningsCount = 0;
     }
 
     public int getLeastPlayedRandomIndex() {
@@ -30,10 +32,13 @@ public class ListeningsCounter {
         int randomIndex = random.nextInt(count);
         int tries = 0;
         while (tries++ < count) {
-            if (listeningsCount[randomIndex] < maxListeningsCount) {
+            if (listeningsCount[randomIndex] == minListeningsCount) {
                 break;
             }
             randomIndex = (randomIndex + 1) % count;
+        }
+        if (tries >= count) {
+            minListeningsCount++;
         }
         return randomIndex;
     }
