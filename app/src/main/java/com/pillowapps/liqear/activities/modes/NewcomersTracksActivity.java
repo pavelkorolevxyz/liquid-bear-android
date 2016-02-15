@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.activities.modes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,6 +15,10 @@ import java.util.List;
 public class NewcomersTracksActivity extends ListBaseActivity {
 
     private TrackAdapter adapter;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, NewcomersTracksActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

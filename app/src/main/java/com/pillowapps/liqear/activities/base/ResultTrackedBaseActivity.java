@@ -2,12 +2,14 @@ package com.pillowapps.liqear.activities.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.HomeActivity;
+import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.VkAlbumTracksActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity;
@@ -29,6 +31,7 @@ import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -114,16 +117,15 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
     }
 
     public void saveAsPlaylist(List<Track> tracks) {
-//        Intent intent = new Intent(ResultActivity.this,
-//                PlaylistsActivity.class);
-//        intent.putExtra("aim", PlaylistsActivity.Aim.SAVE_AS_PLAYLIST);
-//        intent.putParcelableArrayListExtra(Constants.TRACKLIST, (ArrayList<Track>) tracks);
-//        startActivity(intent);
-        //todo with otto
+        Intent intent = new Intent(ResultTrackedBaseActivity.this,
+                PlaylistsActivity.class);
+        intent.putExtra(PlaylistsActivity.INTENTION, PlaylistsActivity.Aim.SAVE_AS_PLAYLIST);
+        intent.putParcelableArrayListExtra(Constants.TRACKLIST, (ArrayList<? extends Parcelable>) tracks);
+        startActivity(intent);
     }
 
     protected void openArtistByName(String name) {
-        Intent intent = new Intent(ResultTrackedBaseActivity.this, LastfmArtistViewerActivity.class);
+        Intent intent = LastfmAlbumViewerActivity.startIntent(ResultTrackedBaseActivity.this);
         intent.putExtra(LastfmArtistViewerActivity.ARTIST, name);
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }

@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.activities.modes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
@@ -30,6 +32,10 @@ public class SearchSimpleTrackActivity extends SearchListBaseActivity {
 
     @Inject
     VkAudioModel vkAudioModel;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, SearchSimpleTrackActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

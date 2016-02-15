@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.activities.modes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -26,6 +28,10 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
 
     @Inject
     PlaylistModel playlistModel;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, LocalPlaylistTracksActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

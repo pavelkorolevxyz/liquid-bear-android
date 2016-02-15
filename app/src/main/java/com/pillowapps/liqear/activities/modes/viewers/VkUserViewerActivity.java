@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.activities.modes.viewers;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -58,6 +60,10 @@ public class VkUserViewerActivity extends PagerResultActivity {
     VkAudioModel vkAudioModel;
     @Inject
     PreferencesScreenManager preferencesManager;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, VkUserViewerActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -266,4 +266,12 @@ public class Timeline {
     public int getPosition() {
         return position;
     }
+
+    public void setCurrentTrackDuration(int duration) {
+        Track currentTrack = getCurrentTrack();
+        if (currentTrack == null) {
+            return;
+        }
+        currentTrack.setDuration(duration);
+    }
 }

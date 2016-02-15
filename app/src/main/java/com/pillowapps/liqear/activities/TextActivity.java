@@ -19,8 +19,6 @@ import android.widget.TextView;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
-import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
-import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.entities.Track;
@@ -29,7 +27,6 @@ import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkLyrics;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
 import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
@@ -42,7 +39,7 @@ import javax.inject.Inject;
 
 public class TextActivity extends ResultTrackedBaseActivity {
     public static final String ARTIST_NAME = "artist_name";
-    public static final String TEXT_AIM = "text_aim";
+    public static final String INTENTION = "intention";
     private TextView textView;
     private ProgressBar progressBar;
     private Aim aim;
@@ -59,10 +56,8 @@ public class TextActivity extends ResultTrackedBaseActivity {
     @Inject
     PreferencesScreenManager preferencesScreenManager;
 
-    public static Intent getStartIntent(Context context, Aim aim) {
-        Intent intent = new Intent(context, TextActivity.class);
-        intent.putExtra(TEXT_AIM, aim);
-        return intent;
+    public static Intent startIntent(Context context) {
+        return new Intent(context, TextActivity.class);
     }
 
     @Override
@@ -80,7 +75,7 @@ public class TextActivity extends ResultTrackedBaseActivity {
         textView = (TextView) findViewById(R.id.text_view_scrollable_text_layout);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar_scrollable_text_layout);
         Bundle extras = getIntent().getExtras();
-        aim = (Aim) extras.get(TEXT_AIM);
+        aim = (Aim) extras.get(INTENTION);
         if (aim == null) {
             throw new RuntimeException("Aim of TextActivity can't be null");
         }

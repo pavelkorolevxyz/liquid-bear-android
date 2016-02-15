@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.activities.modes.viewers;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +32,10 @@ public class LastfmTagViewerActivity extends PagerResultActivity {
 
     @Inject
     LastfmTagModel tagModel;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, LastfmTagViewerActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

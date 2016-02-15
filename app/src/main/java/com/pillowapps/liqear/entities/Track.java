@@ -1,8 +1,11 @@
 package com.pillowapps.liqear.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.pillowapps.liqear.helpers.TrackUtils;
 
-public class Track {
+public class Track implements Parcelable {
 
     public String title;
     public String artist;
@@ -144,4 +147,50 @@ public class Track {
     public String getLocalUrl() {
         return localUrl;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeString(this.artist);
+        dest.writeString(this.album);
+        dest.writeLong(this.ownerId);
+        dest.writeLong(this.audioId);
+        dest.writeByte(local ? (byte) 1 : (byte) 0);
+        dest.writeString(this.localUrl);
+        dest.writeString(this.url);
+        dest.writeInt(this.duration);
+        dest.writeInt(this.realPosition);
+        dest.writeByte(loved ? (byte) 1 : (byte) 0);
+        dest.writeByte(addedToVk ? (byte) 1 : (byte) 0);
+    }
+
+    protected Track(Parcel in) {
+        this.title = in.readString();
+        this.artist = in.readString();
+        this.album = in.readString();
+        this.ownerId = in.readLong();
+        this.audioId = in.readLong();
+        this.local = in.readByte() != 0;
+        this.localUrl = in.readString();
+        this.url = in.readString();
+        this.duration = in.readInt();
+        this.realPosition = in.readInt();
+        this.loved = in.readByte() != 0;
+        this.addedToVk = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<Track> CREATOR = new Parcelable.Creator<Track>() {
+        public Track createFromParcel(Parcel source) {
+            return new Track(source);
+        }
+
+        public Track[] newArray(int size) {
+            return new Track[size];
+        }
+    };
 }

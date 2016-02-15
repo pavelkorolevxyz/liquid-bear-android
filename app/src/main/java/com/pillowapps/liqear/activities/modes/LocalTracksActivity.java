@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.activities.modes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +34,10 @@ public class LocalTracksActivity extends ListBaseActivity {
             progressBar.setVisibility(View.GONE);
         }
     };
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, LocalTracksActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

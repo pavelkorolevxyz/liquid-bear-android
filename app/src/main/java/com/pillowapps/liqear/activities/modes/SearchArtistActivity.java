@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.activities.modes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -7,6 +9,7 @@ import android.view.View;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.ImagePagerActivity;
 import com.pillowapps.liqear.activities.base.SearchListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.ArtistAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -33,6 +36,10 @@ public class SearchArtistActivity extends SearchListBaseActivity {
     LastfmArtistModel lastfmArtistModel;
     @Inject
     PreferencesScreenManager preferencesManager;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, SearchArtistActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -88,6 +88,10 @@ public class AuthActivity extends TrackedBaseActivity {
     @Inject
     AuthorizationInfoManager authorizationInfoManager;
 
+    public static Intent startIntent(Context context) {
+        return new Intent(context, AuthActivity.class);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -40,7 +40,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class PlaylistsActivity extends ResultTrackedBaseActivity {
-    public static final String AIM = "aim";
+    public static final String INTENTION = "intention";
     private PlaylistsArrayAdapter adapter;
     private Bundle extras;
     private Aim aim;
@@ -66,7 +66,7 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
 
     public static Intent getStartIntent(Context context, Aim aim) {
         Intent intent = new Intent(context, PlaylistsActivity.class);
-        intent.putExtra(PlaylistsActivity.AIM, aim);
+        intent.putExtra(PlaylistsActivity.INTENTION, aim);
         return intent;
     }
 
@@ -81,7 +81,7 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
         setSupportActionBar(toolbar);
 
         extras = getIntent().getExtras();
-        aim = (Aim) extras.getSerializable(AIM);
+        aim = (Aim) extras.getSerializable(INTENTION);
         listView = (ListView) findViewById(android.R.id.list);
         emptyTextView = (TextView) findViewById(R.id.empty);
         ActionBar actionBar = getSupportActionBar();

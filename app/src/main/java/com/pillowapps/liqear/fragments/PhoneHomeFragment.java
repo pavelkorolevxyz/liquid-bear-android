@@ -2,7 +2,6 @@ package com.pillowapps.liqear.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -299,7 +298,9 @@ public class PhoneHomeFragment extends HomeFragment {
             }
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (!fromUser) return;
+                if (!fromUser) {
+                    return;
+                }
                 int timeFromBeginning = seekBar.getProgress() *
                         musicServiceManager.getDuration() / 100000;
                 String time = TimeUtils.secondsToMinuteString(timeFromBeginning);

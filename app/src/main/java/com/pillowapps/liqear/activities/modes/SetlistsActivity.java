@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.activities.modes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -25,6 +26,10 @@ public class SetlistsActivity extends ResultTrackedBaseActivity {
     protected HintMaterialEditText cityEditText;
     @Bind(R.id.search_setlist_button)
     protected FancyButton searchButton;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, SetlistsActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -21,6 +22,10 @@ public class HomeActivity extends TrackedBaseActivity {
 
     @Inject
     AuthorizationInfoManager authorizationInfoManager;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, HomeActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

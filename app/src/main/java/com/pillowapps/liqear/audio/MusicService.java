@@ -250,8 +250,7 @@ public class MusicService extends Service {
                         Timber.d("Track completed. Starting next.");
                         next();
                     } else if (playbackState == ExoPlayer.STATE_READY) {
-                        Track currentTrack = timeline.getCurrentTrack();
-                        currentTrack.setDuration(audioPlayerModel.getDuration());
+                        timeline.setCurrentTrackDuration(audioPlayerModel.getDuration());
                         if (audioPlayerModel.isPlayReady()) {
                             startUpdaters();
                             Timber.d("Start updaters");
@@ -467,7 +466,7 @@ public class MusicService extends Service {
     }
 
     public void changeUrl(int newPosition) {
-
+        // todo
     }
 
     public int getCurrentPositionPercent() {

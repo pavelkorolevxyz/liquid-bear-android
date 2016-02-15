@@ -1,5 +1,6 @@
 package com.pillowapps.liqear.activities.modes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
+import com.pillowapps.liqear.activities.modes.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.adapters.recyclers.NewcomersAdapter;
 import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 import com.pillowapps.liqear.entities.Album;
@@ -56,6 +58,10 @@ public class NewcomersActivity extends ResultTrackedBaseActivity {
     };
     @Inject
     PreferencesScreenManager preferencesScreenManager;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, NewcomersActivity.class);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

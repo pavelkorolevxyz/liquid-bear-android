@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.ImagePagerActivity;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.TrackAdapter;
 import com.pillowapps.liqear.audio.Timeline;
@@ -34,6 +35,10 @@ public class VkAudioSearchActivity extends ListBaseActivity {
     VkAudioModel vkAudioModel;
     @Inject
     Timeline timeline;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, VkAudioSearchActivity.class);
+    }
 
     public static Intent getStartIntent(Context context, int purpose) {
         Intent intent = new Intent(context, VkAudioSearchActivity.class);

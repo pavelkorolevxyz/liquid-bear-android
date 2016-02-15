@@ -33,6 +33,10 @@ public class VkLoginActivity extends TrackedBaseActivity {
     public static final String RESPONSE = "token";
     private ProgressBar progressBar;
 
+    public static Intent startIntent(Context context) {
+        return new Intent(context, VkLoginActivity.class);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

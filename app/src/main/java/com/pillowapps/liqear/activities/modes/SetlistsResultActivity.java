@@ -1,11 +1,13 @@
 package com.pillowapps.liqear.activities.modes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.ImagePagerActivity;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.SetlistAdapter;
 import com.pillowapps.liqear.callbacks.SetlistfmSimpleCallback;
@@ -24,6 +26,10 @@ public class SetlistsResultActivity extends ListBaseActivity {
 
     @Inject
     SetlistsfmSetlistModel setlistfmSetlistModel;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, SetlistsResultActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

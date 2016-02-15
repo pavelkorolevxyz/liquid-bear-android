@@ -42,7 +42,7 @@ public class EqualizerActivity extends TrackedBaseActivity {
     private Spinner spinner;
     private SharedPreferences preferences;
 
-    public static Intent getStartIntent(Context context) {
+    public static Intent startIntent(Context context) {
         return new Intent(context, EqualizerActivity.class);
     }
 

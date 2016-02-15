@@ -429,7 +429,8 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void openLyricsScreen(Track track) {
-        Intent intent = TextActivity.getStartIntent(getContext(), TextActivity.Aim.LYRICS);
+        Intent intent = TextActivity.startIntent(getContext());
+        intent.putExtra(TextActivity.INTENTION, TextActivity.Aim.LYRICS);
         intent.putExtra("artist", track.getArtist());
         intent.putExtra("title", track.getTitle());
         startActivity(intent);
@@ -460,7 +461,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void openEqualizer() {
-        startActivity(EqualizerActivity.getStartIntent(getContext()));
+        startActivity(EqualizerActivity.startIntent(getContext()));
     }
 
     @Override

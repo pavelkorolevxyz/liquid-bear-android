@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 
 import com.google.analytics.tracking.android.EasyTracker;
 import com.pillowapps.liqear.BuildConfig;
-import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.audio.MusicService;
@@ -48,7 +47,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         disclaimerPref.setOnPreferenceClickListener(preference -> {
             Intent myIntent = new Intent(getApplicationContext(),
                     TextActivity.class);
-            myIntent.putExtra(TextActivity.TEXT_AIM,
+            myIntent.putExtra(TextActivity.INTENTION,
                     TextActivity.Aim.DISCLAIMER);
             startActivity(myIntent);
             return true;
@@ -82,7 +81,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         thanksPref.setOnPreferenceClickListener(preference -> {
             Intent myIntent = new Intent(getApplicationContext(),
                     TextActivity.class);
-            myIntent.putExtra(TextActivity.TEXT_AIM, TextActivity.Aim.THANKS);
+            myIntent.putExtra(TextActivity.INTENTION, TextActivity.Aim.THANKS);
             startActivity(myIntent);
             return true;
         });

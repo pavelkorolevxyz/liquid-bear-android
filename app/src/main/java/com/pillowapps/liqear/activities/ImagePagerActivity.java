@@ -15,6 +15,8 @@
  *******************************************************************************/
 package com.pillowapps.liqear.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -62,6 +64,10 @@ public class ImagePagerActivity extends TrackedBaseActivity {
 
     @Inject
     LastfmArtistModel lastfmArtistModel;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, ImagePagerActivity.class);
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

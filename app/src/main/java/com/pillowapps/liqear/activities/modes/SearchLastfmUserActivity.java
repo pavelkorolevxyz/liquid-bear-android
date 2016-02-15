@@ -1,5 +1,7 @@
 package com.pillowapps.liqear.activities.modes;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
@@ -32,6 +34,10 @@ public class SearchLastfmUserActivity extends SearchListBaseActivity {
     AuthorizationInfoManager authorizationInfoManager;
     @Inject
     PreferencesScreenManager preferencesManager;
+
+    public static Intent startIntent(Context context) {
+        return new Intent(context, SearchLastfmUserActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
