@@ -98,8 +98,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
 
     public void trackLongClick(List<Track> tracks, int position) {
         if (!authorizationInfoManager.isAuthorizedOnVk()) {
-            Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized,
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
             return;
         }
         timeline.addToPlaylist(tracks.get(position));
@@ -107,8 +106,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
 
     public void trackLongClick(Track track) {
         if (!authorizationInfoManager.isAuthorizedOnVk()) {
-            Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized,
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(ResultTrackedBaseActivity.this, R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
             return;
         }
         timeline.addToPlaylist(track);
@@ -117,8 +115,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
     }
 
     public void saveAsPlaylist(List<Track> tracks) {
-        Intent intent = new Intent(ResultTrackedBaseActivity.this,
-                PlaylistsActivity.class);
+        Intent intent = new Intent(ResultTrackedBaseActivity.this, PlaylistsActivity.class);
         intent.putExtra(PlaylistsActivity.INTENTION, PlaylistsActivity.Aim.SAVE_AS_PLAYLIST);
         intent.putParcelableArrayListExtra(Constants.TRACKLIST, (ArrayList<? extends Parcelable>) tracks);
         startActivity(intent);

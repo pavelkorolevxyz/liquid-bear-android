@@ -18,10 +18,10 @@ import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.helpers.ArtistTrackComparator;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.NetworkManager;
 import com.pillowapps.liqear.helpers.PreferencesModel;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.Presenter;
 import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
@@ -344,7 +344,7 @@ public class HomePresenter extends Presenter<HomeView> {
         timeline.updateRealTrackPositions();
         timeline.clearPreviousIndexes();
         if (tracks != null) {
-            timeline.setPlaylist(new Playlist(tracks));
+            timeline.getPlaylist().setTracks(tracks);
         }
         playlistModel.saveMainPlaylist(timeline.getPlaylist())
                 .observeOn(AndroidSchedulers.mainThread())

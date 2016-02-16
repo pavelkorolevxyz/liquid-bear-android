@@ -143,7 +143,9 @@ public class Timeline {
     }
 
     public List<Track> getPlaylistTracks() {
-        if (currentPlaylist == null) return null;
+        if (currentPlaylist == null) {
+            return null;
+        }
         return currentPlaylist.getTracks();
     }
 
