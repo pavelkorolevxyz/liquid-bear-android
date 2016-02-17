@@ -81,7 +81,7 @@ public class TrackNotificationModel {
         mBuilder.setContent(contentView);
         Intent notificationIntent = new Intent(context, HomeActivity.class);
 
-        int playButton = timeline.getPlayingState() == PlayingState.PLAYING
+        int playButton = timeline.isPlaying()
                 ? R.drawable.pause_button
                 : R.drawable.play_button;
         contentView.setImageViewResource(R.id.play_pause, playButton);

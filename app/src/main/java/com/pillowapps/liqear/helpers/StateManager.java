@@ -57,7 +57,7 @@ public class StateManager {
         savesManager.saveDuration(duration);
     }
 
-    public Observable<Playlist> restorePlaylistState() {
+    public Observable<Playlist> getMainPlaylist() {
         return playlistModel.getMainPlaylist();
     }
 

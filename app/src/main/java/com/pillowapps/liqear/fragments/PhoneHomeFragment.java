@@ -259,17 +259,11 @@ public class PhoneHomeFragment extends HomeFragment {
             }
         });
 
-        shuffleButton.setOnClickListener(v -> {
-            presenter.toggleShuffle();
-        });
+        shuffleButton.setOnClickListener(v -> presenter.toggleShuffle());
 
-        repeatButton.setOnClickListener(v -> {
-            presenter.toggleRepeat();
-        });
+        repeatButton.setOnClickListener(v -> presenter.toggleRepeat());
 
-        artistTextView.setOnClickListener(v -> {
-            presenter.openArtistViewer();
-        });
+        artistTextView.setOnClickListener(v -> presenter.openArtistViewer());
 
 
         // Playback controlling.
@@ -307,9 +301,7 @@ public class PhoneHomeFragment extends HomeFragment {
             }
         });
 
-        View.OnClickListener albumClickListener = view -> {
-            presenter.openAlbumScreen();
-        };
+        View.OnClickListener albumClickListener = view -> presenter.openAlbumScreen();
         albumImageView.setOnClickListener(albumClickListener);
         albumTextView.setOnClickListener(albumClickListener);
         timeTextView.setOnClickListener(view -> {
@@ -361,6 +353,15 @@ public class PhoneHomeFragment extends HomeFragment {
     @Override
     public void updatePlaybackTabMenu(int playbackToolbarMenuRes) {
         playbackToolbar.inflateMenu(playbackToolbarMenuRes);
+    }
+
+    @Override
+    public void updatePlayingState(boolean isPlaying) {
+        if (isPlaying) {
+            playPauseButton.setImageResource(R.drawable.pause_button);
+        } else {
+            playPauseButton.setImageResource(R.drawable.play_button);
+        }
     }
 
     @Override

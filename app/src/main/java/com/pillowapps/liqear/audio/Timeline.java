@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.pillowapps.liqear.entities.Album;
-import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
@@ -20,29 +19,28 @@ import java.util.Stack;
 import javax.inject.Inject;
 
 public class Timeline {
-    private Playlist currentPlaylist = new Playlist();
-    private int index = 0;
+    private ListeningsCounter listeningsCounter;
+
+    private Playlist currentPlaylist;
+
+    private int index;
 
     private String currentArtistImageUrl;
-
-    private PlayingState playingState = PlayingState.DEFAULT;
-    private ListeningsCounter listeningsCounter;
     private LinkedList<Integer> queueIndexes;
     private Stack<Integer> previousTracksIndexes;
-    private boolean autoplay = false;
+    private boolean autoplay;
 
-    private ShuffleMode shuffleMode = ShuffleMode.DEFAULT;
-    private RepeatMode repeatMode = RepeatMode.REPEAT_PLAYLIST;
+    private ShuffleMode shuffleMode;
+    private RepeatMode repeatMode;
 
     private Album currentAlbum;
     private Album previousAlbum;
     private Bitmap albumCoverBitmap;
 
-    private boolean playlistChanged = false;
-
-    private PlayingState playingStateBeforeCall = PlayingState.DEFAULT;
     private String previousArtist;
     private int position;
+
+    private boolean playing;
 
     @Inject
     public Timeline(ListeningsCounter listeningsCounter, SavesManager savesManager) {
@@ -53,6 +51,12 @@ public class Timeline {
 
         this.shuffleMode = savesManager.getShuffleMode();
         this.repeatMode = savesManager.getRepeatMode();
+
+        this.autoplay = false;
+        this.playing = false;
+
+        this.currentPlaylist = new Playlist();
+        this.index = 0;
     }
 
     public ShuffleMode getShuffleMode() {
@@ -164,14 +168,6 @@ public class Timeline {
         this.currentArtistImageUrl = currentArtistImageUrl;
     }
 
-    public PlayingState getPlayingState() {
-        return playingState;
-    }
-
-    public void setPlayingState(PlayingState playingState) {
-        this.playingState = playingState;
-    }
-
     public Stack<Integer> getPreviousTracksIndexes() {
         return previousTracksIndexes;
     }
@@ -184,10 +180,6 @@ public class Timeline {
         return queueIndexes;
     }
 
-    public boolean isPlaylistChanged() {
-        return playlistChanged;
-    }
-
     public void clearQueue() {
         queueIndexes.clear();
     }
@@ -197,7 +189,9 @@ public class Timeline {
     }
 
     public void addToPlaylist(List<Track> tracks) {
-        if (tracks == null || currentPlaylist == null) return;
+        if (tracks == null || currentPlaylist == null) {
+            return;
+        }
         currentPlaylist.getTracks().addAll(tracks);
     }
 
@@ -213,20 +207,8 @@ public class Timeline {
         this.albumCoverBitmap = albumCoverBitmap;
     }
 
-    public void setPlaylistChanged(boolean playlistChanged) {
-        this.playlistChanged = playlistChanged;
-    }
-
     public void addToPrevIndexes(int index) {
         previousTracksIndexes.add(index);
-    }
-
-    public PlayingState getPlayingStateBeforeCall() {
-        return playingStateBeforeCall;
-    }
-
-    public void setPlayingStateBeforeCall(PlayingState playingStateBeforeCall) {
-        this.playingStateBeforeCall = playingStateBeforeCall;
     }
 
     public String getPreviousArtist() {
@@ -270,5 +252,13 @@ public class Timeline {
             return;
         }
         currentTrack.setDuration(duration);
+    }
+
+    public void setPlaying(boolean playing) {
+        this.playing = playing;
+    }
+
+    public boolean isPlaying() {
+        return playing;
     }
 }

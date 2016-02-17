@@ -193,4 +193,27 @@ public class Track implements Parcelable {
             return new Track[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Track track = (Track) o;
+
+        return title.equals(track.title) && artist.equals(track.artist) && !(album != null ? !album.equals(track.album) : track.album != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = title.hashCode();
+        result = 31 * result + artist.hashCode();
+        result = 31 * result + (album != null ? album.hashCode() : 0);
+        return result;
+    }
 }

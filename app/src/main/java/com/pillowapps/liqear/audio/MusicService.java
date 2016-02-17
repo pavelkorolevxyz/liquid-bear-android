@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.text.Html;
 import android.widget.Toast;
 
 import com.google.android.exoplayer.ExoPlayer;
@@ -117,8 +116,19 @@ public class MusicService extends Service {
         super.onCreate();
         LBApplication.get(this).applicationComponent().inject(this);
 
+        restore();
         initAudioPlayer();
         updateShake();
+    }
+
+    public void restore() {
+        Track currentTrack = timeline.getCurrentTrack();
+        Timber.d("RESTORING " + currentTrack);
+        if (currentTrack == null) {
+            return;
+        }
+        getTrackInfo(currentTrack);
+        getArtistInfo(currentTrack.getArtist(), authorizationInfoManager.getLastfmName());
     }
 
     private void updateShake() {
@@ -136,7 +146,10 @@ public class MusicService extends Service {
         super.onStartCommand(intent, flags, startId);
         if (intent != null) {
             String action = intent.getAction();
-            if (action == null) return START_STICKY;
+            if (action == null) {
+                return START_STICKY;
+            }
+            Timber.d("action = " + action);
             switch (action) {
                 case ACTION_PLAY:
                     play();
@@ -251,7 +264,9 @@ public class MusicService extends Service {
                         next();
                     } else if (playbackState == ExoPlayer.STATE_READY) {
                         timeline.setCurrentTrackDuration(audioPlayerModel.getDuration());
-                        if (audioPlayerModel.isPlayReady()) {
+                        boolean playReady = audioPlayerModel.isPlayReady();
+                        timeline.setPlaying(playReady);
+                        if (playReady) {
                             startUpdaters();
                             Timber.d("Start updaters");
                         } else {
@@ -393,7 +408,7 @@ public class MusicService extends Service {
 
                     @Override
                     public void failure(String errorMessage) {
-
+                        //todo
                     }
                 });
     }
@@ -418,6 +433,7 @@ public class MusicService extends Service {
 
             @Override
             public void failure(String error) {
+                // todo
             }
         });
     }
@@ -428,11 +444,11 @@ public class MusicService extends Service {
     }
 
     private void showNotificationToast() {
-        if (preferencesManager.isToastTrackNotificationEnabled()) {
-            Toast.makeText(MusicService.this,
-                    Html.fromHtml(TrackUtils.getNotation(timeline.getCurrentTrack())),
-                    Toast.LENGTH_LONG).show();
+        if (!preferencesManager.isToastTrackNotificationEnabled()) {
+            return;
         }
+        Toast.makeText(MusicService.this, TrackUtils.getNotation(timeline.getCurrentTrack()),
+                Toast.LENGTH_LONG).show();
     }
 
     public int getDuration() {
@@ -440,7 +456,7 @@ public class MusicService extends Service {
     }
 
     public void updateWidgets() {
-
+        //todo
     }
 
     public void playPause() {
@@ -465,8 +481,10 @@ public class MusicService extends Service {
         audioPlayerModel.seekTo(positionMillis);
     }
 
-    public void changeUrl(int newPosition) {
+    public void changeUrl(int newUrlIndex, String url) {
         // todo
+        // saveUrlIndex
+        // playWithUrl
     }
 
     public int getCurrentPositionPercent() {

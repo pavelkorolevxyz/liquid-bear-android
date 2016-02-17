@@ -23,6 +23,7 @@ public class MusicServiceManager {
             public void onServiceConnected(ComponentName className, IBinder service) {
                 MusicService.LocalBinder binder = (MusicService.LocalBinder) service;
                 musicService = binder.getService();
+                musicService.restore();
                 listener.onServiceConnected();
             }
 
@@ -98,7 +99,14 @@ public class MusicServiceManager {
         musicService.stopUpdaters();
     }
 
-    public void changeCurrentTrackUrl(int newPosition) {
-        musicService.changeUrl(newPosition);
+    public void changeCurrentTrackUrl(int newPosition, String url) {
+        musicService.changeUrl(newPosition, url);
+    }
+
+    public void restore() {
+        if (musicService == null) {
+            return;
+        }
+        musicService.restore();
     }
 }

@@ -124,6 +124,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         musicServiceManager.startServiceAsync(activity, () -> {
             activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
             presenter.restorePlayingState();
+            musicServiceManager.restore();
         });
 
         LBApplication.BUS.register(this);
@@ -244,7 +245,8 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             presenter.playNewPlaylist(positionToPlay, data.getParcelableExtra("playlist"));
         } else if (requestCode == Constants.VK_ADD_REQUEST_CODE) {
             int position = data.getIntExtra("position", 0);
-            presenter.changeCurrentTrackUrl(position);
+            String url = data.getStringExtra("url");
+            presenter.changeCurrentTrackUrl(position, url);
         }
     }
 
@@ -278,6 +280,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     public void restoreState() {
         presenter.restoreState();
+    }
+
+    @Override
+    public void restoreServiceState() {
+        musicServiceManager.restore();
     }
 
     @Override
@@ -477,8 +484,8 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     @Override
-    public void changeCurrentTrackUrl(int newPosition) {
-        musicServiceManager.changeCurrentTrackUrl(newPosition);
+    public void changeCurrentTrackUrl(int newPosition, String url) {
+        musicServiceManager.changeCurrentTrackUrl(newPosition, url);
     }
 
     @Override

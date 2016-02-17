@@ -65,7 +65,7 @@ public interface HomeView {
 
     void togglePlaylistEditMode();
 
-    void changeCurrentTrackUrl(int newPosition);
+    void changeCurrentTrackUrl(int newPosition, String url);
 
     void updateMainPlaylistTitle(@Nullable String string);
 
@@ -104,4 +104,8 @@ public interface HomeView {
     void openAlbumScreen(@NonNull Album album);
 
     void updatePlaybackTabMenu(int playbackToolbarMenuRes);
+
+    void updatePlayingState(boolean isPlaying);
+
+    void restoreServiceState();
 }

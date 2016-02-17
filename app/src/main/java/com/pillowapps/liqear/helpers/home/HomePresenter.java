@@ -392,16 +392,18 @@ public class HomePresenter extends Presenter<HomeView> {
         updateMainPlaylist(positionToPlay, true, playlist);
     }
 
-    public void changeCurrentTrackUrl(int newPosition) {
+    public void changeCurrentTrackUrl(int newPosition, String url) {
         HomeView view = view();
-        view.changeCurrentTrackUrl(newPosition);
+        view.changeCurrentTrackUrl(newPosition, url);
     }
 
     public void restoreState() {
         HomeView view = view();
         view.updateRepeatButtonState(ButtonStateUtils.getRepeatButtonImage(timeline.getRepeatMode()));
         view.updateShuffleButtonState(ButtonStateUtils.getShuffleButtonImage(timeline.getShuffleMode()));
-        stateManager.restorePlaylistState()
+        view.updateArtistPhotoAndColors(timeline.getCurrentArtistImageUrl());
+        view.updatePlayingState(timeline.isPlaying());
+        stateManager.getMainPlaylist()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlist -> {
@@ -442,6 +444,7 @@ public class HomePresenter extends Presenter<HomeView> {
                     timeline.setPosition(position);
                     updateMainPlaylist(currentIndex, false, playlist);
                     view.updateAlbum();
+                    view.restoreServiceState();
                 });
     }
 
