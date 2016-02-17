@@ -252,7 +252,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void exit() {
-        musicServiceManager.stopService(activity);
+        musicServiceManager.exit();
         activity.finish();
     }
 

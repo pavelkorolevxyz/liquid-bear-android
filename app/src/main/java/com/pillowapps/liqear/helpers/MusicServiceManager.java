@@ -109,4 +109,8 @@ public class MusicServiceManager {
         }
         musicService.restore();
     }
+
+    public void exit() {
+        musicService.exit();
+    }
 }

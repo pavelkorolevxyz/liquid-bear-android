@@ -112,4 +112,9 @@ public class TickModel {
     public Observable<Long> getTimer(int minutes) {
         return Observable.timer(minutes, TimeUnit.MINUTES);
     }
+
+    public void close() {
+        nowplayingSubscription.clear();
+        scrobblingSubscription.clear();
+    }
 }

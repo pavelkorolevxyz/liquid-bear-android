@@ -287,9 +287,13 @@ public class MusicService extends Service {
         completeSubscription.clear();
         timerSubscription.clear();
         updatersSubscription.clear();
+        shakeSubscription.clear();
+
+        tickModel.close();
+        audioPlayerModel.close();
 
         LBApplication.BUS.post(new ExitEvent());
-        stopSelf();
+        stopForeground(true);
     }
 
     public int getCurrentPosition() {
