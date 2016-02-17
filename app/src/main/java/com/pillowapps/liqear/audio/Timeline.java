@@ -11,6 +11,7 @@ import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.PlaylistUtils;
+import com.pillowapps.liqear.helpers.SavesManager;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.Stack;
 import javax.inject.Inject;
 
 public class Timeline {
-    private Playlist currentPlaylist;
+    private Playlist currentPlaylist = new Playlist();
     private int index = 0;
 
     private String currentArtistImageUrl;
@@ -44,20 +45,14 @@ public class Timeline {
     private int position;
 
     @Inject
-    public Timeline(ListeningsCounter listeningsCounter) {
+    public Timeline(ListeningsCounter listeningsCounter, SavesManager savesManager) {
         this.listeningsCounter = listeningsCounter;
 
         this.previousTracksIndexes = new Stack<>();
         this.queueIndexes = new LinkedList<>();
 
-//        this.shuffleMode = SharedPreferencesManager.getPreferences()
-//                .getBoolean(Constants.SHUFFLE_MODE_ON, false)
-//                ? ShuffleMode.SHUFFLE
-//                : ShuffleMode.DEFAULT;
-//        this.repeatMode = SharedPreferencesManager.getPreferences()
-//                .getBoolean(Constants.REPEAT_MODE_ON, false)
-//                ? RepeatMode.REPEAT
-//                : RepeatMode.REPEAT_PLAYLIST; todo
+        this.shuffleMode = savesManager.getShuffleMode();
+        this.repeatMode = savesManager.getRepeatMode();
     }
 
     public ShuffleMode getShuffleMode() {

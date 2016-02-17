@@ -3,6 +3,10 @@ package com.pillowapps.liqear.helpers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.view.View;
+
+import com.pillowapps.liqear.entities.RepeatMode;
+import com.pillowapps.liqear.entities.ShuffleMode;
 
 public class SavesManager {
 
@@ -92,5 +96,22 @@ public class SavesManager {
 
     public boolean isTimeInverted() {
         return preferences.getBoolean(Constants.TIME_INVERTED, false);
+    }
+
+    public ShuffleMode getShuffleMode() {
+        return preferences.getBoolean(SHUFFLE_MODE_ON, false)
+                ? ShuffleMode.SHUFFLE
+                : ShuffleMode.DEFAULT;
+    }
+
+    public RepeatMode getRepeatMode() {
+        return preferences.getBoolean(REPEAT_MODE_ON, false)
+                ? RepeatMode.REPEAT
+                : RepeatMode.REPEAT_PLAYLIST;
+    }
+
+    public boolean isSearchVisible() {
+        return SharedPreferencesManager.getSavePreferences(context)
+                .getBoolean(Constants.SEARCH_PLAYLIST_VISIBILITY, false);
     }
 }

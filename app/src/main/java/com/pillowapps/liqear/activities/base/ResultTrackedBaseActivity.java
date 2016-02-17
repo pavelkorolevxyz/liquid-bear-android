@@ -82,7 +82,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
         data.putExtra(Constants.POSITION_TO_PLAY, position);
         Playlist playlist = new Playlist(tracks);
         playlist.setTitle(String.valueOf(title));
-        timeline.setPlaylist(playlist);
+        data.putExtra("playlist", playlist);
         setResult(RESULT_OK, data);
         finish();
     }

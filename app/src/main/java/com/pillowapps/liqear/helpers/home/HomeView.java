@@ -1,5 +1,10 @@
 package com.pillowapps.liqear.helpers.home;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.pillowapps.liqear.entities.Album;
+import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 
 public interface HomeView {
@@ -10,7 +15,7 @@ public interface HomeView {
 
     void updateAdapter();
 
-    void changePlaylist(int index, boolean autoPlay);
+    void changePlaylist(int index, Playlist playlist);
 
     void playTrack(int index);
 
@@ -62,7 +67,7 @@ public interface HomeView {
 
     void changeCurrentTrackUrl(int newPosition);
 
-    void updateMainPlaylistTitle();
+    void updateMainPlaylistTitle(@Nullable String string);
 
     void showArtistPlaceholder();
 
@@ -72,15 +77,15 @@ public interface HomeView {
 
     void updateAlbum();
 
-    void updateShuffleButtonState();
+    void updateShuffleButtonState(int imageRes);
 
-    void updateRepeatButtonState();
+    void updateRepeatButtonState(int imageRes);
 
     void hideTutorial();
 
     void showTutorial();
 
-    void updateArtistPhotoAndColors();
+    void updateArtistPhotoAndColors(String artistUrl);
 
     void hideAlbumImage();
 
@@ -93,4 +98,10 @@ public interface HomeView {
     void updateWidgets();
 
     void setTimer(int minutes);
+
+    void updateLoveButton(int imageRes);
+
+    void openAlbumScreen(@NonNull Album album);
+
+    void updatePlaybackTabMenu(int playbackToolbarMenuRes);
 }

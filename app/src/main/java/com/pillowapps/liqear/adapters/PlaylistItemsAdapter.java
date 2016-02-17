@@ -11,26 +11,38 @@ import android.widget.Filter;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Track;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
     private final Context context;
-    private List<Track> tracks;
-    private boolean editMode = false;
-    private PlaylistItemsFilter playlistItemsFilter;
-    private List<Track> original;
-    private Timeline timeline;
 
-    public PlaylistItemsAdapter(Context context, Timeline timeline) {
+    private List<Track> tracks;
+    private List<Track> original;
+    private PlaylistItemsFilter playlistItemsFilter;
+
+    private boolean editMode = false;
+    private int currentIndex = -1;
+    private LinkedList<Integer> queue = new LinkedList<>();
+
+    public PlaylistItemsAdapter(Context context) {
         super(context, R.layout.playlist_tab_list_item);
         this.context = context;
-        this.timeline = timeline;
         this.tracks = new ArrayList<>();
         this.original = new ArrayList<>();
+    }
+
+    public void setCurrentIndex(int currentIndex) {
+        this.currentIndex = currentIndex;
+    }
+
+    public void setQueue(LinkedList<Integer> queue) {
+        this.queue = queue;
     }
 
     public boolean isEditMode() {
@@ -52,12 +64,14 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
     }
 
     public void setValues(List<Track> tracks) {
-        if (tracks == null) return;
+        Timber.d("setValues: " + tracks);
+        if (tracks == null) {
+            return;
+        }
         this.tracks.clear();
         this.original.clear();
         this.tracks.addAll(tracks);
         this.original.addAll(tracks);
-        notifyDataSetChanged();
     }
 
     @Override
@@ -67,7 +81,9 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
 
     @Override
     public Track getItem(int position) {
-        if (position >= tracks.size()) return null;
+        if (position >= tracks.size()) {
+            return null;
+        }
         return tracks.get(position);
     }
 
@@ -81,6 +97,7 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         if (position < 0 || position >= tracks.size()) return convertView;
         int realPosition = tracks.get(position).getRealPosition();
         Track currentTrack = original.get(realPosition);
+        Timber.d("getView Playlist : " + currentTrack.toString());
         ViewHolder holder;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
@@ -109,10 +126,9 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         holder.artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
         holder.titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
 
-        holder.playImageView.setVisibility(!timeline.isPlaylistChanged()
-                && timeline.getIndex() == realPosition ? View.VISIBLE : View.INVISIBLE);
+        holder.playImageView.setVisibility(currentIndex == realPosition ? View.VISIBLE : View.INVISIBLE);
 
-        int queueIndex = timeline.getQueueIndexes().indexOf(realPosition);
+        int queueIndex = queue.indexOf(realPosition);
         holder.queueTextView.setText(queueIndex++ != -1 ? String.format("(%d)", queueIndex) : "");
         if (!editMode) {
             holder.grabber.setVisibility(View.GONE);

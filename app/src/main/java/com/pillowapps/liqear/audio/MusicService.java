@@ -384,7 +384,7 @@ public class MusicService extends Service {
                             throw new IllegalStateException("Current track is null");
                         }
                         timeline.getCurrentTrack().setLoved(loved);
-                        LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(album));
+                        LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(track, album));
                         updateWidgets();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                             CompatIcs.updateRemote(MusicService.this, timeline.getCurrentTrack());

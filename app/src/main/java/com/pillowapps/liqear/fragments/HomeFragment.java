@@ -22,12 +22,13 @@ import com.pillowapps.liqear.activities.ImagePagerActivity;
 import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
+import com.pillowapps.liqear.activities.modes.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.activities.preferences.EqualizerActivity;
 import com.pillowapps.liqear.activities.preferences.PreferencesActivity;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.callbacks.SimpleCallback;
+import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.events.ExitEvent;
@@ -56,8 +57,6 @@ import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
 import com.squareup.otto.Subscribe;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -90,8 +89,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Inject
     MusicServiceManager musicServiceManager;
-    @Inject
-    Timeline timeline;
 
     @Inject
     ImageModel imageModel;
@@ -120,7 +117,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
         activity = (HomeActivity) getActivity();
 
-        playlistItemsAdapter = new PlaylistItemsAdapter(activity, timeline);
+        playlistItemsAdapter = new PlaylistItemsAdapter(getContext());
 
         presenter.bindView(this);
 
@@ -244,7 +241,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
         if (requestCode == Constants.MAIN_REQUEST_CODE) {
             int positionToPlay = data.getIntExtra(Constants.POSITION_TO_PLAY, 0);
-            presenter.playNewPlaylist(positionToPlay);
+            presenter.playNewPlaylist(positionToPlay, data.getParcelableExtra("playlist"));
         } else if (requestCode == Constants.VK_ADD_REQUEST_CODE) {
             int position = data.getIntExtra("position", 0);
             presenter.changeCurrentTrackUrl(position);
@@ -268,9 +265,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     @Override
-    public void changePlaylist(int index, boolean autoPlay) {
-        List<Track> tracks = timeline.getPlaylistTracks();
-        playlistItemsAdapter.setValues(tracks);
+    public void changePlaylist(int index, Playlist playlist) {
+        playlistItemsAdapter.setValues(playlist.getTracks());
+        playlistItemsAdapter.setCurrentIndex(index);
+        playlistItemsAdapter.notifyDataSetChanged();
         updateToolbars();
     }
 
@@ -324,40 +322,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             return;
         }
         showLoading(true);
-        final Track track = timeline.getCurrentTrack();
-        if (!track.isLoved()) {
-            lastfmTrackModel.love(track, new SimpleCallback<Object>() {
-                @Override
-                public void success(Object data) {
-                    track.setLoved(true);
-                    updateLoveButton();
-                    showLoading(false);
-                }
-
-                @Override
-                public void failure(String errorMessage) {
-                    showLoading(false);
-
-                }
-            });
-        } else {
-            lastfmTrackModel.unlove(track, new SimpleCallback<Object>() {
-                @Override
-                public void success(Object o) {
-                    showLoading(false);
-                    track.setLoved(false);
-                    updateLoveButton();
-                }
-
-                @Override
-                public void failure(String error) {
-                    showLoading(false);
-                }
-            });
-        }
+        presenter.toggleLoveForCurrentTrack();
     }
 
-    public void updateLoveButton() {
+    public void updateLoveButton(boolean loved) {
         // No operations.
     }
 
@@ -528,6 +496,14 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         musicServiceManager.setTimer(minutes);
     }
 
+    @Override
+    public void openAlbumScreen(@NonNull Album album) {
+        Intent intent = new Intent(activity, LastfmAlbumViewerActivity.class);
+        intent.putExtra(LastfmAlbumViewerActivity.ALBUM, album.getTitle());
+        intent.putExtra(LastfmAlbumViewerActivity.ARTIST, album.getArtist());
+        startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+    }
+
     @Subcomponent(modules = HomeFragmentModule.class)
     public interface HomeFragmentComponent {
         void inject(@NonNull HomeFragment itemsFragment);
@@ -549,9 +525,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                                                   @NonNull TutorialModel tutorial,
                                                   @NonNull AuthorizationInfoManager authorizationInfoManager,
                                                   @NonNull NetworkManager networkManager,
-                                                  @NonNull ModeItemsHelper modeItemsHelper, PreferencesScreenManager preferencesManager) {
+                                                  @NonNull ModeItemsHelper modeItemsHelper,
+                                                  @NonNull PreferencesScreenManager preferencesManager,
+                                                  @NonNull LastfmTrackModel lastfmTrackModel) {
             return new HomePresenter(stateManager, libraryModel, shareModel, vkWallModel, vkAudioModel, preferencesModel, playlistModel, timeline, tutorial,
-                    authorizationInfoManager, networkManager, modeItemsHelper, preferencesManager);
+                    authorizationInfoManager, networkManager, modeItemsHelper, preferencesManager, lastfmTrackModel);
         }
     }
 }

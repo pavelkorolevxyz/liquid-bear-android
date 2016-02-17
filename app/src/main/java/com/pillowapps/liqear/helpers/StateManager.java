@@ -5,16 +5,14 @@ import android.content.SharedPreferences;
 
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.callbacks.CompletionCallback;
+import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.RepeatMode;
 import com.pillowapps.liqear.entities.RestoreData;
 import com.pillowapps.liqear.entities.ShuffleMode;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.models.PlaylistModel;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
+import rx.Observable;
 
 public class StateManager {
 
@@ -59,17 +57,8 @@ public class StateManager {
         savesManager.saveDuration(duration);
     }
 
-    public void restorePlaylistState(final CompletionCallback completionCallback) {
-        Timber.d("getRestoreData state");
-        final long time = System.currentTimeMillis();
-        playlistModel.getMainPlaylist()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(playlist -> {
-                    timeline.setPlaylist(playlist);
-                    Timber.d("time = " + (System.currentTimeMillis() - time));
-                    completionCallback.onCompleted();
-                });
+    public Observable<Playlist> restorePlaylistState() {
+        return playlistModel.getMainPlaylist();
     }
 
     public RestoreData getRestoreData() {

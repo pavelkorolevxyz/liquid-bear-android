@@ -5,9 +5,10 @@ import android.media.AudioManager;
 import android.support.annotation.NonNull;
 
 import com.google.android.exoplayer.ExoPlayer;
-import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.MusicServiceManager;
 import com.pillowapps.liqear.helpers.NetworkManager;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
+import com.pillowapps.liqear.helpers.SavesManager;
 import com.pillowapps.liqear.models.AudioPlayerModel;
 import com.pillowapps.liqear.models.TickModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
@@ -27,8 +28,8 @@ public class MusicServiceModule {
     @Provides
     @NonNull
     @Singleton
-    public Timeline provideTimeline(ListeningsCounter listeningsCounter) {
-        return new Timeline(listeningsCounter);
+    public Timeline provideTimeline(ListeningsCounter listeningsCounter, SavesManager savesManager) {
+        return new Timeline(listeningsCounter, savesManager);
     }
 
     @Provides
