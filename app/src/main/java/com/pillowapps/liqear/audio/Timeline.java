@@ -28,7 +28,6 @@ public class Timeline {
     private String currentArtistImageUrl;
     private LinkedList<Integer> queueIndexes;
     private Stack<Integer> previousTracksIndexes;
-    private boolean autoplay;
 
     private ShuffleMode shuffleMode;
     private RepeatMode repeatMode;
@@ -52,7 +51,6 @@ public class Timeline {
         this.shuffleMode = savesManager.getShuffleMode();
         this.repeatMode = savesManager.getRepeatMode();
 
-        this.autoplay = false;
         this.playing = false;
 
         this.currentPlaylist = new Playlist();
@@ -118,16 +116,12 @@ public class Timeline {
     }
 
     public int getNextIndex() {
-        if (shuffleMode == ShuffleMode.SHUFFLE) {
-            return getRandomIndex();
-        } else {
-            return (index + 1) % PlaylistUtils.sizeOf(currentPlaylist);
+        switch (shuffleMode) {
+            case SHUFFLE:
+                return getRandomIndex();
+            default:
+                return (index + 1) % PlaylistUtils.sizeOf(currentPlaylist);
         }
-    }
-
-    public Track getNextTrack() {
-        if (currentPlaylist == null || PlaylistUtils.sizeOf(currentPlaylist) <= index) return null;
-        return currentPlaylist.getTracks().get(getRandomIndex());
     }
 
     public int getRandomIndex() {
@@ -135,10 +129,16 @@ public class Timeline {
     }
 
     public int getPrevTrackIndex() {
-        if (previousTracksIndexes.isEmpty()) {
-            return index;
+        switch (shuffleMode) {
+            case SHUFFLE:
+                if (previousTracksIndexes.isEmpty()) {
+                    return index;
+                }
+                return previousTracksIndexes.pop();
+            default:
+                return index - 1 > 0 ? index - 1 : PlaylistUtils.sizeOf(currentPlaylist) - 1;
         }
-        return previousTracksIndexes.pop();
+
     }
 
     public List<Track> getPlaylistTracks() {
@@ -166,10 +166,6 @@ public class Timeline {
 
     public void setCurrentArtistImageUrl(String currentArtistImageUrl) {
         this.currentArtistImageUrl = currentArtistImageUrl;
-    }
-
-    public Stack<Integer> getPreviousTracksIndexes() {
-        return previousTracksIndexes;
     }
 
     public Album getPreviousAlbum() {
@@ -221,14 +217,6 @@ public class Timeline {
 
     public Playlist getPlaylist() {
         return currentPlaylist;
-    }
-
-    public boolean isAutoplay() {
-        return autoplay;
-    }
-
-    public void setAutoplay(boolean autoplay) {
-        this.autoplay = autoplay;
     }
 
     public void updateRealTrackPositions() {

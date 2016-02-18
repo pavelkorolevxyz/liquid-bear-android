@@ -77,6 +77,7 @@ public class MusicService extends Service {
     private CompositeSubscription updatersSubscription = new CompositeSubscription();
     private CompositeSubscription timerSubscription = new CompositeSubscription();
     private CompositeSubscription shakeSubscription = new CompositeSubscription();
+    private CompositeSubscription trackLoadingSubscription = new CompositeSubscription();
 
     @Inject
     AudioPlayerModel audioPlayerModel;
@@ -265,7 +266,6 @@ public class MusicService extends Service {
                     } else if (playbackState == ExoPlayer.STATE_READY) {
                         timeline.setCurrentTrackDuration(audioPlayerModel.getDuration());
                         boolean playReady = audioPlayerModel.isPlayReady();
-                        timeline.setPlaying(playReady);
                         if (playReady) {
                             startUpdaters();
                             Timber.d("Start updaters");
@@ -283,17 +283,23 @@ public class MusicService extends Service {
         return binder;
     }
 
-    public void exit() {
+    @Override
+    public void onDestroy() {
         completeSubscription.clear();
         timerSubscription.clear();
         updatersSubscription.clear();
         shakeSubscription.clear();
+        trackLoadingSubscription.clear();
 
         tickModel.close();
         audioPlayerModel.close();
+        super.onDestroy();
+    }
 
+    private void exit() {
         LBApplication.BUS.post(new ExitEvent());
         stopForeground(true);
+        stopSelf();
     }
 
     public int getCurrentPosition() {
@@ -305,13 +311,20 @@ public class MusicService extends Service {
     }
 
     private void play() {
-        timeline.setAutoplay(true);
+        if (timeline.getCurrentTrack() == null) {
+            return;
+        }
+        timeline.setPlaying(true);
         audioPlayerModel.play();
         LBApplication.BUS.post(new PlayEvent());
         updateTrackNotification();
     }
 
     public void pause() {
+        if (timeline.getCurrentTrack() == null) {
+            return;
+        }
+        timeline.setPlaying(false);
         audioPlayerModel.pause();
         LBApplication.BUS.post(new PauseEvent());
         updateTrackNotification();
@@ -354,7 +367,7 @@ public class MusicService extends Service {
         );
     }
 
-    public void play(int index) {
+    public void play(int index, boolean autoPlay) {
         stopUpdaters();
         tickModel.clearScrobbling();
 
@@ -362,27 +375,35 @@ public class MusicService extends Service {
         timeline.setIndex(index);
         timeline.listen(index);
 
+        if (autoPlay) {
+            timeline.setPlaying(true);
+        }
+
         LBApplication.BUS.post(new UpdatePositionEvent());
-        LBApplication.BUS.post(new TrackInfoEvent(track));
+        LBApplication.BUS.post(new TrackInfoEvent(track, index));
 
         getArtistInfo(track.getArtist(), authorizationInfoManager.getLastfmName());
         getTrackInfo(track);
 
-        audioPlayerModel.load(track).subscribe(trackInfo -> {
-            track.setAudioId(trackInfo.getAudioId());
-            track.setOwnerId(trackInfo.getOwnerId());
-            track.setUrl(trackInfo.getUrl());
-            if (timeline.isAutoplay()) {
-                audioPlayerModel.play();
-                showNotificationToast();
-                updateTrackNotification();
-                LBApplication.BUS.post(new PlayEvent());
-            } else {
-                LBApplication.BUS.post(new PlayWithoutIconEvent());
-            }
-        }, throwable -> {
-            Timber.e(throwable, "Error while loading track to play");
-        });
+        trackLoadingSubscription.clear();
+        trackLoadingSubscription.add(
+                audioPlayerModel.load(track).subscribe(trackInfo -> {
+                    Timber.d("Track loaded " + track.toString());
+                    track.setAudioId(trackInfo.getAudioId());
+                    track.setOwnerId(trackInfo.getOwnerId());
+                    track.setUrl(trackInfo.getUrl());
+                    if (autoPlay) {
+                        audioPlayerModel.play();
+                        showNotificationToast();
+                        updateTrackNotification();
+                        LBApplication.BUS.post(new PlayEvent());
+                    } else {
+                        LBApplication.BUS.post(new PlayWithoutIconEvent());
+                    }
+                }, throwable -> {
+                    Timber.e(throwable, "Error while loading track to play");
+                })
+        );
     }
 
     private void getTrackInfo(final Track track) {
@@ -473,12 +494,12 @@ public class MusicService extends Service {
 
     public void next() {
         int nextTrackIndex = timeline.getNextIndex();
-        play(nextTrackIndex);
+        play(nextTrackIndex, timeline.isPlaying());
     }
 
     public void prev() {
         int prevTrackIndex = timeline.getPrevTrackIndex();
-        play(prevTrackIndex);
+        play(prevTrackIndex, timeline.isPlaying());
     }
 
     public void seekTo(int positionMillis) {

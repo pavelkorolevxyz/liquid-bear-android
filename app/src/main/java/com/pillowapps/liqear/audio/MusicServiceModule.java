@@ -46,14 +46,12 @@ public class MusicServiceModule {
 
     @Provides
     @NonNull
-    @Singleton
     public ExoPlayer provideAudioPlayer() {
         return ExoPlayer.Factory.newInstance(1);
     }
 
     @Provides
     @NonNull
-    @Singleton
     public AudioManager provideAudioManager(Context context) {
         return (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }

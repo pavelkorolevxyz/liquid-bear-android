@@ -37,6 +37,7 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.ViewPage;
 import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
 import com.pillowapps.liqear.entities.events.BufferizationEvent;
+import com.pillowapps.liqear.entities.events.ExitEvent;
 import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
 import com.pillowapps.liqear.entities.events.PauseEvent;
 import com.pillowapps.liqear.entities.events.PlayEvent;
@@ -201,7 +202,7 @@ public class PhoneHomeFragment extends HomeFragment {
         playlistListView.setOnItemClickListener((parent, view, position, id) -> {
             int realPosition = playlistItemsAdapter.getItem(position).getRealPosition();
             playlistItemsAdapter.setCurrentIndex(realPosition);
-            musicServiceManager.play(realPosition);
+            musicServiceManager.play(realPosition, true);
         });
         playlistListView.setAdapter(playlistItemsAdapter);
         searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
@@ -400,14 +401,14 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     @Override
-    public void playTrack(int index) {
+    public void playTrack(int index, boolean autoplay) {
         Track track = playlistItemsAdapter.getItem(index);
 
         artistTextView.setText(track.getArtist());
         titleTextView.setText(track.getTitle());
         playPauseButton.setImageResource(R.drawable.pause_button);
 
-        musicServiceManager.play(track.getRealPosition());
+        musicServiceManager.play(track.getRealPosition(), autoplay);
     }
 
     @Override
@@ -584,12 +585,18 @@ public class PhoneHomeFragment extends HomeFragment {
         Track currentTrack = event.getTrack();
         titleTextView.setText(currentTrack.getTitle());
         artistTextView.setText(currentTrack.getArtist());
+        playlistItemsAdapter.setCurrentIndex(event.getCurrentIndex());
         playlistItemsAdapter.notifyDataSetChanged();
     }
 
     @Subscribe
     public void updatePositionEvent(UpdatePositionEvent event) {
         updateTime();
+    }
+
+    @Subscribe
+    public void exitEvent(ExitEvent event) {
+        exit();
     }
 
     public class ModeLongClickListener implements AdapterView.OnItemLongClickListener {

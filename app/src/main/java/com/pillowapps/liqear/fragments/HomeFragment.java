@@ -31,8 +31,6 @@ import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.events.ExitEvent;
-import com.pillowapps.liqear.entities.events.ShowProgressEvent;
 import com.pillowapps.liqear.fragments.base.BaseFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
@@ -56,7 +54,6 @@ import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
-import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -252,7 +249,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void exit() {
-        musicServiceManager.exit();
+        musicServiceManager.stopService(getContext());
         activity.finish();
     }
 
@@ -301,15 +298,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     public void openLibrary() {
         presenter.openLibrary();
-    }
-
-    @Subscribe
-    public void exitEvent(ExitEvent event) {
-        exit();
-    }
-
-    @Subscribe
-    public void showProgressEvent(ShowProgressEvent event) {
     }
 
     public void openDropButton() {

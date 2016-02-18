@@ -20,6 +20,7 @@ import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.NetworkManager;
+import com.pillowapps.liqear.helpers.PlaylistUtils;
 import com.pillowapps.liqear.helpers.PreferencesModel;
 import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.Presenter;
@@ -131,17 +132,16 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void playTrack(int index, boolean autoplay) {
-        timeline.setAutoplay(autoplay);
         final HomeView view = view();
 
-        if (autoplay) {
-            view.playTrack(index);
-        }
+        view.playTrack(index, autoplay);
     }
 
     public void openArtistPhotos() {
         Track currentTrack = timeline.getCurrentTrack();
-        if (currentTrack == null || currentTrack.getArtist() == null) return;
+        if (currentTrack == null || currentTrack.getArtist() == null) {
+            return;
+        }
 
         final HomeView view = view();
 
@@ -418,7 +418,12 @@ public class HomePresenter extends Presenter<HomeView> {
                     int position = restoreData.getPosition();
 
                     boolean currentFits = currentIndex < tracks.size();
-                    if (!currentFits) currentIndex = 0;
+                    if (!currentFits) {
+                        currentIndex = 0;
+                    }
+                    if (PlaylistUtils.sizeOf(playlist) == 0) {
+                        return;
+                    }
                     Track currentTrack = tracks.get(currentIndex);
                     boolean tracksEquals = currentFits
                             && (artist + title).equalsIgnoreCase(currentTrack.getArtist()

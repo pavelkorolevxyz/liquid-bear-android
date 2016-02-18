@@ -55,8 +55,11 @@ public class MusicServiceManager {
         musicService.stopService(intent);
     }
 
-    public void play(int index) {
-        musicService.play(index);
+    public void play(int index, boolean autoplay) {
+        if (musicService == null) {
+            return;
+        }
+        musicService.play(index, autoplay);
     }
 
     public int getCurrentPositionPercent() {
@@ -108,9 +111,5 @@ public class MusicServiceManager {
             return;
         }
         musicService.restore();
-    }
-
-    public void exit() {
-        musicService.exit();
     }
 }

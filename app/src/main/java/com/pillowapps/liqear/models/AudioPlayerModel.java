@@ -116,7 +116,6 @@ public class AudioPlayerModel {
     }
 
     public void close() {
-        audioPlayer.stop();
         audioPlayer.release();
     }
 }

@@ -17,7 +17,7 @@ public interface HomeView {
 
     void changePlaylist(int index, Playlist playlist);
 
-    void playTrack(int index);
+    void playTrack(int index, boolean autoplay);
 
     void updateEmptyPlaylistTextView();
 

@@ -15,13 +15,14 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.TrackUtils;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public class TrackNotificationModel {
 
@@ -69,6 +70,9 @@ public class TrackNotificationModel {
 
     private Notification createControllingNotification() {
         Track track = timeline.getCurrentTrack();
+        if (track == null) {
+            throw new NullPointerException("Track for notification must not be null");
+        }
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_stat_liquid_bear_logotype_revision)
@@ -84,6 +88,7 @@ public class TrackNotificationModel {
         int playButton = timeline.isPlaying()
                 ? R.drawable.pause_button
                 : R.drawable.play_button;
+        Timber.d("timeline is playing = " + timeline.isPlaying());
         contentView.setImageViewResource(R.id.play_pause, playButton);
 
         ComponentName service = new ComponentName(context, MusicService.class);
