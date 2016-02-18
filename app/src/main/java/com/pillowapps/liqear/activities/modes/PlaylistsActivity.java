@@ -41,9 +41,11 @@ import rx.schedulers.Schedulers;
 
 public class PlaylistsActivity extends ResultTrackedBaseActivity {
     public static final String INTENTION = "intention";
+    public static final String TRACK = "track";
+
     private PlaylistsArrayAdapter adapter;
     private Bundle extras;
-    private Aim aim;
+    private Intention intention;
     private ListView listView;
     private TextView emptyTextView;
 
@@ -54,7 +56,7 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
 
     public void onStart() {
         super.onStart();
-        switch (aim) {
+        switch (intention) {
             case SAVE_AS_PLAYLIST: {
                 saveAsPlaylist(false, -1);
                 break;
@@ -64,9 +66,9 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
         }
     }
 
-    public static Intent getStartIntent(Context context, Aim aim) {
+    public static Intent startIntent(Context context, Intention intention) {
         Intent intent = new Intent(context, PlaylistsActivity.class);
-        intent.putExtra(PlaylistsActivity.INTENTION, aim);
+        intent.putExtra(PlaylistsActivity.INTENTION, intention);
         return intent;
     }
 
@@ -81,7 +83,7 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
         setSupportActionBar(toolbar);
 
         extras = getIntent().getExtras();
-        aim = (Aim) extras.getSerializable(INTENTION);
+        intention = (Intention) extras.getSerializable(INTENTION);
         listView = (ListView) findViewById(android.R.id.list);
         emptyTextView = (TextView) findViewById(R.id.empty);
         ActionBar actionBar = getSupportActionBar();
@@ -103,11 +105,14 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
                 });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            switch (aim) {
+            switch (intention) {
                 case ADD_TO_PLAYLIST: {
                     Playlist playlist = adapter.get(position);
-                    playlistModel.addTrackToPlaylist(playlist.getId(),
-                            new Track(extras.getString("artist"), extras.getString("title")))
+                    Track track = (Track) extras.get(TRACK);
+                    if (track == null) {
+                        throw new NullPointerException("Track to add must not be null");
+                    }
+                    playlistModel.addTrackToPlaylist(playlist.getId(), track)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe();
@@ -316,7 +321,7 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
         dialog.show();
     }
 
-    public enum Aim {
+    public enum Intention {
         ADD_TO_PLAYLIST,
         SHOW_PLAYLISTS,
         SAVE_AS_PLAYLIST

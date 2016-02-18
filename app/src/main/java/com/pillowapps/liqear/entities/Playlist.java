@@ -15,7 +15,7 @@ public class Playlist implements Parcelable {
 
     private List<Track> tracks = new ArrayList<>();
 
-    private Boolean mainPlaylist;
+    private Boolean mainPlaylist = false;
 
     public Playlist(long id, String title) {
         this.id = id;

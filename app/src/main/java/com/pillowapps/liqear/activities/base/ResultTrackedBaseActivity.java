@@ -116,7 +116,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
 
     public void saveAsPlaylist(List<Track> tracks) {
         Intent intent = new Intent(ResultTrackedBaseActivity.this, PlaylistsActivity.class);
-        intent.putExtra(PlaylistsActivity.INTENTION, PlaylistsActivity.Aim.SAVE_AS_PLAYLIST);
+        intent.putExtra(PlaylistsActivity.INTENTION, PlaylistsActivity.Intention.SAVE_AS_PLAYLIST);
         intent.putParcelableArrayListExtra(Constants.TRACKLIST, (ArrayList<? extends Parcelable>) tracks);
         startActivity(intent);
     }

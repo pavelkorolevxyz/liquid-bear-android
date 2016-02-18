@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.TrackAdapter;
@@ -36,6 +37,8 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LBApplication.get(this).applicationComponent().inject(this);
 
         Bundle extras = getIntent().getExtras();
         String title = extras.getString("title");

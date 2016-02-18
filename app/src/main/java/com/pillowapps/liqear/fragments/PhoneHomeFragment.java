@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -55,6 +56,7 @@ import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -204,6 +206,14 @@ public class PhoneHomeFragment extends HomeFragment {
             playlistItemsAdapter.setCurrentIndex(realPosition);
             musicServiceManager.play(realPosition, true);
         });
+
+        playlistListView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            menu.setHeaderTitle(playlistItemsAdapter.getItem(info.position).getTitle());
+            MenuInflater inflater = activity.getMenuInflater();
+            inflater.inflate(R.menu.menu_main_playlist_track, menu);
+        });
+
         playlistListView.setAdapter(playlistItemsAdapter);
         searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
         searchPlaylistEditText.setVisibility(savesManager.isSearchVisible() ? View.VISIBLE : View.GONE);
@@ -320,7 +330,6 @@ public class PhoneHomeFragment extends HomeFragment {
         indicator.setCurrentItem(currentItem);
     }
 
-
     @Override
     public void updateMainPlaylistTitle(@Nullable String title) {
         if (title == null) {
@@ -395,8 +404,8 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     @Override
-    public void changePlaylist(int index, Playlist playlist) {
-        super.changePlaylist(index, playlist);
+    public void changePlaylist(int index, Playlist playlist, LinkedList<Integer> queueIndexes) {
+        super.changePlaylist(index, playlist, queueIndexes);
         updateMainPlaylistTitle(playlist.getTitle());
     }
 

@@ -7,6 +7,8 @@ import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 
+import java.util.LinkedList;
+
 public interface HomeView {
 
     void showLoading(boolean loading);
@@ -15,7 +17,7 @@ public interface HomeView {
 
     void updateAdapter();
 
-    void changePlaylist(int index, Playlist playlist);
+    void changePlaylist(int index, Playlist playlist, LinkedList<Integer> queueIndexes);
 
     void playTrack(int index, boolean autoplay);
 
@@ -108,4 +110,8 @@ public interface HomeView {
     void updatePlayingState(boolean isPlaying);
 
     void restoreServiceState();
+
+    void openAddTrackToPlaylistScreen(Track track);
+
+    void showAddToDialog(Track track);
 }

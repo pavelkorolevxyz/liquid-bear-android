@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -54,6 +55,8 @@ import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
+
+import java.util.LinkedList;
 
 import javax.inject.Inject;
 
@@ -232,6 +235,35 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final Track track = playlistItemsAdapter.getItem(info.position);
+        switch (item.getItemId()) {
+            case R.id.add_to_playlist_track_menu_item:
+                presenter.addTrackToPlaylist(track);
+                break;
+            case R.id.lyrics_track_menu_item:
+                presenter.openLyrics(track);
+                break;
+            case R.id.add_to_queue_track_menu_item:
+                presenter.queueTrack(track.getRealPosition());
+                break;
+            case R.id.show_artist_track_menu_item:
+                presenter.openArtistViewer(track.getArtist());
+                break;
+            case R.id.remove_from_list_track_menu_item:
+                presenter.removeTrackFromPlaylist(track.getRealPosition());
+                break;
+            case R.id.add_to_track_menu_item:
+                presenter.addTo(track);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             return;
@@ -245,6 +277,30 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             String url = data.getStringExtra("url");
             presenter.changeCurrentTrackUrl(position, url);
         }
+    }
+
+    @Override
+    public void openAddTrackToPlaylistScreen(Track track) {
+        Intent intent = PlaylistsActivity.startIntent(getContext(), PlaylistsActivity.Intention.ADD_TO_PLAYLIST);
+        intent.putExtra(PlaylistsActivity.TRACK, track);
+        startActivity(intent);
+    }
+
+    @Override
+    public void showAddToDialog(Track track) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.choose_target)
+                .setItems(R.array.add_targets, (dialog, which) -> {
+                            switch (which) {
+                                case 0:
+                                    presenter.love(track);
+                                    break;
+                                case 1:
+                                    presenter.addToVkAudio(track);
+                                    break;
+                            }
+                        }
+                ).show();
     }
 
     @Override
@@ -264,9 +320,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     @Override
-    public void changePlaylist(int index, Playlist playlist) {
+    public void changePlaylist(int index, Playlist playlist, LinkedList<Integer> queueIndexes) {
         playlistItemsAdapter.setValues(playlist.getTracks());
         playlistItemsAdapter.setCurrentIndex(index);
+        playlistItemsAdapter.setQueue(queueIndexes);
         playlistItemsAdapter.notifyDataSetChanged();
         updateToolbars();
     }
@@ -468,7 +525,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public void openPlaylistsScreen() {
-        startActivityForResult(PlaylistsActivity.getStartIntent(getContext(), PlaylistsActivity.Aim.SHOW_PLAYLISTS), Constants.MAIN_REQUEST_CODE);
+        startActivityForResult(PlaylistsActivity.startIntent(getContext(), PlaylistsActivity.Intention.SHOW_PLAYLISTS), Constants.MAIN_REQUEST_CODE);
     }
 
     @Override

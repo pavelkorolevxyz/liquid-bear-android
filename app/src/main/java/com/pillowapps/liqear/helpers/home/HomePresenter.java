@@ -156,15 +156,20 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void openArtistViewer() {
         Track currentTrack = timeline.getCurrentTrack();
-        if (currentTrack == null || currentTrack.getArtist() == null) return;
+        if (currentTrack == null || currentTrack.getArtist() == null) {
+            return;
+        }
+        openArtistViewer(currentTrack.getArtist());
+    }
 
+    public void openArtistViewer(@NonNull String artist) {
         final HomeView view = view();
 
         if (!networkManager.isOnline()) {
             view.showNoInternetError();
             return;
         }
-        view.openArtistViewer(currentTrack.getArtist());
+        view.openArtistViewer(artist);
     }
 
     public void shareTrack() {
@@ -227,8 +232,13 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void openLyrics() {
         Track currentTrack = timeline.getCurrentTrack();
-        if (currentTrack == null) return;
+        if (currentTrack == null) {
+            return;
+        }
+        openLyrics(currentTrack);
+    }
 
+    public void openLyrics(Track track) {
         final HomeView view = view();
 
         if (!authorizationInfoManager.isAuthorizedOnVk()) {
@@ -240,7 +250,7 @@ public class HomePresenter extends Presenter<HomeView> {
             return;
         }
 
-        view.openLyricsScreen(currentTrack);
+        view.openLyricsScreen(track);
     }
 
     public void openVideo() {
@@ -253,8 +263,13 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void addToVkAudio() {
         Track currentTrack = timeline.getCurrentTrack();
-        if (currentTrack == null) return;
+        if (currentTrack == null) {
+            return;
+        }
+        addToVkAudio(currentTrack);
+    }
 
+    public void addToVkAudio(Track track) {
         final HomeView view = view();
 
         if (!authorizationInfoManager.isAuthorizedOnVk()) {
@@ -267,9 +282,9 @@ public class HomePresenter extends Presenter<HomeView> {
         }
 
         if (preferencesManager.isVkAddSlow()) {
-            view.openAddToVkScreen(currentTrack);
+            view.openAddToVkScreen(track);
         } else {
-            vkAudioModel.addToUserAudioFast(TrackUtils.getNotation(currentTrack), new VkSimpleCallback<VkResponse>() {
+            vkAudioModel.addToUserAudioFast(TrackUtils.getNotation(track), new VkSimpleCallback<VkResponse>() {
                 @Override
                 public void success(VkResponse data) {
                     view.showToastAdded();
@@ -350,7 +365,7 @@ public class HomePresenter extends Presenter<HomeView> {
                 .subscribe();
 
         HomeView view = view();
-        view.changePlaylist(indexToPlay, playlist);
+        view.changePlaylist(indexToPlay, playlist, timeline.getQueueIndexes());
         view.updateEmptyPlaylistTextView();
 
         if (timeline.getPlaylistTracks().size() > 0) {
@@ -522,29 +537,15 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void toggleLoveForCurrentTrack() {
-        HomeView view = view();
-
         final Track track = timeline.getCurrentTrack();
         if (track == null) {
             return;
         }
 
         if (!track.isLoved()) {
-            lastfmTrackModel.love(track, new SimpleCallback<Object>() {
-                @Override
-                public void success(Object data) {
-                    track.setLoved(true);
-                    view.updateLoveButton(ButtonStateUtils.getLoveButtonImage(track));
-                    view.showLoading(false);
-                }
-
-                @Override
-                public void failure(String errorMessage) {
-                    view.showLoading(false);
-
-                }
-            });
+            love(track);
         } else {
+            HomeView view = view();
             lastfmTrackModel.unlove(track, new SimpleCallback<Object>() {
                 @Override
                 public void success(Object o) {
@@ -559,6 +560,23 @@ public class HomePresenter extends Presenter<HomeView> {
                 }
             });
         }
+    }
+
+    public void love(Track track) {
+        HomeView view = view();
+        lastfmTrackModel.love(track, new SimpleCallback<Object>() {
+            @Override
+            public void success(Object data) {
+                track.setLoved(true);
+                view.updateLoveButton(ButtonStateUtils.getLoveButtonImage(track));
+                view.showLoading(false);
+            }
+
+            @Override
+            public void failure(String errorMessage) {
+                view.showLoading(false);
+            }
+        });
     }
 
     public void openAlbumScreen() {
@@ -581,4 +599,29 @@ public class HomePresenter extends Presenter<HomeView> {
         Track currentTrack = timeline.getCurrentTrack();
         view.updatePlaybackTabMenu(ToolbarUtils.getPlaybackToolbarMenuRes(currentTrack));
     }
+
+    public void addTrackToPlaylist(Track track) {
+        HomeView view = view();
+
+        view.openAddTrackToPlaylistScreen(track);
+    }
+
+    public void queueTrack(int index) {
+        timeline.queueTrack(index);
+        HomeView view = view();
+        view.updateAdapter();
+    }
+
+    public void removeTrackFromPlaylist(int index) {
+        timeline.removeTrack(index);
+        HomeView view = view();
+        view.updateAdapter();
+    }
+
+    public void addTo(Track track) {
+        HomeView view = view();
+        view.showAddToDialog(track);
+    }
+
+
 }

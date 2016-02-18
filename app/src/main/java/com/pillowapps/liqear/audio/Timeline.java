@@ -249,4 +249,8 @@ public class Timeline {
     public boolean isPlaying() {
         return playing;
     }
+
+    public void removeTrack(int index) {
+        currentPlaylist.getTracks().remove(index);
+    }
 }
