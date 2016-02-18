@@ -68,6 +68,8 @@ public class Timeline {
     public void setPlaylist(@NonNull Playlist playlist) {
         this.currentPlaylist = playlist;
         this.listeningsCounter.updateWithPlaylist(playlist);
+        this.previousTracksIndexes.clear();
+        this.queueIndexes.clear();
     }
 
     public void toggleShuffle() {
@@ -131,9 +133,10 @@ public class Timeline {
     public int getPrevTrackIndex() {
         switch (shuffleMode) {
             case SHUFFLE:
-                if (previousTracksIndexes.isEmpty()) {
+                if (previousTracksIndexes.size() < 2) {
                     return index;
                 }
+                previousTracksIndexes.pop();
                 return previousTracksIndexes.pop();
             default:
                 return index - 1 > 0 ? index - 1 : PlaylistUtils.sizeOf(currentPlaylist) - 1;
@@ -154,6 +157,7 @@ public class Timeline {
 
     public void listen(int index) {
         listeningsCounter.listen(index);
+        addToPrevIndexes(index);
     }
 
     public void setIndex(int index) {
