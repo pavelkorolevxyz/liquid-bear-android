@@ -3,6 +3,7 @@ package com.pillowapps.liqear.activities.modes;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.View;
@@ -76,7 +77,7 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
         updateEmptyTextView();
     }
 
-    private void loadPlaylistTracks(Long playlistId) {
+    private void loadPlaylistTracks(@NonNull Long playlistId) {
         playlistModel.getPlaylist(playlistId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

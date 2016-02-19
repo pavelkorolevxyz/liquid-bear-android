@@ -21,7 +21,9 @@ public class PlaylistModel {
     }
 
     public Observable<Long> saveMainPlaylist(Playlist playlist) {
-        if (playlist == null) return Observable.empty();
+        if (playlist == null) {
+            return Observable.empty();
+        }
         playlist.setMainPlaylist(true);
 
         return storageManager.findAndDeleteMainPlaylist()

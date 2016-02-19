@@ -58,34 +58,34 @@ public class EqualizerActivity extends TrackedBaseActivity {
         }
         setTitle(R.string.equalizer);
 
-        preferences = SharedPreferencesManager.getEqualizerPreferences(this);
-
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-        mainLinearLayout = (LinearLayout) findViewById(R.id.main_layout);
-        spinner = (Spinner) findViewById(R.id.spinner);
-        equalizer = EqualizerManager.getEqualizer();
-        bassBoost = EqualizerManager.getBassBoost();
-        short numberOfPresets = equalizer.getNumberOfPresets();
-        setupEqualizerFxAndUI(numberOfPresets == 0);
-
-        checkEnabled();
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view,
-                                       int position, long l) {
-                TextView selectedText = (TextView) adapterView.getChildAt(0);
-                if (selectedText != null) {
-                    selectedText.setTextColor(ContextCompat.getColor(EqualizerActivity.this, R.color.primary_text));
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        preferences = SharedPreferencesManager.getEqualizerPreferences(this);
+//
+//        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+//
+//        mainLinearLayout = (LinearLayout) findViewById(R.id.main_layout);
+//        spinner = (Spinner) findViewById(R.id.spinner);
+//        equalizer = EqualizerManager.getEqualizer();
+//        bassBoost = EqualizerManager.getBassBoost();
+//        short numberOfPresets = equalizer.getNumberOfPresets();
+//        setupEqualizerFxAndUI(numberOfPresets == 0);
+//
+//        checkEnabled();
+//
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view,
+//                                       int position, long l) {
+//                TextView selectedText = (TextView) adapterView.getChildAt(0);
+//                if (selectedText != null) {
+//                    selectedText.setTextColor(ContextCompat.getColor(EqualizerActivity.this, R.color.primary_text));
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        }); todo
     }
 
     private void checkEnabled() {

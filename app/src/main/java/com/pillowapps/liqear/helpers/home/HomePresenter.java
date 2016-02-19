@@ -321,7 +321,7 @@ public class HomePresenter extends Presenter<HomeView> {
 
         final HomeView view = view();
         view.clearSearch();
-        updateMainPlaylist(0, true, playlist);
+        playTrack(0, true);
     }
 
     public void findCurrentTrack() {
@@ -335,27 +335,27 @@ public class HomePresenter extends Presenter<HomeView> {
     public void sortByArtist(List<Track> currentTrackList) {
         List<Track> tracks = new ArrayList<>(currentTrackList);
         Collections.sort(tracks, new ArtistTrackComparator());
-        updateMainPlaylist(0, false, new Playlist(tracks));
+        updateMainPlaylist(0, new Playlist(tracks));
     }
 
-    private void updateMainPlaylist(int indexToPlay, boolean autoPlay, @NonNull Playlist playlist) {
+    private void updateMainPlaylist(int index, @NonNull Playlist playlist) {
         timeline.clearQueue();
         timeline.clearPreviousIndexes();
         timeline.setPlaylist(playlist);
         timeline.updateRealTrackPositions();
+
         playlistModel.saveMainPlaylist(timeline.getPlaylist())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe();
 
+        setMainPlaylist(index, playlist);
+    }
+
+    private void setMainPlaylist(int index, @NonNull Playlist playlist) {
         HomeView view = view();
-        view.changePlaylist(indexToPlay, playlist, timeline.getQueueIndexes());
+        view.changePlaylist(index, playlist, timeline.getQueueIndexes());
         view.updateEmptyPlaylistTextView();
-
-        if (timeline.getPlaylistTracks().size() > 0) {
-            playTrack(indexToPlay, autoPlay);
-        }
-
     }
 
     public void toggleModeListEditMode() {
@@ -388,7 +388,7 @@ public class HomePresenter extends Presenter<HomeView> {
     public void playNewPlaylist(int positionToPlay, Playlist playlist) {
         HomeView view = view();
         view.changeViewPagerItem(PhoneFragmentPagerAdapter.PLAYLIST_TAB_INDEX);
-        updateMainPlaylist(positionToPlay, true, playlist);
+        playTrack(positionToPlay, true);
     }
 
     public void changeCurrentTrackUrl(int newPosition, String url) {
@@ -410,46 +410,30 @@ public class HomePresenter extends Presenter<HomeView> {
                     view.showLoading(false);
                     view.updateMainPlaylistTitle(playlist.getTitle());
 
-                    List<Track> tracks = playlist.getTracks();
-
-                    RestoreData restoreData = stateManager.getRestoreData();
-                    String artist = restoreData.getArtist();
-                    String title = restoreData.getTitle();
-                    int currentIndex = restoreData.getCurrentIndex();
-                    int position = restoreData.getPosition();
-
-                    boolean currentFits = currentIndex < tracks.size();
-                    if (!currentFits) {
-                        currentIndex = 0;
-                    }
                     if (PlaylistUtils.sizeOf(playlist) == 0) {
                         return;
                     }
-                    Track currentTrack = tracks.get(currentIndex);
-                    boolean tracksEquals = currentFits
-                            && (artist + title).equalsIgnoreCase(currentTrack.getArtist()
-                            + currentTrack.getTitle());
-                    if (!tracksEquals) {
-                        view.showArtistPlaceholder();
-                        currentIndex = 0;
-                        view.updateTrackArtist(currentTrack.getArtist());
-                        view.updateTrackTitle(currentTrack.getTitle());
-                        position = 0;
-                    } else {
-                        view.updateTrackArtist(artist);
-                        view.updateTrackTitle(title);
-                    }
-                    timeline.setIndex(currentIndex);
-                    if (currentIndex > tracks.size()) {
-                        view.showArtistPlaceholder();
-                        position = 0;
-                    }
+
+                    RestoreData restoreData = stateManager.getRestoreData();
+                    int restoredIndex = restoreData.getCurrentIndex();
+                    int restoredPosition = restoreData.getPosition();
+
                     if (!preferencesManager.isContinueFromLastPositionEnabled()) {
-                        position = 0;
+                        restoredPosition = 0;
                     }
-                    timeline.setPosition(position);
-                    updateMainPlaylist(currentIndex, false, playlist);
+                    timeline.setIndex(restoredIndex);
+                    timeline.setPosition(restoredPosition);
+
+                    Track currentTrack = PlaylistUtils.getTrack(playlist, restoredIndex);
+                    if (currentTrack == null) {
+                        return;
+                    }
+                    view.updateTrackArtist(currentTrack.getArtist());
+                    view.updateTrackTitle(currentTrack.getTitle());
                     view.updateAlbum();
+
+                    updateMainPlaylist(restoredIndex, playlist);
+
                     view.restoreServiceState();
                 });
     }
@@ -520,7 +504,7 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     public void restorePlayingState() {
-        updateMainPlaylist(timeline.getIndex(), false, timeline.getPlaylist());
+        setMainPlaylist(timeline.getIndex(), timeline.getPlaylist());
     }
 
     public void toggleLoveForCurrentTrack() {

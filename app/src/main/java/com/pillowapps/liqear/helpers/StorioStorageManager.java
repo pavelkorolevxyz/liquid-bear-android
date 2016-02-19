@@ -59,46 +59,52 @@ public class StorioStorageManager implements PlaylistsStorage {
     @Override
     public Observable<DeleteResult> findAndDeleteMainPlaylist() {
         return deletePlaylistWithTracks(database.get()
-                        .object(DBPlaylist.class)
-                        .withQuery(Query.builder()
-                                        .table(PlaylistTable.TABLE_NAME)
-                                        .where(String.format(Locale.getDefault(), "%s = ?",
-                                                PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
-                                        .whereArgs(1)
-                                        .build()
-                        )
-                        .prepare()
-                        .asRxObservable()
+                .object(DBPlaylist.class)
+                .withQuery(Query.builder()
+                        .table(PlaylistTable.TABLE_NAME)
+                        .where(String.format(Locale.getDefault(), "%s = ?",
+                                PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
+                        .whereArgs(1)
+                        .build()
+                )
+                .prepare()
+                .asRxObservable()
         );
     }
 
     @Override
-    public Observable<DeleteResult> findAndDeletePlaylist(Long playlistId) {
+    public Observable<DeleteResult> findAndDeletePlaylist(@NonNull Long playlistId) {
         return deletePlaylistWithTracks(database.get().object(DBPlaylist.class)
-                        .withQuery(Query.builder()
-                                        .table(PlaylistTable.TABLE_NAME)
-                                        .where(String.format(Locale.getDefault(), "%s = ?",
-                                                PlaylistTable.COLUMN_ID))
-                                        .whereArgs(playlistId)
-                                        .build()
-                        )
-                        .prepare()
-                        .asRxObservable()
+                .withQuery(Query.builder()
+                        .table(PlaylistTable.TABLE_NAME)
+                        .where(String.format(Locale.getDefault(), "%s = ?",
+                                PlaylistTable.COLUMN_ID))
+                        .whereArgs(playlistId)
+                        .build()
+                )
+                .prepare()
+                .asRxObservable()
         );
     }
 
     private Observable<DeleteResult> deletePlaylistWithTracks(Observable<DBPlaylist> playlistObservable) {
         return playlistObservable
-                .flatMap(dbPlaylist -> deleteTracksFromPlaylist(dbPlaylist.getId())
-                                .map(deleteResult -> dbPlaylist)
+                .flatMap(dbPlaylist -> {
+                            Long playlistId = dbPlaylist.getId();
+                            if (playlistId == null) {
+                                return Observable.empty();
+                            }
+                            return deleteTracksFromPlaylist(playlistId)
+                                    .map(deleteResult -> dbPlaylist);
+                        }
                 ).flatMap(dbPlaylist -> database.delete()
-                                .object(dbPlaylist)
-                                .prepare()
-                                .asRxObservable()
+                        .object(dbPlaylist)
+                        .prepare()
+                        .asRxObservable()
                 ).take(1);
     }
 
-    private Observable<DeleteResult> deleteTracksFromPlaylist(Long playlistId) {
+    private Observable<DeleteResult> deleteTracksFromPlaylist(@NonNull Long playlistId) {
         return database.delete()
                 .byQuery(DeleteQuery.builder()
                         .table(TrackTable.TABLE_NAME)
@@ -115,16 +121,18 @@ public class StorioStorageManager implements PlaylistsStorage {
         return database.get()
                 .object(DBPlaylist.class)
                 .withQuery(Query.builder()
-                                .table(PlaylistTable.TABLE_NAME)
-                                .where(String.format("%s = ?", PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
-                                .whereArgs(1)
-                                .build()
+                        .table(PlaylistTable.TABLE_NAME)
+                        .where(String.format("%s = ?", PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
+                        .whereArgs(1)
+                        .build()
                 ).prepare()
                 .asRxObservable()
                 .take(1)
                 .flatMap(dbPlaylist -> {
                     Playlist myPlaylist = DatabaseEntitiesMapper.map(dbPlaylist);
-                    if (dbPlaylist == null) return Observable.just(myPlaylist);
+                    if (dbPlaylist == null || dbPlaylist.getId() == null) {
+                        return Observable.just(myPlaylist);
+                    }
                     List<DBTrack> dbTracks = database.get().listOfObjects(DBTrack.class)
                             .withQuery(Query.builder().table(TrackTable.TABLE_NAME)
                                     .where(String.format(Locale.getDefault(), "%s = ?", TrackTable.COLUMN_PLAYLIST_ID))
@@ -143,10 +151,10 @@ public class StorioStorageManager implements PlaylistsStorage {
         return database.get()
                 .listOfObjects(DBPlaylist.class)
                 .withQuery(Query.builder()
-                                .table(PlaylistTable.TABLE_NAME)
-                                .where(String.format("%s = ?", PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
-                                .whereArgs(0)
-                                .build()
+                        .table(PlaylistTable.TABLE_NAME)
+                        .where(String.format("%s = ?", PlaylistTable.COLUMN_IS_MAIN_PLAYLIST))
+                        .whereArgs(0)
+                        .build()
                 ).prepare()
                 .asRxObservable()
                 .take(1)
@@ -178,7 +186,7 @@ public class StorioStorageManager implements PlaylistsStorage {
     }
 
     @Override
-    public Observable<Long> saveTracksToPlaylist(Long playlistId, List<Track> tracks) {
+    public Observable<Long> saveTracksToPlaylist(@NonNull Long playlistId, List<Track> tracks) {
         return Observable.from(tracks)
                 .map(DatabaseEntitiesMapper::map)
                 .map(dbTrack -> {
@@ -194,7 +202,7 @@ public class StorioStorageManager implements PlaylistsStorage {
     }
 
     @Override
-    public Observable<PutResult> renamePlaylist(Long playlistId, String newTitle) {
+    public Observable<PutResult> renamePlaylist(@NonNull Long playlistId, String newTitle) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(PlaylistTable.COLUMN_TITLE, newTitle);
         return database.put()
@@ -227,7 +235,7 @@ public class StorioStorageManager implements PlaylistsStorage {
     }
 
     @Override
-    public Observable<PutResult> saveTrackToPlaylist(Long playlistId, Track track) {
+    public Observable<PutResult> saveTrackToPlaylist(@NonNull Long playlistId, Track track) {
         DBTrack dbTrack = DatabaseEntitiesMapper.map(track);
         dbTrack.setPlaylistId(playlistId);
 
@@ -238,14 +246,14 @@ public class StorioStorageManager implements PlaylistsStorage {
     }
 
     @Override
-    public Observable<Playlist> getPlaylist(Long playlistId) {
+    public Observable<Playlist> getPlaylist(@NonNull Long playlistId) {
         return database.get()
                 .object(DBPlaylist.class)
                 .withQuery(Query.builder()
-                                .table(PlaylistTable.TABLE_NAME)
-                                .where(String.format("%s = ?", PlaylistTable.COLUMN_ID))
-                                .whereArgs(playlistId)
-                                .build()
+                        .table(PlaylistTable.TABLE_NAME)
+                        .where(String.format("%s = ?", PlaylistTable.COLUMN_ID))
+                        .whereArgs(playlistId)
+                        .build()
                 ).prepare()
                 .asRxObservable()
                 .take(1)

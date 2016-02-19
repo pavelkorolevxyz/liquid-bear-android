@@ -134,9 +134,10 @@ public class MusicService extends Service {
 
     private void updateShake() {
         if (preferencesManager.isShakeEnabled()) {
-            shakeSubscription.add(shakeManager.initShakeDetector().subscribe(o -> {
-                next();
-            }));
+            shakeSubscription.add(shakeManager.initShakeDetector()
+                    .subscribe(o -> {
+                        next();
+                    }));
         } else {
             shakeSubscription.clear();
             shakeManager.destroyShake();
@@ -257,6 +258,7 @@ public class MusicService extends Service {
     }
 
     private void initAudioPlayer() {
+        Timber.e("init audio player");
         audioPlayerModel.seekTo(timeline.getPosition());
         completeSubscription.add(
                 audioPlayerModel.addListener().subscribe(playbackState -> {
@@ -314,6 +316,12 @@ public class MusicService extends Service {
         if (timeline.getCurrentTrack() == null) {
             return;
         }
+
+        if (audioPlayerModel.isIdle()) {
+            play(timeline.getIndex(), true);
+            return;
+        }
+
         timeline.setPlaying(true);
         audioPlayerModel.play();
         LBApplication.BUS.post(new PlayEvent());

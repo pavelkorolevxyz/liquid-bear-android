@@ -40,6 +40,7 @@ public class AudioPlayerModel {
     }
 
     public Observable<TrackInfo> load(Track track) {
+        Timber.d("audioPlayer load");
         return vkAudioProvider.getTrackInfo(track).flatMap(trackInfo -> Observable.create(subscriber -> {
             audioPlayer.stop();
             audioPlayer.seekTo(0);
@@ -58,11 +59,13 @@ public class AudioPlayerModel {
     }
 
     public void play() {
+        Timber.d("audioPlayer play");
         audioPlayer.setPlayWhenReady(true);
     }
 
     public void pause() {
         audioPlayer.setPlayWhenReady(false);
+        Timber.d("audioPlayer pause");
     }
 
     public int getDuration() {
@@ -82,6 +85,7 @@ public class AudioPlayerModel {
     }
 
     public void seekTo(int positionMillis) {
+        Timber.d("audioPlayer seek");
         audioPlayer.seekTo(positionMillis);
     }
 
@@ -117,5 +121,9 @@ public class AudioPlayerModel {
 
     public void close() {
         audioPlayer.release();
+    }
+
+    public boolean isIdle() {
+        return audioPlayer.getPlaybackState() == ExoPlayer.STATE_IDLE;
     }
 }

@@ -11,11 +11,9 @@
 
     <fragment
         android:id="@+id/handset_fragment"
-        android:name="com.pillowapps.liqear.fragments.PhoneFragment"
+        android:name="com.pillowapps.liqear.fragments.PhoneHomeFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/handset_fragment_layout">
     </fragment>
-
-    <include layout="@layout/indeterminate_progress_bar"/>
 </RelativeLayout>

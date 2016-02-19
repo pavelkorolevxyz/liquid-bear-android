@@ -41,6 +41,7 @@ public class LBApplication extends Application {
         super.onCreate();
         applicationComponent = prepareApplicationComponent().build();
         applicationComponent.inject(this);
+        Timber.d("APPLICATION CREATED");
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -51,9 +52,9 @@ public class LBApplication extends Application {
 
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                        .setDefaultFontPath("fonts/PTC55F.ttf")
-                        .setFontAttrId(R.attr.fontPath)
-                        .build()
+                .setDefaultFontPath("fonts/PTC55F.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
         );
     }
 
