@@ -388,6 +388,7 @@ public class HomePresenter extends Presenter<HomeView> {
     public void playNewPlaylist(int positionToPlay, Playlist playlist) {
         HomeView view = view();
         view.changeViewPagerItem(PhoneFragmentPagerAdapter.PLAYLIST_TAB_INDEX);
+        updateMainPlaylist(positionToPlay, playlist);
         playTrack(positionToPlay, true);
     }
 
