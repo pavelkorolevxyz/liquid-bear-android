@@ -67,11 +67,6 @@
                 android:title="@string/show_artist"
                 android:icon="@drawable/ic_artist_dark"
                 app:showAsAction="always|withText"/>
-            <item
-                android:id="@+id/photo_artist_button"
-                android:title="@string/photo_artist"
-                android:icon="@drawable/ic_photo_dark"
-                app:showAsAction="always|withText"/>
         </menu>
     </item>
     <item

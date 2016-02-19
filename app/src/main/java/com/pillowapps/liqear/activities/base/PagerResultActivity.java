@@ -31,16 +31,7 @@ public abstract class PagerResultActivity extends ResultTrackedBaseActivity {
         }
     };
 
-    public OnViewerItemClickListener<VkTrack> vkTrackClickListener = new OnViewerItemClickListener<VkTrack>() {
-        @Override
-        public void onViewerClicked(List<VkTrack> tracks, int position) {
-            String title = String.format("%s / %s", getViewer(pager.getCurrentItem()).getTitle(), getToolbarTitle());
-            openMainPlaylist(Converter.convertVkTrackList(tracks), position, title);
-        }
-    };
-
     public OnViewerItemClickListener<Track> trackLongClickListener = (tracks, position) -> trackLongClick(tracks.get(position));
-    public OnViewerItemClickListener<VkTrack> vkTrackLongClickListener = (tracks, position) -> trackLongClick(Converter.convertVkTrack(tracks.get(position)));
 
     public OnViewerItemClickListener<Artist> artistClickListener = (artists, position) -> openArtistByName(artists.get(position).getName());
     public OnViewerItemClickListener<Album> albumClickListener = (albums, position) -> openLastfmAlbum(albums.get(position));

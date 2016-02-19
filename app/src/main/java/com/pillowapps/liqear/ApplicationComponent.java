@@ -3,7 +3,6 @@ package com.pillowapps.liqear;
 import android.support.annotation.NonNull;
 
 import com.pillowapps.liqear.activities.HomeActivity;
-import com.pillowapps.liqear.activities.ImagePagerActivity;
 import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
 import com.pillowapps.liqear.activities.modes.LastfmNeighboursActivity;
@@ -75,8 +74,6 @@ public interface ApplicationComponent {
     void inject(@NonNull AuthActivity application);
 
     void inject(@NonNull MusicService application);
-
-    void inject(@NonNull ImagePagerActivity imagePagerActivity);
 
     void inject(@NonNull TextActivity textActivity);
 

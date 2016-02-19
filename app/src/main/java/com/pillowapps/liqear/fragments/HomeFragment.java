@@ -19,7 +19,6 @@ import com.michaelnovakjr.numberpicker.NumberPicker;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.HomeActivity;
-import com.pillowapps.liqear.activities.ImagePagerActivity;
 import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
@@ -147,10 +146,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
-            case R.id.photo_artist_button: {
-                presenter.openArtistPhotos();
-                break;
-            }
             case R.id.show_artist_button: {
                 presenter.openArtistViewer();
                 break;
@@ -377,20 +372,9 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         presenter.toggleLoveForCurrentTrack();
     }
 
-    public void updateLoveButton(boolean loved) {
-        // No operations.
-    }
-
     @Override
     public void showNoInternetError() {
         toast(R.string.no_internet);
-    }
-
-    @Override
-    public void openArtistPhotosScreen(String artist) {
-        Intent intent = new Intent(getActivity(), ImagePagerActivity.class);
-        intent.putExtra(ImagePagerActivity.ARTIST, artist);
-        startActivity(intent);
     }
 
     @Override

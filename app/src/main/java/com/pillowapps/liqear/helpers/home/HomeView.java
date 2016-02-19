@@ -27,8 +27,6 @@ public interface HomeView {
 
     void showError(String errorMessage);
 
-    void openArtistPhotosScreen(String artist);
-
     void openArtistViewer(String artist);
 
     void showShareDialog(String shareMessage, String imageUrl, Track track);

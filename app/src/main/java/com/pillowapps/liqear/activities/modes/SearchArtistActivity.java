@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.ImagePagerActivity;
 import com.pillowapps.liqear.activities.base.SearchListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.ArtistAdapter;
 import com.pillowapps.liqear.callbacks.SimpleCallback;

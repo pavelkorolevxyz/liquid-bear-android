@@ -3,13 +3,12 @@ package com.pillowapps.liqear.models;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 
 public class ShareModel {
 
-    public String createShareMessage(@NonNull Track track, @NonNull Album album, String template) {
+    public String createShareMessage(@NonNull Track track, @Nullable Album album, String template) {
         String artist = "";
         String trackTitle = "";
         String albumTitle = "";
@@ -19,7 +18,7 @@ public class ShareModel {
         if (track.getTitle() != null) {
             trackTitle = track.getTitle();
         }
-        if (album.getTitle() != null) {
+        if (album != null && album.getTitle() != null) {
             albumTitle = album.getTitle();
         }
         return template.replace("%a%", artist)

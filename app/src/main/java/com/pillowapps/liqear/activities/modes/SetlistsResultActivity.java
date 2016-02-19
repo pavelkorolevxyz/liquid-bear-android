@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.ImagePagerActivity;
 import com.pillowapps.liqear.activities.base.ListBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.SetlistAdapter;
 import com.pillowapps.liqear.callbacks.SetlistfmSimpleCallback;

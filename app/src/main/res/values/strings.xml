@@ -49,7 +49,7 @@
     <string name="vk_simple_search">Simple search</string>
     <string name="newcomers">Newcomers</string>
     <string name="similar_artists">Similar artists</string>
-    <string name="error">Error occured</string>
+    <string name="error">Error occurred</string>
     <string name="internet_connection_need">Internet connection is not necessary for application since this version. But
         without connection you can not use online features.
     </string>
@@ -232,12 +232,10 @@
     <string name="shake_to_next_summary">Change track by shaking device</string>
     <string name="show_track_choice_dialog_on_add_to_vk">Advanced add to vk</string>
     <string name="show_track_choice_dialog_on_add_to_vk_summary">Show track search screen before adding to vk</string>
-    <string name="navigation_drawer_open"/>
-    <string name="navigation_drawer_close"/>
     <string name="enter_login_password">Please enter login and password</string>
     <string name="invalid_password">Invalid password. Please check username/password supplied</string>
     <string name="add_to_playlist">Add to playlist</string>
     <string name="add_to_queue">Add to queue</string>
     <string name="remove_from_list">Remove from list</string>
-    <string name="add_to">Add to...</string>
+    <string name="add_to">Add to…</string>
 </resources>

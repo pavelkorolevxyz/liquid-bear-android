@@ -33,16 +33,16 @@ public class Converter {
     }
 
     public static Track convertTrack(LastfmTrack lastfmTrack) {
-        String artist = lastfmTrack.getArtist().getName();
-        String title = lastfmTrack.getName();
+        String artist = StringUtils.trim(lastfmTrack.getArtist().getName());
+        String title = StringUtils.trim(lastfmTrack.getName());
         Track track = new Track(artist, title);
         track.setLoved(lastfmTrack.isLoved());
         return track;
     }
 
     public static Track convertVkTrack(VkTrack vkTrack) {
-        String artist = vkTrack.getArtist();
-        String title = vkTrack.getTitle();
+        String artist = StringUtils.trim(vkTrack.getArtist());
+        String title = StringUtils.trim(vkTrack.getTitle());
         Track track = new Track(artist, title);
         track.setAudioId(vkTrack.getAudioId());
         track.setOwnerId(vkTrack.getOwnerId());
@@ -50,7 +50,7 @@ public class Converter {
     }
 
     public static Artist convertArtist(LastfmArtist lastfmArtist) {
-        String artistName = lastfmArtist.getName();
+        String artistName = StringUtils.trim(lastfmArtist.getName());
         List<LastfmImage> images = lastfmArtist.getImages();
         Artist artist = new Artist(artistName);
         if (images != null) {

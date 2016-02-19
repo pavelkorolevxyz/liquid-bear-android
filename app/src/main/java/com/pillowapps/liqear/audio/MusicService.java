@@ -420,20 +420,27 @@ public class MusicService extends Service {
                             timeline.setAlbumCoverBitmap(bitmap);
                             updateTrackNotification();
                         });
-                        if (timeline.getCurrentTrack() == null) {
+                        Track currentTrack = timeline.getCurrentTrack();
+                        if (currentTrack == null) {
                             throw new IllegalStateException("Current track is null");
                         }
-                        timeline.getCurrentTrack().setLoved(loved);
-                        LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(track, album));
+                        currentTrack.setLoved(loved);
+                        LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(currentTrack, album));
                         updateWidgets();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                            CompatIcs.updateRemote(MusicService.this, timeline.getCurrentTrack());
+                            CompatIcs.updateRemote(MusicService.this, currentTrack);
                         }
                     }
 
                     @Override
                     public void failure(String errorMessage) {
-                        //todo
+                        timeline.setCurrentAlbum(null);
+                        Track currentTrack = timeline.getCurrentTrack();
+                        if (currentTrack == null) {
+                            return;
+                        }
+                        currentTrack.setLoved(false);
+                        LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(currentTrack, null));
                     }
                 });
     }

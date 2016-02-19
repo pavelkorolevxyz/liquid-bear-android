@@ -43,6 +43,7 @@ import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class HomePresenter extends Presenter<HomeView> {
 
@@ -135,23 +136,6 @@ public class HomePresenter extends Presenter<HomeView> {
         final HomeView view = view();
 
         view.playTrack(index, autoplay);
-    }
-
-    public void openArtistPhotos() {
-        Track currentTrack = timeline.getCurrentTrack();
-        if (currentTrack == null || currentTrack.getArtist() == null) {
-            return;
-        }
-
-        final HomeView view = view();
-
-        if (!networkManager.isOnline()) {
-            view.showNoInternetError();
-            return;
-        }
-
-        view.openArtistPhotosScreen(currentTrack.getArtist());
-        // todo according to new Lastfm frontend
     }
 
     public void openArtistViewer() {
@@ -418,10 +402,12 @@ public class HomePresenter extends Presenter<HomeView> {
         view.updateShuffleButtonState(ButtonStateUtils.getShuffleButtonImage(timeline.getShuffleMode()));
         view.updateArtistPhotoAndColors(timeline.getCurrentArtistImageUrl());
         view.updatePlayingState(timeline.isPlaying());
+        view.showLoading(true);
         stateManager.getMainPlaylist()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlist -> {
+                    view.showLoading(false);
                     view.updateMainPlaylistTitle(playlist.getTitle());
 
                     List<Track> tracks = playlist.getTracks();
@@ -498,6 +484,7 @@ public class HomePresenter extends Presenter<HomeView> {
         HomeView view = view();
 
         Album album = timeline.getCurrentAlbum();
+        Timber.d("Current album = " + album + ", and networkonline = " + networkManager.isOnline());
         if (!networkManager.isOnline() || album == null) {
             view.hideAlbumImage();
             view.hideAlbumTitle();
@@ -505,13 +492,13 @@ public class HomePresenter extends Presenter<HomeView> {
         }
 
         String imageUrl = album.getImageUrl();
-        if (imageUrl == null || !preferencesManager.isDownloadImagesEnabled()) {
+        if (imageUrl == null || imageUrl.isEmpty() || !preferencesManager.isDownloadImagesEnabled()) {
             view.hideAlbumImage();
         } else {
             view.showAlbumImage(imageUrl);
         }
         String albumTitle = album.getTitle();
-        if (albumTitle == null) {
+        if (albumTitle == null || albumTitle.isEmpty()) {
             view.hideAlbumTitle();
         } else {
             view.showAlbumTitle(albumTitle);
@@ -542,24 +529,28 @@ public class HomePresenter extends Presenter<HomeView> {
             return;
         }
 
-        if (!track.isLoved()) {
-            love(track);
+        if (track.isLoved()) {
+            unlove(track);
         } else {
-            HomeView view = view();
-            lastfmTrackModel.unlove(track, new SimpleCallback<Object>() {
-                @Override
-                public void success(Object o) {
-                    view.showLoading(false);
-                    track.setLoved(false);
-                    view.updateLoveButton(ButtonStateUtils.getLoveButtonImage(track));
-                }
-
-                @Override
-                public void failure(String error) {
-                    view.showLoading(false);
-                }
-            });
+            love(track);
         }
+    }
+
+    private void unlove(final Track track) {
+        HomeView view = view();
+        lastfmTrackModel.unlove(track, new SimpleCallback<Object>() {
+            @Override
+            public void success(Object o) {
+                track.setLoved(false);
+                view.showLoading(false);
+                view.updateLoveButton(ButtonStateUtils.getLoveButtonImage(track));
+            }
+
+            @Override
+            public void failure(String error) {
+                view.showLoading(false);
+            }
+        });
     }
 
     public void love(Track track) {
@@ -602,7 +593,6 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void addTrackToPlaylist(Track track) {
         HomeView view = view();
-
         view.openAddTrackToPlaylistScreen(track);
     }
 
@@ -622,6 +612,4 @@ public class HomePresenter extends Presenter<HomeView> {
         HomeView view = view();
         view.showAddToDialog(track);
     }
-
-
 }
