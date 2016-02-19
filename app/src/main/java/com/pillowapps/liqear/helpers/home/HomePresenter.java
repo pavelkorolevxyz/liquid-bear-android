@@ -347,7 +347,11 @@ public class HomePresenter extends Presenter<HomeView> {
         playlistModel.saveMainPlaylist(timeline.getPlaylist())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe();
+                .subscribe(aLong -> {
+                        },
+                        throwable -> {
+                            Timber.e(throwable, "Save main playlist error");
+                        });
 
         setMainPlaylist(index, playlist);
     }
@@ -436,6 +440,8 @@ public class HomePresenter extends Presenter<HomeView> {
                     updateMainPlaylist(restoredIndex, playlist);
 
                     view.restoreServiceState();
+                }, throwable -> {
+                    Timber.e(throwable, "Restore main playlist error");
                 });
     }
 

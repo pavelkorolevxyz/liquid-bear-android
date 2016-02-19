@@ -38,6 +38,7 @@ import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class PlaylistsActivity extends ResultTrackedBaseActivity {
     public static final String INTENTION = "intention";
@@ -102,6 +103,8 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
                         listView.setAdapter(adapter);
                         updateEmptyTextView();
                     });
+                }, throwable -> {
+                    Timber.e(throwable, "Get Playlists error");
                 });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
@@ -115,7 +118,8 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
                     playlistModel.addTrackToPlaylist(playlist.getId(), track)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
-                            .subscribe();
+                            .subscribe(o -> {
+                            }, throwable -> Timber.e(throwable, "Add track to playlist"));
                     finish();
                     break;
                 }
@@ -169,7 +173,11 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
                 playlistModel.removePlaylist(playlist.getId())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe();
+                        .subscribe(o -> {
+
+                        }, throwable -> {
+                            Timber.e(throwable, "Remove playlist error");
+                        });
                 break;
             case 1:
                 showSavePlaylistDialog(true, info.position);
@@ -222,6 +230,8 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
                         adapter.getValues().add(0, new Playlist(pid, title));
                         adapter.notifyDataSetChanged();
                         updateEmptyTextView();
+                    }, throwable -> {
+                        Timber.e(throwable, "Save playlist error");
                     });
 
             dialog.dismiss();
@@ -255,7 +265,11 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
                 playlistModel.renamePlaylist(playlist.getId(), title)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe();
+                        .subscribe(o -> {
+
+                        }, throwable -> {
+                            Timber.e(throwable, "Rename playlist error");
+                        });
                 playlist.setTitle(title);
                 adapter.notifyDataSetChanged();
                 updateEmptyTextView();
@@ -268,6 +282,8 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
                             adapter.getValues().add(0, new Playlist(pid, finalTitle));
                             adapter.notifyDataSetChanged();
                             updateEmptyTextView();
+                        }, throwable -> {
+                            Timber.e(throwable, "Save playlist error");
                         });
             }
             dialog.dismiss();
@@ -299,7 +315,11 @@ public class PlaylistsActivity extends ResultTrackedBaseActivity {
                 playlistModel.renamePlaylist(playlist.getId(), title)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe();
+                        .subscribe(o -> {
+
+                        }, throwable -> {
+                            Timber.e(throwable, "Rename playlist error");
+                        });
                 playlist.setTitle(title);
                 adapter.notifyDataSetChanged();
                 updateEmptyTextView();

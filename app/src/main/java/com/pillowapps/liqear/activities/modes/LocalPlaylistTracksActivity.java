@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class LocalPlaylistTracksActivity extends ListBaseActivity {
 
@@ -83,6 +84,8 @@ public class LocalPlaylistTracksActivity extends ListBaseActivity {
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlist -> {
                     fillWithTracklist(playlist.getTracks());
+                }, throwable -> {
+                    Timber.e(throwable, "Load Playlist Tracks error");
                 });
     }
 

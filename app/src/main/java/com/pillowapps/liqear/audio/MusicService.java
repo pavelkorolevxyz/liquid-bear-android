@@ -137,6 +137,8 @@ public class MusicService extends Service {
             shakeSubscription.add(shakeManager.initShakeDetector()
                     .subscribe(o -> {
                         next();
+                    }, throwable -> {
+                        Timber.e(throwable, "Shake listener error");
                     }));
         } else {
             shakeSubscription.clear();
@@ -276,6 +278,8 @@ public class MusicService extends Service {
                             Timber.d("Stop updaters");
                         }
                     }
+                }, throwable -> {
+                    Timber.e(throwable, "AudioPlayer listener error");
                 })
         );
     }
@@ -350,6 +354,8 @@ public class MusicService extends Service {
                 tickModel.getPlayProgressUpdater().observeOn(AndroidSchedulers.mainThread()).subscribe(aLong -> {
                     LBApplication.BUS.post(new TimeEvent());
                     LBApplication.BUS.post(new BufferizationEvent(audioPlayerModel.getCurrentBufferPercent()));
+                }, throwable -> {
+                    Timber.e(throwable, "Ticks error");
                 })
         );
     }
@@ -371,6 +377,8 @@ public class MusicService extends Service {
                             } else {
                                 exit();
                             }
+                        }, throwable -> {
+                            Timber.e(throwable, "Timer error");
                         })
         );
     }
@@ -427,6 +435,8 @@ public class MusicService extends Service {
                         lastfmAlbumModel.getCover(album).subscribe(bitmap -> {
                             timeline.setAlbumCoverBitmap(bitmap);
                             updateTrackNotification();
+                        }, throwable -> {
+                            Timber.e(throwable, "Album cover get error");
                         });
                         Track currentTrack = timeline.getCurrentTrack();
                         if (currentTrack == null) {

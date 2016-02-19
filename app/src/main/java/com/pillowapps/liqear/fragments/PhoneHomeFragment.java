@@ -241,6 +241,10 @@ public class PhoneHomeFragment extends HomeFragment {
 
         loveFloatingActionButton = (FloatingActionButton) playbackTab.findViewById(R.id.love_button);
 
+        if (!authorizationInfoManager.isAuthorizedOnLastfm()) {
+            loveFloatingActionButton.setVisibility(View.GONE);
+        }
+
         blackView = playbackTab.findViewById(R.id.view);
 
         colorsLayout = (LinearLayout) playbackTab.findViewById(R.id.colors_layout);
@@ -447,7 +451,9 @@ public class PhoneHomeFragment extends HomeFragment {
 //            colorsLayout.getChildAt(3).setBackgroundColor(lightVibrantColor);
 //            colorsLayout.getChildAt(4).setBackgroundColor(mutedColor);
 //            colorsLayout.getChildAt(5).setBackgroundColor(vibrantColor);
-
+            if (getContext() == null) {
+                return;
+            }
             int backColor = palette.getDarkMutedColor(ContextCompat.getColor(getContext(), R.color.accent_mono_dark));
             backLayout.setBackgroundColor(backColor);
 

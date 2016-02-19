@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pushtorefresh.storio.sqlite.operations.delete.DeleteResult;
+import com.pushtorefresh.storio.sqlite.operations.put.PutResult;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface PlaylistsStorage {
     //todo get rid of storio dependency
     Observable<DeleteResult> findAndDeleteMainPlaylist();
 
-    Observable findAndDeletePlaylist(@NonNull Long playlistId);
+    Observable<DeleteResult> findAndDeletePlaylist(@NonNull Long playlistId);
 
     Observable<Playlist> getMainPlaylist();
 
@@ -36,7 +37,7 @@ public interface PlaylistsStorage {
     /**
      * @return ID of playlist where tracks were saved
      */
-    Observable saveTrackToPlaylist(@NonNull Long playlistId, Track track);
+    Observable<PutResult> saveTrackToPlaylist(@NonNull Long playlistId, Track track);
 
-    Observable renamePlaylist(@NonNull Long id, String newTitle);
+    Observable<PutResult> renamePlaylist(@NonNull Long id, String newTitle);
 }

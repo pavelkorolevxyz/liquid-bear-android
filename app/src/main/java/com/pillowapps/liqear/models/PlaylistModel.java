@@ -39,16 +39,16 @@ public class PlaylistModel {
         return storageManager.getPlaylists();
     }
 
-    public Observable removePlaylist(@NonNull Long id) {
-        return storageManager.findAndDeletePlaylist(id);
+    public Observable<Object> removePlaylist(@NonNull Long id) {
+        return storageManager.findAndDeletePlaylist(id).map(deleteResult -> deleteResult);
     }
 
-    public Observable renamePlaylist(@NonNull Long id, @NonNull String newTitle) {
-        return storageManager.renamePlaylist(id, newTitle);
+    public Observable<Object> renamePlaylist(@NonNull Long id, @NonNull String newTitle) {
+        return storageManager.renamePlaylist(id, newTitle).map(putResult -> putResult);
     }
 
-    public Observable addTrackToPlaylist(@NonNull Long playlistId, @NonNull Track track) {
-        return storageManager.saveTrackToPlaylist(playlistId, track);
+    public Observable<Object> addTrackToPlaylist(@NonNull Long playlistId, @NonNull Track track) {
+        return storageManager.saveTrackToPlaylist(playlistId, track).map(putResult -> putResult);
     }
 
     public Observable<Long> savePlaylist(String title, @NonNull List<Track> tracks) {

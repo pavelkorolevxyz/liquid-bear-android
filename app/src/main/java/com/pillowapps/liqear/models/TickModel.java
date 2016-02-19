@@ -50,6 +50,8 @@ public class TickModel {
                         .subscribe(aLong -> {
                             Timber.d("Nowplaying send");
                             updateNowPlaying(track);
+                        },throwable -> {
+                            Timber.e(throwable, "Nowplaying error");
                         })
         );
     }
@@ -80,6 +82,8 @@ public class TickModel {
                                 Timber.d("Send scrobbling");
                                 scrobble(track);
                             }
+                        }, throwable -> {
+                            Timber.e(throwable, "Scrobbling error");
                         })
         );
     }
