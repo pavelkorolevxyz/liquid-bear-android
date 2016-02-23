@@ -93,7 +93,7 @@ public class DBTrack {
         this.audioId = audioId;
     }
 
-    public Boolean getLocal() {
+    public Boolean isLocal() {
         return local;
     }
 

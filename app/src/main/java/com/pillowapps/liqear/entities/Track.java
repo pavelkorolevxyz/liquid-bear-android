@@ -7,19 +7,19 @@ import com.pillowapps.liqear.helpers.TrackUtils;
 
 public class Track implements Parcelable {
 
-    public String title;
-    public String artist;
-    public String album;
+    private String title;
+    private String artist;
+    private String album;
 
-    public long ownerId;
-    public long audioId;
+    private long ownerId;
+    private long audioId;
 
-    public boolean local;
-    public String localUrl;
+    private boolean local;
+    private String localUrl;
 
     private String url;
 
-    public int duration;
+    private int duration;
 
     private int realPosition;
     private boolean loved = false;
@@ -146,6 +146,10 @@ public class Track implements Parcelable {
 
     public String getLocalUrl() {
         return localUrl;
+    }
+
+    public void setLocalUrl(String localUrl) {
+        this.localUrl = localUrl;
     }
 
     @Override

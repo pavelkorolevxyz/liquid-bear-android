@@ -20,7 +20,9 @@ public class DatabaseEntitiesMapper {
 
     public static Playlist map(DBPlaylist dbPlaylist) {
         final Playlist playlist = new Playlist();
-        if (dbPlaylist == null) return playlist;
+        if (dbPlaylist == null) {
+            return playlist;
+        }
         playlist.setId(dbPlaylist.getId());
         playlist.setTitle(dbPlaylist.getTitle());
         playlist.setMainPlaylist(dbPlaylist.isMainPlaylist());
@@ -29,13 +31,21 @@ public class DatabaseEntitiesMapper {
 
     public static DBTrack map(Track track) {
         DBTrack dbTrack = new DBTrack(track.getArtist(), track.getTitle());
-        //todo other fields
+        dbTrack.setAudioId(track.getAudioId());
+        dbTrack.setOwnerId(track.getOwnerId());
+        dbTrack.setAlbum(track.getAlbum());
+        dbTrack.setLocal(track.isLocal());
+        dbTrack.setLocalUrl(track.getLocalUrl());
         return dbTrack;
     }
 
     public static Track map(DBTrack dbTrack) {
         Track track = new Track(dbTrack.getArtist(), dbTrack.getTitle());
-        //todo other fields
+        track.setAudioId(dbTrack.getAudioId());
+        track.setOwnerId(dbTrack.getOwnerId());
+        track.setAlbum(dbTrack.getAlbum());
+        track.setLocal(dbTrack.isLocal());
+        track.setLocalUrl(dbTrack.getLocalUrl());
         return track;
     }
 
