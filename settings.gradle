@@ -1,6 +1,5 @@
 include ':app'
 def String[] modules = ['NumberPicker',
-                        'PhotoView',
                         'PullToRefreshLibrary',
                         'StickyGridHeaders',
                         'ViewPagerIndicatorLibrary']

@@ -371,6 +371,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Override
     public void updatePlayingState(boolean isPlaying) {
+        Timber.d("updatePlayingState " + isPlaying);
         if (isPlaying) {
             playPauseButton.setImageResource(R.drawable.pause_button);
         } else {

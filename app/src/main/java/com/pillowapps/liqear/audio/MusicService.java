@@ -299,6 +299,7 @@ public class MusicService extends Service {
 
         tickModel.close();
         audioPlayerModel.close();
+        timeline.setPlaying(false);
         super.onDestroy();
     }
 
