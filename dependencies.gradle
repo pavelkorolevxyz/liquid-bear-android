@@ -32,6 +32,7 @@ ext {
     storioVersion = '1.8.0'
     daggerVersion = '2.0'
     crashlyticsVersion = '2.5.2'
+    materialDrawerVersion = '5.1.1'
 
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
@@ -86,6 +87,7 @@ ext {
             fancyButtons                    : "com.github.medyo:fancybuttons:${fancyButtonsVersion}@aar",
             materialDialogs                 : "com.github.afollestad.material-dialogs:core:${materialDialogsVersion}@aar",
             dragSortListView                : "asia.ivity.android:drag-sort-listview:${dragSortListViewVersion}",
-            materialEditText                : "com.rengwuxian.materialedittext:library:${materialEditTextVersion}"
+            materialEditText                : "com.rengwuxian.materialedittext:library:${materialEditTextVersion}",
+            materialDrawer                  : "com.mikepenz:materialdrawer:${materialDrawerVersion}@aar"
     ]
 }

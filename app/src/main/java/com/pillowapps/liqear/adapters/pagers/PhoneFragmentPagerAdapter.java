@@ -10,8 +10,8 @@ import com.pillowapps.liqear.entities.ViewPage;
 import java.util.List;
 
 public class PhoneFragmentPagerAdapter extends PagerAdapter {
-    public static final int PLAY_TAB_INDEX = 1;
-    public static final int PLAYLIST_TAB_INDEX = 0;
+    public static final int PLAY_TAB_INDEX = 0;
+    public static final int PLAYLIST_TAB_INDEX = 1;
     public static final int MODE_TAB_INDEX = 2;
     private List<ViewPage> pages;
 
@@ -67,5 +67,8 @@ public class PhoneFragmentPagerAdapter extends PagerAdapter {
     public void startUpdate(ViewGroup view) {
     }
 
-
+    @Override
+    public float getPageWidth(int position) {
+        return super.getPageWidth(position);
+    }
 }

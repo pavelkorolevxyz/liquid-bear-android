@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.entities.Mode;
-import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
@@ -156,7 +155,7 @@ public class ModeGridAdapter implements StickyGridHeadersBaseAdapter {
         );
         holder.switchVisibilityButton.setOnClickListener(view -> {
             SharedPreferences.Editor editor = modePreferences.edit();
-            editor.putBoolean(Constants.MODE_VISIBLE + mode.getModeEnum(), !modeVisible);
+//            editor.putBoolean(Constants.MODE_VISIBLE + mode.getModeEnum(), !modeVisible);
             editor.apply();
             notifyChanges();
         });

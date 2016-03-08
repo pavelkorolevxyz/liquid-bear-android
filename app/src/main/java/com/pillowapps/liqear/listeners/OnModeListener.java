@@ -1,10 +1,7 @@
 package com.pillowapps.liqear.listeners;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
@@ -27,157 +24,128 @@ import com.pillowapps.liqear.activities.modes.VkRecommendationsActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmChartsViewerActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmUserViewerActivity;
 import com.pillowapps.liqear.activities.modes.viewers.VkUserViewerActivity;
-import com.pillowapps.liqear.entities.Category;
-import com.pillowapps.liqear.entities.ListItem;
-import com.pillowapps.liqear.entities.Mode;
-import com.pillowapps.liqear.entities.ModeEnum;
 import com.pillowapps.liqear.entities.User;
-import com.pillowapps.liqear.fragments.HomeFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.NetworkManager;
-import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapter;
-import com.tonicartos.widget.stickygridheaders.StickyGridHeadersBaseAdapterWrapper;
 
-public class OnModeClickListener implements android.widget.AdapterView.OnItemClickListener {
+public class OnModeListener {
 
-    private final HomeFragment fragment;
-    private final Context context;
-
+    private Activity context;
     private AuthorizationInfoManager authorizationInfoManager;
-    private NetworkManager networkManager;
 
-    public OnModeClickListener(HomeFragment fragment, AuthorizationInfoManager authorizationInfoManager, NetworkManager networkManager) {
-        this.fragment = fragment;
+    public OnModeListener(Activity activity, AuthorizationInfoManager authorizationInfoManager) {
+        this.context = activity;
         this.authorizationInfoManager = authorizationInfoManager;
-        this.networkManager = networkManager;
-        this.context = fragment.getContext();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        Mode mode;
-        if (adapterView.getAdapter() instanceof StickyGridHeadersBaseAdapterWrapper) {
-            StickyGridHeadersBaseAdapterWrapper adapter =
-                    ((StickyGridHeadersBaseAdapterWrapper) adapterView.getAdapter());
-            StickyGridHeadersBaseAdapter wrappedAdapter = adapter.getWrappedAdapter();
-            mode = (Mode) wrappedAdapter.getItem(position);
-        } else {
-            Object itemAtPosition = adapterView.getItemAtPosition(position);
-            if (itemAtPosition instanceof ListItem) {
-                mode = ((ListItem) itemAtPosition).getMode();
-            } else {
-                return;
-            }
-        }
+    public void onItemClick(int modeId) {
+//        if (mode.isNeedLastfm() && !authorizationInfoManager.isAuthorizedOnLastfm()) {
+//            Toast.makeText(context, R.string.last_fm_not_authorized, Toast.LENGTH_SHORT).show();
+//            return;
+//        } else if ((mode.getCategory() == Category.VK || mode.getId() != R.id.lastfm_radiomix
+//                || mode.getId() != R.id.lastfm_library)
+//                && networkManager.isOnline() && !authorizationInfoManager.isAuthorizedOnVk()) {
+//            Toast.makeText(context, R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
+//            return;
+//        } else if (mode.getCategory() != Category.LOCAL && !networkManager.isOnline()) {
+//            Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
+//            return;
+//        }todo
 
-        if (mode.isNeedLastfm() && !authorizationInfoManager.isAuthorizedOnLastfm()) {
-            Toast.makeText(context, R.string.last_fm_not_authorized, Toast.LENGTH_SHORT).show();
-            return;
-        } else if ((mode.getCategory() == Category.VK || mode.getModeEnum() == ModeEnum.RADIOMIX
-                || mode.getModeEnum() == ModeEnum.LIBRARY)
-                && networkManager.isOnline() && !authorizationInfoManager.isAuthorizedOnVk()) {
-            Toast.makeText(context, R.string.vk_not_authorized, Toast.LENGTH_SHORT).show();
-            return;
-        } else if (mode.getCategory() != Category.LOCAL && !networkManager.isOnline()) {
-            Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        switch (mode.getModeEnum()) {
-            case LOVED: {
+        switch (modeId) {
+            case R.id.lastfm_loved: {
                 Intent intent = new Intent(context, LastfmUserViewerActivity.class);
                 intent.putExtra(LastfmUserViewerActivity.USER,
                         new User(authorizationInfoManager.getLastfmName()));
                 intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
                         LastfmUserViewerActivity.LOVED_INDEX);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] User Loved");
             }
             break;
-            case TOP_TRACKS: {
+            case R.id.lastfm_top_tracks: {
                 Intent intent = new Intent(context, LastfmUserViewerActivity.class);
                 intent.putExtra(LastfmUserViewerActivity.USER,
                         new User(authorizationInfoManager.getLastfmName()));
                 intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
                         LastfmUserViewerActivity.TOP_TRACKS_INDEX);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Top Tracks");
             }
             break;
-            case TOP_ARTISTS: {
+            case R.id.lastfm_top_artists: {
                 Intent intent = new Intent(context, LastfmUserViewerActivity.class);
                 intent.putExtra(LastfmUserViewerActivity.USER,
                         new User(authorizationInfoManager.getLastfmName()));
                 intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
                         LastfmUserViewerActivity.TOP_ARTISTS_INDEX);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Top Artists");
             }
             break;
-            case CHARTS: {
+            case R.id.lastfm_charts: {
                 Intent intent = new Intent(context, LastfmChartsViewerActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Charts");
             }
             break;
-            case LIBRARY: {
-                fragment.openLibrary();
+            case R.id.lastfm_library: {
+//                context.openLibrary();todo
                 sendAnalyticsModeClickEvent("[LAST.FM] Library");
             }
             break;
-            case ARTIST_RADIO: {
+            case R.id.lastfm_artist: {
                 Intent intent = new Intent(context, SearchArtistActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Artist search");
             }
             break;
-            case TAG_RADIO: {
+            case R.id.lastfm_tag: {
                 Intent intent = new Intent(context, SearchTagActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Tag search");
             }
             break;
-            case ALBUM_RADIO: {
+            case R.id.lastfm_album: {
                 Intent intent = new Intent(context, SearchAlbumActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Album search");
             }
             break;
-            case RECOMMENDATIONS: {
+            case R.id.lastfm_recommendations: {
                 Intent intent = new Intent(context, LastfmRecommendationsActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Recommended");
             }
             break;
-            case RADIOMIX: {
-                fragment.openRadiomix();
+            case R.id.lastfm_radiomix: {
+//                context.openRadiomix();todo
                 sendAnalyticsModeClickEvent("[LAST.FM] Radiomix");
             }
             break;
-            case NEIGHBOURS: {
+            case R.id.lastfm_neighbours: {
                 Intent intent = new Intent(context, LastfmNeighboursActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Neighbours");
             }
             break;
-            case FRIENDS_LAST: {
+            case R.id.lastfm_friends: {
                 Intent intent = new Intent(context, SearchLastfmUserActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Friends");
             }
             break;
-            case RECENT_LAST: {
+            case R.id.lastfm_recent: {
                 Intent intent = new Intent(context, LastfmUserViewerActivity.class);
                 intent.putExtra(LastfmUserViewerActivity.USER,
                         new User(authorizationInfoManager.getLastfmName()));
                 intent.putExtra(LastfmUserViewerActivity.TAB_INDEX,
                         LastfmUserViewerActivity.RECENT_INDEX);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Recent");
             }
             break;
-            case USER_AUDIO_VK: {
+            case R.id.vk_user_audio: {
                 Intent intent = new Intent(context, VkUserViewerActivity.class);
                 intent.putExtra(VkUserViewerActivity.USER,
                         new User(authorizationInfoManager.getVkName(),
@@ -185,115 +153,115 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
                 intent.putExtra(VkUserViewerActivity.TAB_INDEX,
                         VkUserViewerActivity.USER_AUDIO_INDEX);
                 intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] User Audio");
             }
             break;
-            case GROUP_VK: {
+            case R.id.vk_group: {
                 Intent intent = new Intent(context, VkGroupsActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Group");
             }
             break;
-            case FRIENDS_VK: {
+            case R.id.vk_friends: {
                 Intent intent = new Intent(context, VkFriendsActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Friends");
             }
             break;
-            case SEARCH_VK: {
+            case R.id.vk_search: {
                 Intent intent = new Intent(context, SearchSimpleTrackActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Search");
             }
             break;
-            case ALBUMS_VK: {
+            case R.id.vk_albums: {
                 Intent intent = new Intent(context, VkUserViewerActivity.class);
                 intent.putExtra(VkUserViewerActivity.USER,
                         new User(authorizationInfoManager.getVkName(),
                                 authorizationInfoManager.getVkUserId()));
                 intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.ALBUM_INDEX);
                 intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Albums");
             }
             break;
-            case RECOMMENDATIONS_VK: {
+            case R.id.vk_recommendations: {
                 Intent intent = new Intent(context, VkRecommendationsActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Recommendations");
             }
             break;
-            case WALL_VK: {
+            case R.id.vk_wall: {
                 Intent intent = new Intent(context, VkUserViewerActivity.class);
                 intent.putExtra(VkUserViewerActivity.USER,
                         new User(authorizationInfoManager.getVkName(),
                                 authorizationInfoManager.getVkUserId()));
                 intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.WALL_INDEX);
                 intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Wall");
             }
             break;
-            case FAVORITES_VK: {
+            case R.id.vk_favorites: {
                 Intent intent = new Intent(context, VkUserViewerActivity.class);
                 intent.putExtra(VkUserViewerActivity.USER,
                         new User(authorizationInfoManager.getVkName(),
                                 authorizationInfoManager.getVkUserId()));
                 intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.FAVORITES);
                 intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Favorites");
             }
             break;
-            case FEED_VK: {
+            case R.id.vk_feed: {
                 Intent intent = new Intent(context, VkUserViewerActivity.class);
                 intent.putExtra(VkUserViewerActivity.USER,
                         new User(authorizationInfoManager.getVkName(),
                                 authorizationInfoManager.getVkUserId()));
                 intent.putExtra(VkUserViewerActivity.TAB_INDEX, VkUserViewerActivity.NEWS_FEED);
                 intent.putExtra(VkUserViewerActivity.YOU_MODE, true);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[VK] Feed");
             }
             break;
-            case FUNKY: {
+            case R.id.other_funky: {
                 Intent intent = new Intent(context, NewcomersActivity.class);
                 intent.putExtra(NewcomersActivity.MODE,
                         NewcomersActivity.Mode.FUNKYSOULS);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[OTHER] FunkySouls");
             }
             break;
-            case ALTERPORTAL: {
+            case R.id.other_alterportal: {
                 Intent intent = new Intent(context, NewcomersActivity.class);
                 intent.putExtra(NewcomersActivity.MODE,
                         NewcomersActivity.Mode.ALTERPORTAL);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[OTHER] Alterportal");
             }
             break;
-            case SETLIST: {
+            case R.id.other_setlists: {
                 Intent intent = new Intent(context, SetlistsActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[OTHER] Setlists");
             }
             break;
-            case LOCAL_ARTISTS: {
+            case R.id.local_artists: {
                 Intent intent = new Intent(context, LocalArtistsActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LOCAL] Artists");
             }
             break;
-            case LOCAL_TRACKS: {
+            case R.id.local_tracks: {
                 Intent intent = new Intent(context, LocalTracksActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LOCAL] Tracks");
             }
             break;
-            case LOCAL_ALBUMS: {
+            case R.id.local_albums: {
                 Intent intent = new Intent(context, LocalAlbumsActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+                context.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LOCAL] Albums");
             }
             break;
@@ -303,10 +271,10 @@ public class OnModeClickListener implements android.widget.AdapterView.OnItemCli
     }
 
     private void sendAnalyticsModeClickEvent(String mode) {
-        EasyTracker easyTracker = EasyTracker.getInstance(fragment.getActivity());
+        EasyTracker easyTracker = EasyTracker.getInstance(context);
         easyTracker.send(MapBuilder
-                        .createEvent("ui_action", "mode_click", mode, null)
-                        .build()
+                .createEvent("ui_action", "mode_click", mode, null)
+                .build()
         );
     }
 }

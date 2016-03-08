@@ -15,9 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
-import com.pillowapps.liqear.activities.modes.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.adapters.recyclers.NewcomersAdapter;
 import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 import com.pillowapps.liqear.entities.Album;
@@ -56,6 +56,7 @@ public class NewcomersActivity extends ResultTrackedBaseActivity {
             startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
         }
     };
+
     @Inject
     PreferencesScreenManager preferencesScreenManager;
 
@@ -119,6 +120,9 @@ public class NewcomersActivity extends ResultTrackedBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newcomers_layout);
+
+        LBApplication.get(this).applicationComponent().inject(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

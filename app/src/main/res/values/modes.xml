@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="vk_user_audio" type="id" />
+    <item name="vk_group" type="id" />
+    <item name="vk_friends" type="id" />
+    <item name="vk_search" type="id" />
+    <item name="vk_albums" type="id" />
+    <item name="vk_recommendations" type="id" />
+    <item name="vk_wall" type="id" />
+    <item name="vk_favorites" type="id" />
+    <item name="vk_feed" type="id" />
+
+    <item name="lastfm_loved" type="id" />
+    <item name="lastfm_top_tracks" type="id" />
+    <item name="lastfm_top_artists" type="id" />
+    <item name="lastfm_charts" type="id" />
+    <item name="lastfm_library" type="id" />
+    <item name="lastfm_artist" type="id" />
+    <item name="lastfm_tag" type="id" />
+    <item name="lastfm_album" type="id" />
+    <item name="lastfm_radiomix" type="id" />
+    <item name="lastfm_friends" type="id" />
+    <item name="lastfm_recent" type="id" />
+
+    <item name="lastfm_recommendations" type="id" />
+    <item name="lastfm_neighbours" type="id" />
+
+    <item name="other_funky" type="id" />
+    <item name="other_alterportal" type="id" />
+    <item name="other_setlists" type="id" />
+
+    <item name="local_tracks" type="id" />
+    <item name="local_artists" type="id" />
+    <item name="local_albums" type="id" />
+</resources>

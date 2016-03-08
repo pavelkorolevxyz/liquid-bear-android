@@ -22,6 +22,7 @@ import com.pillowapps.liqear.entities.events.ExitEvent;
 import com.pillowapps.liqear.entities.events.PauseEvent;
 import com.pillowapps.liqear.entities.events.PlayEvent;
 import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
+import com.pillowapps.liqear.entities.events.ProgressEvent;
 import com.pillowapps.liqear.entities.events.TimeEvent;
 import com.pillowapps.liqear.entities.events.TrackAndAlbumInfoUpdatedEvent;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
@@ -404,7 +405,10 @@ public class MusicService extends Service {
 
         trackLoadingSubscription.clear();
         trackLoadingSubscription.add(
-                audioPlayerModel.load(track).subscribe(trackInfo -> {
+                audioPlayerModel.load(track).doOnSubscribe(() -> {
+                    LBApplication.BUS.post(new ProgressEvent(true));
+                }).subscribe(trackInfo -> {
+                    LBApplication.BUS.post(new ProgressEvent(false));
                     Timber.d("Track loaded " + track.toString());
                     track.setAudioId(trackInfo.getAudioId());
                     track.setOwnerId(trackInfo.getOwnerId());
@@ -418,6 +422,7 @@ public class MusicService extends Service {
                         LBApplication.BUS.post(new PlayWithoutIconEvent());
                     }
                 }, throwable -> {
+                    LBApplication.BUS.post(new ProgressEvent(false));
                     Timber.e(throwable, "Error while loading track to play");
                 })
         );

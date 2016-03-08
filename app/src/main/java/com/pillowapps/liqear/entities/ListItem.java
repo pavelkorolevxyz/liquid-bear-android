@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.ModeListAdapter;
 import com.pillowapps.liqear.callbacks.UpdateAdapterCallback;
-import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
@@ -69,7 +68,7 @@ public class ListItem implements Item {
                 : R.drawable.card_view_background_color);
         holder.switchVisibilityButton.setOnClickListener(view -> {
             SharedPreferences.Editor editor = modePreferences.edit();
-            editor.putBoolean(Constants.MODE_VISIBLE + mode.getModeEnum(), !modeVisible);
+//            editor.putBoolean(Constants.MODE_VISIBLE + mode.getModeEnum(), !modeVisible);
             editor.apply();
             callback.onUpdate();
         });

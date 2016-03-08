@@ -99,6 +99,12 @@ dependencies {
     compile libs.roundedImageView
     compile libs.tinyTask
     compile libs.appRate
+//    compile (libs.materialDrawer) {
+//        transitive = true
+//    }
+    compile('com.mikepenz:materialdrawer:4.0.3@aar') {
+        transitive = true
+    }
 
     compile libs.glide
     compile libs.exoPlayer

@@ -2,6 +2,10 @@ package com.pillowapps.liqear.models;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -81,4 +85,14 @@ public class ImageModel {
                 });
     }
 
+    public void loadImageResource(int icon, ImageView imageView) {
+        imageView.setImageResource(icon);
+    }
+
+    public void loadImageResource(int icon, ImageView imageView, @ColorRes int tintColorRes) {
+        Context context = imageView.getContext();
+        Drawable drawable = ContextCompat.getDrawable(context, icon);
+        drawable.setColorFilter(ContextCompat.getColor(context, tintColorRes), PorterDuff.Mode.MULTIPLY);
+        imageView.setImageResource(icon);
+    }
 }

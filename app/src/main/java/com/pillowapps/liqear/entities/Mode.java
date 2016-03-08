@@ -1,42 +1,40 @@
 package com.pillowapps.liqear.entities;
 
-import android.content.SharedPreferences;
+import android.support.annotation.IdRes;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.helpers.Constants;
-import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 
 public class Mode {
     private int title;
     private int icon;
     private Category category;
-    private ModeEnum modeEnum;
     private int categoryTitle;
     private boolean editMode = false;
     private boolean needLastfm = false;
     private boolean visibleByDefault = true;
+    private int id;
 
-    public Mode(int title, int icon, Category category, ModeEnum modeEnum) {
-        createMode(title, icon, category, modeEnum);
+    public Mode(int title, int icon, Category category, @IdRes int id) {
+        createMode(title, icon, category, id);
     }
 
-    public Mode(int title, int icon, Category category, ModeEnum modeEnum, boolean needLastfm) {
-        createMode(title, icon, category, modeEnum);
+    public Mode(int title, int icon, Category category, @IdRes int id, boolean needLastfm) {
+        createMode(title, icon, category, id);
         this.needLastfm = needLastfm;
     }
 
-    public Mode(int title, int icon, Category category, ModeEnum modeEnum,
+    public Mode(int title, int icon, Category category, @IdRes int id,
                 boolean needLastfm, boolean visibleByDefault) {
-        createMode(title, icon, category, modeEnum);
+        createMode(title, icon, category, id);
         this.needLastfm = needLastfm;
         this.visibleByDefault = visibleByDefault;
     }
 
-    private void createMode(int title, int icon, Category category, ModeEnum modeEnum) {
+    private void createMode(int title, int icon, Category category, @IdRes int id) {
         this.title = title;
         this.icon = icon;
         this.category = category;
-        this.modeEnum = modeEnum;
+        this.id = id;
         switch (category) {
             case LAST_FM: {
                 categoryTitle = R.string.last_fm;
@@ -93,14 +91,6 @@ public class Mode {
         this.category = category;
     }
 
-    public ModeEnum getModeEnum() {
-        return modeEnum;
-    }
-
-    public void setModeEnum(ModeEnum modeEnum) {
-        this.modeEnum = modeEnum;
-    }
-
     public int getCategoryTitle() {
         return categoryTitle;
     }
@@ -119,12 +109,29 @@ public class Mode {
 
     @Override
     public String toString() {
-        return modeEnum.toString();
+        return "Mode{" +
+                "title=" + title +
+                ", icon=" + icon +
+                ", category=" + category +
+                ", categoryTitle=" + categoryTitle +
+                ", editMode=" + editMode +
+                ", needLastfm=" + needLastfm +
+                ", visibleByDefault=" + visibleByDefault +
+                ", id=" + id +
+                '}';
     }
 
     public boolean isVisible() {
 //        SharedPreferences modePreferences = SharedPreferencesManager.getModePreferences(context); //todo
 //        return modePreferences.getBoolean(Constants.MODE_VISIBLE + getModeEnum(), visibleByDefault);
         return true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

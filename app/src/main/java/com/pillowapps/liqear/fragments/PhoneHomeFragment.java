@@ -31,7 +31,6 @@ import android.widget.TextView;
 import com.mobeta.android.dslv.DragSortListView;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.adapters.ModeGridAdapter;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
@@ -44,15 +43,14 @@ import com.pillowapps.liqear.entities.events.PauseEvent;
 import com.pillowapps.liqear.entities.events.PlayEvent;
 import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
 import com.pillowapps.liqear.entities.events.PreparedEvent;
+import com.pillowapps.liqear.entities.events.ProgressEvent;
 import com.pillowapps.liqear.entities.events.TimeEvent;
 import com.pillowapps.liqear.entities.events.TrackAndAlbumInfoUpdatedEvent;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.TimeUtils;
-import com.pillowapps.liqear.listeners.OnModeClickListener;
 import com.pillowapps.liqear.listeners.OnSwipeListener;
 import com.squareup.otto.Subscribe;
-import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
 import java.util.ArrayList;
@@ -67,7 +65,7 @@ public class PhoneHomeFragment extends HomeFragment {
     private UnderlinePageIndicator indicator;
     private View playlistTab;
     private View playbackTab;
-    private View modeTab;
+//    private View modeTab;
 
     private Toolbar.OnMenuItemClickListener onMenuItemClickListener = this::onOptionsItemSelected;
 
@@ -107,10 +105,12 @@ public class PhoneHomeFragment extends HomeFragment {
     /**
      * Modes tab
      */
-    private Toolbar modeToolbar;
+//    private Toolbar modeToolbar;
 
-    private ModeGridAdapter modeAdapter;
+    //    private ModeGridAdapter modeAdapter;
     private DragSortListView playlistListView;
+//    private RecyclerView modeRecycler;
+//    private ModeRecyclerAdapter modeRecyclerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -144,7 +144,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
         initViewPager(v);
 
-        initModeTab();
+//        initModeTab();
         initPlaylistsTab();
         initPlaybackTab();
 
@@ -156,20 +156,22 @@ public class PhoneHomeFragment extends HomeFragment {
         Context context = getContext();
         playlistTab = View.inflate(context, R.layout.playlist_tab, null);
         playbackTab = View.inflate(context, R.layout.play_tab, null);
-        modeTab = View.inflate(context, R.layout.mode_tab, null);
-        pages.add(new ViewPage(playlistTab, getString(R.string.playlist_tab)));
+//        modeTab = View.inflate(context, R.layout.mode_list_tab, null);
         pages.add(new ViewPage(playbackTab, getString(R.string.play_tab)));
-        pages.add(new ViewPage(modeTab, getString(R.string.mode_tab)));
+        pages.add(new ViewPage(playlistTab, getString(R.string.playlist_tab)));
+//        pages.add(new ViewPage(modeTab, getString(R.string.mode_tab)));
         pager = (ViewPager) v.findViewById(R.id.viewpager);
         pager.setOffscreenPageLimit(pages.size());
         pager.setAdapter(new PhoneFragmentPagerAdapter(pages));
 
-        playlistToolbar = (Toolbar) playlistTab.findViewById(R.id.toolbar);
         playbackToolbar = (Toolbar) playbackTab.findViewById(R.id.toolbar);
-        modeToolbar = (Toolbar) modeTab.findViewById(R.id.toolbar);
+        playlistToolbar = (Toolbar) playlistTab.findViewById(R.id.toolbar);
+//        modeToolbar = (Toolbar) modeTab.findViewById(R.id.toolbar);
         playlistToolbar.setTitle(R.string.playlist_tab);
         playbackToolbar.setTitle(R.string.app_name);
-        modeToolbar.setTitle(R.string.mode_tab);
+//        modeToolbar.setTitle(R.string.mode_tab);
+
+        activity.setToolbar(playbackToolbar);
         updateToolbars();
 
         indicator = (UnderlinePageIndicator) v.findViewById(R.id.indicator);
@@ -251,12 +253,20 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     private void initModeTab() {
-        modeAdapter = new ModeGridAdapter(activity, modeItemsHelper);
+//        modeAdapter = new ModeGridAdapter(activity, modeItemsHelper);
 
-        StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
-        modeGridView.setOnItemClickListener(new OnModeClickListener(this, authorizationInfoManager, networkManager));
-        modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
-        modeGridView.setAdapter(modeAdapter);
+//        modeRecycler = (RecyclerView) modeTab.findViewById(R.id.mode_recycler);
+//        modeRecycler.setHasFixedSize(true);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+//        modeRecycler.setLayoutManager(linearLayoutManager);
+//        OnModeListener onModeClickListener = new OnModeListener(this, authorizationInfoManager, networkManager);
+//        modeRecyclerAdapter = new ModeRecyclerAdapter(modeItemsHelper.getModes(), onModeClickListener);
+//        modeRecycler.addItemDecoration(new DividerItemDecoration(modeRecycler.getContext(), DividerItemDecoration.VERTICAL_LIST));
+//        modeRecycler.setAdapter(modeRecyclerAdapter);
+//        StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
+//        modeGridView.setOnItemClickListener(new OnModeClickListener(this, authorizationInfoManager, networkManager));
+//        modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
+//        modeGridView.setAdapter(modeAdapter);
     }
 
     private void initListeners() {
@@ -356,11 +366,11 @@ public class PhoneHomeFragment extends HomeFragment {
     @Override
     protected void updateToolbars() {
         playlistToolbar.getMenu().clear();
-        modeToolbar.getMenu().clear();
-        modeToolbar.inflateMenu(R.menu.menu_mode_tab);
+//        modeToolbar.getMenu().clear();
+//        modeToolbar.inflateMenu(R.menu.menu_mode_tab);
         playlistToolbar.inflateMenu(R.menu.menu_playlist_tab);
         playlistToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
-        modeToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+//        modeToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
         updatePlaybackToolbar();
     }
 
@@ -478,7 +488,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Override
     public void updateModeListEditMode() {
-        modeAdapter.notifyChanges();
+//        modeAdapter.notifyChanges(); todo
     }
 
     @Override
@@ -562,7 +572,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Subscribe
     public void networkStateEvent(NetworkStateChangeEvent event) {
-        modeAdapter.notifyDataSetChanged();
+//        modeAdapter.notifyDataSetChanged(); todo
     }
 
     @Subscribe
@@ -615,11 +625,16 @@ public class PhoneHomeFragment extends HomeFragment {
         exit();
     }
 
+    @Subscribe
+    public void progressEvent(ProgressEvent event) {
+        mainProgressBar.setVisibility(event.isShow() ? View.VISIBLE : View.GONE);
+    }
+
     public class ModeLongClickListener implements AdapterView.OnItemLongClickListener {
         @Override
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
             modeItemsHelper.setEditMode(true);
-            modeAdapter.notifyChanges();
+//            modeAdapter.notifyChanges(); todo
             return true;
         }
     }

@@ -9,7 +9,6 @@ import com.pillowapps.liqear.entities.Header;
 import com.pillowapps.liqear.entities.Item;
 import com.pillowapps.liqear.entities.ListItem;
 import com.pillowapps.liqear.entities.Mode;
-import com.pillowapps.liqear.entities.ModeEnum;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,39 +17,39 @@ import java.util.List;
 public class ModeItemsHelper {
     private boolean editMode;
     private AuthorizationInfoManager authorizationInfoManager;
-    private List<Mode> allModes = Arrays.asList(
+    public static final List<Mode> allModes = Arrays.asList(
             //Vk
-            new Mode(R.string.user_audio, R.drawable.ic_casette, Category.VK, ModeEnum.USER_AUDIO_VK, false),
-            new Mode(R.string.group, R.drawable.ic_friends_mode, Category.VK, ModeEnum.GROUP_VK, false),
-            new Mode(R.string.vk_friends, R.drawable.ic_friends_mode, Category.VK, ModeEnum.FRIENDS_VK, false),
-            new Mode(R.string.vk_simple_search, R.drawable.ic_simple_search_mode, Category.VK, ModeEnum.SEARCH_VK, false),
-            new Mode(R.string.vk_albums, R.drawable.ic_mode_playlist, Category.VK, ModeEnum.ALBUMS_VK, false),
-            new Mode(R.string.recommendations, R.drawable.ic_recomendations_mode, Category.VK, ModeEnum.RECOMMENDATIONS_VK, false),
-            new Mode(R.string.vk_wall, R.drawable.ic_wall_mode, Category.VK, ModeEnum.WALL_VK, false),
-            new Mode(R.string.vk_favorites, R.drawable.ic_loved_mode, Category.VK, ModeEnum.FAVORITES_VK, false),
-            new Mode(R.string.vk_feed, R.drawable.ic_wall_mode, Category.VK, ModeEnum.FEED_VK, false, false),
+            new Mode(R.string.user_audio, R.drawable.ic_casette, Category.VK, R.id.vk_user_audio, false),
+            new Mode(R.string.group, R.drawable.ic_friends_mode, Category.VK, R.id.vk_group, false),
+            new Mode(R.string.vk_friends, R.drawable.ic_friends_mode, Category.VK, R.id.vk_friends, false),
+            new Mode(R.string.vk_simple_search, R.drawable.ic_simple_search_mode, Category.VK, R.id.vk_search, false),
+            new Mode(R.string.vk_albums, R.drawable.ic_mode_playlist, Category.VK, R.id.vk_albums, false),
+            new Mode(R.string.recommendations, R.drawable.ic_recomendations_mode, Category.VK, R.id.vk_recommendations, false),
+            new Mode(R.string.vk_wall, R.drawable.ic_wall_mode, Category.VK, R.id.vk_wall, false),
+            new Mode(R.string.vk_favorites, R.drawable.ic_loved_mode, Category.VK, R.id.vk_favorites, false),
+            new Mode(R.string.vk_feed, R.drawable.ic_wall_mode, Category.VK, R.id.vk_feed, false, false),
             //Lastfm
-            new Mode(R.string.loved, R.drawable.ic_loved_mode, Category.LAST_FM, ModeEnum.LOVED, true),
-            new Mode(R.string.top_tracks, R.drawable.ic_casette, Category.LAST_FM, ModeEnum.TOP_TRACKS, true),
-            new Mode(R.string.top_artists, R.drawable.ic_artists_mode, Category.LAST_FM, ModeEnum.TOP_ARTISTS, true),
-            new Mode(R.string.charts, R.drawable.ic_charts_mode, Category.LAST_FM, ModeEnum.CHARTS, false),
-            new Mode(R.string.library, R.drawable.ic_library_mode, Category.LAST_FM, ModeEnum.LIBRARY, true),
-            new Mode(R.string.artist_radio, R.drawable.ic_artists_mode, Category.LAST_FM, ModeEnum.ARTIST_RADIO, false),
-            new Mode(R.string.tag_radio, R.drawable.ic_tag_mode, Category.LAST_FM, ModeEnum.TAG_RADIO, false),
-            new Mode(R.string.album, R.drawable.ic_audio_mode, Category.LAST_FM, ModeEnum.ALBUM_RADIO, false),
+            new Mode(R.string.loved, R.drawable.ic_loved_mode, Category.LAST_FM, R.id.lastfm_loved, true),
+            new Mode(R.string.top_tracks, R.drawable.ic_casette, Category.LAST_FM, R.id.lastfm_top_tracks, true),
+            new Mode(R.string.top_artists, R.drawable.ic_artists_mode, Category.LAST_FM, R.id.lastfm_top_artists, true),
+            new Mode(R.string.charts, R.drawable.ic_charts_mode, Category.LAST_FM, R.id.lastfm_charts, false),
+            new Mode(R.string.library, R.drawable.ic_library_mode, Category.LAST_FM, R.id.lastfm_library, true),
+            new Mode(R.string.artist_radio, R.drawable.ic_artists_mode, Category.LAST_FM, R.id.lastfm_artist, false),
+            new Mode(R.string.tag_radio, R.drawable.ic_tag_mode, Category.LAST_FM, R.id.lastfm_tag, false),
+            new Mode(R.string.album, R.drawable.ic_audio_mode, Category.LAST_FM, R.id.lastfm_album, false),
 //            new Mode(R.string.recommendations, R.drawable.ic_recomendations_mode, Category.LAST_FM, ModeEnum.RECOMMENDATIONS, true, false),
-            new Mode(R.string.radiomix, R.drawable.ic_mix_mode, Category.LAST_FM, ModeEnum.RADIOMIX, true),
+            new Mode(R.string.radiomix, R.drawable.ic_mix_mode, Category.LAST_FM, R.id.lastfm_radiomix, true),
 //            new Mode(R.string.neighbours, R.drawable.ic_friends_mode, Category.LAST_FM, ModeEnum.NEIGHBOURS, true),
-            new Mode(R.string.friends, R.drawable.ic_friends_mode, Category.LAST_FM, ModeEnum.FRIENDS_LAST, true),
-            new Mode(R.string.recent, R.drawable.ic_mode_playlist, Category.LAST_FM, ModeEnum.RECENT_LAST, true, false),
+            new Mode(R.string.friends, R.drawable.ic_friends_mode, Category.LAST_FM, R.id.lastfm_friends, true),
+            new Mode(R.string.recent, R.drawable.ic_mode_playlist, Category.LAST_FM, R.id.lastfm_recent, true, false),
             //Other
-            new Mode(R.string.funkysouls, R.drawable.ic_funky_mode, Category.OTHER, ModeEnum.FUNKY, false),
-            new Mode(R.string.alterportal, R.drawable.ic_alterportal_mode, Category.OTHER, ModeEnum.ALTERPORTAL, false),
-            new Mode(R.string.setlist, R.drawable.ic_setlists_mode, Category.OTHER, ModeEnum.SETLIST, false),
+            new Mode(R.string.funkysouls, R.drawable.ic_funky_mode, Category.OTHER, R.id.other_funky, false),
+            new Mode(R.string.alterportal, R.drawable.ic_alterportal_mode, Category.OTHER, R.id.other_alterportal, false),
+            new Mode(R.string.setlist, R.drawable.ic_setlists_mode, Category.OTHER, R.id.other_setlists, false),
             //Local
-            new Mode(R.string.tracks, R.drawable.ic_casette, Category.LOCAL, ModeEnum.LOCAL_TRACKS, false),
-            new Mode(R.string.artist_radio, R.drawable.ic_artists_mode, Category.LOCAL, ModeEnum.LOCAL_ARTISTS, false),
-            new Mode(R.string.albums, R.drawable.ic_audio_mode, Category.LOCAL, ModeEnum.LOCAL_ALBUMS, false)
+            new Mode(R.string.tracks, R.drawable.ic_casette, Category.LOCAL, R.id.local_tracks, false),
+            new Mode(R.string.artist_radio, R.drawable.ic_artists_mode, Category.LOCAL, R.id.local_artists, false),
+            new Mode(R.string.albums, R.drawable.ic_audio_mode, Category.LOCAL, R.id.local_albums, false)
     );
     private List<Mode> modes = new ArrayList<>(allModes.size());
     private List<Item> items;
@@ -84,9 +83,9 @@ public class ModeItemsHelper {
                 &&
                 mode.getCategory() != Category.VK
                 &&
-                mode.getModeEnum() != ModeEnum.RADIOMIX
+                mode.getId() != R.id.lastfm_radiomix
                 &&
-                mode.getModeEnum() != ModeEnum.LIBRARY;
+                mode.getId() != R.id.lastfm_library;
         boolean isLastfmModeNotNeededAuth = !mode.isNeedLastfm() && mode.getCategory() != Category.VK;
         if (!modeVisible) {
             return false;
@@ -129,16 +128,13 @@ public class ModeItemsHelper {
         categories.clear();
         itemsPerCategory.clear();
         for (Mode currentMode : allModes) {
-            if (SharedPreferencesManager.getModePreferences(context).getBoolean(Constants.MODE_VISIBLE
-                    + currentMode.getModeEnum(), currentMode.isVisible()) || isEditMode()) {
-                modes.add(currentMode);
-                Category category = currentMode.getCategory();
-                if (!categories.contains(category)) {
-                    itemsPerCategory.add(0);
-                    categories.add(category);
-                }
-                itemsPerCategory.set(categories.size() - 1, itemsPerCategory.get(categories.size() - 1) + 1);
+            modes.add(currentMode);
+            Category category = currentMode.getCategory();
+            if (!categories.contains(category)) {
+                itemsPerCategory.add(0);
+                categories.add(category);
             }
+            itemsPerCategory.set(categories.size() - 1, itemsPerCategory.get(categories.size() - 1) + 1);
         }
     }
 
@@ -147,6 +143,7 @@ public class ModeItemsHelper {
     }
 
     public List<Mode> getModes() {
+        calcNewModesList();
         return modes;
     }
 
