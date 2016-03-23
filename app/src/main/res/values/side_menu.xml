@@ -33,4 +33,10 @@
     <item name="local_tracks" type="id" />
     <item name="local_artists" type="id" />
     <item name="local_albums" type="id" />
+
+    <item name="help" type="id" />
+    <item name="auth" type="id" />
+    <item name="settings" type="id" />
+
+
 </resources>

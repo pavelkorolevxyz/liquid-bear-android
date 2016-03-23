@@ -4,10 +4,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/lb_toolbar"/>
-
     <com.mobeta.android.dslv.DragSortListView
         android:id="@+id/playlist_list_view_playlist_tab"
         android:layout_width="fill_parent"
@@ -18,7 +14,8 @@
         android:longClickable="true"
         android:scrollbars="none"
         android:visibility="visible"
-        app:drag_handle_id="@+id/grabber_list_item"/>
+        app:drag_handle_id="@+id/grabber_list_item"
+        android:layout_above="@+id/bottom_controls_layout" />
 
     <RelativeLayout
         android:id="@+id/search_layout"
@@ -56,6 +53,55 @@
         <!--android:padding="2dp"-->
         <!--android:src="@drawable/clear_button"-->
         <!--android:visibility="gone" />-->
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottom_controls_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/back_layout"
+        android:background="@color/accent_light"
+        android:layout_alignParentBottom="true">
+
+        <RelativeLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout3"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentLeft="true">
+
+                <ImageButton
+                    android:id="@+id/playback_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="false"
+                    android:background="@null"
+                    android:contentDescription="@string/shuffle_button"
+                    android:padding="10dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_play" />
+            </LinearLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/playlist_bottom_toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <TextView

@@ -5,7 +5,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pillowapps.liqear.entities.ViewPage;
+import com.pillowapps.liqear.entities.Page;
 
 import java.util.List;
 
@@ -13,15 +13,19 @@ public class PhoneFragmentPagerAdapter extends PagerAdapter {
     public static final int PLAY_TAB_INDEX = 0;
     public static final int PLAYLIST_TAB_INDEX = 1;
     public static final int MODE_TAB_INDEX = 2;
-    private List<ViewPage> pages;
+    private List<Page> pages;
 
-
-    public PhoneFragmentPagerAdapter(List<ViewPage> pages) {
+    public PhoneFragmentPagerAdapter(List<Page> pages) {
         this.pages = pages;
     }
 
-    public String getTitle(int position) {
+    @Override
+    public CharSequence getPageTitle(int position) {
         return pages.get(position).getTitle();
+    }
+
+    public int getImageRes(int position) {
+        return pages.get(position).getIcon();
     }
 
     @Override

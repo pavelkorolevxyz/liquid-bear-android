@@ -18,7 +18,7 @@
     <string name="authorizations_summary">Настройки авторизации Last.fm и VK</string>
     <string name="download_images">Скачивать изображения</string>
     <string name="download_images_summary">Включить/Выключить скачивание изображений</string>
-    <string name="preferences">Настройки</string>
+    <string name="settings">Настройки</string>
     <string name="zero_time">0:00</string>
     <string name="sign_in">Войти</string>
     <string name="sign_in_via_browser">Войти через браузер</string>

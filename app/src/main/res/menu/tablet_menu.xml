@@ -109,13 +109,13 @@
     </item>
     <item
         android:id="@+id/more_button"
-        android:title="@string/preferences"
+        android:title="@string/settings"
         android:icon="@drawable/settings_normal"
         app:showAsAction="always|collapseActionView">
         <menu>
             <item
                 android:id="@+id/settings"
-                android:title="@string/preferences"
+                android:title="@string/settings"
                 android:icon="@drawable/ic_settings_dark"
                 app:showAsAction="always|withText"/>
             <item

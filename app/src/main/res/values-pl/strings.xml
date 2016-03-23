@@ -18,7 +18,7 @@
     <string name="authorizations_summary">Ustawienia logowania do Last.fm i VK</string>
     <string name="download_images">Ładuj obrazki</string>
     <string name="download_images_summary">Wł/Wył ściąganie obrazków</string>
-    <string name="preferences">Ustawienia</string>
+    <string name="settings">Ustawienia</string>
     <string name="zero_time">0:00</string>
     <string name="sign_in">Wejść</string>
     <string name="sign_in_via_browser">Wejdź przez przeglądarkę</string>

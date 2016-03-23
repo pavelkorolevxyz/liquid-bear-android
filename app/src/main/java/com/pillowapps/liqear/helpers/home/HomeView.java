@@ -45,8 +45,6 @@ public interface HomeView {
 
     void showToastAdded();
 
-    void openPreferences();
-
     void openEqualizer();
 
     void showTimerDialog();
@@ -54,8 +52,6 @@ public interface HomeView {
     void clearSearch();
 
     void setMainPlaylistSelection(int currentIndex);
-
-    void updateModeListEditMode();
 
     void updateSearchVisibility(boolean visibility);
 
@@ -81,10 +77,6 @@ public interface HomeView {
 
     void updateRepeatButtonState(int imageRes);
 
-    void hideTutorial();
-
-    void showTutorial();
-
     void updateArtistPhotoAndColors(String artistUrl);
 
     void hideAlbumImage();
@@ -102,8 +94,6 @@ public interface HomeView {
     void updateLoveButton(int imageRes);
 
     void openAlbumScreen(@NonNull Album album);
-
-    void updatePlaybackTabMenu(int playbackToolbarMenuRes);
 
     void updatePlayingState(boolean isPlaying);
 

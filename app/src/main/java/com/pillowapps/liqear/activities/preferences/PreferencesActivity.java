@@ -21,7 +21,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class PreferencesActivity extends AppCompatPreferenceActivity {
 
-    public static Intent getStartIntent(Context context) {
+    public static Intent startIntent(Context context) {
         return new Intent(context, PreferencesActivity.class);
     }
 
@@ -35,7 +35,7 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
         root.addView(toolbar, 0);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle(R.string.preferences);
+        setTitle(R.string.settings);
 
         Preference authorizationsPref = findPreference("authorizations_preference_preferences");
         authorizationsPref.setOnPreferenceClickListener(preference -> {

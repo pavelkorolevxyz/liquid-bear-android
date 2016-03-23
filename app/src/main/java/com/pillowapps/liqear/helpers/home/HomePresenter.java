@@ -18,7 +18,6 @@ import com.pillowapps.liqear.helpers.ArtistTrackComparator;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
 import com.pillowapps.liqear.helpers.Converter;
-import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.NetworkManager;
 import com.pillowapps.liqear.helpers.PlaylistUtils;
 import com.pillowapps.liqear.helpers.PreferencesModel;
@@ -58,7 +57,6 @@ public class HomePresenter extends Presenter<HomeView> {
     private TutorialModel tutorial;
     private AuthorizationInfoManager authorizationInfoManager;
     private NetworkManager networkManager;
-    private ModeItemsHelper modeItemsHelper;
     private PreferencesScreenManager preferencesManager;
     private LastfmTrackModel lastfmTrackModel;
 
@@ -74,7 +72,6 @@ public class HomePresenter extends Presenter<HomeView> {
                          TutorialModel tutorial,
                          AuthorizationInfoManager authorizationInfoManager,
                          NetworkManager networkManager,
-                         ModeItemsHelper modeItemsHelper,
                          PreferencesScreenManager preferencesManager, LastfmTrackModel lastfmTrackModel) {
         this.stateManager = stateManager;
         this.libraryModel = libraryModel;
@@ -87,13 +84,15 @@ public class HomePresenter extends Presenter<HomeView> {
         this.tutorial = tutorial;
         this.authorizationInfoManager = authorizationInfoManager;
         this.networkManager = networkManager;
-        this.modeItemsHelper = modeItemsHelper;
         this.preferencesManager = preferencesManager;
         this.lastfmTrackModel = lastfmTrackModel;
     }
 
     public void openRadiomix() {
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
 
         libraryModel.getRadiomix(authorizationInfoManager.getLastfmName(), new SimpleCallback<List<LastfmTrack>>() {
             @Override
@@ -113,6 +112,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void openLibrary() {
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
 
         view.showLoading(true);
         libraryModel.getLibrary(authorizationInfoManager.getLastfmName(), new SimpleCallback<List<LastfmTrack>>() {
@@ -134,6 +136,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void playTrack(int index, boolean autoplay) {
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
 
         view.playTrack(index, autoplay);
     }
@@ -148,6 +153,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void openArtistViewer(@NonNull String artist) {
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
 
         if (!networkManager.isOnline()) {
             view.showNoInternetError();
@@ -165,6 +173,9 @@ public class HomePresenter extends Presenter<HomeView> {
         }
 
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
 
 
         String template = preferencesModel.getShareTemplate();
@@ -177,6 +188,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void shareTrackToVk(String shareMessage, String imageUrl, Track track) {
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
 
         if (!networkManager.isOnline()) {
             view.showNoInternetError();
@@ -197,6 +211,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
 
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
 
         if (currentTrack.isLocal()) {
             view.showTrackIsLocalError();
@@ -224,6 +241,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void openLyrics(Track track) {
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
 
         if (!authorizationInfoManager.isAuthorizedOnVk()) {
             view.showVkAuthorizationError();
@@ -242,6 +262,9 @@ public class HomePresenter extends Presenter<HomeView> {
         if (currentTrack == null) return;
 
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.openTrackVideo(currentTrack);
     }
 
@@ -255,6 +278,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void addToVkAudio(Track track) {
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
 
         if (!authorizationInfoManager.isAuthorizedOnVk()) {
             view.showVkAuthorizationError();
@@ -282,23 +308,27 @@ public class HomePresenter extends Presenter<HomeView> {
         }
     }
 
-    public void openPreferences() {
-        final HomeView view = view();
-        view.openPreferences();
-    }
-
     public void openEqualizer() {
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.openEqualizer();
     }
 
     public void openTimer() {
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.showTimerDialog();
     }
 
     public void setTimerInSeconds(int minutes) {
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.setTimer(minutes);
     }
 
@@ -312,6 +342,9 @@ public class HomePresenter extends Presenter<HomeView> {
         new TrackModel().clearTitles(playlistTracks);
 
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.updateAdapter();
     }
 
@@ -320,6 +353,9 @@ public class HomePresenter extends Presenter<HomeView> {
         timeline.clearPreviousIndexes();
 
         final HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.clearSearch();
         playTrack(0, true);
     }
@@ -328,6 +364,9 @@ public class HomePresenter extends Presenter<HomeView> {
         int currentIndex = timeline.getIndex();
         if (currentIndex >= 0 && currentIndex < timeline.getPlaylistTracks().size()) {
             final HomeView view = view();
+            if (view == null) {
+                return;
+            }
             view.setMainPlaylistSelection(currentIndex);
         }
     }
@@ -358,39 +397,51 @@ public class HomePresenter extends Presenter<HomeView> {
 
     private void setMainPlaylist(int index, @NonNull Playlist playlist) {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.changePlaylist(index, playlist, timeline.getQueueIndexes());
         view.updateEmptyPlaylistTextView();
-    }
-
-    public void toggleModeListEditMode() {
-        modeItemsHelper.setEditMode(!modeItemsHelper.isEditMode());
-        HomeView view = view();
-        view.updateModeListEditMode();
     }
 
     public void togglePlaylistSearchVisibility() {
         boolean visibility = stateManager.toggleSearchVisibility();
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.updateSearchVisibility(visibility);
     }
 
     public void exit() {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.exit();
     }
 
     public void openPlaylistsScreen() {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.openPlaylistsScreen();
     }
 
     public void togglePlaylistEditMode() {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.togglePlaylistEditMode();
     }
 
     public void playNewPlaylist(int positionToPlay, Playlist playlist) {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.changeViewPagerItem(PhoneFragmentPagerAdapter.PLAYLIST_TAB_INDEX);
         updateMainPlaylist(positionToPlay, playlist);
         playTrack(positionToPlay, true);
@@ -398,11 +449,17 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void changeCurrentTrackUrl(int newPosition, String url) {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.changeCurrentTrackUrl(newPosition, url);
     }
 
     public void restoreState() {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.updateRepeatButtonState(ButtonStateUtils.getRepeatButtonImage(timeline.getRepeatMode()));
         view.updateShuffleButtonState(ButtonStateUtils.getShuffleButtonImage(timeline.getShuffleMode()));
         view.updateArtistPhotoAndColors(timeline.getCurrentArtistImageUrl());
@@ -445,23 +502,11 @@ public class HomePresenter extends Presenter<HomeView> {
                 });
     }
 
-    public void showTutorial() {
-        HomeView view = view();
-        if (tutorial.isEnabled()) {
-            view.showTutorial();
-        }
-    }
-
-    public void hideTutorial() {
-        HomeView view = view();
-        if (tutorial.isEnabled()) {
-            tutorial.disableTutorial();
-            view.hideTutorial();
-        }
-    }
-
     public void updateArtistPhoto() {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         if (!networkManager.isOnline()) {
             view.showArtistPlaceholder();
             return;
@@ -473,6 +518,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void updateAlbum() {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
 
         Album album = timeline.getCurrentAlbum();
         Timber.d("Current album = " + album + ", and networkonline = " + networkManager.isOnline());
@@ -499,6 +547,9 @@ public class HomePresenter extends Presenter<HomeView> {
     public void toggleRepeat() {
         timeline.toggleRepeat();
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.updateRepeatButtonState(ButtonStateUtils.getRepeatButtonImage(timeline.getRepeatMode()));
         view.updateWidgets();
     }
@@ -506,6 +557,9 @@ public class HomePresenter extends Presenter<HomeView> {
     public void toggleShuffle() {
         timeline.toggleShuffle();
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.updateShuffleButtonState(ButtonStateUtils.getShuffleButtonImage(timeline.getShuffleMode()));
         view.updateWidgets();
     }
@@ -529,6 +583,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
     private void unlove(final Track track) {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         lastfmTrackModel.unlove(track, new SimpleCallback<Object>() {
             @Override
             public void success(Object o) {
@@ -546,6 +603,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void love(Track track) {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         lastfmTrackModel.love(track, new SimpleCallback<Object>() {
             @Override
             public void success(Object data) {
@@ -563,6 +623,9 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void openAlbumScreen() {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         Album album = timeline.getCurrentAlbum();
         if (album == null) {
             return;
@@ -572,35 +635,44 @@ public class HomePresenter extends Presenter<HomeView> {
 
     public void updateLove() {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         Track currentTrack = timeline.getCurrentTrack();
         view.updateLoveButton(ButtonStateUtils.getLoveButtonImage(currentTrack));
     }
 
-    public void updatePlaybackToolbar() {
-        HomeView view = view();
-        Track currentTrack = timeline.getCurrentTrack();
-        view.updatePlaybackTabMenu(ToolbarUtils.getPlaybackToolbarMenuRes(currentTrack));
-    }
-
     public void addTrackToPlaylist(Track track) {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.openAddTrackToPlaylistScreen(track);
     }
 
     public void queueTrack(int index) {
         timeline.queueTrack(index);
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.updateAdapter();
     }
 
     public void removeTrackFromPlaylist(int index) {
         timeline.removeTrack(index);
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.updateAdapter();
     }
 
     public void addTo(Track track) {
         HomeView view = view();
+        if (view == null) {
+            return;
+        }
         view.showAddToDialog(track);
     }
 }

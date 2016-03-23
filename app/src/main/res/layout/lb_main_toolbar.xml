@@ -7,4 +7,4 @@
     android:background="@color/primary"
     android:gravity="center_vertical"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    app:theme="@style/ToolbarTheme" />
+    app:theme="@style/ToolbarTheme"/>

@@ -25,7 +25,6 @@ import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity;
 import com.pillowapps.liqear.activities.preferences.EqualizerActivity;
-import com.pillowapps.liqear.activities.preferences.PreferencesActivity;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
@@ -35,7 +34,6 @@ import com.pillowapps.liqear.fragments.base.BaseFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.ErrorNotifier;
-import com.pillowapps.liqear.helpers.ModeItemsHelper;
 import com.pillowapps.liqear.helpers.MusicServiceManager;
 import com.pillowapps.liqear.helpers.NetworkManager;
 import com.pillowapps.liqear.helpers.PreferencesModel;
@@ -45,6 +43,7 @@ import com.pillowapps.liqear.helpers.StateManager;
 import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.helpers.home.HomePresenter;
 import com.pillowapps.liqear.helpers.home.HomeView;
+import com.pillowapps.liqear.listeners.OnModeListener;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
@@ -98,9 +97,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     NetworkManager networkManager;
 
     @Inject
-    ModeItemsHelper modeItemsHelper;
-
-    @Inject
     SavesManager savesManager;
 
     @Override
@@ -115,6 +111,9 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         setHasOptionsMenu(true);
 
         activity = (HomeActivity) getActivity();
+
+        OnModeListener onModeListener = new OnModeListener(this, authorizationInfoManager);
+        activity.setModeListener(onModeListener);
 
         playlistItemsAdapter = new PlaylistItemsAdapter(getContext());
 
@@ -170,10 +169,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                 presenter.addToVkAudio();
                 break;
             }
-            case R.id.settings: {
-                presenter.openPreferences();
-                break;
-            }
             case R.id.equalizer: {
                 presenter.openEqualizer();
                 break;
@@ -212,10 +207,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             }
             case R.id.sort_by_artist_button: {
                 presenter.sortByArtist(playlistItemsAdapter.getValues());
-                break;
-            }
-            case R.id.edit_modes_button: {
-                presenter.toggleModeListEditMode();
                 break;
             }
             case R.id.menu_search: {
@@ -459,11 +450,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     @Override
-    public void openPreferences() {
-        startActivity(PreferencesActivity.getStartIntent(getContext()));
-    }
-
-    @Override
     public void openEqualizer() {
         startActivity(EqualizerActivity.startIntent(getContext()));
     }
@@ -501,8 +487,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public abstract void setMainPlaylistSelection(int currentIndex);
 
-    @Override
-    public abstract void updateModeListEditMode();
 
     @Override
     public abstract void updateSearchVisibility(boolean visibility);
@@ -561,11 +545,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                                                   @NonNull TutorialModel tutorial,
                                                   @NonNull AuthorizationInfoManager authorizationInfoManager,
                                                   @NonNull NetworkManager networkManager,
-                                                  @NonNull ModeItemsHelper modeItemsHelper,
                                                   @NonNull PreferencesScreenManager preferencesManager,
                                                   @NonNull LastfmTrackModel lastfmTrackModel) {
             return new HomePresenter(stateManager, libraryModel, shareModel, vkWallModel, vkAudioModel, preferencesModel, playlistModel, timeline, tutorial,
-                    authorizationInfoManager, networkManager, modeItemsHelper, preferencesManager, lastfmTrackModel);
+                    authorizationInfoManager, networkManager, preferencesManager, lastfmTrackModel);
         }
     }
 }

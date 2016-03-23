@@ -11,10 +11,6 @@
         android:background="@color/accent_mono_dark"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/lb_toolbar" />
-
         <ImageView
             android:id="@+id/artist_image_view_headset"
             android:layout_width="match_parent"
@@ -22,7 +18,7 @@
             android:layout_above="@+id/bottom_combined_layout"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/toolbar"
+            android:layout_alignParentTop="true"
             android:baselineAlignBottom="false"
             android:contentDescription="@string/artist_image"
             android:scaleType="centerCrop" />
@@ -34,7 +30,7 @@
             android:layout_above="@+id/bottom_combined_layout"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/toolbar"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/fade_to_black_gradient" />
 
@@ -186,82 +182,118 @@
                     android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingBottom="8dp"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     android:paddingTop="8dp">
 
-                    <ImageButton
-                        android:id="@+id/repeat_button_playback_tab"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignParentBottom="false"
-                        android:layout_alignParentLeft="false"
-                        android:layout_alignParentTop="false"
-                        android:layout_gravity="left"
-                        android:layout_margin="0dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="0dp"
-                        android:background="@null"
-                        android:contentDescription="@string/repeat_button"
-                        android:padding="10dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/ic_repeat" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/repeat_shuffle_buttons_layout">
 
-                    <ImageButton
-                        android:id="@+id/prev_button_playback_tab"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignTop="@+id/repeat_button_playback_tab"
-                        android:layout_gravity="center"
-                        android:layout_toLeftOf="@+id/play_pause_button_playback_tab"
-                        android:background="@null"
-                        android:contentDescription="@string/prev_button"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/prev_button" />
+                        <ImageButton
+                            android:id="@+id/repeat_button_playback_tab"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_alignParentBottom="false"
+                            android:layout_alignParentLeft="false"
+                            android:layout_alignParentTop="false"
+                            android:layout_gravity="left"
+                            android:layout_margin="0dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="0dp"
+                            android:background="@null"
+                            android:contentDescription="@string/repeat_button"
+                            android:padding="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_repeat" />
 
-                    <ImageButton
-                        android:id="@+id/play_pause_button_playback_tab"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignParentBottom="false"
-                        android:layout_alignParentLeft="false"
-                        android:layout_alignParentTop="false"
-                        android:layout_centerHorizontal="true"
-                        android:layout_margin="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginTop="0dp"
-                        android:background="@null"
-                        android:contentDescription="@string/play_pause"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/play_button" />
+                        <ImageButton
+                            android:id="@+id/shuffle_button_playback_tab"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_alignParentLeft="false"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="false"
+                            android:background="@null"
+                            android:contentDescription="@string/shuffle_button"
+                            android:padding="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_shuffle" />
+                    </LinearLayout>
 
-                    <ImageButton
-                        android:id="@+id/next_button_playback_tab"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignTop="@+id/repeat_button_playback_tab"
-                        android:layout_gravity="center"
-                        android:layout_toRightOf="@+id/play_pause_button_playback_tab"
-                        android:background="@null"
-                        android:contentDescription="@string/next_button"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/next_button" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linearLayout3"
+                        android:layout_alignParentRight="true">
 
-                    <ImageButton
-                        android:id="@+id/shuffle_button_playback_tab"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignParentLeft="false"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="false"
-                        android:background="@null"
-                        android:contentDescription="@string/shuffle_button"
-                        android:padding="10dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/ic_shuffle" />
+                        <ImageButton
+                            android:id="@+id/playlists_button"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_alignParentLeft="false"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="false"
+                            android:background="@null"
+                            android:contentDescription="@string/shuffle_button"
+                            android:padding="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_playlist" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:layout_centerInParent="true">
+
+                        <ImageButton
+                            android:id="@+id/prev_button_playback_tab"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_alignTop="@+id/repeat_button_playback_tab"
+                            android:layout_gravity="center"
+                            android:layout_toLeftOf="@+id/play_pause_button_playback_tab"
+                            android:background="@null"
+                            android:contentDescription="@string/prev_button"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/prev_button" />
+
+                        <ImageButton
+                            android:id="@+id/play_pause_button_playback_tab"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_alignParentBottom="false"
+                            android:layout_alignParentLeft="false"
+                            android:layout_alignParentTop="false"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="0dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginTop="0dp"
+                            android:background="@null"
+                            android:contentDescription="@string/play_pause"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/play_button" />
+
+                        <ImageButton
+                            android:id="@+id/next_button_playback_tab"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_alignTop="@+id/repeat_button_playback_tab"
+                            android:layout_gravity="center"
+                            android:layout_toRightOf="@+id/play_pause_button_playback_tab"
+                            android:background="@null"
+                            android:contentDescription="@string/next_button"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/next_button" />
+                    </LinearLayout>
+
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -310,33 +342,6 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:visibility="gone" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/tutorial_layout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="clip_vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/swipe_left_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/swipe_right_image_view"
-                android:src="@drawable/swipe_left" />
-
-            <ImageView
-                android:id="@+id/swipe_right_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/swipe_right" />
         </RelativeLayout>
 
     </RelativeLayout>

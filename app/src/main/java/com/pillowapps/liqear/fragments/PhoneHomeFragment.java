@@ -17,8 +17,6 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -32,9 +30,9 @@ import com.mobeta.android.dslv.DragSortListView;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
+import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.ViewPage;
 import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
 import com.pillowapps.liqear.entities.events.BufferizationEvent;
 import com.pillowapps.liqear.entities.events.ExitEvent;
@@ -51,7 +49,6 @@ import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.listeners.OnSwipeListener;
 import com.squareup.otto.Subscribe;
-import com.viewpagerindicator.UnderlinePageIndicator;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -62,7 +59,6 @@ import timber.log.Timber;
 public class PhoneHomeFragment extends HomeFragment {
 
     private ViewPager pager;
-    private UnderlinePageIndicator indicator;
     private View playlistTab;
     private View playbackTab;
 //    private View modeTab;
@@ -73,13 +69,13 @@ public class PhoneHomeFragment extends HomeFragment {
      * Playlists tab
      **/
     private EditText searchPlaylistEditText;
-    private Toolbar playlistToolbar;
+    //    private Toolbar playlistToolbar;
     private TextView emptyPlaylistTextView;
 
     /**
      * Play tab
      */
-    private Toolbar playbackToolbar;
+//    private Toolbar playbackToolbar;
     private TextView artistTextView;
     private TextView titleTextView;
     private ImageButton playPauseButton;
@@ -90,33 +86,27 @@ public class PhoneHomeFragment extends HomeFragment {
     private ImageButton prevButton;
     private ImageButton shuffleButton;
     private ImageButton repeatButton;
+    private ImageButton playlistsButton;
+    private ImageButton playbackButton;
     private TextView timePlateTextView;
     private ImageView artistImageView;
     private ImageView albumImageView;
     private TextView albumTextView;
     private FloatingActionButton loveFloatingActionButton;
     private View blackView;
-    private View tutorialLayout;
-    private Animation tutorialBlinkAnimation;
     private ViewGroup backLayout;
     private ViewGroup bottomControlsLayout;
     private LinearLayout colorsLayout;
 
-    /**
-     * Modes tab
-     */
-//    private Toolbar modeToolbar;
-
-    //    private ModeGridAdapter modeAdapter;
     private DragSortListView playlistListView;
-//    private RecyclerView modeRecycler;
-//    private ModeRecyclerAdapter modeRecyclerAdapter;
+    private Toolbar toolbar;
+    private PhoneFragmentPagerAdapter pagerAdapter;
+    private ViewGroup bottomControlsLayoutPlaylists;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LBApplication.get(getContext()).applicationComponent().inject(this);
-        Timber.d("phonefragment injected");
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -142,61 +132,43 @@ public class PhoneHomeFragment extends HomeFragment {
     private void initUi(View v) {
         mainProgressBar = (ProgressBar) v.findViewById(R.id.progressBar);
 
+        initToolbar(v);
         initViewPager(v);
 
-//        initModeTab();
         initPlaylistsTab();
         initPlaybackTab();
+    }
 
-        presenter.showTutorial();
+    private void initToolbar(View v) {
+        toolbar = (Toolbar) v.findViewById(R.id.main_toolbar);
+        toolbar.inflateMenu(R.menu.menu_play_tab);
+        activity.setToolbar(toolbar);
+
+//        ((Toolbar) v.findViewById(R.id.toolbar)).inflateMenu(R.menu.menu_play_tab);
+//        tabs = (SmartTabLayout) v.findViewById(R.id.tabs);
+//        tabs.setCustomTabView((container, position, adapter) -> {
+//            LayoutInflater inflater = LayoutInflater.from(container.getContext());
+//            ImageView icon = (ImageView) inflater.inflate(R.layout.custom_tab_icon1, container, false);
+//            icon.setImageResource(pagerAdapter.getImageRes(position));
+//            return icon;
+//        });
     }
 
     private void initViewPager(View v) {
-        final List<ViewPage> pages = new ArrayList<>();
+        final List<Page> pages = new ArrayList<>();
         Context context = getContext();
         playlistTab = View.inflate(context, R.layout.playlist_tab, null);
         playbackTab = View.inflate(context, R.layout.play_tab, null);
-//        modeTab = View.inflate(context, R.layout.mode_list_tab, null);
-        pages.add(new ViewPage(playbackTab, getString(R.string.play_tab)));
-        pages.add(new ViewPage(playlistTab, getString(R.string.playlist_tab)));
-//        pages.add(new ViewPage(modeTab, getString(R.string.mode_tab)));
+        pages.add(new Page(playbackTab, R.drawable.ic_play));
+        pages.add(new Page(playlistTab, R.drawable.ic_playlist));
         pager = (ViewPager) v.findViewById(R.id.viewpager);
         pager.setOffscreenPageLimit(pages.size());
-        pager.setAdapter(new PhoneFragmentPagerAdapter(pages));
+        pagerAdapter = new PhoneFragmentPagerAdapter(pages);
+        pager.setAdapter(pagerAdapter);
+//        tabs.setViewPager(pager);
 
-        playbackToolbar = (Toolbar) playbackTab.findViewById(R.id.toolbar);
-        playlistToolbar = (Toolbar) playlistTab.findViewById(R.id.toolbar);
-//        modeToolbar = (Toolbar) modeTab.findViewById(R.id.toolbar);
-        playlistToolbar.setTitle(R.string.playlist_tab);
-        playbackToolbar.setTitle(R.string.app_name);
-//        modeToolbar.setTitle(R.string.mode_tab);
-
-        activity.setToolbar(playbackToolbar);
         updateToolbars();
 
-        indicator = (UnderlinePageIndicator) v.findViewById(R.id.indicator);
-        indicator.setSelectedColor(ContextCompat.getColor(activity, R.color.accent));
-        indicator.setOnClickListener(null);
-        indicator.setViewPager(pager);
-        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // No op.
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                setHasOptionsMenu(true);
-                if (position != PhoneFragmentPagerAdapter.PLAY_TAB_INDEX) {
-                    presenter.hideTutorial();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                // No op.
-            }
-        });
         changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX);
     }
 
@@ -220,6 +192,11 @@ public class PhoneHomeFragment extends HomeFragment {
         searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
         searchPlaylistEditText.setVisibility(savesManager.isSearchVisible() ? View.VISIBLE : View.GONE);
         emptyPlaylistTextView = (TextView) playlistTab.findViewById(R.id.empty);
+        playbackButton = (ImageButton) playlistTab.findViewById(R.id.playback_button);
+        bottomControlsLayoutPlaylists = (ViewGroup) playlistTab.findViewById(R.id.bottom_controls_layout);
+
+        Toolbar playlistBottomToolbar = (Toolbar) playlistTab.findViewById(R.id.playlist_bottom_toolbar);
+        playlistBottomToolbar.inflateMenu(R.menu.menu_playlist_tab);
     }
 
     private void initPlaybackTab() {
@@ -240,6 +217,7 @@ public class PhoneHomeFragment extends HomeFragment {
         timePlateTextView = (TextView) playbackTab.findViewById(R.id.time_plate_text_view_playback_tab);
         albumImageView = (ImageView) playbackTab.findViewById(R.id.album_cover_image_view);
         albumTextView = (TextView) playbackTab.findViewById(R.id.album_title_text_view);
+        playlistsButton = (ImageButton) playbackTab.findViewById(R.id.playlists_button);
 
         loveFloatingActionButton = (FloatingActionButton) playbackTab.findViewById(R.id.love_button);
 
@@ -250,23 +228,6 @@ public class PhoneHomeFragment extends HomeFragment {
         blackView = playbackTab.findViewById(R.id.view);
 
         colorsLayout = (LinearLayout) playbackTab.findViewById(R.id.colors_layout);
-    }
-
-    private void initModeTab() {
-//        modeAdapter = new ModeGridAdapter(activity, modeItemsHelper);
-
-//        modeRecycler = (RecyclerView) modeTab.findViewById(R.id.mode_recycler);
-//        modeRecycler.setHasFixedSize(true);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-//        modeRecycler.setLayoutManager(linearLayoutManager);
-//        OnModeListener onModeClickListener = new OnModeListener(this, authorizationInfoManager, networkManager);
-//        modeRecyclerAdapter = new ModeRecyclerAdapter(modeItemsHelper.getModes(), onModeClickListener);
-//        modeRecycler.addItemDecoration(new DividerItemDecoration(modeRecycler.getContext(), DividerItemDecoration.VERTICAL_LIST));
-//        modeRecycler.setAdapter(modeRecyclerAdapter);
-//        StickyGridHeadersGridView modeGridView = (StickyGridHeadersGridView) modeTab.findViewById(R.id.mode_gridview);
-//        modeGridView.setOnItemClickListener(new OnModeClickListener(this, authorizationInfoManager, networkManager));
-//        modeGridView.setOnItemLongClickListener(new ModeLongClickListener());
-//        modeGridView.setAdapter(modeAdapter);
     }
 
     private void initListeners() {
@@ -297,6 +258,11 @@ public class PhoneHomeFragment extends HomeFragment {
         nextButton.setOnClickListener(v -> musicServiceManager.next());
 
         prevButton.setOnClickListener(v -> musicServiceManager.prev());
+
+        playlistsButton.setOnClickListener(v -> changeViewPagerItem(PhoneFragmentPagerAdapter.PLAYLIST_TAB_INDEX));
+
+        playbackButton.setOnClickListener(v -> changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX));
+
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -341,42 +307,23 @@ public class PhoneHomeFragment extends HomeFragment {
 
     public void changeViewPagerItem(int currentItem) {
         pager.setCurrentItem(currentItem);
-        indicator.setCurrentItem(currentItem);
     }
 
     @Override
-    public void updateMainPlaylistTitle(@Nullable String title) {
-        if (title == null) {
-            title = getString(R.string.playlist_tab);
-        }
-        playlistToolbar.setTitle(title);
-    }
-
-    @Override
-    public void showTutorial() {
-        ImageView swipeLeftImageView = (ImageView) playbackTab.findViewById(R.id.swipe_left_image_view);
-        ImageView swipeRightImageView = (ImageView) playbackTab.findViewById(R.id.swipe_right_image_view);
-        tutorialLayout = playbackTab.findViewById(R.id.tutorial_layout);
-        tutorialLayout.setVisibility(View.VISIBLE);
-        tutorialBlinkAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.blink_animation);
-        swipeLeftImageView.startAnimation(tutorialBlinkAnimation);
-        swipeRightImageView.startAnimation(tutorialBlinkAnimation);
+    public void updateMainPlaylistTitle(@Nullable String playlistTitle) {
+        String title = getString(R.string.app_name);
+        toolbar.setTitle(title);
+        toolbar.setSubtitle(playlistTitle);
     }
 
     @Override
     protected void updateToolbars() {
-        playlistToolbar.getMenu().clear();
+//        playlistToolbar.getMenu().clear();
 //        modeToolbar.getMenu().clear();
 //        modeToolbar.inflateMenu(R.menu.menu_mode_tab);
-        playlistToolbar.inflateMenu(R.menu.menu_playlist_tab);
-        playlistToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+//        playlistToolbar.inflateMenu(R.menu.menu_playlist_tab);
+//        playlistToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
 //        modeToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
-        updatePlaybackToolbar();
-    }
-
-    @Override
-    public void updatePlaybackTabMenu(int playbackToolbarMenuRes) {
-        playbackToolbar.inflateMenu(playbackToolbarMenuRes);
     }
 
     @Override
@@ -392,13 +339,6 @@ public class PhoneHomeFragment extends HomeFragment {
     @Override
     public void updateLoveButton(int imageRes) {
         loveFloatingActionButton.setImageResource(imageRes);
-    }
-
-    public void updatePlaybackToolbar() {
-        playbackToolbar.getMenu().clear();
-        presenter.updatePlaybackToolbar();
-        playbackToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
-        mainMenu = playbackToolbar.getMenu();
     }
 
     private void updateTime() {
@@ -448,7 +388,6 @@ public class PhoneHomeFragment extends HomeFragment {
             return;
         }
         new Palette.Builder(bitmap).generate(palette -> {
-
             // all palette colors for investigation
 //            int darkMutedColor = palette.getDarkMutedColor(Color.TRANSPARENT);
 //            int darkVibrantColor = palette.getDarkVibrantColor(Color.TRANSPARENT);
@@ -471,6 +410,7 @@ public class PhoneHomeFragment extends HomeFragment {
             int bottomColor = palette.getMutedColor(ContextCompat.getColor(getContext(), R.color.accent_light));
             int firstBottomColor = palette.getDarkVibrantColor(bottomColor);
             bottomControlsLayout.setBackgroundColor(firstBottomColor);
+            bottomControlsLayoutPlaylists.setBackgroundColor(firstBottomColor);
 
             loveFloatingActionButton.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{firstBottomColor}));
         });
@@ -484,11 +424,6 @@ public class PhoneHomeFragment extends HomeFragment {
     @Override
     public void setMainPlaylistSelection(int currentIndex) {
         playlistListView.setSelection(currentIndex);
-    }
-
-    @Override
-    public void updateModeListEditMode() {
-//        modeAdapter.notifyChanges(); todo
     }
 
     @Override
@@ -522,14 +457,6 @@ public class PhoneHomeFragment extends HomeFragment {
     @Override
     public void updateShuffleButtonState(int imageRes) {
         shuffleButton.setImageResource(imageRes);
-    }
-
-    @Override
-    public void hideTutorial() {
-        if (tutorialBlinkAnimation != null) {
-            tutorialBlinkAnimation.cancel();
-        }
-        tutorialLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -628,14 +555,5 @@ public class PhoneHomeFragment extends HomeFragment {
     @Subscribe
     public void progressEvent(ProgressEvent event) {
         mainProgressBar.setVisibility(event.isShow() ? View.VISIBLE : View.GONE);
-    }
-
-    public class ModeLongClickListener implements AdapterView.OnItemLongClickListener {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-            modeItemsHelper.setEditMode(true);
-//            modeAdapter.notifyChanges(); todo
-            return true;
-        }
     }
 }

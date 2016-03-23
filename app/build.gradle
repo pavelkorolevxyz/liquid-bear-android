@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-beta6'
+        classpath 'com.android.tools.build:gradle:2.1.0-alpha1'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
         classpath 'io.fabric.tools:gradle:1.20.1'
     }
@@ -54,7 +54,8 @@ android {
     }
 
     sourceSets {
-        main.java.srcDirs = ['src/main/java']
+        main.java.srcDir 'src/main/java'
+        test.java.srcDir 'src/unitTests/java'
     }
 
     packagingOptions {
@@ -105,6 +106,7 @@ dependencies {
     compile('com.mikepenz:materialdrawer:4.0.3@aar') {
         transitive = true
     }
+    compile 'com.ogaclejapan.smarttablayout:library:1.6.0@aar'
 
     compile libs.glide
     compile libs.exoPlayer
@@ -131,6 +133,7 @@ dependencies {
 
     testCompile libs.junit
     testCompile libs.mockito
+    testCompile libs.assertJ
 
     compile project(':PullToRefreshLibrary')
     compile project(':StickyGridHeaders')

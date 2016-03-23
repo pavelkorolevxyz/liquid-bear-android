@@ -25,11 +25,8 @@ public class Presenter<V> {
         this.view = view;
     }
 
-    @NonNull
+    @Nullable
     protected V view() {
-        if (view == null) {
-            throw new RuntimeException("View must be bound to presenter");
-        }
         return view;
     }
 
