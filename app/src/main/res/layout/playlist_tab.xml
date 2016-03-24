@@ -92,7 +92,7 @@
                     android:contentDescription="@string/shuffle_button"
                     android:padding="10dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_play" />
+                    android:src="@drawable/note" />
             </LinearLayout>
             <android.support.v7.widget.Toolbar
                 android:id="@+id/playlist_bottom_toolbar"

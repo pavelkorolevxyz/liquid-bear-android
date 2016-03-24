@@ -39,9 +39,9 @@
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_above="@+id/bottom_combined_layout"
+            android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/artist_image_view_headset"
-            android:orientation="vertical"
-            android:layout_alignParentRight="true">
+            android:orientation="vertical">
 
             <View
                 android:layout_width="match_parent"
@@ -189,10 +189,37 @@
                     android:paddingTop="8dp">
 
                     <LinearLayout
-                        android:orientation="horizontal"
+                        android:id="@+id/repeat_shuffle_buttons_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/repeat_shuffle_buttons_layout">
+                        android:orientation="horizontal">
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/playlists_button"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/shuffle_button"
+                            android:padding="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/playlist" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
 
                         <ImageButton
                             android:id="@+id/repeat_button_playback_tab"
@@ -210,48 +237,6 @@
                             android:padding="10dp"
                             android:scaleType="fitXY"
                             android:src="@drawable/ic_repeat" />
-
-                        <ImageButton
-                            android:id="@+id/shuffle_button_playback_tab"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_alignParentLeft="false"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentTop="false"
-                            android:background="@null"
-                            android:contentDescription="@string/shuffle_button"
-                            android:padding="10dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_shuffle" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/linearLayout3"
-                        android:layout_alignParentRight="true">
-
-                        <ImageButton
-                            android:id="@+id/playlists_button"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_alignParentLeft="false"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentTop="false"
-                            android:background="@null"
-                            android:contentDescription="@string/shuffle_button"
-                            android:padding="10dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_playlist" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="visible"
-                        android:layout_centerInParent="true">
 
                         <ImageButton
                             android:id="@+id/prev_button_playback_tab"
@@ -292,6 +277,19 @@
                             android:contentDescription="@string/next_button"
                             android:scaleType="fitXY"
                             android:src="@drawable/next_button" />
+
+                        <ImageButton
+                            android:id="@+id/shuffle_button_playback_tab"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_alignParentLeft="false"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="false"
+                            android:background="?selectableItemBackground"
+                            android:contentDescription="@string/shuffle_button"
+                            android:padding="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_shuffle" />
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -343,6 +341,15 @@
                 android:textSize="16sp"
                 android:visibility="gone" />
         </RelativeLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/button2"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 
