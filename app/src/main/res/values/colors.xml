@@ -15,6 +15,9 @@
 
     <color name="background_notification">#424242</color>
 
+    <color name="lastfm">#B90000</color>
+    <color name="vk">#4B73A4</color>
+
     <color name="error_red">#A6362F</color>
     <color name="error_red_shaded">#8a322b</color>
     <color name="success_green">#25A01A</color>

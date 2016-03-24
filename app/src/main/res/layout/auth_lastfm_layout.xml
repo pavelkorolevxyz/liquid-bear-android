@@ -18,10 +18,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_alignTop="@+id/avatar"
+            android:layout_alignTop="@+id/avatar_image_view"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/avatar"
-            android:layout_toStartOf="@+id/avatar"
+            android:layout_toLeftOf="@+id/avatar_image_view"
+            android:layout_toStartOf="@+id/avatar_image_view"
             android:visibility="invisible">
 
             <TextView
@@ -48,7 +48,7 @@
 
 
         <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/avatar"
+            android:id="@+id/avatar_image_view"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_alignParentTop="true"
@@ -61,7 +61,7 @@
             android:id="@+id/relativeLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/avatar"
+            android:layout_below="@+id/avatar_image_view"
             android:layout_centerHorizontal="true">
 
 
@@ -80,7 +80,7 @@
                     android:id="@+id/authorize_lastfm_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/avatar"
+                    android:layout_below="@+id/avatar_image_view"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
                     android:paddingBottom="16dp"
@@ -97,7 +97,7 @@
                     android:id="@+id/sign_out_lastfm_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/avatar"
+                    android:layout_below="@+id/avatar_image_view"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
                     android:paddingBottom="16dp"

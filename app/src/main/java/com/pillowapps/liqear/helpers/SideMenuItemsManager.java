@@ -12,9 +12,12 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.entities.Category;
 import com.pillowapps.liqear.entities.Mode;
-import com.pillowapps.liqear.views.ProfileHeaderDrawerItem;
+import com.pillowapps.liqear.models.ImageModel;
+import com.pillowapps.liqear.views.LastfmProfileHeaderDrawerItem;
+import com.pillowapps.liqear.views.VkProfileHeaderDrawerItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,26 +27,39 @@ public class SideMenuItemsManager {
     private AuthorizationInfoManager authorizationInfoManager;
     private NetworkManager networkManager;
     private ModeItemsHelper modeItemsHelper;
+    private ImageModel imageModel;
 
     @Inject
     public SideMenuItemsManager(ModeItemsHelper modeItemsHelper, AuthorizationInfoManager authorizationInfoManager,
-                                NetworkManager networkManager) {
+                                NetworkManager networkManager, ImageModel imageModel) {
         this.modeItemsHelper = modeItemsHelper;
         this.authorizationInfoManager = authorizationInfoManager;
         this.networkManager = networkManager;
+        this.imageModel = imageModel;
     }
 
     @NonNull
     public ArrayList<IDrawerItem> items() {
         ArrayList<IDrawerItem> items = new ArrayList<>();
-        items.add(profileHeader());
+        items.addAll(profileHeaders());
         items.addAll(modes());
         items.addAll(footer());
         return items;
     }
 
-    IDrawerItem profileHeader() {
-        return new ProfileHeaderDrawerItem();
+    List<IDrawerItem> profileHeaders() {
+        return Arrays.asList(new VkProfileHeaderDrawerItem(
+                        imageModel,
+                        authorizationInfoManager.isAuthorizedOnVk(),
+                        authorizationInfoManager.getVkAvatar(),
+                        authorizationInfoManager.getVkName()
+                ).withIdentifier(R.id.vk_auth),
+                new LastfmProfileHeaderDrawerItem(
+                        imageModel,
+                        authorizationInfoManager.isAuthorizedOnLastfm(),
+                        authorizationInfoManager.getLastfmAvatar(),
+                        authorizationInfoManager.getLastfmName()
+                ).withIdentifier(R.id.lastfm_auth));
     }
 
     List<AbstractDrawerItem> modes() {

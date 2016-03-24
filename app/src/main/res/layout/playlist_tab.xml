@@ -88,7 +88,7 @@
                     android:layout_alignParentLeft="false"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="false"
-                    android:background="@null"
+                    android:background="?selectableItemBackgroundBorderless"
                     android:contentDescription="@string/shuffle_button"
                     android:padding="10dp"
                     android:scaleType="fitXY"

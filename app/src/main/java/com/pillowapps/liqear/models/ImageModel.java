@@ -24,7 +24,7 @@ public class ImageModel {
                 .into(imageView);
     }
 
-    public void loadAvatarListImage(String url, ImageView imageView) {
+    public void loadAvatarImage(String url, ImageView imageView) {
         Glide.with(imageView.getContext())
                 .load(url)
                 .centerCrop()

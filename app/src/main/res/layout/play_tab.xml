@@ -225,14 +225,11 @@
                             android:id="@+id/repeat_button_playback_tab"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:layout_alignParentBottom="false"
-                            android:layout_alignParentLeft="false"
-                            android:layout_alignParentTop="false"
                             android:layout_gravity="left"
                             android:layout_margin="0dp"
                             android:layout_marginLeft="8dp"
                             android:layout_marginTop="0dp"
-                            android:background="@null"
+                            android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/repeat_button"
                             android:padding="10dp"
                             android:scaleType="fitXY"
@@ -242,10 +239,9 @@
                             android:id="@+id/prev_button_playback_tab"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:layout_alignTop="@+id/repeat_button_playback_tab"
                             android:layout_gravity="center"
                             android:layout_toLeftOf="@+id/play_pause_button_playback_tab"
-                            android:background="@null"
+                            android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/prev_button"
                             android:scaleType="fitXY"
                             android:src="@drawable/prev_button" />
@@ -254,14 +250,10 @@
                             android:id="@+id/play_pause_button_playback_tab"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:layout_alignParentBottom="false"
-                            android:layout_alignParentLeft="false"
-                            android:layout_alignParentTop="false"
-                            android:layout_centerHorizontal="true"
                             android:layout_margin="0dp"
                             android:layout_marginLeft="0dp"
                             android:layout_marginTop="0dp"
-                            android:background="@null"
+                            android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/play_pause"
                             android:scaleType="fitXY"
                             android:src="@drawable/play_button" />
@@ -270,10 +262,8 @@
                             android:id="@+id/next_button_playback_tab"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:layout_alignTop="@+id/repeat_button_playback_tab"
                             android:layout_gravity="center"
-                            android:layout_toRightOf="@+id/play_pause_button_playback_tab"
-                            android:background="@null"
+                            android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/next_button"
                             android:scaleType="fitXY"
                             android:src="@drawable/next_button" />
@@ -282,10 +272,7 @@
                             android:id="@+id/shuffle_button_playback_tab"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:layout_alignParentLeft="false"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentTop="false"
-                            android:background="?selectableItemBackground"
+                            android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/shuffle_button"
                             android:padding="10dp"
                             android:scaleType="fitXY"
@@ -341,15 +328,6 @@
                 android:textSize="16sp"
                 android:visibility="gone" />
         </RelativeLayout>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button2"
-            android:background="?selectableItemBackgroundBorderless"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 

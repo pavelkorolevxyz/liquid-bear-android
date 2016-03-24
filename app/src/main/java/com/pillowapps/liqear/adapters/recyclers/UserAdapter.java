@@ -31,7 +31,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
         User user = items.get(position);
         holder.textView.setText(Html.fromHtml(user.getName()));
         if (holder.loadImages) {
-            new ImageModel().loadAvatarListImage(user.getImageUrl(), holder.imageView);
+            new ImageModel().loadAvatarImage(user.getImageUrl(), holder.imageView);
         } else {
             holder.imageView.setVisibility(View.GONE);
         }

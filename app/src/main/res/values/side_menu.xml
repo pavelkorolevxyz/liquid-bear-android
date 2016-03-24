@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <item name="vk_auth" type="id" />
+    <item name="lastfm_auth" type="id" />
+
     <item name="vk_user_audio" type="id" />
     <item name="vk_group" type="id" />
     <item name="vk_friends" type="id" />

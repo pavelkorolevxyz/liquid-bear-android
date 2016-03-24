@@ -52,8 +52,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class AuthActivity extends TrackedBaseActivity {
-    private static final int VK_INDEX = 0;
-    private static final int LASTFM_INDEX = 1;
+    public static final int VK_INDEX = 0;
+    public static final int LASTFM_INDEX = 1;
+    public static final String OPEN_PAGE = "open_page";
     private View vkTab;
     private ViewPager pager;
     private View lastfmTab;
@@ -107,6 +108,7 @@ public class AuthActivity extends TrackedBaseActivity {
         initUi();
         initListeners();
         showSaves();
+        pager.setCurrentItem(getIntent().getIntExtra(OPEN_PAGE, VK_INDEX));
         int authProblemsState = getIntent().getIntExtra(Constants.AUTH_PROBLEMS, 0);
         switch (authProblemsState) {
             case 1 /*Lastfm*/:
@@ -218,8 +220,8 @@ public class AuthActivity extends TrackedBaseActivity {
         authLastfmPanel = lastfmTab.findViewById(R.id.auth_panel);
         vkNameTextView = (TextView) vkTab.findViewById(R.id.name_text_view);
         lastfmNameTextView = (TextView) lastfmTab.findViewById(R.id.name_text_view);
-        avatarVkImageView = (ImageView) vkTab.findViewById(R.id.avatar);
-        avatarLastfmImageView = (ImageView) lastfmTab.findViewById(R.id.avatar);
+        avatarVkImageView = (ImageView) vkTab.findViewById(R.id.avatar_image_view);
+        avatarLastfmImageView = (ImageView) lastfmTab.findViewById(R.id.avatar_image_view);
         errorVkTextView = (TextView) vkTab.findViewById(R.id.auth_error_text_view);
         errorLastfmTextView = (TextView) lastfmTab.findViewById(R.id.auth_error_text_view);
         lastfmProgressBar = (ProgressBar) lastfmTab.findViewById(R.id.lastfm_progress_bar);
