@@ -238,4 +238,6 @@
     <string name="add_to_queue">Add to queue</string>
     <string name="remove_from_list">Remove from list</string>
     <string name="add_to">Add to…</string>
+    <string name="not_authorized_in_vk">Not authorized in VK</string>
+    <string name="not_authorized_in_lastfm">Not authorized in Last.fm</string>
 </resources>

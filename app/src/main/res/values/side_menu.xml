@@ -40,6 +40,7 @@
     <item name="help" type="id" />
     <item name="auth" type="id" />
     <item name="settings" type="id" />
+    <item name="exit" type="id" />
 
 
 </resources>

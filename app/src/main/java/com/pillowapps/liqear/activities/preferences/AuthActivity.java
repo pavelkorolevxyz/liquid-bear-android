@@ -31,6 +31,7 @@ import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkSimpleCallback;
 import com.pillowapps.liqear.callbacks.retrofit.LastfmErrorCallback;
 import com.pillowapps.liqear.entities.Page;
+import com.pillowapps.liqear.entities.events.UpdateDrawerEvent;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
 import com.pillowapps.liqear.entities.lastfm.LastfmSession;
 import com.pillowapps.liqear.entities.lastfm.LastfmUser;
@@ -128,6 +129,12 @@ public class AuthActivity extends TrackedBaseActivity {
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        LBApplication.BUS.post(new UpdateDrawerEvent());
+        super.onDestroy();
     }
 
     private void showSaves() {

@@ -37,7 +37,7 @@ public abstract class ProfileHeaderDrawerItem extends AbstractDrawerItem<Profile
     @Override
     @LayoutRes
     public int getLayoutRes() {
-        return R.layout.side_menu_header;
+        return R.layout.side_menu_profile_header;
     }
 
     @Override
@@ -49,10 +49,18 @@ public abstract class ProfileHeaderDrawerItem extends AbstractDrawerItem<Profile
         }
         viewHolder.colorView.setBackgroundResource(colorRes);
         viewHolder.nameTextView.setText(name);
-        if (authorized) {
-            viewHolder.avatarImageView.setScaleType(ImageView.ScaleType.CENTER);
+        if (!authorized) {
+            viewHolder.avatarImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            viewHolder.nameTextView.setVisibility(View.GONE);
+            if (authType == VK) {
+                viewHolder.descriptionTextView.setText(R.string.not_authorized_in_vk);
+            } else {
+                viewHolder.descriptionTextView.setText(R.string.not_authorized_in_lastfm);
+            }
         } else {
             viewHolder.avatarImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            viewHolder.nameTextView.setVisibility(View.VISIBLE);
+            viewHolder.descriptionTextView.setText(R.string.authorized_as);
         }
         imageModel.loadAvatarImage(avatarUrl, viewHolder.avatarImageView);
 
@@ -74,6 +82,7 @@ public abstract class ProfileHeaderDrawerItem extends AbstractDrawerItem<Profile
         private final View colorView;
         private final RoundedImageView avatarImageView;
         private final TextView nameTextView;
+        private final TextView descriptionTextView;
         private View view;
 
         private ViewHolder(View view) {
@@ -82,6 +91,7 @@ public abstract class ProfileHeaderDrawerItem extends AbstractDrawerItem<Profile
             this.colorView = view.findViewById(R.id.color_view);
             this.avatarImageView = (RoundedImageView) view.findViewById(R.id.avatar_image_view);
             this.nameTextView = (TextView) view.findViewById(R.id.name_text_view);
+            this.descriptionTextView = (TextView) view.findViewById(R.id.description_text_view);
         }
     }
 }

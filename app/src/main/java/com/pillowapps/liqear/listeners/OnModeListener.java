@@ -278,6 +278,10 @@ public class OnModeListener {
                 fragment.startActivity(PreferencesActivity.startIntent(context));
             }
             break;
+            case R.id.exit: {
+                fragment.exit();
+            }
+            break;
             case R.id.vk_auth: {
                 fragment.startActivity(AuthActivity.startIntent(context).putExtra(AuthActivity.OPEN_PAGE, AuthActivity.VK_INDEX));
             }

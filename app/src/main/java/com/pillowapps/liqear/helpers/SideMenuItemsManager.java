@@ -77,7 +77,8 @@ public class SideMenuItemsManager {
         if (modes == null || modes.isEmpty()) {
             return items;
         }
-        items.add(new SecondaryDrawerItem().withName(modes.get(0).getCategoryTitle()));
+        items.add(new SecondaryDrawerItem().withSelectable(false).withEnabled(false)
+                .withName(modes.get(0).getCategoryTitle()));
         for (Mode mode : modes) {
             PrimaryDrawerItem primaryDrawerItem = primary(mode.getTitle(), mode.getIcon())
                     .withEnabled(isModeEnabled(mode))
@@ -89,8 +90,8 @@ public class SideMenuItemsManager {
 
     List<AbstractDrawerItem> footer() {
         List<AbstractDrawerItem> items = new ArrayList<>();
-        items.add(primary(R.string.authorizations, R.drawable.settings_normal).withIdentifier(R.id.auth));
         items.add(primary(R.string.settings, R.drawable.settings_normal).withIdentifier(R.id.settings));
+        items.add(primary(R.string.exit, R.drawable.ic_exit).withIdentifier(R.id.exit));
         return items;
     }
 

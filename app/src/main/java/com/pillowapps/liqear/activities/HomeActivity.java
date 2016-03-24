@@ -12,10 +12,12 @@ import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
 import com.pillowapps.liqear.activities.preferences.AuthActivity;
+import com.pillowapps.liqear.entities.events.UpdateDrawerEvent;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SideMenuItemsManager;
 import com.pillowapps.liqear.listeners.OnModeListener;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -62,10 +64,23 @@ public class HomeActivity extends TrackedBaseActivity {
                 .retryPolicy(RetryPolicy.EXPONENTIAL)
                 .checkAndShow();
 
+        updateDrawer();
+
+        LBApplication.BUS.register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        LBApplication.BUS.unregister(this);
+        super.onDestroy();
+    }
+
+    public void updateDrawer() {
         drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withDrawerItems(sideMenuItemsManager.items())
+                .withTranslucentStatusBar(false)
                 .withSelectedItem(-1)
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     if (modeListener != null) {
@@ -75,6 +90,11 @@ public class HomeActivity extends TrackedBaseActivity {
                     return true;
                 })
                 .build();
+    }
+
+    @Subscribe
+    public void updateDrawerEvent(UpdateDrawerEvent updateDrawerEvent) {
+        updateDrawer();
     }
 
     @Override
