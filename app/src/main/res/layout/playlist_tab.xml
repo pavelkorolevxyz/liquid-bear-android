@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <com.mobeta.android.dslv.DragSortListView
         android:id="@+id/playlist_list_view_playlist_tab"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_above="@+id/bottom_controls_layout"
         android:layout_below="@+id/search_layout"
         android:fastScrollEnabled="true"
         android:focusable="true"
         android:longClickable="true"
         android:scrollbars="none"
         android:visibility="visible"
-        app:drag_handle_id="@+id/grabber_list_item"
-        android:layout_above="@+id/bottom_controls_layout" />
+        app:drag_handle_id="@+id/grabber_list_item" />
 
     <RelativeLayout
         android:id="@+id/search_layout"
@@ -40,7 +40,7 @@
             android:singleLine="true"
             app:met_clearButton="true"
             app:met_floatingLabel="normal"
-            app:met_iconLeft="@drawable/ic_search_dark"/>
+            app:met_iconLeft="@drawable/ic_search_dark" />
 
         <!--<ImageButton-->
         <!--android:id="@+id/clear_edit_text_button_playlist_tab"-->
@@ -58,49 +58,79 @@
     <RelativeLayout
         android:id="@+id/bottom_controls_layout"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
         android:layout_below="@+id/back_layout"
         android:background="@color/accent_light"
-        android:layout_alignParentBottom="true">
+        android:padding="8dp">
 
         <RelativeLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp">
+            android:id="@+id/playback_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true">
 
-            <LinearLayout
-                android:orientation="horizontal"
+            <ImageView
+                android:id="@+id/playback_image_view"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/shuffle_button"
+                android:padding="10dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/note" />
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout4"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/linearLayout3"
-                android:layout_alignParentRight="false"
-                android:layout_alignParentLeft="true">
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/playback_image_view"
+                android:layout_toLeftOf="@+id/addition_info_linear_layout"
+                android:layout_toRightOf="@+id/playback_image_view"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/playback_button"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_alignParentLeft="false"
+                <TextView
+                    android:id="@+id/track_title_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="false"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/shuffle_button"
-                    android:padding="10dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/note" />
-            </LinearLayout>
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/playlist_bottom_toolbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true" />
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:singleLine="true"
+                    android:textColor="@color/icons"
+                    android:textSize="18dip" />
+
+                <TextView
+                    android:id="@+id/artist_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/track_title_text_view"
+                    android:layout_alignRight="@+id/track_title_text_view"
+                    android:layout_alignWithParentIfMissing="false"
+                    android:layout_below="@+id/track_title_text_view"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:singleLine="true"
+                    android:textColor="@color/icons"
+                    android:textSize="12dip" />
+            </RelativeLayout>
 
         </RelativeLayout>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/playlist_bottom_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
 
     </RelativeLayout>
 
@@ -112,6 +142,6 @@
         android:padding="@dimen/normal_padding"
         android:text="@string/empty"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/secondary_text"/>
+        android:textColor="@color/secondary_text" />
 
 </RelativeLayout>

@@ -54,22 +54,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import timber.log.Timber;
-
 public class PhoneHomeFragment extends HomeFragment {
 
     private ViewPager pager;
     private View playlistTab;
     private View playbackTab;
-//    private View modeTab;
-
-    private Toolbar.OnMenuItemClickListener onMenuItemClickListener = this::onOptionsItemSelected;
 
     /**
      * Playlists tab
      **/
     private EditText searchPlaylistEditText;
-    //    private Toolbar playlistToolbar;
     private TextView emptyPlaylistTextView;
 
     /**
@@ -87,7 +81,7 @@ public class PhoneHomeFragment extends HomeFragment {
     private ImageButton shuffleButton;
     private ImageButton repeatButton;
     private ImageButton playlistsButton;
-    private ImageButton playbackButton;
+    private View goToPlaybackView;
     private TextView timePlateTextView;
     private ImageView artistImageView;
     private ImageView albumImageView;
@@ -102,6 +96,8 @@ public class PhoneHomeFragment extends HomeFragment {
     private Toolbar toolbar;
     private PhoneFragmentPagerAdapter pagerAdapter;
     private ViewGroup bottomControlsLayoutPlaylists;
+    private TextView trackTitlePlaylistTextView;
+    private TextView artistPlaylistTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,15 +139,6 @@ public class PhoneHomeFragment extends HomeFragment {
         toolbar = (Toolbar) v.findViewById(R.id.main_toolbar);
         toolbar.inflateMenu(R.menu.menu_play_tab);
         activity.setToolbar(toolbar);
-
-//        ((Toolbar) v.findViewById(R.id.toolbar)).inflateMenu(R.menu.menu_play_tab);
-//        tabs = (SmartTabLayout) v.findViewById(R.id.tabs);
-//        tabs.setCustomTabView((container, position, adapter) -> {
-//            LayoutInflater inflater = LayoutInflater.from(container.getContext());
-//            ImageView icon = (ImageView) inflater.inflate(R.layout.custom_tab_icon1, container, false);
-//            icon.setImageResource(pagerAdapter.getImageRes(position));
-//            return icon;
-//        });
     }
 
     private void initViewPager(View v) {
@@ -165,7 +152,6 @@ public class PhoneHomeFragment extends HomeFragment {
         pager.setOffscreenPageLimit(pages.size());
         pagerAdapter = new PhoneFragmentPagerAdapter(pages);
         pager.setAdapter(pagerAdapter);
-//        tabs.setViewPager(pager);
 
         updateToolbars();
 
@@ -174,6 +160,8 @@ public class PhoneHomeFragment extends HomeFragment {
 
     private void initPlaylistsTab() {
         playlistListView = (DragSortListView) playlistTab.findViewById(R.id.playlist_list_view_playlist_tab);
+        trackTitlePlaylistTextView = (TextView) playlistTab.findViewById(R.id.track_title_text_view);
+        artistPlaylistTextView = (TextView) playlistTab.findViewById(R.id.artist_text_view);
 
         playlistListView.setOnItemClickListener((parent, view, position, id) -> {
             int realPosition = playlistItemsAdapter.getItem(position).getRealPosition();
@@ -192,7 +180,7 @@ public class PhoneHomeFragment extends HomeFragment {
         searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
         searchPlaylistEditText.setVisibility(savesManager.isSearchVisible() ? View.VISIBLE : View.GONE);
         emptyPlaylistTextView = (TextView) playlistTab.findViewById(R.id.empty);
-        playbackButton = (ImageButton) playlistTab.findViewById(R.id.playback_button);
+        goToPlaybackView = playlistTab.findViewById(R.id.playback_button);
         bottomControlsLayoutPlaylists = (ViewGroup) playlistTab.findViewById(R.id.bottom_controls_layout);
 
         Toolbar playlistBottomToolbar = (Toolbar) playlistTab.findViewById(R.id.playlist_bottom_toolbar);
@@ -261,7 +249,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
         playlistsButton.setOnClickListener(v -> changeViewPagerItem(PhoneFragmentPagerAdapter.PLAYLIST_TAB_INDEX));
 
-        playbackButton.setOnClickListener(v -> changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX));
+        goToPlaybackView.setOnClickListener(v -> changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX));
 
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -328,7 +316,6 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Override
     public void updatePlayingState(boolean isPlaying) {
-        Timber.d("updatePlayingState " + isPlaying);
         if (isPlaying) {
             playPauseButton.setImageResource(R.drawable.pause_button);
         } else {
@@ -368,8 +355,8 @@ public class PhoneHomeFragment extends HomeFragment {
     public void playTrack(int index, boolean autoplay) {
         Track track = playlistItemsAdapter.getItem(index);
 
-        artistTextView.setText(track.getArtist());
-        titleTextView.setText(track.getTitle());
+        updateTrackArtist(track.getArtist());
+        updateTrackTitle(track.getTitle());
         playPauseButton.setImageResource(R.drawable.pause_button);
 
         musicServiceManager.play(track.getRealPosition(), autoplay);
@@ -442,11 +429,13 @@ public class PhoneHomeFragment extends HomeFragment {
     @Override
     public void updateTrackTitle(String title) {
         titleTextView.setText(title);
+        trackTitlePlaylistTextView.setText(title);
     }
 
     @Override
     public void updateTrackArtist(String artist) {
         artistTextView.setText(artist);
+        artistPlaylistTextView.setText(artist);
     }
 
     @Override
@@ -536,8 +525,8 @@ public class PhoneHomeFragment extends HomeFragment {
     @Subscribe
     public void trackInfoEvent(TrackInfoEvent event) {
         Track currentTrack = event.getTrack();
-        titleTextView.setText(currentTrack.getTitle());
-        artistTextView.setText(currentTrack.getArtist());
+        updateTrackTitle(currentTrack.getTitle());
+        updateTrackArtist(currentTrack.getArtist());
         playlistItemsAdapter.setCurrentIndex(event.getCurrentIndex());
         playlistItemsAdapter.notifyDataSetChanged();
     }

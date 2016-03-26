@@ -174,112 +174,94 @@
             <RelativeLayout
                 android:id="@+id/bottom_controls_layout"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="64dp"
                 android:layout_below="@+id/back_layout"
-                android:background="@color/accent_light">
+                android:background="@color/accent_light"
+                android:padding="8dp">
 
-                <RelativeLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/linearLayout3"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:orientation="horizontal"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:paddingTop="8dp">
+                    android:layout_centerVertical="true">
 
-                    <LinearLayout
-                        android:id="@+id/repeat_shuffle_buttons_layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/playlists_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/shuffle_button"
+                        android:padding="10dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/playlist" />
+                </LinearLayout>
 
-                    </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
 
-                    <LinearLayout
-                        android:id="@+id/linearLayout3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/repeat_button_playback_tab"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="left"
+                        android:layout_margin="0dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="0dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/repeat_button"
+                        android:padding="10dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_repeat" />
 
-                        <ImageButton
-                            android:id="@+id/playlists_button"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/shuffle_button"
-                            android:padding="10dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/playlist" />
-                    </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/prev_button_playback_tab"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:layout_toLeftOf="@+id/play_pause_button_playback_tab"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/prev_button"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/prev_button" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:orientation="horizontal"
-                        android:visibility="visible">
+                    <ImageButton
+                        android:id="@+id/play_pause_button_playback_tab"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_margin="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginTop="0dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/play_pause"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/play_button" />
 
-                        <ImageButton
-                            android:id="@+id/repeat_button_playback_tab"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="left"
-                            android:layout_margin="0dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginTop="0dp"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/repeat_button"
-                            android:padding="10dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_repeat" />
+                    <ImageButton
+                        android:id="@+id/next_button_playback_tab"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/next_button"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/next_button" />
 
-                        <ImageButton
-                            android:id="@+id/prev_button_playback_tab"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="center"
-                            android:layout_toLeftOf="@+id/play_pause_button_playback_tab"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/prev_button"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/prev_button" />
-
-                        <ImageButton
-                            android:id="@+id/play_pause_button_playback_tab"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_margin="0dp"
-                            android:layout_marginLeft="0dp"
-                            android:layout_marginTop="0dp"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/play_pause"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/play_button" />
-
-                        <ImageButton
-                            android:id="@+id/next_button_playback_tab"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_gravity="center"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/next_button"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/next_button" />
-
-                        <ImageButton
-                            android:id="@+id/shuffle_button_playback_tab"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="?selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/shuffle_button"
-                            android:padding="10dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_shuffle" />
-                    </LinearLayout>
-
-                </RelativeLayout>
+                    <ImageButton
+                        android:id="@+id/shuffle_button_playback_tab"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/shuffle_button"
+                        android:padding="10dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_shuffle" />
+                </LinearLayout>
 
             </RelativeLayout>
 
