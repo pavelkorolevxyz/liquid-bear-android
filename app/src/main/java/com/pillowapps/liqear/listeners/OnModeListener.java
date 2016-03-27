@@ -12,6 +12,7 @@ import com.pillowapps.liqear.activities.modes.LocalAlbumsActivity;
 import com.pillowapps.liqear.activities.modes.LocalArtistsActivity;
 import com.pillowapps.liqear.activities.modes.LocalTracksActivity;
 import com.pillowapps.liqear.activities.modes.NewcomersActivity;
+import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.SearchAlbumActivity;
 import com.pillowapps.liqear.activities.modes.SearchArtistActivity;
 import com.pillowapps.liqear.activities.modes.SearchLastfmUserActivity;
@@ -288,6 +289,10 @@ public class OnModeListener {
             break;
             case R.id.lastfm_auth: {
                 fragment.startActivity(AuthActivity.startIntent(context).putExtra(AuthActivity.OPEN_PAGE, AuthActivity.LASTFM_INDEX));
+            }
+            break;
+            case R.id.playlists: {
+                fragment.startActivityForResult(PlaylistsActivity.startIntent(context, PlaylistsActivity.Intention.SHOW_PLAYLISTS), Constants.MAIN_REQUEST_CODE);
             }
             break;
             default:

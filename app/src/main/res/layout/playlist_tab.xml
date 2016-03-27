@@ -70,14 +70,15 @@
             android:layout_height="match_parent"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:layout_toLeftOf="@+id/playlists_menu_button"
+            android:layout_toStartOf="@+id/playlists_menu_button">
 
             <ImageView
                 android:id="@+id/playback_image_view"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_centerVertical="true"
-                android:contentDescription="@string/shuffle_button"
                 android:padding="10dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/note" />
@@ -125,10 +126,14 @@
 
         </RelativeLayout>
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/playlist_bottom_toolbar"
+        <ImageButton
+            android:id="@+id/playlists_menu_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="10dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/menu_little"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true" />
 

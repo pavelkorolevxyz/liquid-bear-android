@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -183,8 +184,14 @@ public class PhoneHomeFragment extends HomeFragment {
         goToPlaybackView = playlistTab.findViewById(R.id.playback_button);
         bottomControlsLayoutPlaylists = (ViewGroup) playlistTab.findViewById(R.id.bottom_controls_layout);
 
-        Toolbar playlistBottomToolbar = (Toolbar) playlistTab.findViewById(R.id.playlist_bottom_toolbar);
-        playlistBottomToolbar.inflateMenu(R.menu.menu_playlist_tab);
+        ImageButton playlistsMenuButton = (ImageButton) playlistTab.findViewById(R.id.playlists_menu_button);
+        playlistsMenuButton.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(getContext(), v);
+            MenuInflater inflater = popup.getMenuInflater();
+            inflater.inflate(R.menu.main_playlist_menu, popup.getMenu());
+            popup.show();
+            popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
+        });
     }
 
     private void initPlaybackTab() {

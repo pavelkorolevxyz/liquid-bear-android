@@ -29,6 +29,7 @@
     <item name="lastfm_recommendations" type="id" />
     <item name="lastfm_neighbours" type="id" />
 
+    <item name="playlists" type="id" />
     <item name="other_funky" type="id" />
     <item name="other_alterportal" type="id" />
     <item name="other_setlists" type="id" />
@@ -41,6 +42,5 @@
     <item name="auth" type="id" />
     <item name="settings" type="id" />
     <item name="exit" type="id" />
-
 
 </resources>

@@ -55,6 +55,7 @@ public class ModeItemsHelper {
     @NonNull
     public List<Mode> otherModes() {
         return Arrays.asList(
+                new Mode(R.string.playlist_tab, R.drawable.playlist, Category.OTHER, R.id.playlists, false),
                 new Mode(R.string.funkysouls, R.drawable.ic_funky_mode, Category.OTHER, R.id.other_funky, false),
                 new Mode(R.string.alterportal, R.drawable.ic_alterportal_mode, Category.OTHER, R.id.other_alterportal, false),
                 new Mode(R.string.setlist, R.drawable.ic_setlists_mode, Category.OTHER, R.id.other_setlists, false)
