@@ -138,8 +138,8 @@ public class PhoneHomeFragment extends HomeFragment {
 
     private void initToolbar(View v) {
         toolbar = (Toolbar) v.findViewById(R.id.main_toolbar);
-        toolbar.inflateMenu(R.menu.menu_play_tab);
         activity.setToolbar(toolbar);
+        presenter.updateToolbarMenu();
     }
 
     private void initViewPager(View v) {
@@ -153,8 +153,6 @@ public class PhoneHomeFragment extends HomeFragment {
         pager.setOffscreenPageLimit(pages.size());
         pagerAdapter = new PhoneFragmentPagerAdapter(pages);
         pager.setAdapter(pagerAdapter);
-
-        updateToolbars();
 
         changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX);
     }
@@ -313,16 +311,6 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     @Override
-    protected void updateToolbars() {
-//        playlistToolbar.getMenu().clear();
-//        modeToolbar.getMenu().clear();
-//        modeToolbar.inflateMenu(R.menu.menu_mode_tab);
-//        playlistToolbar.inflateMenu(R.menu.menu_playlist_tab);
-//        playlistToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
-//        modeToolbar.setOnMenuItemClickListener(onMenuItemClickListener);
-    }
-
-    @Override
     public void updatePlayingState(boolean isPlaying) {
         if (isPlaying) {
             playPauseButton.setImageResource(R.drawable.pause_button);
@@ -409,6 +397,12 @@ public class PhoneHomeFragment extends HomeFragment {
 
             loveFloatingActionButton.setBackgroundTintList(new ColorStateList(new int[][]{new int[]{0}}, new int[]{firstBottomColor}));
         });
+    }
+
+    @Override
+    public void updateToolbarMenu(int menu) {
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(menu);
     }
 
     @Override

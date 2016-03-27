@@ -306,12 +306,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         playlistItemsAdapter.setCurrentIndex(index);
         playlistItemsAdapter.setQueue(queueIndexes);
         playlistItemsAdapter.notifyDataSetChanged();
-
-        updateToolbars();
-    }
-
-    protected void updateToolbars() {
-        // No op.
     }
 
     public void restoreState() {

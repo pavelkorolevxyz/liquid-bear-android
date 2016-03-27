@@ -2,6 +2,7 @@ package com.pillowapps.liqear.helpers.home;
 
 import android.support.annotation.NonNull;
 
+import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
@@ -348,6 +349,7 @@ public class HomePresenter extends Presenter<HomeView> {
         view.updateEmptyPlaylistTextView();
 
         findCurrentTrack();
+        updateToolbarMenu();
     }
 
     public void togglePlaylistSearchVisibility() {
@@ -620,5 +622,17 @@ public class HomePresenter extends Presenter<HomeView> {
             return;
         }
         view.showAddToDialog(track);
+    }
+
+    public void updateToolbarMenu() {
+        HomeView view = view();
+        if (view == null) {
+            return;
+        }
+        int menu = R.menu.empty_menu;
+        if (timeline.getCurrentTrack() != null) {
+            menu = R.menu.menu_play_tab;
+        }
+        view.updateToolbarMenu(menu);
     }
 }

@@ -15,7 +15,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
@@ -42,6 +41,7 @@ public class VkLoginActivity extends TrackedBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vk_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.vk_auth);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

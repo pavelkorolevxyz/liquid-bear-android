@@ -100,4 +100,6 @@ public interface HomeView {
     void openAddTrackToPlaylistScreen(Track track);
 
     void showAddToDialog(Track track);
+
+    void updateToolbarMenu(int menu);
 }

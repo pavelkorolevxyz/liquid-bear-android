@@ -46,6 +46,7 @@ public class HomeActivity extends TrackedBaseActivity {
         super.onCreate(savedInstanceState);
 
         LBApplication.get(this).applicationComponent().inject(this);
+        LBApplication.BUS.register(this);
 
         if (authorizationInfoManager.isAuthScreenNeeded()) {
             Intent intent = new Intent(this, AuthActivity.class);
@@ -65,8 +66,6 @@ public class HomeActivity extends TrackedBaseActivity {
                 .checkAndShow();
 
         updateDrawer();
-
-        LBApplication.BUS.register(this);
     }
 
     @Override

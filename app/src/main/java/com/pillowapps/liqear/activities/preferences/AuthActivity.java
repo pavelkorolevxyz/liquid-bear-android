@@ -102,8 +102,8 @@ public class AuthActivity extends TrackedBaseActivity {
 
         setContentView(R.layout.auth_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.authorizations);
         setSupportActionBar(toolbar);
-        setTitle(R.string.authorizations);
         firstStart = getIntent().getBooleanExtra(Constants.SHOW_AUTHSCREEN_AUTO, false);
         initViewPager();
         initUi();
@@ -140,7 +140,7 @@ public class AuthActivity extends TrackedBaseActivity {
     private void showSaves() {
         if (authorizationInfoManager.isAuthorizedOnVk()) {
             avatarVkImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageModel.loadImage(authorizationInfoManager.getVkAvatar(), avatarVkImageView);
+            imageModel.loadAvatarImage(authorizationInfoManager.getVkAvatar(), avatarVkImageView);
             vkNameTextView.setText(authorizationInfoManager.getVkName());
             authVkPanel.setVisibility(View.VISIBLE);
             signOutVkButton.setVisibility(View.VISIBLE);
@@ -153,7 +153,7 @@ public class AuthActivity extends TrackedBaseActivity {
         }
         if (authorizationInfoManager.isAuthorizedOnLastfm()) {
             avatarLastfmImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageModel.loadImage(authorizationInfoManager.getLastfmAvatar(), avatarLastfmImageView);
+            imageModel.loadAvatarImage(authorizationInfoManager.getLastfmAvatar(), avatarLastfmImageView);
             lastfmNameTextView.setText(authorizationInfoManager.getLastfmName());
             loginLastfmEditText.setText(authorizationInfoManager.getLastfmName());
             authLastfmPanel.setVisibility(View.VISIBLE);
