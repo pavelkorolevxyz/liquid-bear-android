@@ -34,32 +34,4 @@
                 app:showAsAction="always|withText"/>
         </menu>
     </item>
-    <item
-        android:id="@+id/more_button"
-        android:title="@string/settings"
-        android:icon="@drawable/settings_normal"
-        app:showAsAction="always|collapseActionView">
-        <menu>
-            <item
-                android:id="@+id/settings"
-                android:title="@string/settings"
-                android:icon="@drawable/ic_settings_dark"
-                app:showAsAction="always|withText"/>
-            <item
-                android:id="@+id/equalizer"
-                android:title="@string/equalizer"
-                android:icon="@drawable/ic_equalizer_dark"
-                app:showAsAction="always|withText"/>
-            <item
-                android:id="@+id/timer_button"
-                android:title="@string/timer"
-                android:icon="@drawable/ic_timer_dark"
-                app:showAsAction="always|withText"/>
-            <item
-                android:id="@+id/exit_button"
-                android:icon="@drawable/ic_exit_dark"
-                android:title="@string/exit"
-                app:showAsAction="always|withText"/>
-        </menu>
-    </item>
 </menu>

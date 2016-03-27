@@ -24,7 +24,6 @@ import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.VkAudioSearchActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmAlbumViewerActivity;
 import com.pillowapps.liqear.activities.modes.viewers.LastfmArtistViewerActivity;
-import com.pillowapps.liqear.activities.preferences.EqualizerActivity;
 import com.pillowapps.liqear.adapters.PlaylistItemsAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Album;
@@ -169,10 +168,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                 presenter.addToVkAudio();
                 break;
             }
-            case R.id.equalizer: {
-                presenter.openEqualizer();
-                break;
-            }
             case R.id.timer_button: {
                 presenter.openTimer();
                 break;
@@ -311,6 +306,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         playlistItemsAdapter.setCurrentIndex(index);
         playlistItemsAdapter.setQueue(queueIndexes);
         playlistItemsAdapter.notifyDataSetChanged();
+
         updateToolbars();
     }
 
@@ -334,14 +330,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Override
     public abstract void updateEmptyPlaylistTextView();
-
-    public void openRadiomix() {
-        presenter.openRadiomix();
-    }
-
-    public void openLibrary() {
-        presenter.openLibrary();
-    }
 
     public void openDropButton() {
         if (mainMenu == null) {
@@ -447,11 +435,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public void showToastAdded() {
         toast(R.string.added);
-    }
-
-    @Override
-    public void openEqualizer() {
-        startActivity(EqualizerActivity.startIntent(getContext()));
     }
 
     @Override

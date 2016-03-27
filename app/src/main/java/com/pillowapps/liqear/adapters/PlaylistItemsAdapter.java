@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.entities.Track;
+import com.pillowapps.liqear.models.ImageModel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -111,7 +113,7 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
             holder.queueTextView =
                     (TextView) convertView.findViewById(R.id.queue_number_text_view_list_item);
             holder.playImageView = convertView.findViewById(R.id.play_image_view_list_item);
-            holder.grabber = convertView.findViewById(R.id.grabber_list_item);
+            holder.grabber = (ImageView) convertView.findViewById(R.id.grabber_list_item);
             holder.layout = convertView.findViewById(R.id.playlist_tab_item_main_layout);
             convertView.setTag(holder);
         } else {
@@ -121,6 +123,7 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         holder.layout.setBackgroundResource(position % 2 == 0 ?
                 R.drawable.list_item_background : R.drawable.list_item_background_tinted);
+        new ImageModel().loadImageResource(R.drawable.menu, holder.grabber, R.color.primary);
 
         holder.positionTextView.setText(String.valueOf(currentTrack.getRealPosition() + 1));
         holder.artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
@@ -151,7 +154,7 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         TextView titleTextView;
         TextView positionTextView;
         TextView queueTextView;
-        View grabber;
+        ImageView grabber;
         View playImageView;
         View layout;
     }

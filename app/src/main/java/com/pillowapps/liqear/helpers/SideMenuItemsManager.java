@@ -90,6 +90,7 @@ public class SideMenuItemsManager {
 
     List<AbstractDrawerItem> footer() {
         List<AbstractDrawerItem> items = new ArrayList<>();
+        items.add(primary(R.string.equalizer, R.drawable.ic_equalizer).withIdentifier(R.id.equalizer));
         items.add(primary(R.string.settings, R.drawable.settings_normal).withIdentifier(R.id.settings));
         items.add(primary(R.string.exit, R.drawable.ic_exit).withIdentifier(R.id.exit));
         return items;

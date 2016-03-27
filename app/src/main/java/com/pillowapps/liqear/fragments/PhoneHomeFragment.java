@@ -147,8 +147,8 @@ public class PhoneHomeFragment extends HomeFragment {
         Context context = getContext();
         playlistTab = View.inflate(context, R.layout.playlist_tab, null);
         playbackTab = View.inflate(context, R.layout.play_tab, null);
-        pages.add(new Page(playbackTab, R.drawable.ic_play));
-        pages.add(new Page(playlistTab, R.drawable.ic_playlist));
+        pages.add(new Page(playbackTab, R.string.play_tab));
+        pages.add(new Page(playlistTab, R.string.playlist_tab));
         pager = (ViewPager) v.findViewById(R.id.viewpager);
         pager.setOffscreenPageLimit(pages.size());
         pagerAdapter = new PhoneFragmentPagerAdapter(pages);
@@ -309,6 +309,7 @@ public class PhoneHomeFragment extends HomeFragment {
         String title = getString(R.string.app_name);
         toolbar.setTitle(title);
         toolbar.setSubtitle(playlistTitle);
+        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
     }
 
     @Override

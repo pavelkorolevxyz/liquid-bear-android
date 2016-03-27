@@ -6,7 +6,9 @@ import android.support.v4.app.FragmentActivity;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.activities.modes.LastfmLibraryActivity;
 import com.pillowapps.liqear.activities.modes.LastfmNeighboursActivity;
+import com.pillowapps.liqear.activities.modes.LastfmRadiomixActivity;
 import com.pillowapps.liqear.activities.modes.LastfmRecommendationsActivity;
 import com.pillowapps.liqear.activities.modes.LocalAlbumsActivity;
 import com.pillowapps.liqear.activities.modes.LocalArtistsActivity;
@@ -26,6 +28,7 @@ import com.pillowapps.liqear.activities.modes.viewers.LastfmChartsViewerActivity
 import com.pillowapps.liqear.activities.modes.viewers.LastfmUserViewerActivity;
 import com.pillowapps.liqear.activities.modes.viewers.VkUserViewerActivity;
 import com.pillowapps.liqear.activities.preferences.AuthActivity;
+import com.pillowapps.liqear.activities.preferences.EqualizerActivity;
 import com.pillowapps.liqear.activities.preferences.PreferencesActivity;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.fragments.HomeFragment;
@@ -96,7 +99,7 @@ public class OnModeListener {
             }
             break;
             case R.id.lastfm_library: {
-//                fragment.openLibrary();todo
+                fragment.startActivityForResult(LastfmLibraryActivity.startIntent(context), Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Library");
             }
             break;
@@ -125,7 +128,7 @@ public class OnModeListener {
             }
             break;
             case R.id.lastfm_radiomix: {
-//                fragment.openRadiomix();todo
+                fragment.startActivityForResult(LastfmRadiomixActivity.startIntent(context), Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[LAST.FM] Radiomix");
             }
             break;
@@ -293,6 +296,10 @@ public class OnModeListener {
             break;
             case R.id.playlists: {
                 fragment.startActivityForResult(PlaylistsActivity.startIntent(context, PlaylistsActivity.Intention.SHOW_PLAYLISTS), Constants.MAIN_REQUEST_CODE);
+            }
+            break;
+            case R.id.equalizer: {
+                fragment.startActivity(EqualizerActivity.startIntent(context));
             }
             break;
             default:

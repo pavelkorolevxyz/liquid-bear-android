@@ -11,13 +11,11 @@ import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.RestoreData;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.entities.vk.VkResponse;
 import com.pillowapps.liqear.helpers.ArtistTrackComparator;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
-import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.helpers.NetworkManager;
 import com.pillowapps.liqear.helpers.PlaylistUtils;
 import com.pillowapps.liqear.helpers.PreferencesModel;
@@ -86,52 +84,6 @@ public class HomePresenter extends Presenter<HomeView> {
         this.networkManager = networkManager;
         this.preferencesManager = preferencesManager;
         this.lastfmTrackModel = lastfmTrackModel;
-    }
-
-    public void openRadiomix() {
-        final HomeView view = view();
-        if (view == null) {
-            return;
-        }
-
-        libraryModel.getRadiomix(authorizationInfoManager.getLastfmName(), new SimpleCallback<List<LastfmTrack>>() {
-            @Override
-            public void success(List<LastfmTrack> tracks) {
-                List<Track> trackList = Converter.convertLastfmTrackList(tracks);
-                view.showLoading(false);
-                playNewPlaylist(0, new Playlist("Radiomix", trackList));
-            }
-
-            @Override
-            public void failure(String errorMessage) {
-                view.showError(errorMessage);
-                view.showLoading(false);
-            }
-        });
-    }
-
-    public void openLibrary() {
-        final HomeView view = view();
-        if (view == null) {
-            return;
-        }
-
-        view.showLoading(true);
-        libraryModel.getLibrary(authorizationInfoManager.getLastfmName(), new SimpleCallback<List<LastfmTrack>>() {
-            @Override
-            public void success(List<LastfmTrack> tracks) {
-                List<Track> trackList = Converter.convertLastfmTrackList(tracks);
-
-                view.showLoading(false);
-                playNewPlaylist(0, new Playlist("Library", trackList));
-            }
-
-            @Override
-            public void failure(String errorMessage) {
-                view.showError(errorMessage);
-                view.showLoading(false);
-            }
-        });
     }
 
     public void playTrack(int index, boolean autoplay) {
@@ -308,14 +260,6 @@ public class HomePresenter extends Presenter<HomeView> {
         }
     }
 
-    public void openEqualizer() {
-        final HomeView view = view();
-        if (view == null) {
-            return;
-        }
-        view.openEqualizer();
-    }
-
     public void openTimer() {
         final HomeView view = view();
         if (view == null) {
@@ -402,6 +346,8 @@ public class HomePresenter extends Presenter<HomeView> {
         }
         view.changePlaylist(index, playlist, timeline.getQueueIndexes());
         view.updateEmptyPlaylistTextView();
+
+        findCurrentTrack();
     }
 
     public void togglePlaylistSearchVisibility() {

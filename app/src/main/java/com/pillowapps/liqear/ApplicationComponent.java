@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import com.pillowapps.liqear.activities.HomeActivity;
 import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
+import com.pillowapps.liqear.activities.modes.LastfmLibraryActivity;
 import com.pillowapps.liqear.activities.modes.LastfmNeighboursActivity;
+import com.pillowapps.liqear.activities.modes.LastfmRadiomixActivity;
 import com.pillowapps.liqear.activities.modes.LastfmRecommendationsActivity;
 import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.SearchAlbumActivity;
@@ -127,6 +129,10 @@ public interface ApplicationComponent {
     void inject(@NonNull VkAlbumTracksActivity vkAlbumTracksActivity);
 
     void inject(@NonNull ResultTrackedBaseActivity resultTrackedBaseActivity);
+
+    void inject(@NonNull LastfmLibraryActivity activity);
+
+    void inject(@NonNull LastfmRadiomixActivity activity);
 
     void inject(@NonNull HomeActivity homeActivity);
 }

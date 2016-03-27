@@ -45,8 +45,6 @@ public interface HomeView {
 
     void showToastAdded();
 
-    void openEqualizer();
-
     void showTimerDialog();
 
     void clearSearch();

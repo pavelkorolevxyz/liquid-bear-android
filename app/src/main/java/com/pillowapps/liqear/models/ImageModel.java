@@ -93,6 +93,6 @@ public class ImageModel {
         Context context = imageView.getContext();
         Drawable drawable = ContextCompat.getDrawable(context, icon);
         drawable.setColorFilter(ContextCompat.getColor(context, tintColorRes), PorterDuff.Mode.MULTIPLY);
-        imageView.setImageResource(icon);
+        imageView.setImageDrawable(drawable);
     }
 }
