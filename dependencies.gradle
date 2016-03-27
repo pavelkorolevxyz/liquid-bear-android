@@ -32,7 +32,8 @@ ext {
     storioVersion = '1.8.0'
     daggerVersion = '2.0'
     crashlyticsVersion = '2.5.2'
-    materialDrawerVersion = '5.1.1'
+    materialDrawerVersion = '5.1.6'
+    smartTabLayoutVersion = '1.6.0'
 
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
@@ -78,7 +79,6 @@ ext {
             mockito                         : "org.mockito:mockito-all:${mockitoVersion}",
             assertJ                         : "org.assertj:assertj-core:${assertJVersion}",
 
-
             crashlytics                     : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}@aar",
             glide                           : "com.github.bumptech.glide:glide:${glideVersion}",
             exoPlayer                       : "com.google.android.exoplayer:exoplayer:${exoPlayerVersion}",
@@ -91,6 +91,7 @@ ext {
             materialDialogs                 : "com.github.afollestad.material-dialogs:core:${materialDialogsVersion}@aar",
             dragSortListView                : "asia.ivity.android:drag-sort-listview:${dragSortListViewVersion}",
             materialEditText                : "com.rengwuxian.materialedittext:library:${materialEditTextVersion}",
-            materialDrawer                  : "com.mikepenz:materialdrawer:${materialDrawerVersion}@aar"
+            materialDrawer                  : "com.mikepenz:materialdrawer:${materialDrawerVersion}@aar",
+            smartTabLayout                  : "com.ogaclejapan.smarttablayout:library:${smartTabLayoutVersion}@aar"
     ]
 }

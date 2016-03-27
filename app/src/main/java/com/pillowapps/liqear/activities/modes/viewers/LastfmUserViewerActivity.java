@@ -199,7 +199,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         setPages(pages);
         final PagesPagerAdapter adapter = new PagesPagerAdapter(pages);
         injectViewPager(adapter);
-        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
             }
@@ -346,12 +346,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     }
 
     private void changeViewPagerItem(int currentItem) {
-        if (pager.getCurrentItem() == currentItem) {
-            indicator.onPageSelected(currentItem);
-        } else {
-            pager.setCurrentItem(currentItem);
-            indicator.setCurrentItem(currentItem);
-        }
+        pager.setCurrentItem(currentItem);
     }
 
     @Override

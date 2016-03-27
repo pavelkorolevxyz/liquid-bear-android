@@ -83,7 +83,7 @@ public class HomeActivity extends TrackedBaseActivity {
                 .withSelectedItem(-1)
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     if (modeListener != null) {
-                        modeListener.onItemClick(drawerItem.getIdentifier());
+                        modeListener.onItemClick((int) drawerItem.getIdentifier());
                     }
                     drawer.closeDrawer();
                     return true;

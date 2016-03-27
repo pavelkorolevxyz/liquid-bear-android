@@ -100,13 +100,11 @@ dependencies {
     compile libs.roundedImageView
     compile libs.tinyTask
     compile libs.appRate
-//    compile (libs.materialDrawer) {
-//        transitive = true
-//    }
-    compile('com.mikepenz:materialdrawer:4.0.3@aar') {
+    compile libs.materialDrawer
+
+    compile (libs.materialDrawer) {
         transitive = true
     }
-    compile 'com.ogaclejapan.smarttablayout:library:1.6.0@aar'
 
     compile libs.glide
     compile libs.exoPlayer
@@ -115,6 +113,7 @@ dependencies {
     compile libs.materialDialogs
     compile libs.dragSortListView
     compile libs.materialEditText
+    compile libs.smartTabLayout
 
     compile libs.storioSqlite
     compile libs.storioSqliteAnnotations
@@ -138,7 +137,6 @@ dependencies {
     compile project(':PullToRefreshLibrary')
     compile project(':StickyGridHeaders')
     compile project(':NumberPicker')
-    compile project(':ViewPagerIndicatorLibrary')
 
     compile files('libs/httpcore-4.3.jar')
     compile files('libs/httpmime-4.3.jar')

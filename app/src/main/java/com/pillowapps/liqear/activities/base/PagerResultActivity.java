@@ -1,26 +1,23 @@
 package com.pillowapps.liqear.activities.base;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.components.viewers.base.ViewerPage;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Artist;
 import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.entities.Track;
-import com.pillowapps.liqear.entities.vk.VkTrack;
-import com.pillowapps.liqear.helpers.Converter;
 import com.pillowapps.liqear.listeners.OnViewerItemClickListener;
-import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PagerResultActivity extends ResultTrackedBaseActivity {
     protected ViewPager pager;
-    protected TitlePageIndicator indicator;
+    protected SmartTabLayout tabs;
     private List<Page> pages = new ArrayList<>();
 
     public OnViewerItemClickListener<Track> trackClickListener = new OnViewerItemClickListener<Track>() {
@@ -60,12 +57,8 @@ public abstract class PagerResultActivity extends ResultTrackedBaseActivity {
 
     protected void injectViewPager(PagerAdapter adapter) {
         pager = (ViewPager) findViewById(R.id.viewpager);
-        indicator = (TitlePageIndicator) findViewById(R.id.indicator);
+        tabs = (SmartTabLayout) findViewById(R.id.tabs);
         pager.setAdapter(adapter);
-        indicator.setOnClickListener(null);
-        indicator.setViewPager(pager);
-        indicator.setTextColor(ContextCompat.getColor(PagerResultActivity.this, R.color.secondary_text));
-        indicator.setSelectedColor(ContextCompat.getColor(PagerResultActivity.this, R.color.primary_text));
-        indicator.setFooterColor(ContextCompat.getColor(PagerResultActivity.this, R.color.accent));
+        tabs.setViewPager(pager);
     }
 }

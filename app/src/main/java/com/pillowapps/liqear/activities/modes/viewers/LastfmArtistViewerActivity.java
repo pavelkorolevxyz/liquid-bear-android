@@ -132,7 +132,7 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
         final PagesPagerAdapter adapter = new PagesPagerAdapter(pages);
 
         injectViewPager(adapter);
-        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
             }
@@ -211,7 +211,6 @@ public class LastfmArtistViewerActivity extends PagerResultActivity {
 
     private void changeViewPagerItem(int currentItem) {
         pager.setCurrentItem(currentItem);
-        indicator.setCurrentItem(currentItem);
     }
 
     @Override

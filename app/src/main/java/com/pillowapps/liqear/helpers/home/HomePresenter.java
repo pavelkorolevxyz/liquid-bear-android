@@ -3,7 +3,6 @@ package com.pillowapps.liqear.helpers.home;
 import android.support.annotation.NonNull;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.adapters.pagers.PhoneFragmentPagerAdapter;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.callbacks.SimpleCallback;
 import com.pillowapps.liqear.callbacks.VkPassiveCallback;
@@ -390,7 +389,6 @@ public class HomePresenter extends Presenter<HomeView> {
         if (view == null) {
             return;
         }
-        view.changeViewPagerItem(PhoneFragmentPagerAdapter.PLAYLIST_TAB_INDEX);
         updateMainPlaylist(positionToPlay, playlist);
         playTrack(positionToPlay, true);
     }

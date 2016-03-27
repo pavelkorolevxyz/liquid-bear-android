@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.HomeActivity;
@@ -45,7 +45,6 @@ import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.lastfm.LastfmAuthModel;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 import com.pillowapps.liqear.models.vk.VkUserModel;
-import com.viewpagerindicator.TitlePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,21 +183,16 @@ public class AuthActivity extends TrackedBaseActivity {
         AuthPagerAdapter adapter = new AuthPagerAdapter(this, pages);
 
         pager.setAdapter(adapter);
-        TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
-        indicator.setViewPager(pager);
-        indicator.setCurrentItem(0);
-        indicator.setBackgroundColor(ContextCompat.getColor(AuthActivity.this, R.color.primary));
-        indicator.setFooterColor(ContextCompat.getColor(AuthActivity.this, R.color.accent));
-        indicator.setTextColor(ContextCompat.getColor(AuthActivity.this, R.color.icons));
-        indicator.setSelectedColor(ContextCompat.getColor(AuthActivity.this, R.color.icons));
+        SmartTabLayout tabs = (SmartTabLayout) findViewById(R.id.tabs);
+        tabs.setViewPager(pager);
 
         Resources resources = AuthActivity.this.getResources();
         boolean isTablet = resources.getBoolean(R.bool.isTablet);
         if (isTablet && resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            indicator.setVisibility(View.GONE);
+            tabs.setVisibility(View.GONE);
         }
 
-        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
                 // no-op

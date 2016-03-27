@@ -7,12 +7,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 import com.mikepenz.materialdrawer.model.AbstractDrawerItem;
-import com.mikepenz.materialdrawer.model.utils.ViewHolderFactory;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.models.ImageModel;
 
-public abstract class ProfileHeaderDrawerItem extends AbstractDrawerItem<ProfileHeaderDrawerItem> {
+public abstract class ProfileHeaderDrawerItem extends AbstractDrawerItem<ProfileHeaderDrawerItem, ProfileHeaderDrawerItem.ViewHolder> {
     public static final int VK = 0;
     public static final int LASTFM = 1;
     private ImageModel imageModel;
@@ -30,8 +30,8 @@ public abstract class ProfileHeaderDrawerItem extends AbstractDrawerItem<Profile
     }
 
     @Override
-    public String getType() {
-        return "lb_profile_header";
+    public int getType() {
+        return R.id.profile_header_drawer_item_type;
     }
 
     @Override
@@ -41,8 +41,7 @@ public abstract class ProfileHeaderDrawerItem extends AbstractDrawerItem<Profile
     }
 
     @Override
-    public void bindView(RecyclerView.ViewHolder holder) {
-        ViewHolder viewHolder = (ViewHolder) holder;
+    public void bindView(ViewHolder viewHolder) {
         int colorRes = R.color.vk;
         if (authType == LASTFM) {
             colorRes = R.color.lastfm;
@@ -64,7 +63,7 @@ public abstract class ProfileHeaderDrawerItem extends AbstractDrawerItem<Profile
         }
         imageModel.loadAvatarImage(avatarUrl, viewHolder.avatarImageView);
 
-        onPostBindView(this, holder.itemView);
+        onPostBindView(this, viewHolder.itemView);
     }
 
     @Override
@@ -76,9 +75,14 @@ public abstract class ProfileHeaderDrawerItem extends AbstractDrawerItem<Profile
         public ViewHolder factory(View v) {
             return new ViewHolder(v);
         }
+
+        @Override
+        public ViewHolder create(View v) {
+            return new ViewHolder(v);
+        }
     }
 
-    private static class ViewHolder extends RecyclerView.ViewHolder {
+    protected static class ViewHolder extends RecyclerView.ViewHolder {
         private final View colorView;
         private final RoundedImageView avatarImageView;
         private final TextView nameTextView;

@@ -104,7 +104,7 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
         setPages(pages);
         final PagesPagerAdapter adapter = new PagesPagerAdapter(pages);
         injectViewPager(adapter);
-        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
 

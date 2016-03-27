@@ -1,8 +1,7 @@
 include ':app'
 def String[] modules = ['NumberPicker',
                         'PullToRefreshLibrary',
-                        'StickyGridHeaders',
-                        'ViewPagerIndicatorLibrary']
+                        'StickyGridHeaders']
 include modules
 
 modules.each { name ->

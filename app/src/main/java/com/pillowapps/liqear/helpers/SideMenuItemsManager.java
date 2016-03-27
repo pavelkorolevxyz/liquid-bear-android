@@ -43,6 +43,7 @@ public class SideMenuItemsManager {
         ArrayList<IDrawerItem> items = new ArrayList<>();
         items.addAll(profileHeaders());
         items.addAll(modes());
+        items.add(new DividerDrawerItem());
         items.addAll(footer());
         return items;
     }
@@ -59,7 +60,8 @@ public class SideMenuItemsManager {
                         authorizationInfoManager.isAuthorizedOnLastfm(),
                         authorizationInfoManager.getLastfmAvatar(),
                         authorizationInfoManager.getLastfmName()
-                ).withIdentifier(R.id.lastfm_auth));
+                ).withIdentifier(R.id.lastfm_auth)
+        );
     }
 
     List<AbstractDrawerItem> modes() {
@@ -68,7 +70,6 @@ public class SideMenuItemsManager {
         items.addAll(fromModeList(modeItemsHelper.lastfmModes()));
         items.addAll(fromModeList(modeItemsHelper.otherModes()));
         items.addAll(fromModeList(modeItemsHelper.localModes()));
-        items.add(new DividerDrawerItem());
         return items;
     }
 
@@ -82,7 +83,7 @@ public class SideMenuItemsManager {
         for (Mode mode : modes) {
             PrimaryDrawerItem primaryDrawerItem = primary(mode.getTitle(), mode.getIcon())
                     .withEnabled(isModeEnabled(mode))
-                    .withIdentifier(mode.getId());
+                    .withIdentifier((long) mode.getId());
             items.add(primaryDrawerItem);
         }
         return items;

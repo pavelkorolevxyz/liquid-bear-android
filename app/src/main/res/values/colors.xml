@@ -5,13 +5,14 @@
 
     <color name="primary">#383840</color>
     <color name="primary_dark">#212026</color>
-    <color name="primary_light">#B8B8BF</color>
+    <color name="primary_light">#b8b8bf</color>
     <color name="accent">#676673</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
     <color name="icons">#F2F2F2</color>
     <color name="accent_light">#858492</color>
     <color name="accent_mono_dark">#383840</color>
+    <color name="accent_semitransparent">#80676673</color>
 
     <color name="background_notification">#424242</color>
 
