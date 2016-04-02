@@ -67,7 +67,6 @@
             android:scaleType="centerCrop"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="0dp"
-            android:src="@drawable/artist_placeholder"
             android:layout_alignParentTop="true"
             android:layout_marginTop="0dp"
             android:layout_alignParentRight="true"/>

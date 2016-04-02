@@ -241,4 +241,6 @@
     <string name="not_authorized_in_vk">Not authorized in VK</string>
     <string name="not_authorized_in_lastfm">Not authorized in Last.fm</string>
     <string name="vk_auth">VK Auth</string>
+    <string name="start_with">Start with choosing music source</string>
+    <string name="how_to_start">Tap MENU button or swipe from left edge</string>
 </resources>

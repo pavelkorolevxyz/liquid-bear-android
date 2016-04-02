@@ -99,6 +99,8 @@ public class PhoneHomeFragment extends HomeFragment {
     private ViewGroup bottomControlsLayoutPlaylists;
     private TextView trackTitlePlaylistTextView;
     private TextView artistPlaylistTextView;
+    private View noTracksLayout;
+    private View loadingLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -128,6 +130,8 @@ public class PhoneHomeFragment extends HomeFragment {
 
     private void initUi(View v) {
         mainProgressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+        noTracksLayout = v.findViewById(R.id.no_tracks_layout);
+        loadingLayout = v.findViewById(R.id.loading_layout);
 
         initToolbar(v);
         initViewPager(v);
@@ -206,7 +210,6 @@ public class PhoneHomeFragment extends HomeFragment {
         shuffleButton = (ImageButton) playbackTab.findViewById(R.id.shuffle_button_playback_tab);
         repeatButton = (ImageButton) playbackTab.findViewById(R.id.repeat_button_playback_tab);
         artistImageView = (ImageView) playbackTab.findViewById(R.id.artist_image_view_headset);
-        artistImageView.setImageResource(R.drawable.artist_placeholder);
         timePlateTextView = (TextView) playbackTab.findViewById(R.id.time_plate_text_view_playback_tab);
         albumImageView = (ImageView) playbackTab.findViewById(R.id.album_cover_image_view);
         albumTextView = (TextView) playbackTab.findViewById(R.id.album_title_text_view);
@@ -224,6 +227,10 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     private void initListeners() {
+        noTracksLayout.setOnClickListener(v1 -> {
+            activity.openDrawer();
+        });
+
         searchPlaylistEditText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
             }
@@ -425,7 +432,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Override
     public void showArtistPlaceholder() {
-        artistImageView.setBackgroundResource(R.drawable.artist_placeholder);
+        artistImageView.setBackgroundResource(R.drawable.transparent_album);
     }
 
     @Override
@@ -478,6 +485,16 @@ public class PhoneHomeFragment extends HomeFragment {
         albumTextView.setText(albumTitle);
     }
 
+    @Override
+    public void showLoadingPlaceholder(boolean loading) {
+        loadingLayout.setVisibility(loading ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showWelcomePlaceholder(boolean show) {
+        noTracksLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
     @Subscribe
     public void pauseEvent(PauseEvent event) {
         playPauseButton.setImageResource(R.drawable.play_button);
@@ -490,7 +507,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Subscribe
     public void networkStateEvent(NetworkStateChangeEvent event) {
-//        modeAdapter.notifyDataSetChanged(); todo
+        activity.updateDrawer();
     }
 
     @Subscribe
@@ -545,6 +562,6 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Subscribe
     public void progressEvent(ProgressEvent event) {
-        mainProgressBar.setVisibility(event.isShow() ? View.VISIBLE : View.GONE);
+//        mainProgressBar.setVisibility(event.isShow() ? View.VISIBLE : View.GONE);
     }
 }

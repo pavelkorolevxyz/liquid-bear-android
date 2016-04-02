@@ -102,4 +102,8 @@ public interface HomeView {
     void showAddToDialog(Track track);
 
     void updateToolbarMenu(int menu);
+
+    void showLoadingPlaceholder(boolean loading);
+
+    void showWelcomePlaceholder(boolean show);
 }

@@ -52,6 +52,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class AuthActivity extends TrackedBaseActivity {
+    public static final String FIRST_START = "first_start";
+
     public static final int VK_INDEX = 0;
     public static final int LASTFM_INDEX = 1;
     public static final String OPEN_PAGE = "open_page";
@@ -101,9 +103,9 @@ public class AuthActivity extends TrackedBaseActivity {
 
         setContentView(R.layout.auth_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.authorizations);
         setSupportActionBar(toolbar);
-        firstStart = getIntent().getBooleanExtra(Constants.SHOW_AUTHSCREEN_AUTO, false);
+        setTitle(R.string.authorizations);
+        firstStart = getIntent().getBooleanExtra(FIRST_START, false);
         initViewPager();
         initUi();
         initListeners();

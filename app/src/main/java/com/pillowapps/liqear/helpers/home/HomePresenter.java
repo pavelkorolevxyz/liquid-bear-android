@@ -336,6 +336,10 @@ public class HomePresenter extends Presenter<HomeView> {
                             Timber.e(throwable, "Save main playlist error");
                         });
 
+        HomeView view = view();
+        if (view != null) {
+            view.showWelcomePlaceholder(false);
+        }
         setMainPlaylist(index, playlist);
     }
 
@@ -410,17 +414,18 @@ public class HomePresenter extends Presenter<HomeView> {
         view.updateShuffleButtonState(ButtonStateUtils.getShuffleButtonImage(timeline.getShuffleMode()));
         view.updateArtistPhotoAndColors(timeline.getCurrentArtistImageUrl());
         view.updatePlayingState(timeline.isPlaying());
-        view.showLoading(true);
         stateManager.getMainPlaylist()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlist -> {
-                    view.showLoading(false);
-                    view.updateMainPlaylistTitle(playlist.getTitle());
+                    view.showLoadingPlaceholder(false);
 
                     if (PlaylistUtils.sizeOf(playlist) == 0) {
+                        view.showWelcomePlaceholder(true);
                         return;
                     }
+
+                    view.updateMainPlaylistTitle(playlist.getTitle());
 
                     RestoreData restoreData = stateManager.getRestoreData();
                     int restoredIndex = restoreData.getCurrentIndex();
@@ -443,6 +448,7 @@ public class HomePresenter extends Presenter<HomeView> {
                     updateMainPlaylist(restoredIndex, playlist);
 
                     view.restoreServiceState();
+                    view.showWelcomePlaceholder(false);
                 }, throwable -> {
                     Timber.e(throwable, "Restore main playlist error");
                 });

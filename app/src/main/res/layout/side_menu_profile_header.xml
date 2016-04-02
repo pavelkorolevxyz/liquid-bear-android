@@ -28,7 +28,6 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:scaleType="center"
-                android:src="@drawable/artist_placeholder"
                 app:riv_border_color="#fff"
                 app:riv_border_width="2dip"
                 app:riv_oval="true" />

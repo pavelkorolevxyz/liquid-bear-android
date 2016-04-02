@@ -38,7 +38,7 @@ import javax.inject.Inject;
 
 
 // todo make simpler
-public abstract class ResultTrackedBaseActivity extends TrackedBaseActivity {
+public abstract class ResultTrackedBaseActivity extends TrackedToolbarBaseActivity {
 
     @Inject
     Timeline timeline;

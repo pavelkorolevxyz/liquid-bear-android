@@ -17,7 +17,6 @@ import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.audio.Timeline;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.ButtonStateUtils;
-import com.pillowapps.liqear.helpers.CompatIcs;
 import com.pillowapps.liqear.helpers.TrackUtils;
 
 import javax.inject.Inject;
@@ -38,14 +37,14 @@ public class TrackNotificationModel {
     public Notification create() {
         Track track = timeline.getCurrentTrack();
         Notification notification;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            notification = createControllingNotification();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                CompatIcs.updateRemote(context, track);
-            }
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//            notification = createControllingNotification();
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+//                CompatIcs.updateRemote(context, track);
+//            }
+//        } else {
             notification = createSimpleNotification(track);
-        }
+//        }
         return notification;
     }
 

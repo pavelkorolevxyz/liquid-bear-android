@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.media.AudioManager;
 import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -23,7 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
+import com.pillowapps.liqear.activities.base.TrackedToolbarBaseActivity;
 import com.pillowapps.liqear.audio.EqualizerManager;
 import com.pillowapps.liqear.helpers.CompatEq;
 import com.pillowapps.liqear.helpers.Constants;
@@ -32,7 +31,7 @@ import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EqualizerActivity extends TrackedBaseActivity {
+public class EqualizerActivity extends TrackedToolbarBaseActivity {
 
     private static final List<SeekBar> SEEK_BARS = new ArrayList<>();
     private static final int TEXT_SIZE = 14;

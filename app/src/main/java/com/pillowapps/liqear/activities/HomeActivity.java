@@ -10,11 +10,10 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.pillowapps.liqear.BuildConfig;
 import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
-import com.pillowapps.liqear.activities.base.TrackedBaseActivity;
+import com.pillowapps.liqear.activities.base.TrackedToolbarBaseActivity;
 import com.pillowapps.liqear.activities.preferences.AuthActivity;
 import com.pillowapps.liqear.entities.events.UpdateDrawerEvent;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
-import com.pillowapps.liqear.helpers.Constants;
 import com.pillowapps.liqear.helpers.SideMenuItemsManager;
 import com.pillowapps.liqear.listeners.OnModeListener;
 import com.squareup.otto.Subscribe;
@@ -25,7 +24,7 @@ import fr.nicolaspomepuy.discreetapprate.AppRate;
 import fr.nicolaspomepuy.discreetapprate.AppRateTheme;
 import fr.nicolaspomepuy.discreetapprate.RetryPolicy;
 
-public class HomeActivity extends TrackedBaseActivity {
+public class HomeActivity extends TrackedToolbarBaseActivity {
 
     @Inject
     AuthorizationInfoManager authorizationInfoManager;
@@ -49,8 +48,8 @@ public class HomeActivity extends TrackedBaseActivity {
         LBApplication.BUS.register(this);
 
         if (authorizationInfoManager.isAuthScreenNeeded()) {
-            Intent intent = new Intent(this, AuthActivity.class);
-            intent.putExtra(Constants.SHOW_AUTHSCREEN_AUTO, true);
+            Intent intent = AuthActivity.startIntent(this)
+                    .putExtra(AuthActivity.FIRST_START, true);
             startActivity(intent);
             finish();
             return;
@@ -111,5 +110,9 @@ public class HomeActivity extends TrackedBaseActivity {
 
     public void setToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
+    }
+
+    public void openDrawer() {
+        drawer.openDrawer();
     }
 }

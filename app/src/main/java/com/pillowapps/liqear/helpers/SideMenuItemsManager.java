@@ -105,6 +105,7 @@ public class SideMenuItemsManager {
     }
 
 
+    @SuppressWarnings("SimplifiableIfStatement")
     public boolean isModeEnabled(Mode mode) {
         boolean isModeLocal = mode.getCategory() == Category.LOCAL;
         boolean areBothAuthorized = authorizationInfoManager.isAuthorizedOnVk()

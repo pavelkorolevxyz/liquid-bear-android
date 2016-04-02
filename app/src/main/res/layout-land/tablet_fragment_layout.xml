@@ -68,7 +68,6 @@
             android:id="@+id/artist_image_view"
             android:scaleType="centerCrop"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/artist_placeholder"
             android:layout_marginLeft="0dp"
             android:layout_alignParentTop="true"
             android:layout_marginTop="0dp"

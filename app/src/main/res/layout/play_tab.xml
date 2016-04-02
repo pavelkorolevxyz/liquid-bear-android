@@ -21,7 +21,8 @@
             android:layout_alignParentTop="true"
             android:baselineAlignBottom="false"
             android:contentDescription="@string/artist_image"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/transparent_album" />
 
         <View
             android:id="@+id/view"
