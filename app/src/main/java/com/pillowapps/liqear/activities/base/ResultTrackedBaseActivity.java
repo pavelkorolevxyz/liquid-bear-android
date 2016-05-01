@@ -123,7 +123,7 @@ public abstract class ResultTrackedBaseActivity extends TrackedToolbarBaseActivi
     }
 
     protected void openArtistByName(String name) {
-        Intent intent = LastfmAlbumViewerActivity.startIntent(ResultTrackedBaseActivity.this);
+        Intent intent = LastfmArtistViewerActivity.startIntent(ResultTrackedBaseActivity.this);
         intent.putExtra(LastfmArtistViewerActivity.ARTIST, name);
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }

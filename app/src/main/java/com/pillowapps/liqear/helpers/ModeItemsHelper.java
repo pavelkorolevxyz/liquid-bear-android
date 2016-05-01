@@ -44,9 +44,9 @@ public class ModeItemsHelper {
                 new Mode(R.string.artist_radio, R.drawable.ic_artists_mode, Category.LAST_FM, R.id.lastfm_artist, false),
                 new Mode(R.string.tag_radio, R.drawable.ic_tag_mode, Category.LAST_FM, R.id.lastfm_tag, false),
                 new Mode(R.string.album, R.drawable.ic_audio_mode, Category.LAST_FM, R.id.lastfm_album, false),
-//            new Mode(R.string.recommendations, R.drawable.ic_recomendations_mode, Category.LAST_FM, ModeEnum.RECOMMENDATIONS, true, false),
+//                new Mode(R.string.recommendations, R.drawable.ic_recomendations_mode, Category.LAST_FM, R.id.lastfm_recommendations, true, false),
                 new Mode(R.string.radiomix, R.drawable.ic_mix_mode, Category.LAST_FM, R.id.lastfm_radiomix, true),
-//            new Mode(R.string.neighbours, R.drawable.ic_friends_mode, Category.LAST_FM, ModeEnum.NEIGHBOURS, true),
+//                new Mode(R.string.neighbours, R.drawable.ic_friends_mode, Category.LAST_FM, R.id.lastfm_neighbours, true),
                 new Mode(R.string.friends, R.drawable.ic_friends_mode, Category.LAST_FM, R.id.lastfm_friends, true),
                 new Mode(R.string.recent, R.drawable.ic_mode_playlist, Category.LAST_FM, R.id.lastfm_recent, true, false)
         );

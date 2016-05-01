@@ -31,7 +31,7 @@
 
     <style name="LiquidBearAppTheme.ProgressBar" parent="AppTheme.Base">
         <item name="colorAccent">@color/icons</item>
-        <item name="android:textColorSecondary">@color/icons</item>
+        <item name="android:textColorSecondary">@color/accent_semitransparent</item>
     </style>
 
     <style name="LiquidBearAppTheme.EditText" parent="android:Widget.EditText">

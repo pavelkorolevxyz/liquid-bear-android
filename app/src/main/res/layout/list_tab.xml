@@ -14,16 +14,6 @@
         android:layout_below="@+id/edit_part_quick_search_layout"
         android:layout_marginLeft="0dp"/>
 
-    <ProgressBar
-        android:id="@+id/pageProgressBar"
-        android:layout_width="wrap_content"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
-        android:indeterminate="true"/>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,5 +24,12 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:layout_centerInParent="true"
         android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/pageProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

@@ -13,6 +13,7 @@
     <color name="accent_light">#858492</color>
     <color name="accent_mono_dark">#383840</color>
     <color name="accent_semitransparent">#80676673</color>
+    <color name="icons_semitransparent">#80ffffff</color>
 
     <color name="background_notification">#424242</color>
 

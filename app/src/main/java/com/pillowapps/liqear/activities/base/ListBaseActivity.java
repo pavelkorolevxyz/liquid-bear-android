@@ -6,6 +6,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pillowapps.liqear.R;
+import com.pillowapps.liqear.helpers.DividerItemDecoration;
 import com.pillowapps.liqear.views.HintMaterialEditText;
 import com.pillowapps.liqear.views.LoadMoreRecyclerView;
 
@@ -32,6 +33,8 @@ public abstract class ListBaseActivity extends ResultTrackedBaseActivity {
 
     protected void updateEmptyTextView() {
         emptyTextView.setVisibility(recycler.getAdapter().getItemCount() == 0 ? View.VISIBLE : View.GONE);
+
+        recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
     }
 
 }

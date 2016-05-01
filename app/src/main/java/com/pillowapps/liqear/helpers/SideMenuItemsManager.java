@@ -69,7 +69,7 @@ public class SideMenuItemsManager {
         items.addAll(fromModeList(modeItemsHelper.vkModes()));
         items.addAll(fromModeList(modeItemsHelper.lastfmModes()));
         items.addAll(fromModeList(modeItemsHelper.otherModes()));
-        items.addAll(fromModeList(modeItemsHelper.localModes()));
+//        items.addAll(fromModeList(modeItemsHelper.localModes()));
         return items;
     }
 
