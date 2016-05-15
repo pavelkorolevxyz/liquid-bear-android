@@ -29,12 +29,12 @@ public abstract class ListBaseActivity extends ResultTrackedBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_layout);
         ButterKnife.bind(this);
+
+        recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
     }
 
     protected void updateEmptyTextView() {
         emptyTextView.setVisibility(recycler.getAdapter().getItemCount() == 0 ? View.VISIBLE : View.GONE);
-
-        recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
     }
 
 }

@@ -1,6 +1,5 @@
 package com.pillowapps.liqear.activities.base;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -11,8 +10,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.pillowapps.liqear.R;
-
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public abstract class ToolbarBaseActivity extends AppCompatActivity {
 
@@ -47,11 +44,6 @@ public abstract class ToolbarBaseActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Nullable

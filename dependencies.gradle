@@ -6,10 +6,10 @@ allprojects {
 }
 
 ext {
-    minSdk = 10
+    minSdk = 15
     targetSdk = 23
     compileSdk = 23
-    buildToolsVersion = '23.0.2'
+    buildToolsVersion = '23.0.3'
 
     supportLibraryVersion = '23.2.0'
     retrofitVersion = '1.9.0'
@@ -23,8 +23,7 @@ ext {
     tinyTaskVersion = 'v1'
     appRateVersion = '2.0.3'
     glideVersion = '3.6.1'
-    exoPlayerVersion = 'r1.5.5'
-    calligraphyVersion = '2.1.0'
+    exoPlayerVersion = 'r1.5.7'
     fancyButtonsVersion = '1.4'
     materialDialogsVersion = '0.8.5.6'
     dragSortListViewVersion = '1.0'
@@ -33,7 +32,7 @@ ext {
     daggerVersion = '2.0'
     crashlyticsVersion = '2.5.2'
     materialDrawerVersion = '5.1.6'
-    smartTabLayoutVersion = '1.6.0'
+    smartTabLayoutVersion = '1.6.1'
 
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
@@ -82,7 +81,6 @@ ext {
             crashlytics                     : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}@aar",
             glide                           : "com.github.bumptech.glide:glide:${glideVersion}",
             exoPlayer                       : "com.google.android.exoplayer:exoplayer:${exoPlayerVersion}",
-            calligraphy                     : "uk.co.chrisjenx:calligraphy:${calligraphyVersion}",
 
             roundedImageView                : "com.makeramen:roundedimageview:${roundedImageViewVersion}",
             tinyTask                        : "com.github.inaka:tinytask:${tinyTaskVersion}",

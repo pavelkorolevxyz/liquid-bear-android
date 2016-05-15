@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
         android:id="@+id/main_toolbar"
@@ -52,7 +53,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/transparent_album" />
+            app:srcCompat="@drawable/transparent_album" />
 
         <TextView
             android:id="@+id/textView4"
@@ -105,7 +106,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/transparent_album" />
+            app:srcCompat="@drawable/transparent_album" />
 
         <RelativeLayout
             android:layout_width="match_parent"

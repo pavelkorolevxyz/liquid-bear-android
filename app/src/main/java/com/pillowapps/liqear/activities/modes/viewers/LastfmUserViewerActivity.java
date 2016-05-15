@@ -225,8 +225,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.recent
         );
-        viewer.setOnLoadMoreListener(() -> getRecent(getPageSize(), viewer.getPage(), viewer)
-        );
+        viewer.setOnLoadMoreListener(() -> getRecent(getPageSize(), viewer.getPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);
@@ -238,8 +237,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_spinner_tab, null),
                 R.string.top_artists,
                 preferencesManager.isDownloadImagesEnabled());
-        viewer.setOnLoadMoreListener(() -> getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), false, viewer)
-        );
+        viewer.setOnLoadMoreListener(() -> getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), false, viewer));
         viewer.setItemClickListener(artistClickListener);
         addViewer(viewer);
         return viewer;
@@ -274,7 +272,6 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     }
 
     private void getTopArtists(String period, int limit, int page, boolean force, final LastfmArtistViewerPage viewer) {
-//        if (!viewer.isNotLoaded() && !force) return;
         viewer.showProgressBar(true);
         userModel.getUserTopArtists(user.getName(), period, limit, page,
                 new SimpleCallback<List<LastfmArtist>>() {
@@ -291,8 +288,6 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     }
 
     private void getRecent(int limit, int page, final LastfmTracksViewerPage viewer) {
-//        if (!viewer.isNotLoaded()) return;
-
         viewer.showProgressBar(true);
         userModel.getUserRecentTracks(user.getName(), limit, page,
                 new SimpleCallback<List<LastfmTrack>>() {
@@ -309,9 +304,6 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     }
 
     private void getTopTracks(final String period, int limit, int page, boolean force, final LastfmTracksViewerPage viewer) {
-//        if (!viewer.isNotLoaded() && !force) {
-//            return;
-//        }
         viewer.showProgressBar(true);
         userModel.getUserTopTracks(user.getName(), period,
                 limit, page, new SimpleCallback<List<LastfmTrack>>() {
@@ -328,8 +320,6 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     }
 
     private void getLoved(int limit, int page, final LastfmTracksViewerPage viewer) {
-//        if (!viewer.isNotLoaded()) return;
-
         viewer.showProgressBar(true);
         userModel.getLovedTracks(user.getName(), limit, page,
                 new SimpleCallback<List<LastfmTrack>>() {

@@ -24,7 +24,6 @@ import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Tag;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.User;
-import com.pillowapps.liqear.entities.vk.VkAlbum;
 import com.pillowapps.liqear.entities.vk.VkError;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.Constants;
@@ -77,10 +76,10 @@ public abstract class ResultTrackedBaseActivity extends TrackedToolbarBaseActivi
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        Intent data = new Intent();
-        data.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        data.putExtra(Constants.ACTION_ENUM, MainActivityStartEnum.PLAY_TRACKS);
-        data.putExtra(Constants.POSITION_TO_PLAY, position);
+        Intent data = new Intent()
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                .putExtra(Constants.ACTION_ENUM, MainActivityStartEnum.PLAY_TRACKS)
+                .putExtra(Constants.POSITION_TO_PLAY, position);
         Playlist playlist = new Playlist(tracks);
         playlist.setTitle(String.valueOf(title));
         data.putExtra("playlist", playlist);
@@ -161,15 +160,6 @@ public abstract class ResultTrackedBaseActivity extends TrackedToolbarBaseActivi
     }
 
     protected void openVkAlbum(Album vkAlbum) {
-        Intent searchIntent = new Intent(ResultTrackedBaseActivity.this,
-                VkAlbumTracksActivity.class);
-        searchIntent.putExtra("title", vkAlbum.getTitle());
-        searchIntent.putExtra("uid", vkAlbum.getOwnerId());
-        searchIntent.putExtra("album_id", vkAlbum.getAlbumId());
-        startActivityForResult(searchIntent, Constants.MAIN_REQUEST_CODE);
-    }
-
-    protected void openVkAlbum(VkAlbum vkAlbum) {
         Intent searchIntent = new Intent(ResultTrackedBaseActivity.this,
                 VkAlbumTracksActivity.class);
         searchIntent.putExtra("title", vkAlbum.getTitle());

@@ -17,8 +17,6 @@ import com.pillowapps.liqear.activities.TextActivity;
 import com.pillowapps.liqear.audio.MusicService;
 import com.pillowapps.liqear.helpers.AppUtils;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
-
 public class PreferencesActivity extends AppCompatPreferenceActivity {
 
     public static Intent startIntent(Context context) {
@@ -85,11 +83,6 @@ public class PreferencesActivity extends AppCompatPreferenceActivity {
             startActivity(myIntent);
             return true;
         });
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

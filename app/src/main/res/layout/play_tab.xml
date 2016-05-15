@@ -22,7 +22,7 @@
             android:baselineAlignBottom="false"
             android:contentDescription="@string/artist_image"
             android:scaleType="centerCrop"
-            android:src="@drawable/transparent_album" />
+            app:srcCompat="@drawable/transparent_album" />
 
         <View
             android:id="@+id/view"
@@ -316,10 +316,10 @@
         android:padding="0dp"
         android:progressBackgroundTint="@android:color/transparent"
         android:splitTrack="false"
-        app:layout_anchor="@id/back_layout"
-        app:layout_anchorGravity="bottom"
         android:theme="@style/LiquidBearAppTheme.ProgressBar"
-        android:visibility="visible" />
+        android:visibility="visible"
+        app:layout_anchor="@id/back_layout"
+        app:layout_anchorGravity="bottom" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/love_button"
