@@ -10,9 +10,6 @@ import com.pillowapps.liqear.activities.modes.LastfmLibraryActivity;
 import com.pillowapps.liqear.activities.modes.LastfmNeighboursActivity;
 import com.pillowapps.liqear.activities.modes.LastfmRadiomixActivity;
 import com.pillowapps.liqear.activities.modes.LastfmRecommendationsActivity;
-import com.pillowapps.liqear.activities.modes.LocalAlbumsActivity;
-import com.pillowapps.liqear.activities.modes.LocalArtistsActivity;
-import com.pillowapps.liqear.activities.modes.LocalTracksActivity;
 import com.pillowapps.liqear.activities.modes.NewcomersActivity;
 import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.SearchAlbumActivity;
@@ -254,24 +251,6 @@ public class OnModeListener {
                 Intent intent = new Intent(context, SetlistsActivity.class);
                 fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
                 sendAnalyticsModeClickEvent("[OTHER] Setlists");
-            }
-            break;
-            case R.id.local_artists: {
-                Intent intent = new Intent(context, LocalArtistsActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-                sendAnalyticsModeClickEvent("[LOCAL] Artists");
-            }
-            break;
-            case R.id.local_tracks: {
-                Intent intent = new Intent(context, LocalTracksActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-                sendAnalyticsModeClickEvent("[LOCAL] Tracks");
-            }
-            break;
-            case R.id.local_albums: {
-                Intent intent = new Intent(context, LocalAlbumsActivity.class);
-                fragment.startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
-                sendAnalyticsModeClickEvent("[LOCAL] Albums");
             }
             break;
             case R.id.auth: {

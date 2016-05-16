@@ -81,8 +81,7 @@ public class FunkySoulsReader {
     }
 
     public List<Album> selectAlbumsFromPages(List<Integer> pages) {
-        ArrayList<Album> albums;
-        albums = new ArrayList<Album>();
+        ArrayList<Album> albums = new ArrayList<>();
         String res;
         for (int i : pages) {
             res = i == 1 ? "index.html" : "page/" + i + ".html";

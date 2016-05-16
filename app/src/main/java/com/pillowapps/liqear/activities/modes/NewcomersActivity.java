@@ -19,7 +19,6 @@ import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.ResultTrackedBaseActivity;
 import com.pillowapps.liqear.adapters.recyclers.NewcomersAdapter;
-import com.pillowapps.liqear.callbacks.NewcomersSimpleCallback;
 import com.pillowapps.liqear.entities.Album;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.Constants;
@@ -34,6 +33,9 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class NewcomersActivity extends ResultTrackedBaseActivity {
     public static final String MODE = "mode";
@@ -179,38 +181,30 @@ public class NewcomersActivity extends ResultTrackedBaseActivity {
     }
 
     private void getNewcomersFunky(int page) {
-        new FunkySoulsAlbumModel().getNewcomers(Collections.singletonList(page), new NewcomersSimpleCallback<List<Album>>() {
-            @Override
-            public void success(List<Album> albums) {
-                fillAlbums(albums);
-//                recycler.onLoadMoreComplete();
-                if (adapter.getItemCount() < NEWCOMERS_START_ITEMS) {
-                    getNewcomersFunky(visiblePages++);
-                }
-            }
-
-            @Override
-            public void failure(String errorMessage) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+        new FunkySoulsAlbumModel().getNewcomers(Collections.singletonList(page))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(albums -> {
+                    fillAlbums(albums);
+                    if (adapter.getItemCount() < NEWCOMERS_START_ITEMS) {
+                        getNewcomersFunky(visiblePages++);
+                    }
+                }, throwable -> {
+                    progressBar.setVisibility(View.GONE);
+                });
     }
 
     private void getNewcomersAlterportal(int page) {
-        new AlterportalAlbumModel().getNewcomers(Collections.singletonList(page),
-                new NewcomersSimpleCallback<List<Album>>() {
-                    @Override
-                    public void success(List<Album> albums) {
-                        fillAlbums(albums);
-                        if (adapter.getItemCount() < NEWCOMERS_START_ITEMS) {
-                            getNewcomersAlterportal(visiblePages++);
-                        }
+        new AlterportalAlbumModel().getNewcomers(Collections.singletonList(page))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(albums -> {
+                    fillAlbums(albums);
+                    if (adapter.getItemCount() < NEWCOMERS_START_ITEMS) {
+                        getNewcomersFunky(visiblePages++);
                     }
-
-                    @Override
-                    public void failure(String errorMessage) {
-                        progressBar.setVisibility(View.GONE);
-                    }
+                }, throwable -> {
+                    progressBar.setVisibility(View.GONE);
                 });
     }
 

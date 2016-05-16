@@ -9,6 +9,7 @@ import com.pillowapps.liqear.activities.modes.LastfmLibraryActivity;
 import com.pillowapps.liqear.activities.modes.LastfmNeighboursActivity;
 import com.pillowapps.liqear.activities.modes.LastfmRadiomixActivity;
 import com.pillowapps.liqear.activities.modes.LastfmRecommendationsActivity;
+import com.pillowapps.liqear.activities.modes.NewcomersActivity;
 import com.pillowapps.liqear.activities.modes.PlaylistsActivity;
 import com.pillowapps.liqear.activities.modes.SearchAlbumActivity;
 import com.pillowapps.liqear.activities.modes.SearchArtistActivity;
@@ -129,6 +130,8 @@ public interface ApplicationComponent {
     void inject(@NonNull VkAlbumTracksActivity vkAlbumTracksActivity);
 
     void inject(@NonNull ResultTrackedBaseActivity resultTrackedBaseActivity);
+
+    void inject(@NonNull NewcomersActivity activity);
 
     void inject(@NonNull LastfmLibraryActivity activity);
 

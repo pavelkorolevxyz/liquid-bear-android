@@ -20,7 +20,6 @@ ext {
     rxJavaVersion = '1.1.0'
     rxAndroidVersion = '0.24.0'
     roundedImageViewVersion = '2.2.1'
-    tinyTaskVersion = 'v1'
     appRateVersion = '2.0.3'
     glideVersion = '3.6.1'
     exoPlayerVersion = 'r1.5.7'
@@ -83,7 +82,6 @@ ext {
             exoPlayer                       : "com.google.android.exoplayer:exoplayer:${exoPlayerVersion}",
 
             roundedImageView                : "com.makeramen:roundedimageview:${roundedImageViewVersion}",
-            tinyTask                        : "com.github.inaka:tinytask:${tinyTaskVersion}",
             appRate                         : "fr.nicolaspomepuy:discreetapprate:${appRateVersion}@aar",
             fancyButtons                    : "com.github.medyo:fancybuttons:${fancyButtonsVersion}@aar",
             materialDialogs                 : "com.github.afollestad.material-dialogs:core:${materialDialogsVersion}@aar",

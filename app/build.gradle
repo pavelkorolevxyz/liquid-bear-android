@@ -101,7 +101,6 @@ dependencies {
     compile libs.rxAndroid
 
     compile libs.roundedImageView
-    compile libs.tinyTask
     compile libs.appRate
     compile libs.materialDrawer
 
