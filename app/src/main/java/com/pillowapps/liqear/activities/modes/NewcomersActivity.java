@@ -141,6 +141,7 @@ public class NewcomersActivity extends ResultTrackedBaseActivity {
         mode = (Mode) getIntent().getSerializableExtra(MODE);
         recycler = (LoadMoreRecyclerView) findViewById(R.id.list);
         emptyTextView = (TextView) findViewById(R.id.empty);
+
         switch (mode) {
             case FUNKYSOULS:
                 getNewcomersFunky(visiblePages++);
