@@ -166,10 +166,18 @@ public class PhoneHomeFragment extends HomeFragment {
         trackTitlePlaylistTextView = (TextView) playlistTab.findViewById(R.id.track_title_text_view);
         artistPlaylistTextView = (TextView) playlistTab.findViewById(R.id.artist_text_view);
 
+        playlistListView.setDropListener((from, to) -> {
+            presenter.dragAndDrop(from, to);
+        });
+
         playlistListView.setOnItemClickListener((parent, view, position, id) -> {
             int realPosition = playlistItemsAdapter.getItem(position).getRealPosition();
-            playlistItemsAdapter.setCurrentIndex(realPosition);
-            musicServiceManager.play(realPosition, true);
+            if (playlistItemsAdapter.isEditMode()) {
+                showRenameDialog(realPosition);
+            } else {
+                playlistItemsAdapter.setCurrentIndex(realPosition);
+                musicServiceManager.play(realPosition, true);
+            }
         });
 
         playlistListView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
@@ -378,19 +386,6 @@ public class PhoneHomeFragment extends HomeFragment {
             return;
         }
         new Palette.Builder(bitmap).generate(palette -> {
-            // all palette colors for investigation
-//            int darkMutedColor = palette.getDarkMutedColor(Color.TRANSPARENT);
-//            int darkVibrantColor = palette.getDarkVibrantColor(Color.TRANSPARENT);
-//            int lightMutedColor = palette.getLightMutedColor(Color.TRANSPARENT);
-//            int lightVibrantColor = palette.getLightVibrantColor(Color.TRANSPARENT);
-//            int mutedColor = palette.getMutedColor(Color.TRANSPARENT);
-//            int vibrantColor = palette.getVibrantColor(Color.TRANSPARENT);
-//            colorsLayout.getChildAt(0).setBackgroundColor(darkMutedColor);
-//            colorsLayout.getChildAt(1).setBackgroundColor(darkVibrantColor);
-//            colorsLayout.getChildAt(2).setBackgroundColor(lightMutedColor);
-//            colorsLayout.getChildAt(3).setBackgroundColor(lightVibrantColor);
-//            colorsLayout.getChildAt(4).setBackgroundColor(mutedColor);
-//            colorsLayout.getChildAt(5).setBackgroundColor(vibrantColor);
             if (getContext() == null) {
                 return;
             }

@@ -32,8 +32,8 @@ import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.entities.User;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmTrack;
-import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.Constants;
+import com.pillowapps.liqear.helpers.PreferencesScreenManager;
 import com.pillowapps.liqear.helpers.SharedPreferencesManager;
 import com.pillowapps.liqear.models.lastfm.LastfmUserModel;
 
@@ -95,7 +95,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Bundle extras = getIntent().getExtras();
-        user = (User) extras.getSerializable(USER);
+        user = extras.getParcelable(USER);
         defaultIndex = extras.getInt(TAB_INDEX);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

@@ -20,6 +20,7 @@
         android:id="@+id/grabber_list_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
         android:layout_alignBottom="@+id/play_image_view_list_item"
         android:layout_alignParentBottom="false"
         android:layout_alignParentTop="true"

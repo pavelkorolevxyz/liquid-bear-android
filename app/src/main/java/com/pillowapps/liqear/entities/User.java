@@ -1,10 +1,12 @@
 package com.pillowapps.liqear.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 
-public class User implements Serializable {
+public class User implements Parcelable {
 
     @SerializedName("name")
     private String name = "";
@@ -44,4 +46,34 @@ public class User implements Serializable {
         this.uid = uid;
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.name);
+        dest.writeLong(this.uid);
+        dest.writeString(this.imageUrl);
+    }
+
+    protected User(Parcel in) {
+        this.name = in.readString();
+        this.uid = in.readLong();
+        this.imageUrl = in.readString();
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

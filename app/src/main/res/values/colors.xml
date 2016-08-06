@@ -32,12 +32,4 @@
     <color name="inverted_secondary_text">#bbbbbb</color>
     <color name="inverted_icons">#383840</color>
 
-
-    <color name="match_100">#FF0101</color>
-    <color name="match_80">#E9C102</color>
-    <color name="match_60">#05BD4C</color>
-    <color name="match_40">#5336BD</color>
-    <color name="match_20">#453E45</color>
-    <color name="match_0">@color/inverted_primary</color>
-
 </resources>

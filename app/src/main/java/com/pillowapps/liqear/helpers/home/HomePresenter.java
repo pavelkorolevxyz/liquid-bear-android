@@ -34,6 +34,7 @@ import com.pillowapps.liqear.models.vk.VkWallModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -325,7 +326,6 @@ public class HomePresenter extends Presenter<HomeView> {
         timeline.clearQueue();
         timeline.clearPreviousIndexes();
         timeline.setPlaylist(playlist);
-        timeline.updateRealTrackPositions();
 
         playlistModel.saveMainPlaylist(timeline.getPlaylist())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -638,5 +638,46 @@ public class HomePresenter extends Presenter<HomeView> {
             menu = R.menu.menu_play_tab;
         }
         view.updateToolbarMenu(menu);
+    }
+
+    public void renameTrack(Track track, String artist, String title) {
+        HomeView view = view();
+        if (view == null) {
+            return;
+        }
+        track.setTitle(title);
+        track.setArtist(artist);
+        playlistModel.saveMainPlaylist(timeline.getPlaylist());
+        view.updateAdapter();
+    }
+
+    public void dragAndDrop(int from, int to) {
+        HomeView view = view();
+        if (view == null) {
+            return;
+        }
+        if (from == to) {
+            return;
+        }
+        List<Track> playlist = timeline.getPlaylistTracks();
+        LinkedList<Integer> queueIndexes = timeline.getQueueIndexes();
+        int currentIndex = timeline.getIndex();
+        if (from == currentIndex) {
+            timeline.setIndex(to);
+        } else if (from < to && currentIndex < to && currentIndex > from) {
+            timeline.setIndex(currentIndex - 1);
+        } else if (from > to && currentIndex < from && currentIndex > to) {
+            timeline.setIndex(currentIndex + 1);
+        } else if (to == currentIndex && currentIndex > from) {
+            timeline.setIndex(currentIndex - 1);
+        } else if (to == currentIndex && currentIndex < from) {
+            timeline.setIndex(currentIndex + 1);
+        }
+        Track item = playlist.get(from);
+        playlist.remove(from);
+        playlist.add(to, item);
+        timeline.updateTracks(playlist);
+        view.changePlaylist(timeline.getIndex(), new Playlist(timeline.getPlaylist().getTitle(), playlist), timeline.getQueueIndexes() /*todo fix changed item in queue*/);
+        playlistModel.saveMainPlaylist(timeline.getPlaylist());
     }
 }

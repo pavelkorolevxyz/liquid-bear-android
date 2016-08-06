@@ -18,6 +18,7 @@ import java.util.List;
 public abstract class PagerResultActivity extends ResultTrackedBaseActivity {
     protected ViewPager pager;
     protected SmartTabLayout tabs;
+
     private List<Page> pages = new ArrayList<>();
 
     public OnViewerItemClickListener<Track> trackClickListener = new OnViewerItemClickListener<Track>() {
@@ -29,7 +30,6 @@ public abstract class PagerResultActivity extends ResultTrackedBaseActivity {
     };
 
     public OnViewerItemClickListener<Track> trackLongClickListener = (tracks, position) -> trackLongClick(tracks.get(position));
-
     public OnViewerItemClickListener<Artist> artistClickListener = (artists, position) -> openArtistByName(artists.get(position).getName());
     public OnViewerItemClickListener<Album> albumClickListener = (albums, position) -> openLastfmAlbum(albums.get(position));
     public OnViewerItemClickListener<Album> vkAlbumClickListener = (albums, position) -> openVkAlbum(albums.get(position));

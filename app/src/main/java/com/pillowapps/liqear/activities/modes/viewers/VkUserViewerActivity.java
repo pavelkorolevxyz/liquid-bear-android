@@ -36,6 +36,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class VkUserViewerActivity extends PagerResultActivity {
     public static final String USER = "user";
     public static final String GROUP = "group";
@@ -60,6 +63,9 @@ public class VkUserViewerActivity extends PagerResultActivity {
     @Inject
     PreferencesScreenManager preferencesManager;
 
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
     public static Intent startIntent(Context context) {
         return new Intent(context, VkUserViewerActivity.class);
     }
@@ -67,41 +73,42 @@ public class VkUserViewerActivity extends PagerResultActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LBApplication.get(this).applicationComponent().inject(this);
-
         setContentView(R.layout.viewer_layout);
 
-        Bundle extras = getIntent().getExtras();
-        user = (User) extras.getSerializable(USER);
-        defaultIndex = extras.getInt(TAB_INDEX);
+        LBApplication.get(this).applicationComponent().inject(this);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Bundle extras = getIntent().getExtras();
+        user = extras.getParcelable(USER);
+        group = extras.getParcelable(GROUP);
+        defaultIndex = extras.getInt(TAB_INDEX);
+        you = extras.getBoolean(YOU_MODE, false);
 
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        you = extras.getBoolean(YOU_MODE, false);
-        if (user == null) {
+        setSupportActionBar(toolbar);
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        if (group != null) {
             mode = Mode.GROUP;
-            group = (Group) extras.getSerializable(GROUP);
-            if (actionBar != null) {
-                if (group != null) {
-                    actionBar.setTitle(group.getName());
-                }
-            }
+            actionBar.setTitle(group.getName());
+        } else if (user != null) {
+            mode = Mode.USER;
+            actionBar.setTitle(user.getName());
         } else {
-            if (actionBar != null) {
-                actionBar.setTitle(user.getName());
-            }
+            throw new RuntimeException("User or group must be provided");
         }
+
         initUi();
     }
 
     private void initUi() {
         initViewPager();
-        changeViewPagerItem(defaultIndex);
+        if (defaultIndex == 0) {
+            updatePage(defaultIndex);
+        } else {
+            changeViewPagerItem(defaultIndex);
+        }
     }
 
     private void initViewPager() {
@@ -116,6 +123,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
         setPages(pages);
         final PagesPagerAdapter adapter = new PagesPagerAdapter(pages);
         injectViewPager(adapter);
+
         tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
@@ -123,12 +131,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
 
             @Override
             public void onPageSelected(final int index) {
-                invalidateOptionsMenu();
-                ViewerPage viewer = getViewer(index);
-                if (viewer.isNotLoaded()) {
-                    viewer.showProgressBar(true);
-                    viewer.onLoadMore();
-                }
+                updatePage(index);
             }
 
             @Override
@@ -137,15 +140,27 @@ public class VkUserViewerActivity extends PagerResultActivity {
         });
     }
 
+    private void updatePage(int index) {
+        invalidateOptionsMenu();
+        ViewerPage viewer = getViewer(index);
+        if (viewer.isNotLoaded()) {
+            viewer.showProgressBar(true);
+            viewer.onLoadMore();
+        }
+    }
+
     private ViewerPage createFeedTracksPage() {
         final VkTracksViewerPage viewer = new VkTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_feed
         );
+        viewer.setSwipeRefreshListener(() -> {
+            viewer.reset();
+            getNewsFeedTracks(getPageSize(), viewer.getVkPage(), viewer);
+        });
         viewer.setOnLoadMoreListener(() -> getNewsFeedTracks(getPageSize(), viewer.getVkPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
-        addViewer(viewer);
         return viewer;
     }
 
@@ -154,10 +169,13 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_favorites
         );
+        viewer.setSwipeRefreshListener(() -> {
+            viewer.reset();
+            getFavoritesTracks(getPageSize(), viewer.getVkPage(), viewer);
+        });
         viewer.setOnLoadMoreListener(() -> getFavoritesTracks(getPageSize(), viewer.getVkPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
-        addViewer(viewer);
         return viewer;
     }
 
@@ -166,13 +184,16 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_albums,
                 preferencesManager.isDownloadImagesEnabled());
+        viewer.setSwipeRefreshListener(() -> {
+            viewer.reset();
+            getAlbums(getPageSize(), viewer.getVkPage(), viewer);
+        });
         viewer.setOnLoadMoreListener(() -> getAlbums(getPageSize(), viewer.getVkPage(), viewer));
         if (mode == Mode.USER) {
             viewer.setItemClickListener(vkAlbumClickListener);
         } else {
             viewer.setItemClickListener(vkGroupAlbumClickListener);
         }
-        addViewer(viewer);
         return viewer;
     }
 
@@ -181,10 +202,13 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.user_audio
         );
+        viewer.setSwipeRefreshListener(() -> {
+            viewer.reset();
+            getUserAudio(getPageSize(), viewer.getVkPage(), viewer);
+        });
         viewer.setOnLoadMoreListener(() -> getUserAudio(getPageSize(), viewer.getVkPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
-        addViewer(viewer);
         return viewer;
     }
 
@@ -193,50 +217,47 @@ public class VkUserViewerActivity extends PagerResultActivity {
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.vk_wall
         );
+        viewer.setSwipeRefreshListener(() -> {
+            viewer.reset();
+            getWallTracks(getPageSize(), viewer.getVkPage(), viewer);
+        });
         viewer.setOnLoadMoreListener(() -> getWallTracks(getPageSize(), viewer.getVkPage(), viewer));
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
-        addViewer(viewer);
         return viewer;
     }
 
     private void getFavoritesTracks(int limit, int page, final VkTracksViewerPage viewer) {
-        if (mode == Mode.USER) {
-            vkWallModel.getVkUserFavoritesAudio(limit,
-                    limit * page, new VkSimpleCallback<List<VkTrack>>() {
-                        @Override
-                        public void success(List<VkTrack> tracks) {
-                            viewer.fill(tracks);
-                        }
+        vkWallModel.getVkUserFavoritesAudio(limit,
+                limit * page, new VkSimpleCallback<List<VkTrack>>() {
+                    @Override
+                    public void success(List<VkTrack> tracks) {
+                        viewer.fill(tracks);
+                    }
 
-                        @Override
-                        public void failure(VkError error) {
-                            ErrorNotifier.showError(VkUserViewerActivity.this, error.getErrorMessage());
-
-                        }
-                    });
-        }
+                    @Override
+                    public void failure(VkError error) {
+                        ErrorNotifier.showError(VkUserViewerActivity.this, error.getErrorMessage());
+                    }
+                });
     }
 
     private void getNewsFeedTracks(final int limit, int page, final VkTracksViewerPage viewer) {
-        if (mode == Mode.USER) {
-            vkWallModel.getVkNewsFeedTracks(limit, limit * page,
-                    new VkSimpleCallback<List<VkTrack>>() {
-                        @Override
-                        public void success(List<VkTrack> tracks) {
-                            viewer.fill(tracks);
-                            if (getViewer(NEWS_FEED).getItems().size() < 20) {
-                                getNewsFeedTracks(limit, viewer.getVkPage(), viewer);
-                            }
+        vkWallModel.getVkNewsFeedTracks(limit, limit * page,
+                new VkSimpleCallback<List<VkTrack>>() {
+                    @Override
+                    public void success(List<VkTrack> tracks) {
+                        viewer.fill(tracks);
+                        if (getViewer(NEWS_FEED).getItems().size() < 20) {
+                            getNewsFeedTracks(limit, viewer.getVkPage(), viewer);
                         }
+                    }
 
-                        @Override
-                        public void failure(VkError error) {
-                            ErrorNotifier.showError(VkUserViewerActivity.this, error.getErrorMessage());
-
-                        }
-                    });
-        }
+                    @Override
+                    public void failure(VkError error) {
+                        ErrorNotifier.showError(VkUserViewerActivity.this, error.getErrorMessage());
+                    }
+                });
     }
 
     private void getAlbums(int limit, int page, final VkAlbumViewerPage viewer) {
@@ -253,7 +274,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
         };
         if (mode == Mode.USER) {
             vkAudioModel.getUserVkAlbums(user.getUid(), limit * page, limit, callback);
-        } else {
+        } else if (mode == Mode.GROUP) {
             vkAudioModel.getGroupVkAlbums(group.getGid(), limit * page, limit, callback);
         }
     }
@@ -272,7 +293,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
         };
         if (mode == Mode.USER) {
             vkAudioModel.getVkUserAudio(user.getUid(), limit, limit * page, callback);
-        } else {
+        } else if (mode == Mode.GROUP) {
             vkAudioModel.getVkGroupAudio(group.getGid(), limit, limit * page, callback);
         }
     }
@@ -291,7 +312,7 @@ public class VkUserViewerActivity extends PagerResultActivity {
         };
         if (mode == Mode.USER) {
             vkWallModel.getVkUserWallAudio(user.getUid(), limit, limit * page, callback);
-        } else {
+        } else if (mode == Mode.GROUP) {
             vkWallModel.getVkGroupWallAudio(group.getGid(), limit, limit * page, callback);
         }
     }

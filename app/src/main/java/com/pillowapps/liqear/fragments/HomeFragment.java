@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
 
@@ -52,6 +53,7 @@ import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
 import com.pillowapps.liqear.models.vk.VkWallModel;
+import com.pillowapps.liqear.views.HintMaterialEditText;
 
 import java.util.LinkedList;
 
@@ -97,6 +99,9 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
 
     @Inject
     SavesManager savesManager;
+
+    @Inject
+    Timeline timeline;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -343,6 +348,40 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         }
         showLoading(true);
         presenter.toggleLoveForCurrentTrack();
+    }
+
+    public void showRenameDialog(final int position) {
+        Track track = timeline.getTrack(position);
+        View view = View.inflate(getContext(), R.layout.rename_dialog_layout, null);
+        final HintMaterialEditText artistEditText = (HintMaterialEditText) view.findViewById(R.id.artist);
+        artistEditText.setText(track.getArtist());
+        final HintMaterialEditText titleEditText = (HintMaterialEditText) view.findViewById(R.id.title);
+        titleEditText.setText(track.getTitle());
+        final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
+                .title(R.string.rename_track)
+                .customView(view, true)
+                .positiveText(R.string.save)
+                .onPositive((dialog1, which) -> {
+                    String title = titleEditText.getText().toString();
+                    String artist = artistEditText.getText().toString();
+                    if (title.length() == 0 || artist.length() == 0) {
+                        toast(R.string.couldnt_be_empty);
+                        return;
+                    }
+                    presenter.renameTrack(track, artist, title);
+                    hideKeyboard();
+                })
+                .negativeText(android.R.string.cancel)
+                .onNegative((dialog1, which) -> {
+                    hideKeyboard();
+                })
+                .build();
+        dialog.show();
+    }
+
+    private void hideKeyboard() {
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     @Override

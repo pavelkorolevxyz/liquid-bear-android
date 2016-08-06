@@ -1,13 +1,14 @@
 package com.pillowapps.liqear.components.viewers.base;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.pillowapps.liqear.LBApplication;
 import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.entities.Page;
 import com.pillowapps.liqear.helpers.DividerItemDecoration;
@@ -26,6 +27,9 @@ import timber.log.Timber;
 public abstract class ViewerPage<T> extends Page {
     @Bind(R.id.list)
     protected RecyclerView recyclerView;
+    @Nullable
+    @Bind(R.id.swipe_to_refresh)
+    protected SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.pageProgressBar)
     protected ProgressBar progressBar;
     @Bind(R.id.empty)
@@ -33,7 +37,6 @@ public abstract class ViewerPage<T> extends Page {
     protected boolean filledFull = false;
 
     private Context context;
-    private boolean singlePage = false;
     private int page = 1;
 
     public final OnRecyclerItemClickListener listener = (view1, position) -> ViewerPage.this.onItemClicked(position);
@@ -64,6 +67,11 @@ public abstract class ViewerPage<T> extends Page {
                 }
             }
         });
+
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setColorSchemeColors(R.color.primary, R.color.primary_dark, R.color.accent);
+            swipeRefreshLayout.setEnabled(false);
+        }
     }
 
     public void onLoadMoreComplete() {
@@ -95,6 +103,9 @@ public abstract class ViewerPage<T> extends Page {
         if (wantedVisibility != progressBar.getVisibility()) {
             progressBar.setVisibility(wantedVisibility);
         }
+        if (swipeRefreshLayout != null && !show) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     public void showEmptyPlaceholder(boolean show) {
@@ -113,12 +124,14 @@ public abstract class ViewerPage<T> extends Page {
         return title;
     }
 
-    public void setSinglePage(boolean singlePage) {
-        this.singlePage = singlePage;
-    }
-
     public void setOnLoadMoreListener(OnLoadMoreListener<T> listener) {
         this.onLoadMoreListener = listener;
+    }
+
+    public void setSwipeRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
+        assert swipeRefreshLayout != null;
+        swipeRefreshLayout.setEnabled(true);
+        swipeRefreshLayout.setOnRefreshListener(listener);
     }
 
     public void setItemClickListener(OnViewerItemClickListener<T> itemClickListener) {
@@ -150,4 +163,8 @@ public abstract class ViewerPage<T> extends Page {
     public abstract boolean isNotLoaded();
 
     public abstract List<T> getItems();
+
+    public void reset() {
+        page = 1;
+    }
 }

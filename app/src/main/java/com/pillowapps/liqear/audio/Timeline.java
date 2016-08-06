@@ -70,6 +70,7 @@ public class Timeline {
         this.listeningsCounter.updateWithPlaylist(playlist);
         this.previousTracksIndexes.clear();
         this.queueIndexes.clear();
+        updateRealTrackPositions();
     }
 
     public void toggleShuffle() {
@@ -256,5 +257,19 @@ public class Timeline {
 
     public void removeTrack(int index) {
         currentPlaylist.getTracks().remove(index);
+    }
+
+    public Track getTrack(int index) {
+        List<Track> tracks = getPlaylistTracks();
+        if (tracks.size() > index) {
+            return tracks.get(index);
+        } else {
+            return null;
+        }
+    }
+
+    public void updateTracks(List<Track> tracks) {
+        currentPlaylist.setTracks(tracks);
+        updateRealTrackPositions();
     }
 }

@@ -58,7 +58,7 @@ public class VkApiModule {
     public RequestInterceptor provideVkInterceptor(AuthorizationInfoManager authorizationInfoManager) {
         return request -> {
             request.addQueryParam("access_token", authorizationInfoManager.getVkAccessToken());
-            request.addQueryParam("v", "5.28");
+            request.addQueryParam("v", "5.53");
         };
     }
 

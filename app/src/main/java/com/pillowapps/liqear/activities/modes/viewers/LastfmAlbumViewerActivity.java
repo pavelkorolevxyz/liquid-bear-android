@@ -132,7 +132,6 @@ public class LastfmAlbumViewerActivity extends PagerResultActivity {
         final LastfmTracksViewerPage viewer = new LastfmTracksViewerPage(this,
                 View.inflate(this, R.layout.list_tab, null),
                 R.string.tracks);
-        viewer.setSinglePage(true);
         viewer.setItemClickListener(trackClickListener);
         viewer.setItemLongClickListener(trackLongClickListener);
         addViewer(viewer);

@@ -194,7 +194,7 @@ public class AuthActivity extends TrackedBaseActivity {
             tabs.setVisibility(View.GONE);
         }
 
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
                 // no-op
