@@ -22,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -91,11 +90,9 @@ public class PhoneHomeFragment extends HomeFragment {
     private View blackView;
     private ViewGroup backLayout;
     private ViewGroup bottomControlsLayout;
-    private LinearLayout colorsLayout;
 
     private DragSortListView playlistListView;
     private Toolbar toolbar;
-    private PhoneFragmentPagerAdapter pagerAdapter;
     private ViewGroup bottomControlsLayoutPlaylists;
     private TextView trackTitlePlaylistTextView;
     private TextView artistPlaylistTextView;
@@ -155,7 +152,7 @@ public class PhoneHomeFragment extends HomeFragment {
         pages.add(new Page(playlistTab, R.string.playlist_tab));
         pager = (ViewPager) v.findViewById(R.id.viewpager);
         pager.setOffscreenPageLimit(pages.size());
-        pagerAdapter = new PhoneFragmentPagerAdapter(pages);
+        PhoneFragmentPagerAdapter pagerAdapter = new PhoneFragmentPagerAdapter(pages);
         pager.setAdapter(pagerAdapter);
 
         changeViewPagerItem(PhoneFragmentPagerAdapter.PLAY_TAB_INDEX);
@@ -166,9 +163,7 @@ public class PhoneHomeFragment extends HomeFragment {
         trackTitlePlaylistTextView = (TextView) playlistTab.findViewById(R.id.track_title_text_view);
         artistPlaylistTextView = (TextView) playlistTab.findViewById(R.id.artist_text_view);
 
-        playlistListView.setDropListener((from, to) -> {
-            presenter.dragAndDrop(from, to);
-        });
+        playlistListView.setDropListener((from, to) -> presenter.dragAndDrop(from, to));
 
         playlistListView.setOnItemClickListener((parent, view, position, id) -> {
             int realPosition = playlistItemsAdapter.getItem(position).getRealPosition();
@@ -230,14 +225,10 @@ public class PhoneHomeFragment extends HomeFragment {
         }
 
         blackView = playbackTab.findViewById(R.id.view);
-
-        colorsLayout = (LinearLayout) playbackTab.findViewById(R.id.colors_layout);
     }
 
     private void initListeners() {
-        noTracksLayout.setOnClickListener(v1 -> {
-            activity.openDrawer();
-        });
+        noTracksLayout.setOnClickListener(v1 -> activity.openDrawer());
 
         searchPlaylistEditText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -423,6 +414,21 @@ public class PhoneHomeFragment extends HomeFragment {
             searchPlaylistEditText.requestFocus();
         }
         searchPlaylistEditText.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public boolean disablePlaylistEditMode() {
+        if (playlistItemsAdapter.isEditMode() && pager.getCurrentItem() == PhoneFragmentPagerAdapter.PLAYLIST_TAB_INDEX) {
+            playlistItemsAdapter.setEditMode(false);
+            updateListViewDrag();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void updateListViewDrag() {
+        playlistListView.setDragEnabled(playlistItemsAdapter.isEditMode());
     }
 
     @Override

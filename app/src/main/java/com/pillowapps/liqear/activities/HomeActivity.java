@@ -13,6 +13,7 @@ import com.pillowapps.liqear.R;
 import com.pillowapps.liqear.activities.base.TrackedToolbarBaseActivity;
 import com.pillowapps.liqear.activities.preferences.AuthActivity;
 import com.pillowapps.liqear.entities.events.UpdateDrawerEvent;
+import com.pillowapps.liqear.fragments.HomeFragment;
 import com.pillowapps.liqear.helpers.AuthorizationInfoManager;
 import com.pillowapps.liqear.helpers.SideMenuItemsManager;
 import com.pillowapps.liqear.listeners.OnModeListener;
@@ -36,6 +37,8 @@ public class HomeActivity extends TrackedToolbarBaseActivity {
     private Drawer drawer;
     private OnModeListener modeListener;
 
+    private HomeFragment fragment;
+
     public static Intent startIntent(Context context) {
         return new Intent(context, HomeActivity.class);
     }
@@ -56,6 +59,8 @@ public class HomeActivity extends TrackedToolbarBaseActivity {
         }
 
         setContentView(R.layout.main);
+
+        fragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.home_fragment);
 
         AppRate.with(this)
                 .theme(AppRateTheme.DARK)
@@ -99,6 +104,9 @@ public class HomeActivity extends TrackedToolbarBaseActivity {
     public void onBackPressed() {
         if (drawer != null && drawer.isDrawerOpen()) {
             drawer.closeDrawer();
+            return;
+        }
+        if (fragment.disablePlaylistEditMode()) {
             return;
         }
         super.onBackPressed();

@@ -12,7 +12,6 @@ import java.util.List;
 public class PhoneFragmentPagerAdapter extends PagerAdapter {
     public static final int PLAY_TAB_INDEX = 0;
     public static final int PLAYLIST_TAB_INDEX = 1;
-    public static final int MODE_TAB_INDEX = 2;
     private List<Page> pages;
 
     public PhoneFragmentPagerAdapter(List<Page> pages) {

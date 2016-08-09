@@ -26,7 +26,6 @@ import com.pillowapps.liqear.helpers.TrackUtils;
 import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
 import com.pillowapps.liqear.models.TrackModel;
-import com.pillowapps.liqear.models.TutorialModel;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
 import com.pillowapps.liqear.models.vk.VkAudioModel;
@@ -53,7 +52,6 @@ public class HomePresenter extends Presenter<HomeView> {
     private PreferencesModel preferencesModel;
     private PlaylistModel playlistModel;
     private StateManager stateManager;
-    private TutorialModel tutorial;
     private AuthorizationInfoManager authorizationInfoManager;
     private NetworkManager networkManager;
     private PreferencesScreenManager preferencesManager;
@@ -68,7 +66,6 @@ public class HomePresenter extends Presenter<HomeView> {
                          PreferencesModel preferencesModel,
                          PlaylistModel playlistModel,
                          Timeline timeline,
-                         TutorialModel tutorial,
                          AuthorizationInfoManager authorizationInfoManager,
                          NetworkManager networkManager,
                          PreferencesScreenManager preferencesManager, LastfmTrackModel lastfmTrackModel) {
@@ -80,7 +77,6 @@ public class HomePresenter extends Presenter<HomeView> {
         this.preferencesModel = preferencesModel;
         this.playlistModel = playlistModel;
         this.timeline = timeline;
-        this.tutorial = tutorial;
         this.authorizationInfoManager = authorizationInfoManager;
         this.networkManager = networkManager;
         this.preferencesManager = preferencesManager;
@@ -327,20 +323,25 @@ public class HomePresenter extends Presenter<HomeView> {
         timeline.clearPreviousIndexes();
         timeline.setPlaylist(playlist);
 
-        playlistModel.saveMainPlaylist(timeline.getPlaylist())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(aLong -> {
-                        },
-                        throwable -> {
-                            Timber.e(throwable, "Save main playlist error");
-                        });
+        saveMainPlaylist();
 
         HomeView view = view();
         if (view != null) {
             view.showWelcomePlaceholder(false);
         }
         setMainPlaylist(index, playlist);
+    }
+
+    private void saveMainPlaylist() {
+        playlistModel.saveMainPlaylist(timeline.getPlaylist())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(aLong -> {
+                            Timber.d("Save main playlist success");
+                        },
+                        throwable -> {
+                            Timber.e(throwable, "Save main playlist error");
+                        });
     }
 
     private void setMainPlaylist(int index, @NonNull Playlist playlist) {
@@ -647,7 +648,7 @@ public class HomePresenter extends Presenter<HomeView> {
         }
         track.setTitle(title);
         track.setArtist(artist);
-        playlistModel.saveMainPlaylist(timeline.getPlaylist());
+        saveMainPlaylist();
         view.updateAdapter();
     }
 
@@ -678,6 +679,6 @@ public class HomePresenter extends Presenter<HomeView> {
         playlist.add(to, item);
         timeline.updateTracks(playlist);
         view.changePlaylist(timeline.getIndex(), new Playlist(timeline.getPlaylist().getTitle(), playlist), timeline.getQueueIndexes() /*todo fix changed item in queue*/);
-        playlistModel.saveMainPlaylist(timeline.getPlaylist());
+        saveMainPlaylist();
     }
 }

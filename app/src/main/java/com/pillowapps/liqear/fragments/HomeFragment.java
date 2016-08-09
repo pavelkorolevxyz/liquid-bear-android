@@ -47,7 +47,6 @@ import com.pillowapps.liqear.listeners.OnModeListener;
 import com.pillowapps.liqear.models.ImageModel;
 import com.pillowapps.liqear.models.PlaylistModel;
 import com.pillowapps.liqear.models.ShareModel;
-import com.pillowapps.liqear.models.TutorialModel;
 import com.pillowapps.liqear.models.VideoModel;
 import com.pillowapps.liqear.models.lastfm.LastfmLibraryModel;
 import com.pillowapps.liqear.models.lastfm.LastfmTrackModel;
@@ -520,7 +519,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Override
     public void togglePlaylistEditMode() {
         playlistItemsAdapter.toggleEditMode();
+        updateListViewDrag();
     }
+
+    protected abstract void updateListViewDrag();
 
     @Override
     public void updateWidgets() {
@@ -540,6 +542,8 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
         startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
     }
 
+    public abstract boolean disablePlaylistEditMode();
+
     @Subcomponent(modules = HomeFragmentModule.class)
     public interface HomeFragmentComponent {
         void inject(@NonNull HomeFragment itemsFragment);
@@ -558,12 +562,11 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                                                   @NonNull PreferencesModel preferencesModel,
                                                   @NonNull PlaylistModel playlistModel,
                                                   @NonNull Timeline timeline,
-                                                  @NonNull TutorialModel tutorial,
                                                   @NonNull AuthorizationInfoManager authorizationInfoManager,
                                                   @NonNull NetworkManager networkManager,
                                                   @NonNull PreferencesScreenManager preferencesManager,
                                                   @NonNull LastfmTrackModel lastfmTrackModel) {
-            return new HomePresenter(stateManager, libraryModel, shareModel, vkWallModel, vkAudioModel, preferencesModel, playlistModel, timeline, tutorial,
+            return new HomePresenter(stateManager, libraryModel, shareModel, vkWallModel, vkAudioModel, preferencesModel, playlistModel, timeline,
                     authorizationInfoManager, networkManager, preferencesManager, lastfmTrackModel);
         }
     }

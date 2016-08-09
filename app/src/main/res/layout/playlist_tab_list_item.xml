@@ -28,7 +28,7 @@
         android:adjustViewBounds="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:src="@drawable/menu_little"
+        android:src="@drawable/ic_grabber"
         android:visibility="gone"/>
 
     <RelativeLayout
