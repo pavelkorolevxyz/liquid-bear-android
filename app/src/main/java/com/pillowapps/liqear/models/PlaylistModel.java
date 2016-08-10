@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import com.pillowapps.liqear.entities.Playlist;
 import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.helpers.PlaylistsStorage;
+import com.pushtorefresh.storio.sqlite.operations.delete.DeleteResult;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -25,7 +27,7 @@ public class PlaylistModel {
         playlist.setMainPlaylist(true);
 
         return storageManager.findAndDeleteMainPlaylist()
-//                .onErrorReturn(throwable -> DeleteResult.newInstance(0, Collections.emptySet()))
+                .onErrorReturn(throwable -> DeleteResult.newInstance(0, Collections.emptySet()))
                 .flatMap(deleteResult -> storageManager.savePlaylist(playlist));
     }
 

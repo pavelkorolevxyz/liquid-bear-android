@@ -289,16 +289,21 @@ public class HomePresenter extends Presenter<HomeView> {
         view.updateAdapter();
     }
 
-    public void fixateSearchResult(@NonNull Playlist playlist) {
-        timeline.setPlaylist(playlist);
+    public void fixateSearchResult(String title, @NonNull List<Track> tracks) {
+        timeline.setPlaylist(new Playlist(title, new ArrayList<>(tracks)));
         timeline.clearPreviousIndexes();
+        timeline.clearQueue();
 
         final HomeView view = view();
         if (view == null) {
             return;
         }
-        view.clearSearch();
+
+        view.changePlaylist(timeline.getIndex(), timeline.getPlaylist(), timeline.getQueueIndexes());
+        saveMainPlaylist();
         playTrack(0, true);
+
+        view.clearSearch();
     }
 
     public void findCurrentTrack() {

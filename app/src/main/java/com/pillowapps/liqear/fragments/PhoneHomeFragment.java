@@ -64,6 +64,7 @@ public class PhoneHomeFragment extends HomeFragment {
      * Playlists tab
      **/
     private EditText searchPlaylistEditText;
+    private ViewGroup searchLayout;
     private TextView emptyPlaylistTextView;
 
     /**
@@ -184,7 +185,8 @@ public class PhoneHomeFragment extends HomeFragment {
 
         playlistListView.setAdapter(playlistItemsAdapter);
         searchPlaylistEditText = (EditText) playlistTab.findViewById(R.id.search_edit_text_playlist_tab);
-        searchPlaylistEditText.setVisibility(savesManager.isSearchVisible() ? View.VISIBLE : View.GONE);
+        searchLayout = (ViewGroup) playlistTab.findViewById(R.id.search_layout);
+        searchLayout.setVisibility(savesManager.isSearchVisible() ? View.VISIBLE : View.GONE);
         emptyPlaylistTextView = (TextView) playlistTab.findViewById(R.id.empty);
         goToPlaybackView = playlistTab.findViewById(R.id.playback_button);
         bottomControlsLayoutPlaylists = (ViewGroup) playlistTab.findViewById(R.id.bottom_controls_layout);
@@ -357,6 +359,10 @@ public class PhoneHomeFragment extends HomeFragment {
     public void playTrack(int index, boolean autoplay) {
         Track track = playlistItemsAdapter.getItem(index);
 
+        if (track == null) {
+            return;
+        }
+
         updateTrackArtist(track.getArtist());
         updateTrackTitle(track.getTitle());
         playPauseButton.setImageResource(R.drawable.pause_button);
@@ -404,16 +410,21 @@ public class PhoneHomeFragment extends HomeFragment {
     }
 
     @Override
+    protected String searchTerm() {
+        return searchPlaylistEditText.getText().toString();
+    }
+
+    @Override
     public void setMainPlaylistSelection(int currentIndex) {
         playlistListView.setSelection(currentIndex);
     }
 
     @Override
     public void updateSearchVisibility(boolean visible) {
+        searchLayout.setVisibility(savesManager.isSearchVisible() ? View.VISIBLE : View.GONE);
         if (visible) {
             searchPlaylistEditText.requestFocus();
         }
-        searchPlaylistEditText.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override

@@ -20,6 +20,7 @@
     <RelativeLayout
         android:id="@+id/search_layout"
         android:layout_width="0dp"
+        android:padding="4dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
@@ -36,11 +37,11 @@
             android:hint="@string/track"
             android:inputType="none"
             android:maxLength="50"
-            android:paddingRight="50dp"
             android:singleLine="true"
             app:met_clearButton="true"
             app:met_floatingLabel="normal"
-            app:met_iconLeft="@drawable/ic_search_dark" />
+            app:met_iconLeft="@drawable/ic_search_dark"
+            app:met_primaryColor="@color/accent" />
 
     </RelativeLayout>
 
@@ -57,11 +58,11 @@
             android:id="@+id/playback_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/playlists_menu_button"
+            android:layout_toStartOf="@+id/playlists_menu_button"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:focusable="true"
-            android:layout_toLeftOf="@+id/playlists_menu_button"
-            android:layout_toStartOf="@+id/playlists_menu_button">
+            android:focusable="true">
 
             <ImageView
                 android:id="@+id/playback_image_view"
@@ -119,12 +120,12 @@
             android:id="@+id/playlists_menu_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:background="?selectableItemBackgroundBorderless"
             android:padding="10dp"
             android:scaleType="fitXY"
-            android:src="@drawable/menu_little"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true" />
+            android:src="@drawable/menu_little" />
 
     </RelativeLayout>
 

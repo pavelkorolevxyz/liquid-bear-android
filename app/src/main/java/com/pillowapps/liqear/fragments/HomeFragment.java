@@ -197,7 +197,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
                 break;
             }
             case R.id.fixate_search_result_button: {
-                presenter.fixateSearchResult(new Playlist(playlistItemsAdapter.getValues()));
+                presenter.fixateSearchResult(searchTerm(), playlistItemsAdapter.getValues());
                 break;
             }
             case R.id.find_current_button: {
@@ -217,6 +217,10 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
             }
         }
         return true;
+    }
+
+    protected String searchTerm() {
+        return null;
     }
 
     @Override

@@ -68,8 +68,8 @@ public class Timeline {
     public void setPlaylist(@NonNull Playlist playlist) {
         this.currentPlaylist = playlist;
         this.listeningsCounter.updateWithPlaylist(playlist);
-        this.previousTracksIndexes.clear();
-        this.queueIndexes.clear();
+        clearPreviousIndexes();
+        clearQueue();
         updateRealTrackPositions();
     }
 

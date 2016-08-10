@@ -30,7 +30,7 @@
         android:textColor="@color/secondary_text"
         android:visibility="gone"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/edit_part_quick_search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             app:met_floatingLabel="normal"
             app:met_iconLeft="@drawable/ic_search_dark"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
