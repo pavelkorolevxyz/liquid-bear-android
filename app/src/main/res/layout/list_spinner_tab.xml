@@ -1,47 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.pillowapps.liqear.views.LoadMoreRecyclerView
         android:id="@+id/list"
-        android:scrollbars="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/spinner"
-        android:layout_marginLeft="0dp"/>
+        android:layout_below="@+id/period_layout"
+        android:layout_marginLeft="0dp"
+        android:scrollbars="vertical" />
 
     <ProgressBar
         android:id="@+id/pageProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyleHorizontal"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
-        android:indeterminate="true"/>
+        android:layout_alignParentRight="true"
+        android:indeterminate="true" />
 
-    <Spinner
+    <RelativeLayout
+        android:id="@+id/period_layout"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:id="@+id/spinner"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"/>
+        android:layout_height="wrap_content"
+        android:background="@color/inverted_primary_tinted"
+        android:elevation="6dp"
+        android:paddingBottom="4dp"
+        android:paddingEnd="24dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingStart="24dp"
+        android:paddingTop="4dp">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+
+    </RelativeLayout>
 
     <TextView
+        android:id="@+id/empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/empty"
-        android:id="@+id/empty"
-        android:textColor="@color/secondary_text"
-        android:padding="@dimen/normal_padding"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:padding="@dimen/normal_padding"
+        android:text="@string/empty"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/secondary_text"
+        android:visibility="gone" />
 
 </RelativeLayout>
