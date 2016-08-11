@@ -116,16 +116,15 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.time_lastfm_without_1month, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        topTracksSpinner.setAdapter(adapter);
 
         savedTopTrackPosition = SharedPreferencesManager.getSavePreferences(this).getInt(Constants.TIME_TOP_TRACKS, 0);
         topTracksPeriod = PERIODS_ARRAY[savedTopTrackPosition];
-        topTracksSpinner.setSelection(savedTopTrackPosition);
-
+        topTracksSpinner.setAdapter(adapter);
+        topTracksSpinner.setSelection(savedTopTrackPosition, false);
         topTracksSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view,
-                                       int itemPosition, long l) {
+                                       int itemPosition, long id) {
                 TextView selectedText = (TextView) adapterView.getChildAt(0);
                 if (selectedText != null) {
                     selectedText.setTextColor(ContextCompat.getColor(LastfmUserViewerActivity.this, R.color.primary_text));
@@ -134,13 +133,12 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 SharedPreferences savePreferences = SharedPreferencesManager.getSavePreferences(LastfmUserViewerActivity.this);
                 SharedPreferences.Editor editor = savePreferences.edit();
                 editor.putInt(Constants.TIME_TOP_TRACKS, itemPosition).apply();
-                if (topTracksViewer.isNotLoaded() || itemPosition != savedTopTrackPosition) {
-                    if (!topTracksViewer.isNotLoaded()) {
-                        topTracksViewer.clear();
-                    }
-                    LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(TOP_TRACKS_INDEX);
-                    getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), true, viewer);
+                if (itemPosition == savedTopTrackPosition && !topTracksViewer.isNotLoaded()) {
+                    return;
                 }
+                topTracksViewer.clear();
+                LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(TOP_TRACKS_INDEX);
+                getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), true, viewer);
                 savedTopTrackPosition = itemPosition;
             }
 
@@ -154,16 +152,15 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         ArrayAdapter<CharSequence> mSpinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.time_lastfm, android.R.layout.simple_dropdown_item_1line);
         mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        topArtistsSpinner.setAdapter(mSpinnerAdapter);
 
         savedTopArtistPeriod = SharedPreferencesManager.getSavePreferences(this).getInt(Constants.TIME_TOP_ARTISTS, 0);
         topArtistsPeriod = PERIODS_ARRAY[savedTopArtistPeriod];
-        topArtistsSpinner.setSelection(savedTopArtistPeriod);
-
+        topArtistsSpinner.setAdapter(mSpinnerAdapter);
+        topArtistsSpinner.setSelection(savedTopArtistPeriod, false);
         topArtistsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView,
-                                       View view, int itemPosition, long l) {
+                                       View view, int itemPosition, long id) {
                 TextView selectedText = (TextView) adapterView.getChildAt(0);
                 if (selectedText != null) {
                     selectedText.setTextColor(ContextCompat.getColor(LastfmUserViewerActivity.this, R.color.primary_text));
@@ -171,13 +168,12 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 topArtistsPeriod = PERIODS_ARRAY[itemPosition];
                 SharedPreferences.Editor editor = SharedPreferencesManager.getSavePreferences(LastfmUserViewerActivity.this).edit();
                 editor.putInt(Constants.TIME_TOP_ARTISTS, itemPosition).apply();
-                if (artistsViewer.isNotLoaded() || itemPosition != savedTopArtistPeriod) {
-                    if (!artistsViewer.isNotLoaded()) {
-                        artistsViewer.clear();
-                    }
-                    LastfmArtistViewerPage viewer = (LastfmArtistViewerPage) getViewer(TOP_ARTISTS_INDEX);
-                    getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), true, viewer);
+                if (itemPosition == savedTopArtistPeriod && !artistsViewer.isNotLoaded()) {
+                    return;
                 }
+                artistsViewer.clear();
+                LastfmArtistViewerPage viewer = (LastfmArtistViewerPage) getViewer(TOP_ARTISTS_INDEX);
+                getTopArtists(topArtistsPeriod, getPageSize(), viewer.getPage(), true, viewer);
                 savedTopArtistPeriod = itemPosition;
             }
 
@@ -249,7 +245,7 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 R.string.top_tracks
         );
         viewer.setOnLoadMoreListener(() -> {
-                    Timber.d("onLoadMore LastmfUser top tracks");
+                    Timber.d("onLoadMore LastfmUser top tracks");
                     getTopTracks(topTracksPeriod, getPageSize(), viewer.getPage(), false, viewer);
                 }
         );

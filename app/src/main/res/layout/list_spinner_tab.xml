@@ -30,10 +30,10 @@
         android:background="@color/inverted_primary_tinted"
         android:elevation="6dp"
         android:paddingBottom="4dp"
-        android:paddingEnd="24dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingStart="24dp"
+        android:paddingEnd="32dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingStart="32dp"
         android:paddingTop="4dp">
 
         <Spinner
