@@ -350,6 +350,7 @@ public class HomePresenter extends Presenter<HomeView> {
     }
 
     private void setMainPlaylist(int index, @NonNull Playlist playlist) {
+        timeline.setIndex(index);
         HomeView view = view();
         if (view == null) {
             return;

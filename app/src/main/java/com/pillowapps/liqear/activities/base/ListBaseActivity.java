@@ -1,6 +1,8 @@
 package com.pillowapps.liqear.activities.base;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,6 +26,10 @@ public abstract class ListBaseActivity extends ResultTrackedBaseActivity {
     @Bind(R.id.progressBar)
     protected ProgressBar progressBar;
 
+    @Nullable
+    @Bind(R.id.swipe_to_refresh)
+    protected SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +37,11 @@ public abstract class ListBaseActivity extends ResultTrackedBaseActivity {
         ButterKnife.bind(this);
 
         recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setColorSchemeColors(R.color.primary, R.color.primary_dark, R.color.accent);
+            swipeRefreshLayout.setEnabled(false);
+        }
     }
 
     protected void updateEmptyTextView() {

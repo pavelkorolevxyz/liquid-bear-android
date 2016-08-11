@@ -99,9 +99,6 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     @Inject
     SavesManager savesManager;
 
-    @Inject
-    Timeline timeline;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -354,7 +351,7 @@ public abstract class HomeFragment extends BaseFragment implements HomeView {
     }
 
     public void showRenameDialog(final int position) {
-        Track track = timeline.getTrack(position);
+        Track track = playlistItemsAdapter.getItem(position);
         View view = View.inflate(getContext(), R.layout.rename_dialog_layout, null);
         final HintMaterialEditText artistEditText = (HintMaterialEditText) view.findViewById(R.id.artist);
         artistEditText.setText(track.getArtist());

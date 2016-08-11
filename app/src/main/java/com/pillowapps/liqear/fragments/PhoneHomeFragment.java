@@ -416,7 +416,7 @@ public class PhoneHomeFragment extends HomeFragment {
 
     @Override
     public void setMainPlaylistSelection(int currentIndex) {
-        playlistListView.setSelection(currentIndex);
+        playlistListView.post(() -> playlistListView.setSelection(currentIndex));
     }
 
     @Override
