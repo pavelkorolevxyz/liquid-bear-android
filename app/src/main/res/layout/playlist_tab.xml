@@ -125,7 +125,7 @@
             android:background="?selectableItemBackgroundBorderless"
             android:padding="10dp"
             android:scaleType="fitXY"
-            android:src="@drawable/menu_little" />
+            android:src="@drawable/ic_dots_vertical" />
 
     </RelativeLayout>
 

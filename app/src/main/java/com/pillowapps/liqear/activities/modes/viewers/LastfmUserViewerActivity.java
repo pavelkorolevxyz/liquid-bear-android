@@ -343,12 +343,6 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
-            case R.id.all_button: {
-                LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(LOVED_INDEX);
-                viewer.clear();
-                getLoved(getPageSize(), viewer.getPage(), viewer);
-            }
-            return true;
             case R.id.to_playlist: {
                 LastfmTracksViewerPage viewer = (LastfmTracksViewerPage) getViewer(pager.getCurrentItem());
                 if (viewer.isNotLoaded()) return true;
@@ -373,11 +367,9 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
         MenuInflater inflater = getMenuInflater();
         final int index = pager.getCurrentItem();
         switch (index) {
-            case LOVED_INDEX: {
-                inflater.inflate(R.menu.load_all_menu, menu);
-            }
-            break;
-            case TOP_TRACKS_INDEX: {
+            case LOVED_INDEX:
+            case TOP_TRACKS_INDEX:
+            case RECENT_INDEX: {
                 inflater.inflate(R.menu.to_playlist_menu, menu);
             }
             break;
@@ -385,9 +377,6 @@ public class LastfmUserViewerActivity extends PagerResultActivity {
                 inflater.inflate(R.menu.empty_menu, menu);
             }
             break;
-            case RECENT_INDEX:
-                inflater.inflate(R.menu.to_playlist_menu, menu);
-                break;
         }
         return super.onCreateOptionsMenu(menu);
     }
