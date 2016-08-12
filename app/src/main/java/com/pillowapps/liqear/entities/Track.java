@@ -25,6 +25,8 @@ public class Track implements Parcelable {
     private boolean loved = false;
     private boolean addedToVk = false;
 
+    private boolean urlNotFound = false;
+
     public Track(long audioId, long oid) {
         this.audioId = audioId;
         this.ownerId = oid;
@@ -139,6 +141,14 @@ public class Track implements Parcelable {
         this.duration = duration;
     }
 
+    public boolean isUrlNotFound() {
+        return urlNotFound;
+    }
+
+    public void setUrlNotFound(boolean urlNotFound) {
+        this.urlNotFound = urlNotFound;
+    }
+
     @Override
     public String toString() {
         return "Track{" + TrackUtils.getNotation(this) + "}";
@@ -168,6 +178,7 @@ public class Track implements Parcelable {
         dest.writeString(this.localUrl);
         dest.writeString(this.url);
         dest.writeInt(this.duration);
+        dest.writeByte(this.urlNotFound ? (byte) 1 : (byte) 0);
         dest.writeInt(this.realPosition);
         dest.writeByte(loved ? (byte) 1 : (byte) 0);
         dest.writeByte(addedToVk ? (byte) 1 : (byte) 0);
@@ -186,6 +197,7 @@ public class Track implements Parcelable {
         this.realPosition = in.readInt();
         this.loved = in.readByte() != 0;
         this.addedToVk = in.readByte() != 0;
+        this.urlNotFound = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<Track> CREATOR = new Parcelable.Creator<Track>() {

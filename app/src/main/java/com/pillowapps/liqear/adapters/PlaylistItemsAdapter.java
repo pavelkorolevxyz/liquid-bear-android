@@ -128,6 +128,7 @@ public class PlaylistItemsAdapter extends ArrayAdapter<Track> {
         holder.positionTextView.setText(String.valueOf(currentTrack.getRealPosition() + 1));
         holder.artistTextView.setText(Html.fromHtml(currentTrack.getArtist()));
         holder.titleTextView.setText(Html.fromHtml(currentTrack.getTitle()));
+        holder.titleTextView.setAlpha(currentTrack.isUrlNotFound() ? 0.3f : 1.0f);
 
         holder.playImageView.setVisibility(currentIndex == realPosition ? View.VISIBLE : View.INVISIBLE);
 

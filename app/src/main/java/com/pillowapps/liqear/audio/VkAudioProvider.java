@@ -39,6 +39,10 @@ public class VkAudioProvider {
                 VkSimpleCallback<VkTrack> callback = new VkSimpleCallback<VkTrack>() {
                     @Override
                     public void success(VkTrack vkTrack) {
+                        if (vkTrack == null) {
+                            subscriber.onError(new VkException("No track url found"));
+                            return;
+                        }
                         TrackInfo trackInfo = new TrackInfo(vkTrack.getUrl(), vkTrack.getAudioId(), vkTrack.getOwnerId());
                         subscriber.onNext(trackInfo);
                         subscriber.onCompleted();

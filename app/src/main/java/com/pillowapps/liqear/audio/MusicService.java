@@ -26,6 +26,7 @@ import com.pillowapps.liqear.entities.events.ProgressEvent;
 import com.pillowapps.liqear.entities.events.TimeEvent;
 import com.pillowapps.liqear.entities.events.TrackAndAlbumInfoUpdatedEvent;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
+import com.pillowapps.liqear.entities.events.UpdatePlaylistEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.entities.lastfm.LastfmArtist;
 import com.pillowapps.liqear.entities.lastfm.LastfmImage;
@@ -424,6 +425,9 @@ public class MusicService extends Service {
                 }, throwable -> {
                     LBApplication.BUS.post(new ProgressEvent(false));
                     Timber.e(throwable, "Error while loading track to play");
+                    track.setUrlNotFound(true);
+                    LBApplication.BUS.post(new UpdatePlaylistEvent());
+                    next();
                 })
         );
     }
@@ -474,14 +478,16 @@ public class MusicService extends Service {
             @Override
             public void success(LastfmArtist lastfmArtist) {
                 timeline.setPreviousArtist(artist);
-                List<LastfmImage> list = lastfmArtist.getImages();
                 String imageUrl = null;
-                if (list.size() != 0) {
-                    LastfmImage lastfmImage = list.get(list.size() - 1);
-                    if (lastfmImage.getSize().isEmpty() && list.size() > 1) {
-                        lastfmImage = list.get(list.size() - 2);
+                if (lastfmArtist != null) {
+                    List<LastfmImage> list = lastfmArtist.getImages();
+                    if (list.size() != 0) {
+                        LastfmImage lastfmImage = list.get(list.size() - 1);
+                        if (lastfmImage.getSize().isEmpty() && list.size() > 1) {
+                            lastfmImage = list.get(list.size() - 2);
+                        }
+                        imageUrl = lastfmImage != null ? lastfmImage.getUrl() : null;
                     }
-                    imageUrl = lastfmImage != null ? lastfmImage.getUrl() : null;
                 }
                 timeline.setCurrentArtistImageUrl(imageUrl);
                 LBApplication.BUS.post(new ArtistInfoEvent(imageUrl));

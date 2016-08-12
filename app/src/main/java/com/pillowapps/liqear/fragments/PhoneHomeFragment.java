@@ -45,6 +45,7 @@ import com.pillowapps.liqear.entities.events.ProgressEvent;
 import com.pillowapps.liqear.entities.events.TimeEvent;
 import com.pillowapps.liqear.entities.events.TrackAndAlbumInfoUpdatedEvent;
 import com.pillowapps.liqear.entities.events.TrackInfoEvent;
+import com.pillowapps.liqear.entities.events.UpdatePlaylistEvent;
 import com.pillowapps.liqear.entities.events.UpdatePositionEvent;
 import com.pillowapps.liqear.helpers.TimeUtils;
 import com.pillowapps.liqear.listeners.OnSwipeListener;
@@ -559,6 +560,11 @@ public class PhoneHomeFragment extends HomeFragment {
         updateTrackTitle(currentTrack.getTitle());
         updateTrackArtist(currentTrack.getArtist());
         playlistItemsAdapter.setCurrentIndex(event.getCurrentIndex());
+        playlistItemsAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void trackInfoEvent(UpdatePlaylistEvent event) {
         playlistItemsAdapter.notifyDataSetChanged();
     }
 
