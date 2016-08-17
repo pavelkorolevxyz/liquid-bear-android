@@ -15,7 +15,6 @@ import android.text.Html;
 
 import com.pillowapps.liqear.audio.MediaButtonReceiver;
 import com.pillowapps.liqear.audio.Timeline;
-import com.pillowapps.liqear.entities.PlayingState;
 import com.pillowapps.liqear.entities.Track;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -45,28 +44,28 @@ public class CompatIcs {
         sRemote = remote;
     }
 
-    public static void updateRemote(final Context context, final Track track) {
+    public static void updateRemote(final Timeline timeline, final Track track) {
         final RemoteControlClient remote = sRemote;
         if (remote == null || track == null) {
             return;
         }
-//        remote.setPlaybackState(Timeline.getInstance().getPlayingState() == PlayingState.PLAYING ?
-//                        RemoteControlClient.PLAYSTATE_PLAYING :
-//                        RemoteControlClient.PLAYSTATE_PAUSED
-//        );
-//        RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
-//        editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
-//                Html.fromHtml(track.getArtist()).toString());
-//        editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST,
-//                Html.fromHtml(track.getArtist()).toString());
-//        editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
-//                Html.fromHtml(track.getTitle()).toString());
-//
-//        BitmapFactory.Options options = new BitmapFactory.Options();
-//        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-//        Bitmap bitmap = Timeline.getInstance().getAlbumCoverBitmap();
-//        editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap);
-//        editor.apply(); //todo
+        remote.setPlaybackState(timeline.isPlaying() ?
+                        RemoteControlClient.PLAYSTATE_PLAYING :
+                        RemoteControlClient.PLAYSTATE_PAUSED
+        );
+        RemoteControlClient.MetadataEditor editor = remote.editMetadata(true);
+        editor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
+                Html.fromHtml(track.getArtist()).toString());
+        editor.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST,
+                Html.fromHtml(track.getArtist()).toString());
+        editor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
+                Html.fromHtml(track.getTitle()).toString());
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = timeline.getAlbumCoverBitmap();
+        editor.putBitmap(RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK, bitmap);
+        editor.apply();
     }
 
     public static void unregisterRemote(Context context, AudioManager am) {

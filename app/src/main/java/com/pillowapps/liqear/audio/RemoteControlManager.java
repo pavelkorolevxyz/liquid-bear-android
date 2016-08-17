@@ -29,7 +29,7 @@ public class RemoteControlManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             CompatIcs.registerRemote(context, audioManager);
             if (currentTrack != null) {
-                CompatIcs.updateRemote(context, currentTrack);
+                CompatIcs.updateRemote(timeline, currentTrack);
             }
         } else {
             MediaButtonReceiver.registerMediaButton(context);

@@ -2,10 +2,20 @@ package com.pillowapps.liqear.audio;
 
 import android.app.Notification;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.google.android.exoplayer.ExoPlayer;
@@ -19,6 +29,7 @@ import com.pillowapps.liqear.entities.Track;
 import com.pillowapps.liqear.entities.events.ArtistInfoEvent;
 import com.pillowapps.liqear.entities.events.BufferizationEvent;
 import com.pillowapps.liqear.entities.events.ExitEvent;
+import com.pillowapps.liqear.entities.events.NetworkStateChangeEvent;
 import com.pillowapps.liqear.entities.events.PauseEvent;
 import com.pillowapps.liqear.entities.events.PlayEvent;
 import com.pillowapps.liqear.entities.events.PlayWithoutIconEvent;
@@ -81,6 +92,9 @@ public class MusicService extends Service {
     private CompositeSubscription shakeSubscription = new CompositeSubscription();
     private CompositeSubscription trackLoadingSubscription = new CompositeSubscription();
 
+    private HeadsetStateReceiver headsetReceiver;
+    private PhoneStateListener phoneStateListener;
+
     @Inject
     AudioPlayerModel audioPlayerModel;
 
@@ -113,6 +127,12 @@ public class MusicService extends Service {
 
     @Inject
     ShakeManager shakeManager;
+    @Inject
+    AudioManager audioManager;
+    private AudioManager.OnAudioFocusChangeListener focusChangeListener;
+    private ConnectionChangeReceiver connectionReceiver;
+    private PowerManager.WakeLock wakeLock;
+    private WifiManager.WifiLock wifiLock;
 
     @Override
     public void onCreate() {
@@ -121,7 +141,119 @@ public class MusicService extends Service {
 
         restore();
         initAudioPlayer();
+        initLocks();
+        initReceivers();
         updateShake();
+    }
+
+    private void initReceivers() {
+        headsetReceiver = new HeadsetStateReceiver();
+        IntentFilter receiverFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+        try {
+            registerReceiver(headsetReceiver, receiverFilter);
+        } catch (IllegalArgumentException ignored) {
+        }
+        audioManager.requestAudioFocus(createFocusChangeListener(), AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        registerPhoneCallReceiver();
+        connectionReceiver = new ConnectionChangeReceiver();
+        registerReceiver(connectionReceiver, new IntentFilter(Constants.NETWORK_ACTION));
+    }
+
+    private AudioManager.OnAudioFocusChangeListener createFocusChangeListener() {
+        focusChangeListener = focusChange -> {
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                if (timeline.isPlaying()) {
+                    pause();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                        CompatIcs.unregisterRemote(MusicService.this, audioManager);
+                    } else {
+                        MediaButtonReceiver.unregisterMediaButton(MusicService.this);
+                    }
+                }
+            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+//                if (AudioTimeline.wasPlayingBeforeCall()) { todo
+//                    play();
+//                }
+                registerRemote();
+            }
+        };
+        return focusChangeListener;
+    }
+
+    private void registerRemote() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            CompatIcs.registerRemote(MusicService.this, audioManager);
+            if (timeline.getCurrentTrack() != null) {
+                CompatIcs.updateRemote(timeline, timeline.getCurrentTrack());
+            }
+        } else {
+            MediaButtonReceiver.registerMediaButton(MusicService.this);
+        }
+    }
+
+    private void registerPhoneCallReceiver() {
+        phoneStateListener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                switch (state) {
+                    case TelephonyManager.CALL_STATE_RINGING:
+                        pause();
+                        break;
+                    case TelephonyManager.CALL_STATE_IDLE:
+//                        if (AudioTimeline.wasPlayingBeforeCall()) todo
+//                            play();
+                        break;
+                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                        pause();
+                        break;
+                    default:
+                        break;
+                }
+                super.onCallStateChanged(state, incomingNumber);
+            }
+        };
+        changePhoneCallReceiverListener(PhoneStateListener.LISTEN_CALL_STATE);
+    }
+
+    private void unregisterPhoneCallReceiver() {
+        changePhoneCallReceiverListener(PhoneStateListener.LISTEN_NONE);
+    }
+
+    private void changePhoneCallReceiverListener(int listenCallState) {
+        TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        if (mgr != null) {
+            mgr.listen(phoneStateListener, listenCallState);
+        }
+    }
+
+    private void initLocks() {
+        PowerManager pm = (PowerManager) getApplicationContext()
+                .getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Liqear");
+        WifiManager wifimanager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wifiLock = wifimanager.createWifiLock("player_on");
+    }
+
+    private void releaseLocks() {
+        try {
+            wakeLock.release();
+        } catch (Exception ignored) {
+        }
+        try {
+            wifiLock.release();
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void acquireLocks() {
+        try {
+            wakeLock.acquire();
+        } catch (Exception ignored) {
+        }
+        try {
+            wifiLock.acquire();
+        } catch (Exception ignored) {
+        }
     }
 
     public void restore() {
@@ -302,6 +434,17 @@ public class MusicService extends Service {
         tickModel.close();
         audioPlayerModel.close();
         timeline.setPlaying(false);
+
+        releaseLocks();
+        shakeManager.destroyShake();
+        if (connectionReceiver != null) {
+            unregisterReceiver(connectionReceiver);
+        }
+        audioManager.abandonAudioFocus(focusChangeListener);
+        unregisterPhoneCallReceiver();
+        if (headsetReceiver != null) {
+            unregisterReceiver(headsetReceiver);
+        }
         super.onDestroy();
     }
 
@@ -330,7 +473,7 @@ public class MusicService extends Service {
         }
 
         timeline.setPlaying(true);
-        audioPlayerModel.play();
+        startPlaying();
         LBApplication.BUS.post(new PlayEvent());
         updateTrackNotification();
     }
@@ -340,9 +483,14 @@ public class MusicService extends Service {
             return;
         }
         timeline.setPlaying(false);
-        audioPlayerModel.pause();
+        stopPlaying();
         LBApplication.BUS.post(new PauseEvent());
         updateTrackNotification();
+    }
+
+    private void stopPlaying() {
+        audioPlayerModel.pause();
+        releaseLocks();
     }
 
     public void startUpdaters() {
@@ -415,7 +563,7 @@ public class MusicService extends Service {
                     track.setOwnerId(trackInfo.getOwnerId());
                     track.setUrl(trackInfo.getUrl());
                     if (autoPlay) {
-                        audioPlayerModel.play();
+                        startPlaying();
                         showNotificationToast();
                         updateTrackNotification();
                         LBApplication.BUS.post(new PlayEvent());
@@ -430,6 +578,12 @@ public class MusicService extends Service {
                     next();
                 })
         );
+    }
+
+    private void startPlaying() {
+        registerRemote();
+        acquireLocks();
+        audioPlayerModel.play();
     }
 
     private void getTrackInfo(final Track track) {
@@ -456,7 +610,7 @@ public class MusicService extends Service {
                         LBApplication.BUS.post(new TrackAndAlbumInfoUpdatedEvent(currentTrack, album));
                         updateWidgets();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                            CompatIcs.updateRemote(MusicService.this, currentTrack);
+                            CompatIcs.updateRemote(timeline, currentTrack);
                         }
                     }
 
@@ -556,6 +710,20 @@ public class MusicService extends Service {
     public class LocalBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;
+        }
+    }
+
+    public class ConnectionChangeReceiver extends BroadcastReceiver {
+
+        public void onReceive(Context context, Intent intent) {
+            LBApplication.BUS.post(new NetworkStateChangeEvent());
+            if (intent.getExtras() != null) {
+                NetworkInfo ni = (NetworkInfo) intent.getExtras()
+                        .get(ConnectivityManager.EXTRA_NETWORK_INFO);
+                if (ni != null && ni.getState() == NetworkInfo.State.CONNECTED) {
+                    // todo scrobble tracks from offline
+                }
+            }
         }
     }
 }

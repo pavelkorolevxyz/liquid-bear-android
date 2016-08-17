@@ -42,7 +42,7 @@ public class TrackNotificationModel {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             notification = createControllingNotification();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                CompatIcs.updateRemote(context, track);
+                CompatIcs.updateRemote(timeline, track);
             }
         } else {
             notification = createSimpleNotification(track);
